@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  // Apply saved theme instantly (no flash)
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved
+      ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) root.classList.add('dark');
+  })();
+</script>
 <title>Unit 2 — Digital Logic &amp; Computer Design</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -186,6 +197,7 @@
     font-size:12.5px;
     cursor:pointer;
   }
+  .theme-btn{flex:0 0 38px;}
   .theme-btn:hover, .print-btn:hover{background:var(--bg-hover);}
   .theme-btn svg, .print-btn svg{width:14px; height:14px;}
 
@@ -471,8 +483,40 @@
     .main-wrap{margin-left:0;}
   }
 </style>
+<style>
+:root{--bg:#faf9f6;--bg-panel:#f2f0ea;--bg-hover:#e8eee9;--text:#1c1f1d;--text-muted:#565f5a;--border:#e3e0d6;--accent:#2c5f52;--accent-soft:#dfe9e4;}
+html.dark{--bg:#14181a;--bg-panel:#1a1f21;--bg-hover:#20262a;--text:#e7e9e4;--text-muted:#a3aca6;--border:#2b3234;--accent:#78c4ab;--accent-soft:#243430;}
+.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-panel);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.home-link:hover{background:var(--bg-hover);color:var(--accent);}
+@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
+</style>
+<style>
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:46px 28px 0 308px;padding:14px 0;border-top:1px solid var(--border);color:var(--text-muted);font:12px 'IBM Plex Mono',monospace;}
+.site-footer a{color:var(--accent);text-decoration:none;}
+.site-footer a:hover{color:var(--text);}
+@media (max-width:900px){.site-footer{margin-left:28px;}}
+@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;margin:32px 20px 0;}}
+.site-header{border-color:var(--border);color:var(--text);}
+.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
+.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
+.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
+.sidebar{width:300px;padding:22px 16px 60px;background:var(--surface);}
+.sidebar-head{padding:0 0 14px;margin-bottom:18px;}
+.sidebar-head .brand{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;}
+.sidebar-head .brand small{font-family:'IBM Plex Sans',sans-serif;font-size:12px;}
+.main-wrap{margin-left:300px;justify-content:flex-start;}
+main{max-width:820px;padding:36px 48px 120px;}
+.progress{left:300px;}
+@media (max-width:900px){
+  .sidebar{width:78vw;max-width:300px;}
+  .main-wrap{margin-left:0;}
+  .progress{left:0;}
+  main{padding:56px 20px 100px;}
+}
+</style>
 </head>
 <body>
+<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 
 <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
@@ -482,7 +526,7 @@
 
 <div class="app">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head">
+    <div class="sidebar-head site-header">
       <div class="brand">DLCD · Unit 2<small>Finite State Machines · Building Blocks · Number Systems</small></div>
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -551,9 +595,8 @@
       </div>
     </nav>
     <div class="sidebar-foot">
-      <button class="theme-btn" id="themeBtn">
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 109 9 9 9 0 11-9-9z"/></svg>
-        <span id="themeLabel">Dark</span>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg>
       </button>
       <button class="print-btn" onclick="window.print()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
@@ -566,20 +609,13 @@
     <main>
 
       <h1 class="doc-title">Digital Logic and Computer Design</h1>
-      <div class="doc-sub">Unit 2 — Complete Study Notes</div>
-      <div class="doc-meta">
-        <span>📘 Finite State Machines</span>
-        <span>➕ Arithmetic Circuits &amp; Building Blocks</span>
-        <span>🔢 Number Systems</span>
-        <span>139 slides condensed</span>
-      </div>
 
       <!-- =========================================================
            SECTION 1 : FINITE STATE MACHINES
       ========================================================== -->
       <section class="topic" id="fsm">
         <div class="topic-header">
-          <div class="topic-eyebrow">Part 01</div>
+          <div class="topic-eyebrow"><h2>PART 01</h2></div>
           <h2 class="topic-title">Finite State Machines</h2>
           <p class="topic-intro">How synchronous sequential circuits are modelled, designed, encoded and turned into hardware.</p>
         </div>
@@ -1459,6 +1495,8 @@ R' = R</pre>
   </div>
 </div>
 
+<footer class="site-footer"><span>TYN Notes · Digital Logic &amp; Computer Design</span><a href="index.html">Home</a></footer>
+
 <button class="back-to-top" id="backToTop" aria-label="Back to top">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
@@ -1466,14 +1504,15 @@ R' = R</pre>
 <script>
   // ---------- Theme toggle ----------
   const themeBtn = document.getElementById('themeBtn');
-  const themeLabel = document.getElementById('themeLabel');
   const themeIcon = document.getElementById('themeIcon');
   const moonPath = 'M12 3a6 6 0 109 9 9 9 0 11-9-9z';
   const sunPath = 'M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4l-1.4 1.4M6.4 17.6l-1.4 1.4m12.6 0l-1.4-1.4M6.4 6.4L5 5m7 3a4 4 0 100 8 4 4 0 000-8z';
+  const isInitiallyDark = document.documentElement.classList.contains('dark');
+  themeIcon.innerHTML = '<path d="' + (isInitiallyDark ? sunPath : moonPath) + '"/>';
   themeBtn.addEventListener('click', () => {
     const isDark = document.documentElement.classList.toggle('dark');
-    themeLabel.textContent = isDark ? 'Light' : 'Dark';
     themeIcon.innerHTML = '<path d="' + (isDark ? sunPath : moonPath) + '"/>';
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
   });
 
   // ---------- Sidebar group collapse ----------
