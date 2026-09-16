@@ -201,10 +201,32 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 
 <div class="container">
   <header class="site-header">
-    <div class="brand">
-      SEM 3
-      <strong>Course Select</strong>
-    </div>
+<div class="brand">
+  <span class="sem-heading">SEM 3</span>
+  <strong class="course-subtext">Course Select</strong>
+</div>
+
+<style>
+.brand {
+  display: flex;
+  flex-direction: column; /* Stacks SEM 3 above Course Select */
+  align-items: flex-start;
+}
+
+.sem-heading {
+  font-size: 2.5rem;       /* Makes SEM 3 significantly larger */
+  font-weight: 800;       /* Extra bold for strong emphasis */
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.course-subtext {
+  font-size: 0.9rem;       /* Keeps secondary text small and subordinate */
+  color: #666;             /* Optional lower contrast to pull focus to SEM 3 */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+</style>
     <button id="themeToggle" aria-label="Toggle theme">
       <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="4"/>
