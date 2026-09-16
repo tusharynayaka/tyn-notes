@@ -84,6 +84,27 @@ header{
   margin-top:2px;
   line-height: 1.1;
 }
+.brand .sem-heading{
+  display:block;
+  color:var(--accent);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.14em;
+  line-height:1;
+  text-transform:uppercase;
+}
+.brand .course-subtext{
+  display:block;
+  margin-top:4px;
+  color:var(--text);
+  font-family:'Newsreader', serif;
+  font-size:25px;
+  font-weight:500;
+  letter-spacing:0;
+  line-height:1.05;
+  text-transform:none;
+}
 
 #themeToggle{
   border:1px solid var(--border);
@@ -205,28 +226,6 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
   <span class="sem-heading">SEM 3</span>
   <strong class="course-subtext">Course Select</strong>
 </div>
-
-<style>
-.brand {
-  display: flex;
-  flex-direction: column; /* Stacks SEM 3 above Course Select */
-  align-items: flex-start;
-}
-
-.sem-heading {
-  font-size: 2.5rem;       /* Makes SEM 3 significantly larger */
-  font-weight: 800;       /* Extra bold for strong emphasis */
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.course-subtext {
-  font-size: 0.9rem;       /* Keeps secondary text small and subordinate */
-  color: #666;             /* Optional lower contrast to pull focus to SEM 3 */
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-</style>
     <button id="themeToggle" aria-label="Toggle theme">
       <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="4"/>
