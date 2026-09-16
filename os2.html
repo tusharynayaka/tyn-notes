@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Systems · Unit 2 Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f6;
+  --surface:#ffffff;
+  --surface-2:#f2f0ea;
+  --text:#1c1f1d;
+  --text-soft:#565f5a;
+  --text-faint:#8a9089;
+  --border:#e3e0d6;
+  --accent:#2c5f52;
+  --accent-soft:#dfe9e4;
+  --accent-text:#1f4238;
+  --formula-bg:#f4ecd8;
+  --formula-border:#c9a95c;
+  --code-bg:#eef0ec;
+  --mark-bg:#f6d989;
+  --shadow: none;
+  --radius: 3px;
+  --sidebar-w: 300px;
+  color-scheme: light;
+}
+html.dark{
+  --bg:#14181a;
+  --surface:#1a1f21;
+  --surface-2:#20262a;
+  --text:#e7e9e4;
+  --text-soft:#a3aca6;
+  --text-faint:#6d766f;
+  --border:#2b3234;
+  --accent:#78c4ab;
+  --accent-soft:#243430;
+  --accent-text:#a9e0c9;
+  --formula-bg:#2b2717;
+  --formula-border:#9a7d3d;
+  --code-bg:#1e2426;
+  --mark-bg:#5a4a1e;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans', sans-serif;
+  line-height:1.5;
+  transition:background .25s ease, color .25s ease;
+}
+::selection{background:var(--mark-bg); color:#1c1f1d;}
+
+#progress{
+  position:fixed; top:0; left:0; height:2px; width:0%;
+  background:var(--accent); z-index:500; transition:width .1s linear;
+}
+
+.app{ display:flex; min-height:100vh; }
+
+.sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  border-right:1px solid var(--border);
+  background:var(--surface);
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  padding:22px 16px 60px;
+}
+.sidebar-head{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:8px; margin-bottom:18px;
+}
+.brand{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; letter-spacing:.02em; color:var(--text-faint);
+}
+.brand strong{ display:block; font-family:'IBM Plex Sans',sans-serif; font-size:16px; color:var(--text); font-weight:600; margin-top:2px;}
+#themeToggle{
+  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  width:34px; height:34px; border-radius:var(--radius); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition: background .15s ease;
+}
+#themeToggle:hover{ background:var(--accent-soft); }
+#themeToggle svg{ width:16px; height:16px; }
+
+.search-wrap{ position:relative; margin-bottom:18px; }
+#searchInput{
+  width:100%; padding:9px 12px 9px 32px; border-radius:var(--radius);
+  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; outline:none;
+}
+#searchInput:focus{ border-color:var(--accent); }
+.search-wrap svg{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  width:14px; height:14px; color:var(--text-faint); pointer-events:none;
+}
+#searchCount{ font-size:11.5px; color:var(--text-faint); margin:6px 2px 0; min-height:14px; }
+
+nav.toc{ font-size:13.5px; }
+.toc-group{ margin-bottom:4px; }
+.toc-group-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px; letter-spacing:.06em; color:var(--text-faint);
+  padding:14px 8px 6px; cursor:pointer; user-select:none;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.toc-group-title:hover{ color:var(--text-soft); }
+.toc-group-title .chev{ transition:transform .15s ease; width:9px; height:9px; }
+.toc-group.collapsed .chev{ transform:rotate(-90deg); }
+.toc-group.collapsed .toc-list{ display:none; }
+.toc-list{ list-style:none; margin:0; padding:0; }
+.toc-list li a{
+  display:block; padding:6px 10px 6px 16px; margin:1px 0; border-radius:var(--radius);
+  color:var(--text-soft); text-decoration:none; border-left:2px solid transparent;
+  font-size:13px;
+}
+.toc-list li a:hover{ background:var(--surface-2); color:var(--text); }
+.toc-list li a.active{
+  color:var(--accent-text); border-left-color:var(--accent); background:var(--accent-soft);
+  font-weight:500;
+}
+.toc-list li.hidden{ display:none; }
+
+main{
+  flex:1; min-width:0;
+  padding:56px clamp(20px, 6vw, 90px) 140px;
+  display:flex; justify-content:center;
+}
+.content{ max-width:700px; width:100%; }
+
+.masthead{ margin-bottom:52px; }
+.masthead .kicker{
+  font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent-text);
+  letter-spacing:.04em;
+}
+.masthead h1{
+  font-family:'Newsreader', serif; font-weight:500; font-size:clamp(34px,4.4vw,48px);
+  margin:8px 0 14px; line-height:1.08; letter-spacing:-0.01em;
+}
+.masthead p{ color:var(--text-soft); font-size:15.5px; max-width:56ch; }
+
+section.topic{ margin-bottom:64px; scroll-margin-top:28px; }
+section.topic > h2{
+  font-family:'Newsreader', serif; font-weight:500; font-size:27px;
+  border-bottom:1px solid var(--border); padding-bottom:12px; margin:0 0 20px;
+  letter-spacing:-0.01em;
+}
+section.topic h3{
+  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:16.5px;
+  margin:30px 0 10px; color:var(--text);
+}
+section.topic h4{
+  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:14px;
+  margin:20px 0 8px; color:var(--accent-text);
+}
+section.topic p{ font-family:'Newsreader', serif; font-size:16.5px; color:var(--text); margin:0 0 14px; }
+section.topic p, section.topic li{ font-size:16.5px; }
+section.topic ul, section.topic ol{ font-family:'Newsreader', serif; padding-left:22px; margin:0 0 14px;}
+section.topic ul li, section.topic ol li{ margin-bottom:6px; }
+section.topic ul ul, section.topic ol ul{ margin:6px 0 6px; }
+strong{ font-weight:600; }
+code{
+  font-family:'IBM Plex Mono',monospace; font-size:.86em; background:var(--code-bg);
+  padding:1.5px 5px; border-radius:3px; color:var(--accent-text);
+}
+pre{
+  font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--code-bg);
+  border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;
+  overflow-x:auto; margin:0 0 16px; line-height:1.6;
+}
+pre code{ background:none; padding:0; color:var(--text); }
+
+.box{ border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--radius);
+  padding:12px 16px; margin:0 0 16px; background:var(--surface-2); }
+.box p:last-child{ margin-bottom:0; }
+.box .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
+  color:var(--accent-text); margin-bottom:5px; display:block; }
+
+.formula{
+  border:1px solid var(--formula-border); background:var(--formula-bg);
+  border-radius:var(--radius); padding:16px 20px; margin:18px 0;
+}
+.formula .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
+  color:#8a6d1f; display:block; margin-bottom:8px; }
+html.dark .formula .label{ color:#d8b25b; }
+.formula .expr{ font-family:'IBM Plex Mono',monospace; font-size:17px; text-align:center; margin:6px 0; }
+.formula .note{ font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text-soft); margin-top:8px;}
+
+table{ width:100%; border-collapse:collapse; margin:0 0 18px; font-size:14.5px; font-family:'IBM Plex Sans',sans-serif;}
+th{ text-align:left; font-weight:600; font-size:12px; letter-spacing:.03em; color:var(--text-faint);
+  border-bottom:1px solid var(--border); padding:8px 12px; }
+td{ padding:8px 12px; border-bottom:1px solid var(--border); }
+tr:last-child td{ border-bottom:none; }
+
+figure{ margin:0 0 20px; }
+figure figcaption{ font-size:12.5px; color:var(--text-faint); margin-top:8px; font-family:'IBM Plex Mono',monospace;}
+
+.diagram{
+  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface-2);
+  padding:22px; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:16px;
+}
+.stack{ display:flex; flex-direction:column; width:100%; max-width:420px; }
+.stack .layer{
+  border:1px solid var(--border); background:var(--surface); text-align:center; padding:10px;
+  font-size:13px; font-family:'IBM Plex Mono',monospace;
+}
+.stack .layer.accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
+.stack .layer + .layer{ border-top:none; }
+
+.pyramid{ display:flex; flex-direction:column; align-items:center; gap:0; width:100%; }
+.pyramid .tier{
+  border:1px solid var(--border); text-align:center; padding:9px; font-size:12.5px;
+  font-family:'IBM Plex Mono',monospace; background:var(--surface); margin-top:-1px;
+}
+
+.flow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; width:100%; }
+.flow .step{
+  border:1px solid var(--border); background:var(--surface); border-radius:var(--radius);
+  padding:8px 14px; font-size:13px; font-family:'IBM Plex Mono',monospace; text-align:center;
+}
+.flow .arrow{ color:var(--text-faint); font-size:14px; }
+
+.gantt-wrap{ margin:14px 0 26px; }
+.gantt-title{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); margin-bottom:8px;}
+.gantt-bar{ display:flex; width:100%; height:42px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
+.g-block{
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px;
+  border-right:1px solid var(--border); color:var(--accent-text); background:var(--accent-soft);
+  min-width:2px;
+}
+.g-block:nth-child(odd){ background:var(--surface-2); }
+.g-block:last-child{ border-right:none; }
+.gantt-axis{ position:relative; height:18px; margin-top:2px; }
+.gantt-axis span{ position:absolute; transform:translateX(-50%); font-size:11px; color:var(--text-faint); font-family:'IBM Plex Mono',monospace;}
+.gantt-axis span:first-child{ transform:translateX(0); }
+.gantt-axis span:last-child{ transform:translateX(-100%); }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
+
+.footnote{ font-size:13px; color:var(--text-faint); border-top:1px solid var(--border); padding-top:16px; margin-top:46px;}
+
+mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px; }
+
+.backtotop{
+  position:fixed; bottom:24px; right:28px; width:38px; height:38px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--border); color:var(--text-soft);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0;
+  pointer-events:none; transition:opacity .2s ease; z-index:400;
+}
+.backtotop.show{ opacity:1; pointer-events:auto; }
+.backtotop svg{ width:15px; height:15px; }
+
+.menu-btn{ display:none; }
+@media (max-width:880px){
+  .sidebar{
+    position:fixed; left:0; top:0; z-index:600; transform:translateX(-100%);
+    transition:transform .2s ease; box-shadow:0 0 40px rgba(0,0,0,.25);
+  }
+  .sidebar.open{ transform:translateX(0); }
+  main{ padding:56px 20px 120px; }
+  .menu-btn{
+    display:flex; position:fixed; top:16px; left:16px; z-index:601;
+    width:38px; height:38px; border-radius:var(--radius); border:1px solid var(--border);
+    background:var(--surface); align-items:center; justify-content:center; cursor:pointer;
+  }
+  .menu-btn svg{ width:17px; height:17px; }
+  .masthead{ padding-top:26px; }
+}
+
+/* Extra elements for Unit 2 */
+.rag-diagram{
+  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface-2);
+  padding:22px; margin-bottom:16px; text-align:center;
+}
+.rag-diagram svg{ max-width:100%; height:auto; }
+.chip{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+  padding:2px 8px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
+  color:var(--text-soft); margin:2px 4px 2px 0;
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">UE25CS242A<strong>Operating Systems</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Interprocess Communication</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#ipc-intro" data-title="Interprocess Communication IPC">IPC basics &amp; reasons</a></li>
+          <li><a href="#ipc-models" data-title="IPC Models Shared Memory Message Passing Producer Consumer">IPC models &amp; producer–consumer</a></li>
+          <li><a href="#msg-passing" data-title="Message Passing Direct Indirect Synchronization Buffering">Message passing details</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>IPC System Calls</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#pipes" data-title="Pipes pipe popen pclose">Pipes, popen &amp; pclose</a></li>
+          <li><a href="#fifo-msgq" data-title="FIFOs Named Pipes Message Queues">FIFOs &amp; message queues</a></li>
+          <li><a href="#semaphores-syscalls" data-title="Semaphore System Calls semget semop semctl">Semaphore system calls</a></li>
+          <li><a href="#unix-sockets" data-title="Linux Domain Sockets AF UNIX">Linux domain sockets</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Threads</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#thread-overview" data-title="Threads Overview and Motivation Single vs Multithreaded">Overview &amp; motivation</a></li>
+          <li><a href="#thread-benefits" data-title="Benefits of Multithreading Responsiveness Resource Sharing Economy Scalability">Benefits of multithreading</a></li>
+          <li><a href="#thread-concepts" data-title="Thread Concepts Shared vs Private State Thread States">Thread concepts &amp; states</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Multicore &amp; Threading Models</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#concurrency-parallelism" data-title="Concurrency vs Parallelism Multicore Programming Challenges">Concurrency vs parallelism</a></li>
+          <li><a href="#threading-models" data-title="User Threads Kernel Threads Many to One One to One Many to Many Two Level">User/kernel threads &amp; models</a></li>
+          <li><a href="#pthreads" data-title="Pthreads pthread_create pthread_join pthread_exit PCS SCS">Pthreads &amp; scheduling scope</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Multicore Kernel Concepts</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#multi-cpu-sched" data-title="Multiple Processor Scheduling Asymmetric Symmetric Ready Queues">Multiprocessor scheduling</a></li>
+          <li><a href="#memory-stall" data-title="Memory Stall Multithreaded Cores Chip Multithreading SMT">Memory stalls &amp; chip multithreading</a></li>
+          <li><a href="#load-balancing" data-title="Load Balancing Push Migration Pull Migration">Load balancing</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Synchronization</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#race-conditions" data-title="Race Condition Critical Section Problem">Race conditions &amp; critical section</a></li>
+          <li><a href="#petersons" data-title="Petersons Solution Algorithm">Peterson's solution</a></li>
+          <li><a href="#hw-sync" data-title="Hardware Support Test and Set Compare and Swap Bounded Waiting">Hardware synchronization (TAS/CAS)</a></li>
+          <li><a href="#mutex-sem" data-title="Mutex Locks Semaphores Spinlocks Priority Inversion">Mutex locks &amp; semaphores</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Classic Problems</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#bounded-buffer" data-title="Bounded Buffer Producer Consumer Problem Semaphores">Bounded-buffer problem</a></li>
+          <li><a href="#readers-writers" data-title="Readers Writers Problem">Readers–writers problem</a></li>
+          <li><a href="#dining-phil" data-title="Dining Philosophers Problem Deadlock">Dining philosophers</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Deadlocks</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#deadlock-intro" data-title="Deadlock System Model Resource Types Coffman Conditions">System model &amp; Coffman conditions</a></li>
+          <li><a href="#rag" data-title="Resource Allocation Graph Wait For Graph">Resource-allocation graph</a></li>
+          <li><a href="#deadlock-handling" data-title="Deadlock Prevention Detection Recovery Bankers Algorithm">Prevention, detection &amp; Banker's algorithm</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Signals</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#signals" data-title="Signals Synchronous Asynchronous Handlers Multithreaded Linux Signals">Signals &amp; signal handling</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">UE25CS242A — Prof. Pavan A C</div>
+        <h1>Operating Systems, Unit 2</h1>
+        <p>A single-page reference covering IPC (shared memory &amp; message passing), IPC system calls (pipes, FIFOs, message queues, semaphores, UNIX domain sockets), threads and multithreading models, Pthreads, multicore kernel concepts, mutual exclusion &amp; hardware synchronization, mutex locks &amp; semaphores, the classic synchronization problems, deadlocks, and signals — expanded from the lecture notes with worked examples.</p>
+      </header>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="ipc-intro">
+        <h2>Interprocess Communication (IPC)</h2>
+        <p>Processes within a system may be either <strong>independent</strong> or <strong>cooperating</strong>. A cooperating process can affect or be affected by the execution of another process, typically by sharing data. To enable this cooperation, processes require Interprocess Communication (IPC) mechanisms.</p>
+
+        <h3>Reasons for cooperating processes</h3>
+        <ol>
+          <li><strong>Information sharing</strong> — multiple users or processes need access to shared information (e.g. a shared database)</li>
+          <li><strong>Computation speed-up</strong> — tasks are divided into sub-tasks that execute in parallel on multiple processes</li>
+          <li><strong>Modularity</strong> — the system is divided into separate modules, each running as a separate process</li>
+          <li><strong>Convenience</strong> — allows multiple activities to run concurrently (e.g. editing, printing, and compiling at the same time)</li>
+        </ol>
+
+        <h3>Cooperating vs independent processes</h3>
+        <div class="two-col">
+          <div>
+            <h4>Independent process</h4>
+            <ul>
+              <li>Cannot affect or be affected by other processes</li>
+              <li>Does not share data with other processes</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Cooperating process</h4>
+            <ul>
+              <li>Can affect or be affected by other processes</li>
+              <li>Requires IPC mechanisms</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="ipc-models">
+        <h2>IPC Models &amp; the Producer–Consumer Problem</h2>
+        <p>There are two fundamental models of Interprocess Communication:</p>
+        <ol>
+          <li><strong>Shared Memory</strong></li>
+          <li><strong>Message Passing</strong></li>
+        </ol>
+
+        <figure class="diagram">
+          <div class="flow">
+            <div class="step">process A ↔ message queue (m₀…mₙ) via kernel ↔ process B</div>
+          </div>
+          <p style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">(a) message passing — communication goes through the kernel</p>
+          <div class="flow" style="margin-top:8px">
+            <div class="step">process A ↔ shared memory region ↔ process B</div>
+          </div>
+          <p style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">(b) shared memory — kernel sets up the region once, then processes read/write it directly</p>
+        </figure>
+
+        <h3>Producer–Consumer problem</h3>
+        <p>The Producer–Consumer problem is a classical example of cooperating processes. The <strong>producer</strong> process produces information (data items), and the <strong>consumer</strong> process consumes the information produced.</p>
+
+        <h4>Types of buffers</h4>
+        <div class="two-col">
+          <div>
+            <h4>Unbounded buffer</h4>
+            <ul>
+              <li>No practical limit on buffer size</li>
+              <li>Producer can always produce items</li>
+              <li>Consumer may have to wait if the buffer is empty</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Bounded buffer</h4>
+            <ul>
+              <li>Fixed buffer size</li>
+              <li>Producer must wait if the buffer is full</li>
+              <li>Consumer must wait if the buffer is empty</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Bounded-buffer — shared data (shared memory version)</h3>
+        <p>The shared buffer is implemented as a circular array:</p>
+        <pre><code>#define BUFFER_SIZE 10
+
+typedef struct {
+   ...
+} item;
+
+item buffer[BUFFER_SIZE];
+int in = 0;
+int out = 0;</code></pre>
+        <div class="box"><span class="label">Buffer conditions</span>
+          <p style="margin-bottom:4px"><strong>Buffer empty</strong> → <code>in == out</code></p>
+          <p style="margin-bottom:0"><strong>Buffer full</strong> → <code>((in + 1) % BUFFER_SIZE) == out</code></p>
+        </div>
+        <p><strong>Pointer meaning:</strong> <code>in</code> points to the next free position; <code>out</code> points to the first full position. This solution can use only <strong>BUFFER_SIZE − 1</strong> elements (one slot is always deliberately left empty to distinguish "full" from "empty").</p>
+
+        <h4>Producer code</h4>
+        <pre><code>item next_produced;
+
+while (true) {
+  /* produce an item in next_produced */
+  while (((in + 1) % BUFFER_SIZE) == out)
+    ; /* do nothing */
+
+  buffer[in] = next_produced;
+  in = (in + 1) % BUFFER_SIZE;
+}</code></pre>
+        <p>The producer waits (busy-waiting) if the buffer is full. Busy waiting is used here — inefficient but conceptually simple.</p>
+
+        <h4>Consumer code</h4>
+        <pre><code>item next_consumed;
+
+while (true) {
+  while (in == out)
+    ; /* do nothing */
+
+  next_consumed = buffer[out];
+  out = (out + 1) % BUFFER_SIZE;
+  /* consume the item */
+}</code></pre>
+        <p>The consumer waits if the buffer is empty. Busy waiting is again used.</p>
+
+        <h3>Interprocess communication — shared memory</h3>
+        <ul>
+          <li>A region of memory is shared among cooperating processes</li>
+          <li>Communication is controlled by <strong>user processes</strong>, not by the OS</li>
+          <li>The OS provides only the mechanism, not the synchronization</li>
+        </ul>
+        <div class="box"><span class="label">Key points</span>
+          <p style="margin-bottom:4px">Two or more processes share the same memory region — this is the <strong>fastest IPC mechanism</strong>, since there is no data copying between processes.</p>
+          <p style="margin-bottom:0"><strong>Main challenge:</strong> synchronization — processes must coordinate access to avoid data inconsistency, using tools such as semaphores, mutex locks, or record locking.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="msg-passing">
+        <h2>Interprocess Communication — Message Passing</h2>
+        <p>Message passing is another IPC mechanism where processes communicate <strong>without shared variables</strong>, and the OS provides <code>send</code> and <code>receive</code> operations.</p>
+        <ul>
+          <li><code>send(message)</code></li>
+          <li><code>receive(message)</code></li>
+        </ul>
+        <p>Message size may be <strong>fixed</strong> or <strong>variable</strong>. For processes P and Q to communicate: (1) establish a communication link, and (2) exchange messages using send/receive.</p>
+
+        <h3>Implementation issues in message passing</h3>
+        <ul>
+          <li>How are communication links established?</li>
+          <li>Can a link be shared by more than two processes?</li>
+          <li>How many links can exist between a pair of processes?</li>
+          <li>What is the capacity of the link?</li>
+          <li>Is message size fixed or variable?</li>
+          <li>Is communication unidirectional or bi-directional?</li>
+        </ul>
+
+        <h3>Implementation of communication links</h3>
+        <div class="two-col">
+          <div>
+            <h4>Physical implementation</h4>
+            <ul><li>Shared memory</li><li>Hardware bus</li><li>Network</li></ul>
+          </div>
+          <div>
+            <h4>Logical implementation</h4>
+            <ul>
+              <li>Direct or indirect communication</li>
+              <li>Synchronous or asynchronous communication</li>
+              <li>Automatic or explicit buffering</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Direct communication</h3>
+        <p>Processes explicitly name each other.</p>
+        <ul>
+          <li><code>send(P, message)</code> → send message to process P</li>
+          <li><code>receive(Q, message)</code> → receive message from process Q</li>
+        </ul>
+        <p><strong>Properties:</strong> links are established automatically; exactly one link per process pair; usually bi-directional.</p>
+
+        <h3>Indirect communication</h3>
+        <p>Messages are sent and received via <strong>mailboxes (ports)</strong>. Each mailbox has a unique ID, and processes communicate only if they share a mailbox.</p>
+        <div class="box"><span class="label">Properties</span>
+          <ul style="margin-bottom:0">
+            <li>Link established only if processes share a mailbox</li>
+            <li>A link may be associated with multiple processes</li>
+            <li>A process pair may share multiple links</li>
+            <li>Communication can be unidirectional or bi-directional</li>
+          </ul>
+        </div>
+        <h4>Mailbox operations</h4>
+        <p>Create a mailbox, send message to mailbox, receive message from mailbox, destroy mailbox.</p>
+        <pre><code>send(A, message)
+receive(A, message)</code></pre>
+        <h4>Mailbox sharing problem</h4>
+        <p>Scenario: processes P₁, P₂, P₃ share mailbox A. P₁ sends a message; P₂ and P₃ are both ready to receive. Possible solutions:</p>
+        <ol>
+          <li>Allow a link to be associated with at most two processes</li>
+          <li>Allow only one process to execute <code>receive</code> at a time</li>
+          <li>System selects a receiver arbitrarily and notifies the sender</li>
+        </ol>
+
+        <h3>Message passing — synchronization</h3>
+        <div class="two-col">
+          <div>
+            <h4>Blocking (synchronous)</h4>
+            <ul>
+              <li><strong>Blocking send</strong> — sender waits until message is received</li>
+              <li><strong>Blocking receive</strong> — receiver waits until message arrives</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Non-blocking (asynchronous)</h4>
+            <ul>
+              <li><strong>Non-blocking send</strong> — sender continues immediately</li>
+              <li><strong>Non-blocking receive</strong> — receiver gets message or null</li>
+            </ul>
+          </div>
+        </div>
+        <div class="box"><span class="label">Rendezvous</span><p>Both send and receive are blocking — sender and receiver meet at the same time.</p></div>
+
+        <h4>Producer–Consumer using message passing</h4>
+        <pre><code>// Producer
+message next_produced;
+while (true) {
+  /* produce item */
+  send(next_produced);
+}
+
+// Consumer
+message next_consumed;
+while (true) {
+  receive(next_consumed);
+  /* consume item */
+}</code></pre>
+        <div class="box"><span class="label">Note</span><p>Message passing eliminates shared-memory synchronization issues.</p></div>
+
+        <h3>Buffering in message passing</h3>
+        <p>Messages are stored in queues attached to the communication link.</p>
+        <table>
+          <tr><th>Type</th><th>Behaviour</th></tr>
+          <tr><td>Zero capacity</td><td>No messages queued; sender must wait for receiver — also called <em>no buffering</em> (rendezvous)</td></tr>
+          <tr><td>Bounded capacity</td><td>Queue size = n messages; sender waits if the queue is full</td></tr>
+          <tr><td>Unbounded capacity</td><td>Infinite queue size; sender never waits</td></tr>
+        </table>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="pipes">
+        <h2>IPC System Calls — Pipes</h2>
+        <p>IPC system calls allow multiple processes to communicate and synchronize with each other. UNIX-based operating systems provide several IPC mechanisms such as pipes, FIFOs, message queues, semaphores, and shared memory, each suited for different communication needs.</p>
+
+        <h3>Pipes</h3>
+        <p>Pipes are the <strong>oldest and simplest</strong> form of IPC in UNIX systems and are supported by all UNIX variants. A pipe allows data to flow between two processes in a <strong>unidirectional</strong> manner (half-duplex). Although some modern systems support full-duplex pipes, programs should not rely on this for portability.</p>
+        <p>A key limitation of pipes is that they can be used only between processes that <strong>share a common ancestor</strong>. Typically, a pipe is created by a parent process, which then calls <code>fork()</code>, allowing communication between parent and child.</p>
+
+        <h4><code>pipe()</code> system call</h4>
+        <p>A pipe is created using the <code>pipe()</code> system call. On success it returns two file descriptors through an array argument:</p>
+        <ul>
+          <li><code>fd[0]</code> → read end of the pipe</li>
+          <li><code>fd[1]</code> → write end of the pipe</li>
+        </ul>
+        <p>Data written to <code>fd[1]</code> can be read from <code>fd[0]</code>. Internally, the data flows through the kernel buffer, ensuring safe data transfer between processes.</p>
+        <figure class="diagram">
+          <div class="flow"><div class="step">user process → fd[0] (read) ↔ kernel pipe buffer ↔ fd[1] (write)</div></div>
+          <figcaption>half-duplex pipe: read end and write end, through the kernel</figcaption>
+        </figure>
+
+        <h4>Pipe usage between parent and child</h4>
+        <p>After calling <code>pipe()</code>, the process calls <code>fork()</code> to create a child. Depending on the direction of communication:</p>
+        <div class="two-col">
+          <div>
+            <h4>Parent → Child</h4>
+            <ul><li>Parent closes <code>fd[0]</code> (read end)</li><li>Child closes <code>fd[1]</code> (write end)</li></ul>
+          </div>
+          <div>
+            <h4>Child → Parent</h4>
+            <ul><li>Parent closes <code>fd[1]</code></li><li>Child closes <code>fd[0]</code></li></ul>
+          </div>
+        </div>
+        <div class="box"><span class="label">Why close unused ends</span>
+          <ul style="margin-bottom:0"><li>Prevent deadlocks</li><li>Allow proper detection of end-of-file (EOF)</li></ul>
+        </div>
+
+        <h4><code>popen()</code> and <code>pclose()</code></h4>
+        <p>These functions provide a higher-level interface to pipes using the standard I/O library, simplifying pipe creation, forking, and command execution.</p>
+        <p><strong><code>popen()</code></strong> creates a pipe, forks a child process, executes a shell command using <code>exec()</code>, and returns a <strong>file pointer</strong> instead of a file descriptor. Depending on the mode:</p>
+        <ul>
+          <li><code>"r"</code> → parent reads the output of the command</li>
+          <li><code>"w"</code> → parent writes input to the command</li>
+        </ul>
+        <p><strong><code>pclose()</code></strong> closes the stream, waits for the command to terminate, and returns the termination status. This mechanism is commonly used to capture command output or supply input programmatically.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="fifo-msgq">
+        <h2>FIFOs (Named Pipes) &amp; Message Queues</h2>
+        <h3>FIFOs</h3>
+        <p>FIFOs, also known as <strong>named pipes</strong>, overcome the major limitation of unnamed pipes by allowing communication between <strong>unrelated processes</strong>. Unlike pipes, FIFOs exist as special files in the file system.</p>
+        <p>A FIFO is created using <code>mkfifo()</code> or <code>mkfifoat()</code>. Once created, a FIFO behaves like a regular file and can be accessed using standard file operations: <code>open()</code>, <code>read()</code>, <code>write()</code>, <code>close()</code>, <code>unlink()</code>.</p>
+        <h4>Uses of FIFOs</h4>
+        <ol>
+          <li><strong>Shell pipelines</strong> — allow data transfer between shell commands without using temporary files</li>
+          <li><strong>Client–Server communication</strong> — act as rendezvous points where clients and servers exchange data</li>
+        </ol>
+
+        <h3>Message queues</h3>
+        <p>A message queue is an IPC mechanism where messages are stored as a <strong>linked list inside the kernel</strong>. Each message queue is identified by a message queue identifier.</p>
+        <p>Message queues are created or accessed using <code>msgget()</code>. Messages are sent using <code>msgsnd()</code> and received using <code>msgrcv()</code>.</p>
+        <p>Each message consists of:</p>
+        <ul>
+          <li>A type field (positive long integer)</li>
+          <li>Message length</li>
+          <li>Actual data</li>
+        </ul>
+        <p>Unlike pipes, messages do <strong>not</strong> have to be received in FIFO order — instead they can be retrieved based on their type, providing greater flexibility.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="semaphores-syscalls">
+        <h2>Semaphore System Calls</h2>
+        <p>A semaphore is a synchronization tool used to control access to shared resources among multiple processes. Conceptually, a semaphore is a counter that represents the number of available instances of a resource.</p>
+        <p>When a process wants to access a shared resource:</p>
+        <ul>
+          <li>It checks the semaphore value</li>
+          <li>If the value is positive, it decrements the semaphore and proceeds</li>
+          <li>If the value is zero, the process is blocked until the semaphore becomes available</li>
+        </ul>
+        <p>When the process finishes using the resource, it increments the semaphore, and waiting processes are awakened.</p>
+        <p>To use semaphores, a process must first obtain a semaphore ID using <code>semget()</code>. Semaphore operations are performed using:</p>
+        <ul>
+          <li><code>semop()</code> → atomically performs operations on semaphore sets</li>
+          <li><code>semctl()</code> → used for control operations such as initialization, deletion, or querying status</li>
+        </ul>
+        <p>Semaphores are crucial for avoiding <strong>race conditions</strong> and ensuring <strong>mutual exclusion</strong>.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="unix-sockets">
+        <h2>Linux Domain Sockets</h2>
+        <p><strong>Linux Domain Sockets</strong> (also called Unix Domain Sockets, or UDS) are a mechanism for IPC that allows two or more processes running on the <strong>same Linux system</strong> to communicate efficiently.</p>
+        <p>Unlike Internet sockets, which use IP addresses and port numbers, Linux Domain Sockets use a <strong>file path</strong> (such as <code>/tmp/mysocket</code>) as the communication endpoint. Since communication occurs entirely within the operating system kernel, Linux Domain Sockets are <strong>faster and more efficient</strong> than TCP/IP sockets for local communication.</p>
+
+        <h3>Socket address family</h3>
+        <p>Linux Domain Sockets use the <strong>AF_UNIX</strong> (or <strong>AF_LOCAL</strong>) address family:</p>
+        <pre><code>socket(AF_UNIX, SOCK_STREAM, 0);</code></pre>
+        <ul>
+          <li><strong>AF_UNIX</strong> specifies that a Unix Domain Socket is being created</li>
+          <li><strong>SOCK_STREAM</strong> specifies a connection-oriented socket</li>
+          <li><strong>0</strong> selects the default protocol</li>
+        </ul>
+
+        <h3>Socket address structure</h3>
+        <p>The address for a Linux Domain Socket is represented using the <code>sockaddr_un</code> structure:</p>
+        <pre><code>struct sockaddr_un
+{
+  sa_family_t sun_family;
+  char sun_path[108];
+};</code></pre>
+        <ul>
+          <li><strong>sun_family</strong>: specifies the address family (<code>AF_UNIX</code>)</li>
+          <li><strong>sun_path</strong>: specifies the pathname of the socket file (e.g. <code>/tmp/mysocket</code>)</li>
+        </ul>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="thread-overview">
+        <h2>Threads — Overview &amp; Motivation</h2>
+        <p>A <strong>thread</strong> is the fundamental unit of CPU utilization in a modern operating system. It represents a single sequence of execution within a process. Each thread consists of a thread ID, a program counter, a register set, and a stack. While threads within the same process have their own execution context, they share the process's code section, data section, open files, and signals. Because of this shared environment, threads are lighter and more efficient than processes.</p>
+        <p>Most modern applications are multithreaded. Instead of performing all tasks sequentially, applications divide work among multiple threads. This improves responsiveness, performance, and resource utilization.</p>
+
+        <h3>Single-threaded vs multithreaded processes</h3>
+        <p>In a <strong>single-threaded</strong> process, only one thread of control exists. If that thread blocks due to an I/O operation or long computation, the entire process stops progressing.</p>
+        <p>In contrast, a <strong>multithreaded</strong> process contains multiple threads executing concurrently within the same process. If one thread is blocked, other threads can continue executing. This design significantly improves responsiveness and efficiency.</p>
+        <figure class="diagram">
+          <div class="two-col" style="width:100%">
+            <div class="stack">
+              <div class="layer">code / data / files</div>
+              <div class="layer">registers / stack</div>
+              <div class="layer accent">thread</div>
+            </div>
+            <div class="stack">
+              <div class="layer">code / data / files</div>
+              <div class="layer">registers · registers · registers / stack · stack · stack</div>
+              <div class="layer accent">thread · thread · thread</div>
+            </div>
+          </div>
+          <figcaption>single-threaded process (left) vs multithreaded process (right) — one thread vs multiple threads sharing memory</figcaption>
+        </figure>
+
+        <h3>Examples of multithreaded applications</h3>
+        <p>A common example is a <strong>web browser</strong>. Each browser tab may be managed by separate threads. Some threads handle user input, others load web content, fetch data from the network, play videos, or display animations. Even if one thread is waiting for data from the internet, the browser remains responsive to the user.</p>
+        <p>Another example is a <strong>word processor</strong>, which may use separate threads to accept user input, perform spell checking, and perform grammar checking — allowing background tasks to run without interrupting the user's typing.</p>
+
+        <h3>Multithreaded server architecture</h3>
+        <p>In a multithreaded server, the server process creates a new thread for each client request. This allows the server to handle multiple clients concurrently instead of serving them one at a time — threads simplify server design, reduce response time, and improve throughput.</p>
+        <figure class="diagram">
+          <div class="flow">
+            <div class="step">client</div><span class="arrow">→ (1) request →</span>
+            <div class="step">server</div><span class="arrow">→ (2) create new thread →</span>
+            <div class="step">thread</div>
+          </div>
+          <p style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">(3) server resumes listening for additional client requests</p>
+          <figcaption>multithreaded server with multiple client requests handled by separate threads</figcaption>
+        </figure>
+
+        <h3>Process creation vs thread creation</h3>
+        <p>Process creation is considered <strong>heavy-weight</strong> because it involves creating a new address space, duplicating resources, and high overhead.</p>
+        <p>Thread creation, on the other hand, is <strong>light-weight</strong>. Threads share the process address space and most resources, so creating and switching between threads is much faster than processes.</p>
+        <p>Threads are also extensively used in Remote Procedure Call (RPC) systems and operating-system kernels. Most modern kernels themselves are multithreaded.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="thread-benefits">
+        <h2>Benefits of Multithreading</h2>
+        <h3>1. Responsiveness</h3>
+        <p>Multithreading allows an application to remain responsive even if part of it is blocked or performing a lengthy operation. For example, a GUI application can continue responding to user input while another thread performs background computation or I/O.</p>
+        <h3>2. Resource sharing</h3>
+        <p>Threads share the memory and resources of their process. This makes communication between threads easier than communication between processes, which requires IPC mechanisms like shared memory or message passing.</p>
+        <h3>3. Economy</h3>
+        <p>Threads are cheaper to create and manage than processes. Thread switching requires less overhead than process context switching. For example, in Solaris, creating a process is significantly slower than creating a thread.</p>
+        <h3>4. Scalability</h3>
+        <p>Multithreading allows applications to take advantage of multiprocessor and multicore architectures. Different threads can run simultaneously on different cores, improving parallel performance.</p>
+
+        <h3>Processes vs threads</h3>
+        <p>A process does not share memory by default and has its own file descriptors, filesystem context, and signal handling.</p>
+        <p>A thread, by default, shares memory, open file descriptors, filesystem context, and signal handling with other threads of the same process. This sharing is what makes threads efficient, but it also introduces synchronization challenges.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="thread-concepts">
+        <h2>Thread Concepts</h2>
+        <p>A thread represents an execution context within a process. It includes all information required for execution, such as its ID, register values, stack, scheduling priority and policy, signal mask, and thread-specific data. Thread-specific data allows each thread to maintain private information without synchronizing access with other threads.</p>
+        <p>When a thread is created, there is <strong>no guarantee which thread will run first</strong> — the newly created thread or the calling thread. The new thread inherits the process address space, floating-point environment, and signal mask, but any pending signals are cleared.</p>
+
+        <h3>Attributes shared by threads</h3>
+        <ul>
+          <li>Process ID and parent process ID</li>
+          <li>Process group ID and session ID</li>
+          <li>Controlling terminal</li>
+          <li>User and group credentials</li>
+          <li>Open file descriptors</li>
+          <li>Signal dispositions</li>
+          <li>File system information (current working directory, root directory, umask)</li>
+          <li>Resource limits</li>
+          <li>CPU time consumed</li>
+          <li>Nice value</li>
+        </ul>
+
+        <h3>Attributes specific to threads</h3>
+        <ul>
+          <li>Thread ID</li>
+          <li>Signal mask</li>
+          <li>Thread-specific (private) data</li>
+          <li><code>errno</code> variable</li>
+          <li>Floating-point environment</li>
+          <li>Stack (local variables and function call information)</li>
+          <li>Register context saved during function calls</li>
+        </ul>
+        <p>These attributes ensure that each thread can execute independently while still sharing the process environment.</p>
+
+        <h3>Shared vs private thread state</h3>
+        <div class="two-col">
+          <div>
+            <h4>Shared among threads</h4>
+            <ul>
+              <li>Global variables</li>
+              <li>Heap memory</li>
+              <li>File descriptors</li>
+              <li>Network connections</li>
+              <li>Address space content</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Private to each thread — stored in the Thread Control Block (TCB)</h4>
+            <ul>
+              <li>CPU registers</li>
+              <li>Program counter</li>
+              <li>Execution stack</li>
+            </ul>
+          </div>
+        </div>
+        <p><strong>Execution stack contents:</strong> each thread's stack holds function parameters, local variables, temporary data, and return addresses.</p>
+
+        <h3>Thread states</h3>
+        <p>Thread states are similar to process states: <span class="chip">New</span><span class="chip">Ready</span><span class="chip">Running</span><span class="chip">Waiting</span><span class="chip">Terminated</span></p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="concurrency-parallelism">
+        <h2>Multicore Programming</h2>
+        <p>Earlier in the history of computer design, in response to the need for more computing performance, single-CPU systems evolved into multi-CPU systems. A later, similar trend is to place multiple computing cores on a single processing chip, where each core appears as a separate CPU to the operating system. We refer to such systems as <strong>multicore</strong>, and multithreaded programming provides a mechanism for more efficient use of these multiple computing cores and improved concurrency.</p>
+
+        <h3>Concurrency vs parallelism</h3>
+        <p><strong>Concurrency</strong> refers to multiple tasks making progress over time. On a single-core system, concurrency is achieved by rapidly switching between tasks using the scheduler.</p>
+        <p><strong>Parallelism</strong> refers to multiple tasks executing <strong>at the same time</strong>, which is possible only on multicore or multiprocessor systems. Concurrency allows progress, while parallelism provides actual speedup.</p>
+        <figure class="diagram">
+          <div class="flow"><div class="step">single core: T1 T2 T3 T4 T1 T2 T3 T4 T1 … (concurrent execution)</div></div>
+          <div class="flow" style="margin-top:8px"><div class="step">core 1: T1 T3 T1 T3 T1 …</div></div>
+          <div class="flow" style="margin-top:8px"><div class="step">core 2: T2 T4 T2 T4 T2 … (parallelism on a multi-core system)</div></div>
+        </figure>
+
+        <h3>Multicore programming challenges</h3>
+        <ol>
+          <li><strong>Identifying tasks</strong> — examining applications to find areas that can be divided into separate, concurrent tasks. Ideally, tasks are independent of one another and thus can run in parallel on individual cores.</li>
+          <li><strong>Balance</strong> — programmers must ensure that identified tasks perform work of equal value; a task contributing little value may not justify a separate execution core.</li>
+          <li><strong>Data splitting</strong> — the data accessed and manipulated by the tasks must also be divided to run on separate cores.</li>
+          <li><strong>Data dependency</strong> — data accessed by tasks must be examined for dependencies between two or more tasks; when one task depends on data from another, execution must be synchronized.</li>
+          <li><strong>Testing and debugging</strong> — when a program runs in parallel on multiple cores, many different execution paths are possible, making testing and debugging inherently more difficult than for single-threaded applications.</li>
+        </ol>
+
+        <h3>Types of parallelism</h3>
+        <div class="two-col">
+          <div>
+            <h4>Data parallelism</h4>
+            <p>Divides the same data set into subsets and distributes them across multiple cores, performing the same operation on each subset.</p>
+          </div>
+          <div>
+            <h4>Task parallelism</h4>
+            <p>Distributes different tasks (threads) — not data — across multiple computing cores. Each thread performs a unique operation; different threads may operate on the same data or on different data.</p>
+          </div>
+        </div>
+        <p>As the number of threads increases, CPU architectures provide more support in the form of multiple cores and hardware threads.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="threading-models">
+        <h2>User Threads, Kernel Threads &amp; Multithreading Models</h2>
+        <p><strong>User threads</strong> are managed by user-level thread libraries without kernel involvement. Common thread libraries include POSIX Pthreads, Windows threads, and Java threads.</p>
+        <p><strong>Kernel threads</strong> are supported directly by the operating system kernel. Almost all modern operating systems, including Linux, Windows, Solaris, and macOS, support kernel threads.</p>
+        <p>Multithreading models describe how <strong>user-level threads (ULTs)</strong> are mapped to <strong>kernel-level threads (KLTs)</strong>. Since user threads are managed by thread libraries and kernel threads are managed by the operating system, a mapping mechanism is required to allow user threads to execute on physical CPUs. Different operating systems adopt different mapping models depending on performance, scalability, and implementation complexity. The three primary multithreading models are:</p>
+        <ul>
+          <li>Many-to-One</li>
+          <li>One-to-One</li>
+          <li>Many-to-Many (and its Two-Level variant)</li>
+        </ul>
+
+        <h3>Many-to-One model</h3>
+        <p>Multiple user-level threads are mapped to a <strong>single kernel thread</strong>. Thread management is entirely handled in user space by thread libraries, and the kernel is unaware of multiple threads within the process.</p>
+        <p>Because all user threads map to one kernel thread, only one thread can execute in kernel mode at any given time. If one thread performs a blocking system call, the <strong>entire process blocks</strong>, significantly reducing concurrency. Additionally, since only one kernel thread exists, threads cannot run in parallel on multicore systems — execution remains serial even with multiple CPUs available.</p>
+        <p>Due to these limitations, very few modern systems use this model today.</p>
+        <p><strong>Examples:</strong> Solaris Green Threads, GNU Portable Threads.</p>
+
+        <h3>One-to-One model</h3>
+        <p>Each user-level thread maps to a <strong>separate kernel thread</strong>. Whenever a user thread is created, a corresponding kernel thread is also created.</p>
+        <p>This allows true concurrency because multiple threads can execute in parallel on multicore systems. Blocking of one thread does not affect others, since each has its own kernel thread. However, creating kernel threads involves overhead — therefore, operating systems often limit the number of threads per process to avoid excessive resource consumption.</p>
+        <p><strong>Examples:</strong> Windows, Linux, Solaris 9 and later.</p>
+
+        <h3>Many-to-Many model</h3>
+        <p>Multiplexes many user threads over many kernel threads — this model combines the benefits of the previous two. The operating system creates a sufficient number of kernel threads, and the thread library schedules user threads onto these kernel threads. This allows:</p>
+        <ul>
+          <li>High concurrency</li>
+          <li>Efficient resource usage</li>
+          <li>Parallel execution on multicore systems</li>
+          <li>No blocking of the entire process when one thread blocks</li>
+        </ul>
+        <p>This model is more flexible and scalable than the earlier models.</p>
+        <p><strong>Examples:</strong> Solaris (prior to version 9), Windows with the ThreadFiber package.</p>
+
+        <h3>Two-Level model</h3>
+        <p>Similar to the many-to-many model but adds one enhancement: it allows a user thread to be <strong>bound to a specific kernel thread</strong>. This binding is useful when a thread requires guaranteed CPU access or real-time responsiveness — combining the flexibility of many-to-many mapping with the control of one-to-one mapping.</p>
+        <p><strong>Examples:</strong> IRIX, HP-UX, Tru64 UNIX, Solaris 8 and earlier.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="pthreads">
+        <h2>Pthreads</h2>
+        <p>Pthreads (POSIX Threads) is a standardized API defined under <strong>IEEE 1003.1c</strong> for thread creation and synchronization.</p>
+        <div class="box"><span class="label">Important characteristics</span>
+          <ul style="margin-bottom:0">
+            <li>It is a <strong>specification</strong>, not an implementation</li>
+            <li>Defines the behaviour of thread operations</li>
+            <li>Implementation varies by OS</li>
+          </ul>
+        </div>
+        <p>Pthreads is widely used in UNIX systems such as Solaris, Linux, and macOS.</p>
+
+        <h3>Thread creation — <code>pthread_create()</code></h3>
+        <pre><code>int pthread_create(
+    pthread_t *thread,
+    const pthread_attr_t *attr,
+    void *(*start_routine)(void *),
+    void *arg
+);</code></pre>
+        <h4>Parameter explanation</h4>
+        <ul>
+          <li><strong>thread</strong> → handle/ID of thread</li>
+          <li><strong>attr</strong> → attribute structure</li>
+          <li><strong>start_routine</strong> → function executed by thread</li>
+          <li><strong>arg</strong> → data passed to thread</li>
+        </ul>
+        <div class="box"><span class="label">Important note</span><p>Passing addresses of local variables is dangerous because the stack frame may disappear. Always pass global variables, heap memory, or main function stack variables.</p></div>
+
+        <h3>Thread synchronization — <code>pthread_join()</code></h3>
+        <p>In multithreaded programs, the main thread often waits for worker threads to complete before exiting.</p>
+        <pre><code>int pthread_join(pthread_t thread, void **retval);</code></pre>
+        <div class="box"><span class="label">Key points</span>
+          <ul style="margin-bottom:0">
+            <li>It is a <strong>blocking call</strong></li>
+            <li>Caller sleeps until the target thread terminates</li>
+            <li>Allows retrieval of the thread return value</li>
+          </ul>
+        </div>
+        <p>If threads are neither joined nor detached, they become <strong>zombie threads</strong>, consuming resources.</p>
+
+        <h3>Fork-Join pattern</h3>
+        <p>A common multithreading execution model:</p>
+        <ol>
+          <li>Main thread creates worker threads</li>
+          <li>Worker threads perform tasks</li>
+          <li>Main thread joins them</li>
+          <li>Results are collected</li>
+        </ol>
+
+        <h3>Explicit thread termination — <code>pthread_exit()</code></h3>
+        <p>Threads usually terminate when their start routine finishes. Explicit termination can be done using:</p>
+        <pre><code>void pthread_exit(void *retval);</code></pre>
+        <ul>
+          <li>Terminates only the calling thread</li>
+          <li>If called in <code>main()</code>, the process remains alive until other threads finish</li>
+          <li>Calling <code>exit()</code> instead terminates the entire process immediately</li>
+        </ul>
+
+        <h3>Thread scheduling — PCS vs SCS</h3>
+        <p>Thread scheduling depends on the threading model. In many-to-one and many-to-many systems, the thread library schedules user threads onto CPUs through the kernel — this competition is called <strong>Process-Contention Scope (PCS)</strong> because scheduling occurs among threads within the same process.</p>
+        <p><strong>System-Contention Scope (SCS)</strong>: kernel threads compete globally for CPU time — scheduling occurs across all threads in the system.</p>
+        <div class="box"><span class="label">PCS vs SCS</span>
+          <p style="margin-bottom:0"><strong>PCS</strong> → competition within a process. <strong>SCS</strong> → competition system-wide.</p>
+        </div>
+        <p>Pthreads allow specifying scheduling scope during thread creation.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="multi-cpu-sched">
+        <h2>Multicore Kernel Concepts — Multiple-Processor Scheduling</h2>
+        <p>Everything discussed for single-CPU scheduling assumed a single processing core — one thread runs at a time. With multiple CPUs we achieve load sharing: multiple threads may run in parallel. But the scheduling problem becomes increasingly complex — there is no single best solution.</p>
+        <p>Traditionally, the term <em>multiprocessor</em> referred to systems that provided multiple physical processors, each with one single-core CPU. However, the definition has evolved significantly — on modern systems, multiprocessor now applies to: <strong>multicore CPUs</strong>, <strong>multithreaded cores</strong>, <strong>NUMA systems</strong>, and <strong>heterogeneous multiprocessing</strong>.</p>
+
+        <h3>Approaches to multiple-processor scheduling</h3>
+        <div class="two-col">
+          <div>
+            <h4>Asymmetric Multiprocessing (AMP)</h4>
+            <p>One processor — the <strong>master server</strong> — handles all scheduling decisions, I/O processing, and other system activities. All other processors execute user code only.</p>
+            <p><strong>Simple</strong>, because only one core touches the system data structures — far less data sharing is needed. <strong>Disadvantage:</strong> the master server becomes a potential bottleneck, so overall system performance can drop.</p>
+          </div>
+          <div>
+            <h4>Symmetric Multiprocessing (SMP)</h4>
+            <p>The <strong>standard approach</strong> for supporting multiprocessors. Each processor is <strong>self-scheduling</strong>: its own scheduler examines a ready queue and picks a thread to run. No master server — system and user code can run on any core.</p>
+          </div>
+        </div>
+        <p>Virtually all modern operating systems support SMP — Windows, Linux, macOS, and mobile systems including Android and iOS.</p>
+
+        <h3>Organization of ready queues</h3>
+        <p>Two possible strategies for organizing threads:</p>
+        <ol>
+          <li>All threads may be in a common ready queue, or</li>
+          <li>Each processor may keep its own private queue of threads</li>
+        </ol>
+        <figure class="diagram">
+          <div class="two-col" style="width:100%">
+            <div class="flow" style="flex-direction:column">
+              <div class="step">T0 T1 T2 … Tn (common ready queue)</div>
+              <span class="arrow">↓ ↓ ↓</span>
+              <div class="flow"><div class="step">core₀</div><div class="step">core₁</div><div class="step">…</div><div class="step">coreₙ</div></div>
+            </div>
+            <div class="flow" style="flex-direction:column">
+              <div class="flow"><div class="step">T0 T1 T2 T3</div><div class="step">T0 T1</div><div class="step">T0 T1 T2</div></div>
+              <span class="arrow">↓ ↓ ↓</span>
+              <div class="flow"><div class="step">core₀</div><div class="step">core₁</div><div class="step">…</div><div class="step">coreₙ</div></div>
+            </div>
+          </div>
+          <figcaption>(a) common ready queue &nbsp;·&nbsp; (b) per-core run queues</figcaption>
+        </figure>
+        <p>If we select the common ready queue, we have a possible <strong>race condition</strong> on the shared ready queue, and must ensure that two separate processors do not choose to schedule the same thread and that threads are not lost from the queue. Locking would be highly contended, since all accesses to the queue would require lock ownership, making the shared queue a likely performance bottleneck.</p>
+        <p>The per-core option permits each processor to schedule threads from its private run queue and therefore does not suffer from the possible performance problems associated with a shared run queue. Thus, it is the most common approach on systems supporting SMP. Additionally, having private, per-processor run queues may lead to more efficient use of cache memory. There are issues with per-processor run queues — most notably, workloads of varying sizes — but balancing algorithms can be used to equalize workloads among all processors.</p>
+
+        <h3>Kernel parallelism under SMP</h3>
+        <p>Under SMP the kernel itself runs in <strong>parallel</strong> — several cores may be executing kernel code at the same instant. Consequences the kernel designer must handle:</p>
+        <ul>
+          <li>Shared kernel data structures (ready queues, file tables) can be hit concurrently → race conditions</li>
+          <li>Correctness needs <strong>locking</strong>; but locks serialise, so heavy locking destroys the parallelism you paid for</li>
+          <li>Highly contended locks turn a shared structure into a <strong>bottleneck</strong> — exactly the shared-ready-queue problem</li>
+          <li>The practical answer: <strong>partition state per core.</strong> Private run queues remove the lock from the hot path entirely</li>
+          <li>The kernel then only synchronises for the rarer cross-core operations — for example, migrating a thread during load balancing</li>
+        </ul>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="memory-stall">
+        <h2>Memory Stalls &amp; Chip Multithreading</h2>
+        <p>Traditionally, SMP systems used <strong>multiple physical processors</strong> to execute several processes in parallel. Modern systems use <strong>multicore processors</strong>, where multiple computing cores are placed on a single physical chip. Each core maintains its own architectural state and appears to the OS as a <strong>logical CPU</strong>. Multicore SMP systems are generally <strong>faster and more power-efficient</strong> than systems with separate physical CPU chips.</p>
+        <p>Modern processors operate much faster than main memory. When a processor waits for data from memory, a <strong>memory stall</strong> occurs. A stall can also happen due to a cache miss, when required data is not available in cache. A processor may spend up to 50% of its time waiting for memory.</p>
+
+        <h3>Memory stall</h3>
+        <p>The thread alternates compute cycles (C) with memory stall cycles (M):</p>
+        <figure class="diagram">
+          <div class="flow"><div class="step">C</div><div class="step">M</div><div class="step">C</div><div class="step">M</div><div class="step">C</div><div class="step">M</div><div class="step">C</div><div class="step">M</div></div>
+          <figcaption>thread execution — C = compute cycle, M = memory stall cycle</figcaption>
+        </figure>
+
+        <h3>Multithreaded processing cores</h3>
+        <p>Modern processors assign two or more <strong>hardware threads</strong> to each core. If one thread stalls while waiting for memory, the core can switch to another thread. This improves processor utilization and reduces the effect of memory stalls. Each hardware thread has its own architectural state, such as an instruction pointer and a register set — so the OS views each hardware thread as a logical CPU.</p>
+
+        <h3>Chip Multithreading (CMT)</h3>
+        <p>CMT allows multiple hardware threads to execute on each physical core. If one hardware thread stalls waiting for memory, the core switches to another thread — the stall cycles get filled.</p>
+        <div class="box"><span class="label">Example</span><p>4 cores × 2 hardware threads = 8 logical CPUs. The OS schedules software threads onto logical CPUs, not onto physical cores.</p></div>
+        <p>Intel calls this <strong>hyper-threading</strong>, also known as <strong>simultaneous multithreading (SMT)</strong>. Contemporary Intel processors such as the i7 support 2 threads per core, while the Oracle SPARC M7 supports 8 threads per core.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="load-balancing">
+        <h2>Load Balancing</h2>
+        <p>On SMP systems the workload must be kept balanced across all processors to get the benefit of having more than one — otherwise some processors sit idle while others have high workloads. <strong>Load balancing</strong> attempts to keep the workload evenly distributed across all processors.</p>
+        <p>There are two approaches to load balancing:</p>
+        <ol>
+          <li><strong>Push migration</strong> — a specific task periodically checks the load on each processor. If it finds an imbalance, it evenly distributes the load by moving (pushing) threads from overloaded processors to idle or less-busy ones.</li>
+          <li><strong>Pull migration</strong> — occurs when an idle processor pulls a waiting task from a busy processor.</li>
+        </ol>
+        <p>Push and pull migration can be used together.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="race-conditions">
+        <h2>Mutual Exclusion &amp; Synchronization</h2>
+        <p>In a multiprogramming operating system, multiple processes execute concurrently. Since processes may be interrupted at any time, their execution may only be partially complete at a given instant. When multiple processes access and manipulate shared data simultaneously, the final outcome may become inconsistent due to uncontrolled interleaving of operations.</p>
+        <p>To maintain data consistency, operating systems require mechanisms that ensure the orderly execution of cooperating processes. This need gives rise to synchronization techniques and mutual exclusion protocols. A classical example used to illustrate this issue is the <strong>Producer–Consumer problem</strong>, where both producer and consumer processes share a common buffer and a shared variable called <code>counter</code>, which keeps track of the number of full buffers.</p>
+
+        <h3>Producer / consumer code (conceptual illustration)</h3>
+        <pre><code>// Producer
+while (true) {
+  /* produce an item in next_produced */
+  while (counter == BUFFER_SIZE)
+    ; /* do nothing */
+  buffer[in] = next_produced;
+  in = (in + 1) % BUFFER_SIZE;
+  counter++;
+}
+
+// Consumer
+while (true) {
+  while (counter == 0)
+    ; /* do nothing */
+  next_consumed = buffer[out];
+  out = (out + 1) % BUFFER_SIZE;
+  counter--;
+}</code></pre>
+
+        <h3>Race condition</h3>
+        <p>A <strong>race condition</strong> occurs when multiple processes access shared data concurrently and the final result depends on the order of execution.</p>
+        <p>Consider how <code>counter++</code> and <code>counter--</code> are implemented internally:</p>
+        <pre><code>counter++ :
+  register1 = counter
+  register1 = register1 + 1
+  counter = register1
+
+counter-- :
+  register2 = counter
+  register2 = register2 - 1
+  counter = register2</code></pre>
+        <p>Because these operations are <strong>not atomic</strong>, interleaving may produce incorrect results.</p>
+        <div class="box"><span class="label">Example interleaving</span>
+          <p style="margin-bottom:4px">Initial value: <code>counter = 5</code></p>
+          <ul style="margin-bottom:4px">
+            <li>Producer reads counter → 5</li>
+            <li>Producer increments → 6</li>
+            <li>Consumer reads counter → 5</li>
+            <li>Consumer decrements → 4</li>
+            <li>Producer writes → counter = 6</li>
+            <li>Consumer writes → counter = 4</li>
+          </ul>
+          <p style="margin-bottom:0">Final result becomes <strong>4 instead of 5</strong>, demonstrating data inconsistency.</p>
+        </div>
+        <p>Race conditions can also occur in kernel operations — e.g. suppose processes P₀ and P₁ simultaneously create child processes using <code>fork()</code>. A shared kernel variable <code>next_available_pid</code> stores the next process ID. If both processes access it concurrently without synchronization, the same PID may be assigned to two different processes, leading to system inconsistency.</p>
+
+        <h3>Critical section problem</h3>
+        <p>To solve race conditions, we define the <strong>critical section problem</strong>. Consider a system with n processes: P₀, P₁, … Pₙ₋₁. Each process contains a segment of code called the <strong>critical section</strong>, where shared resources are accessed or modified — e.g. updating shared variables, modifying tables, writing to files.</p>
+        <div class="box"><span class="label">Key requirement</span><p>When one process executes in its critical section, no other process must execute in its critical section.</p></div>
+
+        <h3>Structure of a process</h3>
+        <pre><code>do {
+  entry section
+    critical section
+  exit section
+    remainder section
+} while (true);</code></pre>
+        <p>Each process follows this structure: <strong>Entry section</strong> — requests permission to enter the critical section; <strong>Critical section</strong> — executes shared-resource code; <strong>Exit section</strong> — releases permission; <strong>Remainder section</strong> — executes non-critical code.</p>
+
+        <h3>Requirements for solving the critical-section problem</h3>
+        <p>Any valid solution must satisfy three conditions:</p>
+        <h4>1. Mutual exclusion</h4>
+        <p>If a process is executing in its critical section, no other process can be executing in its critical section at the same time — ensuring exclusive access to shared resources.</p>
+        <h4>2. Progress</h4>
+        <p>If no process is in its critical section and some processes wish to enter, the selection of the next process cannot be postponed indefinitely — the system must not allow indefinite waiting when the critical section is free.</p>
+        <h4>3. Bounded waiting</h4>
+        <p>There must exist a bound on the number of times other processes can enter their critical sections after a process requests entry and before that request is granted — this prevents starvation.</p>
+
+        <h3>Critical-section handling in operating systems</h3>
+        <div class="two-col">
+          <div>
+            <h4>Preemptive kernel</h4>
+            <p>Allows a process to be preempted while executing in kernel mode. While this improves responsiveness and is suitable for real-time systems, it makes synchronization more complex, especially in SMP architectures.</p>
+          </div>
+          <div>
+            <h4>Non-preemptive kernel</h4>
+            <p>A process runs in kernel mode until it exits, blocks, or voluntarily yields the CPU. Since kernel execution cannot be interrupted, race conditions on kernel data structures are avoided — however, responsiveness may be lower.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="petersons">
+        <h2>Peterson's Solution</h2>
+        <p>Peterson's solution is a classic <strong>software-based solution</strong> to the critical section problem. It provides an elegant algorithmic approach but works only for <strong>two processes</strong>.</p>
+        <p><strong>Assumptions:</strong> load and store instructions are atomic; two processes P<sub>i</sub> and P<sub>j</sub> (j = 1 − i).</p>
+        <p><strong>Shared variables:</strong></p>
+        <pre><code>int turn;
+boolean flag[2];</code></pre>
+        <ul>
+          <li><code>turn</code> → indicates whose turn it is</li>
+          <li><code>flag[i]</code> → indicates if process P<sub>i</sub> wants to enter</li>
+        </ul>
+
+        <h3>Algorithm for process P<sub>i</sub></h3>
+        <pre><code>do {
+  flag[i] = true;
+  turn = j;
+
+  while (flag[j] && turn == j)
+    ; /* wait */
+
+  /* critical section */
+
+  flag[i] = false;
+
+  /* remainder section */
+} while (true);</code></pre>
+
+        <h3>How Peterson's solution works</h3>
+        <ol>
+          <li>Process declares intention using <code>flag[i] = true</code></li>
+          <li>Gives turn to the other process</li>
+          <li>Waits if the other process is interested and has the turn</li>
+          <li>Enters critical section when safe</li>
+          <li>Resets flag on exit</li>
+        </ol>
+        <p>This guarantees orderly execution.</p>
+
+        <h3>Correctness of Peterson's solution</h3>
+        <p>Peterson's algorithm satisfies all three requirements:</p>
+        <h4>Mutual exclusion</h4>
+        <p>A process enters the critical section only if the other process is not interested <strong>or</strong> it is its turn. Both cannot enter simultaneously.</p>
+        <h4>Progress</h4>
+        <p>If one process is not interested, the other can proceed without delay.</p>
+        <h4>Bounded waiting</h4>
+        <p>The <code>turn</code> variable ensures a process cannot be bypassed indefinitely — thus, starvation is prevented.</p>
+        <div class="box"><span class="label">Limitation</span><p>Peterson's solution assumes atomic load/store instructions and is limited to two processes — it is not reliable on modern architectures that reorder instructions and use caches.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="hw-sync">
+        <h2>Hardware Support for Synchronization</h2>
+        <p>In concurrent systems, multiple processes execute simultaneously and often share common resources. As discussed earlier, uncontrolled concurrent access leads to <strong>race conditions</strong> and data inconsistency. Software solutions like Peterson's algorithm provide conceptual understanding, but they are not always practical on modern computer architectures.</p>
+        <p>Modern processors execute instructions out of order, use caches, and support multiple cores. Because of this complexity, software-only synchronization solutions are not guaranteed to work correctly. Hence, computer hardware provides special atomic instructions to support synchronization efficiently and reliably.</p>
+
+        <h3>Principles of concurrency</h3>
+        <p>Concurrency introduces unpredictability in execution due to several factors: relative execution speeds of processes are unknown; system interrupts may occur at any time; scheduling policies may vary; context switches may occur unpredictably. Because of these uncertainties, synchronization must rely on mechanisms that guarantee atomicity regardless of timing or scheduling variations.</p>
+
+        <h3>Disabling interrupts (uniprocessor systems)</h3>
+        <p>In uniprocessor systems, mutual exclusion can be achieved by disabling interrupts. When interrupts are disabled, the currently executing process cannot be preempted, allowing it to complete its critical section safely. However, this approach has major drawbacks:</p>
+        <ul>
+          <li>Not suitable for multiprocessor systems</li>
+          <li>Disabling interrupts for long periods reduces system responsiveness</li>
+          <li>Not scalable for modern architectures</li>
+        </ul>
+        <p>Hence, more sophisticated atomic instructions are required. Most hardware synchronization mechanisms are based on the concept of <strong>locking</strong>: (1) a process requests a lock in the entry section, (2) if the lock is free, it enters the critical section, (3) after execution, it releases the lock in the exit section. Properly designed locking ensures all three critical-section requirements are satisfied.</p>
+
+        <h3>Atomic hardware instructions</h3>
+        <p>Modern machines provide special instructions that execute atomically, meaning they cannot be interrupted midway. Two important atomic operations are <strong>Test-and-Set</strong> and <strong>Compare-and-Swap</strong>. These instructions operate directly on memory words and form the foundation of hardware synchronization.</p>
+
+        <h4>Test-and-Set instruction</h4>
+        <p>Test-and-Set Lock (TSL) is a hardware instruction used to implement mutual exclusion. It performs two operations atomically: (1) returns the old value of a memory location, (2) sets the memory location to TRUE (locked).</p>
+        <pre><code>boolean test_and_set(boolean *target) {
+  boolean rv = *target;
+  *target = TRUE;
+  return rv;
+}</code></pre>
+        <h4>Solution using <code>test_and_set()</code></h4>
+        <pre><code>do {
+  while (test_and_set(&amp;lock))
+    ; /* do nothing */
+
+  /* Critical Section */
+
+  lock = false;
+
+  /* Remainder Section */
+} while (true);</code></pre>
+        <p>If <code>lock</code> is FALSE → process enters the CS; if TRUE → process busy-waits. This ensures mutual exclusion but uses busy waiting.</p>
+
+        <h4>Compare-and-Swap (CAS) instruction</h4>
+        <p>CAS compares a memory value with an expected value and updates it only if they match.</p>
+        <pre><code>int compare_and_swap(int *value, int expected, int new_value) {
+  int temp = *value;
+  if (*value == expected)
+    *value = new_value;
+  return temp;
+}</code></pre>
+        <h4>Solution using <code>compare_and_swap()</code></h4>
+        <pre><code>do {
+  while (compare_and_swap(&amp;lock, 0, 1) != 0)
+    ; /* do nothing */
+
+  /* Critical Section */
+
+  lock = 0;
+
+  /* Remainder Section */
+} while (true);</code></pre>
+        <p>Here, <code>0</code> = unlocked, <code>1</code> = locked. A process enters the CS only when it successfully swaps 0 → 1.</p>
+        <div class="box"><span class="label">Correctness of the CAS solution</span>
+          <p style="margin-bottom:4px">Mutual exclusion → satisfied. Progress → satisfied.</p>
+          <p style="margin-bottom:0"><strong>Bounded waiting → not guaranteed.</strong> Starvation may still occur.</p>
+        </div>
+
+        <h3>Bounded waiting using <code>test_and_set</code></h3>
+        <p>To overcome starvation, an enhanced algorithm introduces waiting queues.</p>
+        <pre><code>boolean waiting[n];
+boolean lock;
+
+// Entry Section
+waiting[i] = true;
+key = true;
+while (waiting[i] &amp;&amp; key)
+  key = test_and_set(&amp;lock);
+waiting[i] = false;
+
+// Exit Section
+j = (i + 1) % n;
+while ((j != i) &amp;&amp; !waiting[j])
+  j = (j + 1) % n;
+
+if (j == i)
+  lock = false;
+else
+  waiting[j] = false;</code></pre>
+        <p>This algorithm ensures mutual exclusion, progress, <strong>and</strong> bounded waiting — thus, all critical-section requirements are satisfied.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="mutex-sem">
+        <h2>Mutex Locks and Semaphores</h2>
+        <p>Earlier, we studied software solutions (like Peterson's algorithm) and hardware solutions (like test-and-set, compare-and-swap) to the critical section problem. While these solutions are theoretically sound, they are often complex and not directly accessible to application programmers.</p>
+        <p>To simplify synchronization for programmers, operating system designers provide higher-level software tools. These tools internally use hardware atomic instructions but expose simpler interfaces. The two most fundamental synchronization tools are <strong>Mutex Locks</strong> and <strong>Semaphores</strong>.</p>
+
+        <h3>Mutex locks</h3>
+        <p>A <strong>mutex lock</strong> (Mutual Exclusion lock) is the simplest synchronization mechanism used to protect critical sections. The idea is straightforward: before entering a critical section, a process must <code>acquire()</code> the lock, and after leaving, it must <code>release()</code> the lock.</p>
+        <p>A mutex lock is typically implemented using a Boolean variable that indicates whether the lock is available or not. Because these operations must execute without interruption, they are implemented using hardware atomic instructions.</p>
+
+        <h4>Lock contention</h4>
+        <p>Locks are either <strong>contended</strong> or <strong>uncontended</strong>. A lock is contended if a thread blocks while trying to acquire it. If the lock is available when a thread attempts to acquire it, the lock is <strong>uncontended</strong>.</p>
+        <p><strong>High contention</strong> — a relatively large number of threads attempting to acquire the lock. <strong>Low contention</strong> — a relatively small number of threads attempting to acquire the lock.</p>
+
+        <h4>Basic locking structure</h4>
+        <pre><code>while (TRUE) {
+  acquire lock
+    critical section
+  release lock
+  remainder section
+}</code></pre>
+
+        <h4>Implementation of <code>acquire()</code> and <code>release()</code></h4>
+        <pre><code>acquire() {
+  while (!available)
+    ; /* busy wait */
+  available = false;
+}
+
+release() {
+  available = true;
+}</code></pre>
+        <p>Here, <code>available = true</code> → lock is free; <code>available = false</code> → lock is held. If the lock is unavailable, the process keeps looping until it becomes free.</p>
+
+        <h4>Spinlocks and busy waiting</h4>
+        <p>Because the waiting process continuously checks the lock variable, this mechanism involves <strong>busy waiting</strong>. Such locks are called <strong>spinlocks</strong> because the waiting thread "spins" in a loop. Busy waiting wastes CPU cycles, especially if the waiting time is long — this makes spinlocks inefficient for general systems and particularly problematic in real-time environments.</p>
+        <div class="box"><span class="label">Advantages of spinlocks</span>
+          <ul style="margin-bottom:0">
+            <li>No context switch occurs while waiting</li>
+            <li>Context switching itself is time-consuming</li>
+            <li>Efficient when locks are held for very short durations</li>
+            <li>Useful in multiprocessor systems where one thread spins while another executes the critical section on a different CPU</li>
+          </ul>
+        </div>
+        <p>Thus, spinlocks are beneficial in short critical sections but inefficient for long waits.</p>
+
+        <div class="box"><span class="label">Conceptual scenario</span><p>Consider a university library with 10 reading rooms. Only one student can occupy a room at a time. Students must inform the front desk before entering and after leaving. The front desk maintains the number of available rooms, occupied rooms, and waiting students. When a room becomes free, the desk decides which waiting student gets access — this real-life analogy represents how mutex locks regulate access to limited resources.</p></div>
+
+        <h3>Semaphores</h3>
+        <p>Semaphores are more powerful synchronization tools than mutex locks. A semaphore is an <strong>integer variable</strong> used to control access to shared resources. Unlike mutex locks, semaphores can manage multiple instances of a resource. A semaphore can only be accessed using two atomic operations: <code>wait()</code> (also called <code>P()</code>) and <code>signal()</code> (also called <code>V()</code>).</p>
+        <pre><code>wait(S) {
+  while (S &lt;= 0)
+    ; // busy wait
+  S--;
+}
+
+signal(S) {
+  S++;
+}</code></pre>
+        <p><strong>Interpretation:</strong> <code>wait()</code> → requests resource; <code>signal()</code> → releases resource; if <code>S &lt;= 0</code>, the process waits.</p>
+
+        <h3>Types of semaphores</h3>
+        <div class="two-col">
+          <div>
+            <h4>Counting semaphore</h4>
+            <ul>
+              <li>Value ranges over an unrestricted domain</li>
+              <li>Used when multiple instances of a resource exist</li>
+              <li>Example: printer pool, room allocation</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Binary semaphore</h4>
+            <ul>
+              <li>Value ranges only between 0 and 1</li>
+              <li>Functionally equivalent to a mutex lock</li>
+              <li>Used for mutual exclusion</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Process synchronization example</h3>
+        <p>Suppose process P₁ must execute statement S₁ before process P₂ executes S₂. We use a semaphore <code>synch</code> initialized to 0:</p>
+        <pre><code>P1:
+  S1;
+  signal(synch);
+
+P2:
+  wait(synch);
+  S2;</code></pre>
+        <p>Here, P₂ cannot proceed until P₁ completes S₁.</p>
+
+        <h3>Semaphore implementation without busy waiting</h3>
+        <p>When implementing semaphores, we must ensure that <code>wait()</code> and <code>signal()</code> themselves execute atomically — otherwise, race conditions may occur inside semaphore operations. To avoid busy waiting, semaphores maintain a <strong>waiting queue</strong>. Each semaphore contains an integer value and a pointer to the waiting process list:</p>
+        <pre><code>typedef struct {
+  int value;
+  struct process *list;
+} semaphore;</code></pre>
+        <p>Two additional operations are introduced: <code>block()</code> → suspends process and places it in the queue; <code>wakeup()</code> → resumes a blocked process.</p>
+        <pre><code>wait(S) {
+  S-&gt;value--;
+  if (S-&gt;value &lt; 0) {
+    add process to S-&gt;list;
+    block();
+  }
+}
+
+signal(S) {
+  S-&gt;value++;
+  if (S-&gt;value &gt;= 0) {
+    remove process from list;
+    wakeup(process);
+  }
+}</code></pre>
+        <p>This eliminates busy waiting and improves CPU utilization.</p>
+
+        <h3>Problems with semaphores</h3>
+        <h4>Deadlock</h4>
+        <p>Deadlock occurs when two or more processes wait indefinitely for events that only each other can trigger.</p>
+        <pre><code>P0: wait(S); wait(Q);
+P1: wait(Q); wait(S);</code></pre>
+        <p>Both processes hold one semaphore and wait for the other → deadlock.</p>
+        <h4>Starvation</h4>
+        <p>Starvation refers to indefinite blocking, where a process is never removed from the waiting queue. This may occur due to unfair scheduling or priority handling.</p>
+        <h4>Priority inversion</h4>
+        <p>Priority inversion occurs when a low-priority process holds a lock required by a high-priority process, while a medium-priority process preempts the low-priority one — this delays the high-priority process indirectly.</p>
+        <div class="box"><span class="label">Priority inversion scenario</span>
+          <p style="margin-bottom:4px">P₁ → highest priority · P₂ → medium priority · P₃ → lowest priority.</p>
+          <p style="margin-bottom:0">If P₃ holds semaphore S, P₁ waits for S, and P₂ preempts P₃ — then P₂ indirectly blocks P₁.</p>
+        </div>
+        <h4>Priority inheritance protocol</h4>
+        <p>To solve priority inversion, systems use the <strong>priority inheritance protocol</strong>. When a low-priority process holds a resource needed by a higher-priority process: (1) the low-priority process temporarily inherits the higher priority, (2) intermediate processes cannot preempt it, (3) once the resource is released, priority returns to normal. Priority inheritance boosts P₃'s priority so it can finish and release S.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="bounded-buffer">
+        <h2>Classical Problems of Synchronization</h2>
+        <p>Classical synchronization problems are standard problem statements used to demonstrate how synchronization mechanisms such as semaphores, mutex locks, and monitors are applied in real concurrent systems. These problems highlight issues like mutual exclusion, deadlock, starvation, and process coordination. The three most important classical problems are:</p>
+        <ol>
+          <li><strong>Bounded-Buffer (Producer–Consumer) Problem</strong></li>
+          <li><strong>Readers–Writers Problem</strong></li>
+          <li><strong>Dining-Philosophers Problem</strong></li>
+        </ol>
+
+        <h3>1. Bounded-buffer problem</h3>
+        <p>The bounded-buffer problem models a system where producers generate data and consumers use that data. The data is stored in a finite buffer consisting of <strong>n slots</strong>, where each slot can hold exactly one item. Since the buffer is limited, synchronization is required to ensure: producers do not add items when the buffer is full, consumers do not remove items when the buffer is empty, and producers/consumers do not access the buffer simultaneously in conflicting ways.</p>
+
+        <h4>Semaphores used</h4>
+        <ul>
+          <li><strong>mutex</strong> → initialized to 1; ensures mutual exclusion when accessing the buffer</li>
+          <li><strong>full</strong> → initialized to 0; counts number of filled buffer slots</li>
+          <li><strong>empty</strong> → initialized to n; counts number of empty buffer slots</li>
+        </ul>
+
+        <h4>Producer process structure</h4>
+        <pre><code>do {
+  /* produce item */
+
+  wait(empty);   // ensure empty slot exists
+  wait(mutex);   // enter critical section
+
+  /* add item to buffer */
+
+  signal(mutex); // leave critical section
+  signal(full);  // increment filled count
+
+} while(true);</code></pre>
+        <p>The producer first performs <code>wait(empty)</code> to ensure that at least one empty buffer slot is available. It then performs <code>wait(mutex)</code> to gain exclusive access to the buffer. After inserting the item, it releases the mutex lock and signals the <code>full</code> semaphore, indicating that a new item is available for consumption.</p>
+
+        <h4>Consumer process structure</h4>
+        <pre><code>do {
+  wait(full);    // ensure item exists
+  wait(mutex);   // enter critical section
+
+  /* remove item from buffer */
+
+  signal(mutex); // leave critical section
+  signal(empty); // increment empty count
+
+  /* consume item */
+
+} while(true);</code></pre>
+        <p>The consumer first checks whether the buffer contains items using <code>wait(full)</code>. It then acquires mutual exclusion using <code>wait(mutex)</code> before removing an item. After removal, it releases the mutex and signals <code>empty</code>, indicating that a new empty slot is available.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="readers-writers">
+        <h2>2. Readers–Writers Problem</h2>
+        <p>The readers–writers problem models access to a shared data resource such as a file or database. There are two types of processes:</p>
+        <ul>
+          <li><strong>Readers</strong> → only read data</li>
+          <li><strong>Writers</strong> → modify data</li>
+        </ul>
+
+        <h3>Problem constraints</h3>
+        <ol>
+          <li>Multiple readers can read simultaneously</li>
+          <li>Only one writer can write at a time</li>
+          <li>No reader can read while a writer is writing</li>
+          <li>A writer cannot write if readers are active</li>
+        </ol>
+        <p>Thus, synchronization must allow concurrency among readers but exclusivity for writers.</p>
+
+        <h3>Shared data structures</h3>
+        <ul>
+          <li><strong>rw_mutex</strong> → controls access to the shared resource (init = 1)</li>
+          <li><strong>mutex</strong> → protects the <code>read_count</code> variable (init = 1)</li>
+          <li><strong>read_count</strong> → number of active readers (init = 0)</li>
+        </ul>
+
+        <h3>Writer process structure</h3>
+        <pre><code>do {
+  wait(rw_mutex);
+
+  /* writing performed */
+
+  signal(rw_mutex);
+
+} while(true);</code></pre>
+        <p>The writer must acquire exclusive access to the shared resource. It uses <code>rw_mutex</code> to ensure no other reader or writer accesses the data while writing is in progress.</p>
+
+        <h3>Reader process structure</h3>
+        <pre><code>do {
+  wait(mutex);
+  read_count++;
+  if (read_count == 1)
+    wait(rw_mutex);
+  signal(mutex);
+
+  /* reading performed */
+
+  wait(mutex);
+  read_count--;
+  if (read_count == 0)
+    signal(rw_mutex);
+  signal(mutex);
+
+} while(true);</code></pre>
+        <p>When a reader arrives, it increments <code>read_count</code>. If it is the first reader, it locks <code>rw_mutex</code> to block writers. Subsequent readers can enter concurrently. When readers finish, they decrement <code>read_count</code>. The last reader releases <code>rw_mutex</code>, allowing writers to proceed.</p>
+
+        <h3>Readers–writers variations</h3>
+        <div class="two-col">
+          <div>
+            <h4>First variation (reader priority)</h4>
+            <p>Readers are never kept waiting unless a writer already holds the resource.</p>
+          </div>
+          <div>
+            <h4>Second variation (writer priority)</h4>
+            <p>Once a writer requests access, it is given priority to avoid writer starvation.</p>
+          </div>
+        </div>
+        <p>Both approaches may still lead to starvation of one group. Modern systems solve this using <strong>reader–writer locks</strong> provided by the kernel.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="dining-phil">
+        <h2>3. Dining-Philosophers Problem</h2>
+        <p>This classical problem illustrates synchronization and deadlock in resource allocation.</p>
+        <h3>Problem description</h3>
+        <p>Five philosophers sit around a circular table. They alternate between <strong>thinking</strong> and <strong>eating</strong>. To eat, a philosopher needs <strong>two chopsticks</strong> — one on the left, one on the right. Since chopsticks are shared resources, synchronization is required.</p>
+
+        <h3>Shared data</h3>
+        <ul>
+          <li>Bowl of rice → shared dataset</li>
+          <li><code>chopstick[5]</code> → semaphore array initialized to 1</li>
+        </ul>
+        <p>Each chopstick is a binary semaphore.</p>
+
+        <h3>Basic philosopher algorithm</h3>
+        <pre><code>do {
+  wait(chopstick[i]);
+  wait(chopstick[(i + 1) % 5]);
+
+  /* eat */
+
+  signal(chopstick[i]);
+  signal(chopstick[(i + 1) % 5]);
+
+  /* think */
+
+} while(TRUE);</code></pre>
+
+        <h3>Problem with this algorithm</h3>
+        <p>If all philosophers pick up their left chopstick simultaneously, each waits for the right chopstick held by their neighbour. This creates a <strong>circular wait condition</strong>, leading to <strong>deadlock</strong>.</p>
+
+        <h3>Deadlock handling solutions</h3>
+        <h4>1. Limit number of philosophers</h4>
+        <p>Allow at most 4 philosophers to sit simultaneously. This guarantees at least one philosopher can obtain both chopsticks.</p>
+        <h4>2. Pick both chopsticks atomically</h4>
+        <p>Allow a philosopher to pick up chopsticks only if both are available. This requires a critical section around chopstick acquisition.</p>
+        <h4>3. Asymmetric solution</h4>
+        <p>Change pickup order: odd philosophers → left then right; even philosophers → right then left. This breaks circular wait and prevents deadlock.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="deadlock-intro">
+        <h2>Deadlocks — Introduction &amp; System Model</h2>
+        <p>In a multiprogramming environment, multiple processes execute concurrently and compete for a limited number of resources such as CPU time, memory, files, printers, and I/O devices. Since these resources are finite, processes often need to wait until required resources become available.</p>
+        <p>A <strong>deadlock</strong> occurs when a set of processes enters a waiting state in which each process is waiting for a resource that is currently held by another process in the same set. Because none of the processes can proceed, the waiting state becomes permanent unless external intervention occurs.</p>
+        <div class="box"><span class="label">In simple terms</span><p>Deadlock = circular waiting for resources with no progress possible.</p></div>
+
+        <h3>System model</h3>
+        <p>A system consists of a finite set of resource types: R1, R2, …, Rm. Each resource type may have multiple instances.</p>
+        <div class="two-col">
+          <div>
+            <h4>Physical resources</h4>
+            <ul><li>CPU cycles</li><li>Memory space</li><li>Printers</li><li>Tape drives</li><li>I/O devices</li></ul>
+          </div>
+          <div>
+            <h4>Logical resources</h4>
+            <ul><li>Files</li><li>Semaphores</li><li>Mutex locks</li></ul>
+          </div>
+        </div>
+        <p>Each resource type R<sub>i</sub> has W<sub>i</sub> instances. For example, if a system has two CPUs, then the CPU resource type has two instances.</p>
+
+        <h3>Resource usage sequence</h3>
+        <p>Every process uses resources in the following order:</p>
+        <ol>
+          <li><strong>Request</strong> — process requests a resource via system calls such as <code>open()</code>, <code>wait()</code>, <code>allocate()</code></li>
+          <li><strong>Use</strong> — process performs operations using the resource</li>
+          <li><strong>Release</strong> — resource is released via calls such as <code>close()</code>, <code>signal()</code>, <code>free()</code></li>
+        </ol>
+        <p>Deadlocks occur when processes get stuck between the request and release phases.</p>
+
+        <h3>Deadlock with physical resources</h3>
+        <div class="box"><span class="label">Example 1 — multiple instances</span>
+          <p style="margin-bottom:0">A system has 3 CD drives. Processes P0, P1, P2 each hold one drive. If P0 requests another drive: no free drives exist, all processes wait — deadlock occurs.</p>
+        </div>
+        <div class="box"><span class="label">Example 2 — single instances</span>
+          <p style="margin-bottom:0">A system has one printer and one DVD drive. If P<sub>i</sub> holds the printer and requests the DVD, and P<sub>j</sub> holds the DVD and requests the printer, a circular wait forms → deadlock occurs.</p>
+        </div>
+
+        <h3>Deadlock with semaphores</h3>
+        <p>Deadlock is not limited to physical resources; it also occurs with logical resources. Example: semaphores S1 = 1, S2 = 1.</p>
+        <pre><code>P1: wait(S1); wait(S2);
+P2: wait(S2); wait(S1);</code></pre>
+        <p>Each process holds one semaphore and waits for the other → deadlock.</p>
+
+        <h3>Deadlock characterization — Coffman's conditions</h3>
+        <p>For a deadlock to occur, four necessary conditions must hold simultaneously. These are known as <strong>Coffman's Conditions</strong>.</p>
+        <h4>1. Mutual exclusion</h4>
+        <p>At least one resource must be non-sharable. Only one process can use it at a time. Examples: printers, tape drives, mutex locks. Sharable resources like read-only files do not cause deadlocks.</p>
+        <h4>2. Hold and wait</h4>
+        <p>A process holding at least one resource is waiting to acquire additional resources held by other processes — this creates dependency chains among processes.</p>
+        <h4>3. No preemption</h4>
+        <p>Resources cannot be forcibly taken from a process. They must be released voluntarily after task completion.</p>
+        <h4>4. Circular wait</h4>
+        <p>A circular chain of waiting processes exists: P0 → waiting for resource held by P1; P1 → waiting for resource held by P2; … ; Pn → waiting for resource held by P0. This cycle locks all processes permanently.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="rag">
+        <h2>Resource-Allocation Graph (RAG)</h2>
+        <p>Deadlocks can be represented using directed graphs.</p>
+        <h3>Graph components</h3>
+        <p><strong>Vertices (V):</strong></p>
+        <ul>
+          <li>Processes → P1, P2, …, Pn (drawn as circles)</li>
+          <li>Resources → R1, R2, …, Rm (drawn as boxes, with a dot per instance)</li>
+        </ul>
+        <p><strong>Edges (E):</strong></p>
+        <ul>
+          <li><strong>Request edge:</strong> P<sub>i</sub> → R<sub>j</sub></li>
+          <li><strong>Assignment edge:</strong> R<sub>j</sub> → P<sub>i</sub></li>
+        </ul>
+
+        <figure class="diagram">
+          <p style="margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center">P1 → R1 → P2 → R3 → P3 → R2 → P1 &nbsp;(cycle exists)</p>
+          <figcaption>example resource-allocation graph with a cycle among P1, P2, P3 and R1, R2, R3</figcaption>
+        </figure>
+
+        <h3>Cycle interpretation</h3>
+        <ul>
+          <li>No cycle → no deadlock</li>
+          <li>Cycle + single instance per resource → deadlock</li>
+          <li>Cycle + multiple instances per resource → may or may not be deadlock</li>
+        </ul>
+
+        <h3>Wait-for graph</h3>
+        <p>When each resource has only one instance, the RAG can be simplified by removing resource nodes: edge P<sub>i</sub> → P<sub>j</sub> means P<sub>i</sub> waits for P<sub>j</sub>. Deadlock exists if the wait-for graph contains a cycle.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="deadlock-handling">
+        <h2>Handling Deadlocks</h2>
+        <p>Operating systems use three major strategies:</p>
+        <ol>
+          <li><strong>Deadlock prevention / avoidance</strong> — prevent the system from entering deadlock</li>
+          <li><strong>Deadlock detection &amp; recovery</strong> — allow deadlock, then detect and recover</li>
+          <li><strong>Ignore deadlocks</strong> — the "Ostrich algorithm" — assume deadlocks are rare</li>
+        </ol>
+
+        <h3>Deadlock prevention</h3>
+        <p>Prevention ensures at least one of the four necessary conditions never holds.</p>
+        <h4>Prevent mutual exclusion</h4>
+        <p>Make resources sharable where possible (not feasible for printers, locks, etc.).</p>
+        <h4>Prevent hold and wait</h4>
+        <p>Two approaches: process requests all resources at once before execution, or process requests resources only when holding none. Disadvantages: low utilization, possible starvation.</p>
+        <h4>Prevent no preemption</h4>
+        <p>If a process requests a resource that cannot be allocated, it must release all currently held resources and wait until all can be allocated together.</p>
+        <h4>Prevent circular wait</h4>
+        <p>Assign a numerical ordering to resources. Processes must request resources in increasing (or decreasing) order only — this eliminates circular dependency.</p>
+
+        <h3>Deadlock detection</h3>
+        <p>Instead of preventing deadlocks, systems may allow them and detect them periodically.</p>
+        <h4>Single instance detection</h4>
+        <p>Use a Resource Allocation Graph with <strong>claim edges</strong> (future requests). Cycle detection algorithms are applied. Time complexity: <strong>O(n²)</strong>.</p>
+
+        <h4>Detection with multiple instances</h4>
+        <p>When resources have multiple instances, graph methods are insufficient — matrix-based detection algorithms are used.</p>
+        <div class="box"><span class="label">Data structures used</span>
+          <ul style="margin-bottom:0">
+            <li><strong>Available</strong> (m vector) — number of available instances</li>
+            <li><strong>Max</strong> (n × m matrix) — maximum demand</li>
+            <li><strong>Allocation</strong> (n × m matrix) — currently allocated resources</li>
+            <li><strong>Request</strong> (n × m matrix) — current pending requests</li>
+          </ul>
+        </div>
+
+        <h4>Deadlock detection algorithm</h4>
+        <ol>
+          <li>Initialize: <code>Work = Available</code>; set <code>Finish[i]</code> based on allocation</li>
+          <li>Find process i such that <code>Finish[i] = false</code> and <code>Request[i] ≤ Work</code></li>
+          <li>If found: <code>Work += Allocation[i]</code>; <code>Finish[i] = true</code>; repeat</li>
+          <li>If any <code>Finish[i] = false</code> → deadlock</li>
+        </ol>
+        <div class="formula"><span class="label">Complexity</span><div class="expr">O(m × n²)</div></div>
+
+        <h4>Example of the detection algorithm</h4>
+        <p>Five processes P₀ through P₄; three resource types A (7 instances), B (2 instances), and C (6 instances). Snapshot at time T₀:</p>
+        <table>
+          <tr><th>Process</th><th>Allocation (A B C)</th><th>Request (A B C)</th><th>Available (A B C)</th></tr>
+          <tr><td>P0</td><td>0 1 0</td><td>0 0 0</td><td>0 0 0</td></tr>
+          <tr><td>P1</td><td>2 0 0</td><td>2 0 2</td><td></td></tr>
+          <tr><td>P2</td><td>3 0 3</td><td>0 0 0</td><td></td></tr>
+          <tr><td>P3</td><td>2 1 1</td><td>1 0 0</td><td></td></tr>
+          <tr><td>P4</td><td>0 0 2</td><td>0 0 2</td><td></td></tr>
+        </table>
+        <p>A safe (deadlock-free) sequence exists: &lt;P0, P2, P3, P1, P4&gt;.</p>
+
+        <h3>Deadlock avoidance</h3>
+        <p>Avoidance requires prior knowledge of process resource requirements. The OS dynamically examines allocation states before granting requests to ensure the system never enters an unsafe state.</p>
+        <h4>Safe state</h4>
+        <p>A system is safe if there exists <strong>a safe sequence</strong> &lt;P1, P2, …, Pn&gt; such that each process can obtain its required resources in order and complete execution.</p>
+        <div class="box"><span class="label">Safe vs unsafe vs deadlock</span>
+          <ul style="margin-bottom:0">
+            <li>Safe state → no deadlock</li>
+            <li>Unsafe state → possibility of deadlock</li>
+            <li>Deadlock state → already deadlocked</li>
+          </ul>
+        </div>
+        <p><strong>Goal:</strong> never enter an unsafe state.</p>
+
+        <h4>Resource-Allocation Graph avoidance</h4>
+        <p>Adds <strong>claim edges</strong> representing future requests. A request is granted only if converting claim → assignment does not form a cycle.</p>
+
+        <h3>Banker's algorithm</h3>
+        <p>The most famous deadlock avoidance algorithm — named after a banker allocating loans safely. Each process declares its maximum resource needs in advance.</p>
+        <h4>Data structures</h4>
+        <ul>
+          <li><strong>Available</strong></li>
+          <li><strong>Max</strong></li>
+          <li><strong>Allocation</strong></li>
+          <li><strong>Need</strong> = Max − Allocation</li>
+        </ul>
+        <p>Each row represents a process vector.</p>
+
+        <h4>Safety algorithm</h4>
+        <ol>
+          <li><code>Work = Available</code></li>
+          <li><code>Finish[i] = false</code></li>
+          <li>Find i where <code>Need[i] ≤ Work</code></li>
+          <li><code>Work += Allocation[i]</code></li>
+          <li>Mark <code>Finish[i] = true</code></li>
+          <li>Repeat</li>
+        </ol>
+        <p>If all <code>Finish = true</code> → safe state.</p>
+
+        <h4>Resource request algorithm</h4>
+        <p>When P<sub>i</sub> requests resources:</p>
+        <ol>
+          <li>Check <code>Request ≤ Need</code></li>
+          <li>Check <code>Request ≤ Available</code></li>
+          <li>Temporarily allocate resources</li>
+          <li>Run the safety algorithm</li>
+          <li>If safe → grant</li>
+          <li>Else → rollback and wait</li>
+        </ol>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="signals">
+        <h2>Signals &amp; Signal Handling</h2>
+        <p>A <strong>signal</strong> is a software mechanism used in UNIX and UNIX-like operating systems to notify a process that a particular event has occurred. Signals serve as a form of software interrupt, allowing the operating system or other processes to communicate asynchronously with a running process.</p>
+        <p>Signals may arise due to events generated internally by a process or externally by the operating system, hardware, or other processes. Regardless of their source, all signals follow the same general lifecycle:</p>
+        <ol>
+          <li>A signal is generated due to some event</li>
+          <li>The signal is delivered to a process</li>
+          <li>The process must handle the signal</li>
+        </ol>
+        <p>This model ensures that processes can respond to exceptional conditions, user actions, or system events in a controlled manner.</p>
+
+        <h3>Synchronous and asynchronous signals</h3>
+        <div class="two-col">
+          <div>
+            <h4>Synchronous signals</h4>
+            <p>Generated as a direct result of the execution of a process itself — the process performs an illegal or exceptional operation, which immediately triggers the signal (e.g. illegal memory access, division by zero). Since these signals arise from the process's own execution, they are always delivered to the same process that caused the event.</p>
+          </div>
+          <div>
+            <h4>Asynchronous signals</h4>
+            <p>Originate from events external to the running process, such as user input, timers, or other processes (e.g. terminating a process using <code>Ctrl+C</code>, timer expiration events). Such signals are typically sent from one process to another, or from the OS to a process.</p>
+          </div>
+        </div>
+
+        <h3>Signal handlers</h3>
+        <p>Once a signal is delivered, the receiving process must respond. This response is performed by a <strong>signal handler</strong>, a function designed to process the signal. There are two types of signal handlers:</p>
+        <h4>1. Default signal handler</h4>
+        <p>Every signal has a predefined default action defined by the kernel. If the process does not specify any custom handling behaviour, this default handler executes automatically. Default actions may include terminating the process, ignoring the signal, stopping the process, or continuing a paused process. For example, an illegal memory access usually results in immediate program termination.</p>
+        <h4>2. User-defined signal handler</h4>
+        <p>Processes may override the default behaviour by defining their own signal handling function, allowing customized responses such as saving program state, cleaning up resources, logging errors, or graceful shutdown. User-defined handlers are registered using system calls like <code>signal()</code> or <code>sigaction()</code> in UNIX systems.</p>
+
+        <h3>Signal handling in single-threaded programs</h3>
+        <p>In single-threaded programs, signal handling is straightforward. Since the process contains only one thread of execution, any signal delivered to the process is automatically handled by that single thread — there is no ambiguity in delivery, and the handler executes within that thread's context.</p>
+
+        <h3>Signal handling in multithreaded programs</h3>
+        <p>Signal handling becomes more complex in multithreaded environments because a process may contain multiple threads executing concurrently. When a signal is generated, the system must decide which thread should handle it. Several delivery strategies are possible:</p>
+        <ol>
+          <li>Deliver the signal to the thread to which the signal applies</li>
+          <li>Deliver the signal to every thread in the process</li>
+          <li>Deliver the signal to selected threads</li>
+          <li>Assign a specific thread to handle all signals</li>
+        </ol>
+        <p>The chosen method depends on the signal type and system design.</p>
+
+        <h3>Delivery rules for signals</h3>
+        <p>The signal delivery method depends heavily on whether the signal is synchronous or asynchronous:</p>
+        <ul>
+          <li><strong>Synchronous signals</strong> must be delivered to the thread that caused the exception. For example, a division-by-zero error must be handled by the offending thread itself.</li>
+          <li><strong>Asynchronous signals</strong> may be delivered to one or more threads, depending on system policy. For example, a termination signal like Ctrl+C may be delivered to all threads of the process.</li>
+        </ul>
+
+        <h3>UNIX signal delivery functions</h3>
+        <pre><code>kill(pid_t pid, int signal)</code></pre>
+        <p>Here, <code>pid</code> → target process ID; <code>signal</code> → signal number. This function does not necessarily terminate a process — it simply sends the specified signal, whose action depends on its handler.</p>
+
+        <h4>Thread-specific signal delivery</h4>
+        <p>In multithreaded UNIX systems, threads can control which signals they accept or block. If a thread blocks a signal, it will not handle that signal — instead, the signal may be delivered to another thread that is not blocking it. Since signals need to be handled only once, the system typically delivers the signal to the <strong>first eligible thread</strong>.</p>
+        <p>POSIX provides a function to send signals to specific threads:</p>
+        <pre><code>pthread_kill(pthread_t tid, int signal)</code></pre>
+        <p>This allows fine-grained signal delivery control within multithreaded applications.</p>
+
+        <h3>Signals in Windows systems</h3>
+        <p>Unlike UNIX, Windows does not provide native signal support. Instead, Windows uses a mechanism called <strong>Asynchronous Procedure Calls (APCs)</strong> to emulate signal-like behaviour. An APC allows a thread to specify a function that will be executed when a particular event occurs. This mechanism is conceptually similar to asynchronous signals in UNIX but differs in implementation.</p>
+        <div class="box"><span class="label">Key characteristics</span>
+          <ul style="margin-bottom:0">
+            <li>Delivered to a specific thread</li>
+            <li>Used for event notifications</li>
+            <li>More structured than UNIX signals</li>
+          </ul>
+        </div>
+        <p>Thus, APCs serve as Windows' alternative to signal handling.</p>
+
+        <h3>Signals in Linux</h3>
+        <p>In Linux systems, signals are treated as <strong>software interrupts</strong> used to notify processes about asynchronous events. Several standard Linux signals include:</p>
+        <table>
+          <tr><th>Signal</th><th>Meaning</th></tr>
+          <tr><td><code>SIGINT</code></td><td>Generated when user presses Ctrl+C. Terminates the program.</td></tr>
+          <tr><td><code>SIGALRM</code></td><td>Generated when a timer set by the <code>alarm()</code> function expires.</td></tr>
+          <tr><td><code>SIGABRT</code></td><td>Generated when a process calls the <code>abort()</code> function.</td></tr>
+          <tr><td><code>SIGSTOP</code></td><td>Pauses a process; it can be resumed later.</td></tr>
+          <tr><td><code>SIGCONT</code></td><td>Resumes a previously stopped process.</td></tr>
+          <tr><td><code>SIGSEGV</code></td><td>Indicates a segmentation fault due to illegal memory access.</td></tr>
+          <tr><td><code>SIGKILL</code></td><td>Immediately terminates a process; cannot be caught or ignored.</td></tr>
+        </table>
+        <p>These signals enable Linux to manage process execution, debugging, and termination efficiently.</p>
+      </section>
+
+      <footer class="footnote">Compiled from Unit 2 lecture notes (UE25CS242A, Operating Systems) — Prof. Pavan A C, PES University.</footer>
+    </div>
+  </main>
+</div>
+
+<div class="backtotop" id="backTop" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</div>
+
+<script>
+const root = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+const iconSun = document.getElementById('iconSun');
+function setTheme(dark){
+  root.classList.toggle('dark', dark);
+  iconSun.innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+}
+let isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+setTheme(isDark);
+themeBtn.addEventListener('click', () => { isDark = !isDark; setTheme(isDark); });
+
+const sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+
+document.querySelectorAll('.toc-group-title').forEach(t => {
+  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
+});
+
+const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = '#' + entry.target.id;
+    const link = navLinks.find(a => a.getAttribute('href') === id);
+    if (!link) return;
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => s && io.observe(s));
+
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+let marks = [];
+
+function clearMarks(){
+  marks.forEach(m => {
+    const parent = m.parentNode;
+    parent.replaceChild(document.createTextNode(m.textContent), m);
+    parent.normalize();
+  });
+  marks = [];
+}
+
+function highlightInContent(term){
+  clearMarks();
+  if (!term) return 0;
+  const lower = term.toLowerCase();
+  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets = [];
+  let n;
+  while (n = walker.nextNode()) targets.push(n);
+  let count = 0;
+  targets.forEach(node => {
+    const text = node.nodeValue;
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+    if (!regex.test(text)) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(regex, (match, p1, offset) => {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement('mark');
+      mark.textContent = match;
+      frag.appendChild(mark);
+      marks.push(mark);
+      count++;
+      lastIndex = offset + match.length;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  return count;
+}
+
+function filterNav(term){
+  const lower = term.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.toc-group').forEach(group => {
+    let groupHas = false;
+    group.querySelectorAll('.toc-list li').forEach(li => {
+      const a = li.querySelector('a');
+      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+      const match = !lower || hay.includes(lower);
+      li.classList.toggle('hidden', !match);
+      if (match){ groupHas = true; visible++; }
+    });
+    group.style.display = groupHas || !lower ? '' : 'none';
+    if (lower && groupHas) group.classList.remove('collapsed');
+  });
+  return visible;
+}
+
+let searchTimer;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const term = e.target.value.trim();
+  searchTimer = setTimeout(() => {
+    const navVisible = filterNav(term);
+    const contentMatches = highlightInContent(term);
+    if (!term) { searchCount.textContent = ''; return; }
+    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es') + ' in text';
+  }, 150);
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && marks.length){
+    marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
+
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+  backTop.classList.toggle('show', h.scrollTop > 600);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
