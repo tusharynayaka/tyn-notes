@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css">
 <style>
 :root{
   --bg:#f3f3f1;
@@ -219,7 +220,7 @@ main{
 }
 
 .menu-toggle{
-  display:none;
+  display:flex;
   position:fixed;
   top:14px;
   left:14px;
@@ -233,6 +234,11 @@ main{
   cursor:pointer;
 }
 .menu-toggle svg{ width:18px;height:18px; color:var(--ink); }
+@media (min-width:761px){
+  .sidebar{transition:width .2s ease, padding .2s ease, border-color .2s ease;}
+  .sidebar.closed{width:0;padding-left:0;padding-right:0;border-right-color:transparent;}
+  .sidebar.closed > *{visibility:hidden;}
+}
 
 /* ---------- Typography ---------- */
 .doc-title{
@@ -492,6 +498,56 @@ footer{
 .home-link{top:18px;bottom:auto;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeBtn{top:12px;right:76px;}}
 </style>
+<style>
+.dsa-playground{position:fixed;top:0;right:0;z-index:800;width:var(--playground-width,50vw);height:100vh;margin:0;border-radius:0;transform:translateX(100%);transition:transform .24s ease;display:flex;flex-direction:column;border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.22);background:var(--bg-elev);overflow:hidden;}
+body.playground-open .dsa-playground{transform:translateX(0);}
+body.playground-open main{flex:0 0 calc(100vw - var(--playground-width,50vw));width:calc(100vw - var(--playground-width,50vw));max-width:none;margin:0;overflow-x:hidden;}
+.dsa-playground-resize{position:absolute;left:-3px;top:0;bottom:0;width:6px;cursor:col-resize;z-index:20;}
+.dsa-playground-resize:hover,.dsa-playground-resize.active{background:var(--accent);}
+.dsa-playground-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.dsa-playground-title{font:600 13px 'IBM Plex Mono',monospace;color:var(--ink);}
+.dsa-playground-meta{font-size:12px;color:var(--ink-faint);}
+.dsa-playground-close{border:1px solid var(--border);border-radius:var(--radius);padding:5px 9px;background:var(--bg);color:var(--ink);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;}
+.dsa-playground-close:hover{background:var(--accent-soft);}
+
+/* Resizable Split */
+.dsa-split{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden;}
+.dsa-split-editor{flex:4 1 0;min-height:120px;display:flex;min-width:0;position:relative;}
+.dsa-split-terminal{flex:1 1 0;min-height:90px;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+
+/* Editor */
+.dsa-playground-editor{flex:1 1 auto;width:100%;min-height:0;resize:none;overflow:auto;box-sizing:border-box;padding:14px;border:0;outline:none;background:var(--code-bg);color:var(--code-ink);font:13px/1.6 'IBM Plex Mono',monospace;tab-size:4;}
+.dsa-playground-editor:focus{box-shadow:inset 0 0 0 2px var(--accent);}
+
+/* Controls Toolbar */
+.dsa-playground-controls{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-elev);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.dsa-playground-controls button{border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;background:var(--bg);color:var(--ink);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;}
+.dsa-playground-controls button:hover{background:var(--accent-soft);}
+.dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.dsa-playground-controls .run:hover{filter:brightness(1.08);}
+
+/* Drag Handle */
+.dsa-split-handle{flex:0 0 auto;height:12px;cursor:row-resize;position:relative;touch-action:none;background:var(--bg-elev);z-index:5;}
+.dsa-split-handle::before{content:"";position:absolute;inset:50% 16px auto 16px;height:2px;transform:translateY(-50%);background:var(--border);border-radius:2px;transition:background .15s,opacity .15s;}
+.dsa-split-handle:hover::before,.dsa-split-handle:focus-visible::before{background:var(--accent);}
+.dsa-split-handle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+
+/* Global cursor & selection during drag */
+body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:none !important;}
+
+/* Terminal inside split */
+.dsa-split-terminal .dsa-terminal{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;height:100%;border-top:0;background:var(--code-bg);}
+.dsa-split-terminal .dsa-terminal-head{flex:0 0 auto;display:flex;justify-content:space-between;padding:6px 12px;color:var(--ink-faint);font:10px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);}
+.dsa-split-terminal .dsa-terminal-screen{flex:1 1 auto;min-height:0;padding:8px 10px;background:#080d17;overflow:hidden;}
+.dsa-split-terminal .dsa-terminal-screen .xterm{height:100%;padding:4px;}
+.dsa-split-terminal .dsa-terminal-screen .xterm-viewport{overflow-y:auto !important;}
+
+.dsa-playground-launch{margin:0 0 24px;border:1px solid var(--accent);border-radius:var(--radius);padding:9px 13px;background:var(--accent);color:var(--bg);font:600 12px 'IBM Plex Mono',monospace;cursor:pointer;}
+.dsa-playground-launch:hover{filter:brightness(1.08);}
+
+@media (max-width:640px){.dsa-playground-head{align-items:flex-start;flex-direction:column;gap:4px;}.dsa-playground-controls{align-items:stretch;flex-wrap:wrap;}}
+@media (max-width:480px){.dsa-playground{width:100vw;}body.playground-open main{flex:1 1 auto;width:auto;max-width:880px;}.dsa-playground-resize{display:none;}.dsa-playground-launch{margin-bottom:24px;}}
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
@@ -622,6 +678,63 @@ footer{
   <main>
     <h1 class="doc-title">Data Structures &amp; Applications</h1>
     <p class="doc-sub">Unit 1 — Study Notes</p>
+    <button class="dsa-playground-launch" id="dsaOpen" type="button">Open C playground</button>
+    <section class="dsa-playground" id="dsaPlayground" aria-labelledby="playground-title">
+      <div class="dsa-playground-resize" id="dsaResize" role="separator" aria-label="Resize playground"></div>
+      <div class="dsa-playground-head">
+        <span class="dsa-playground-title" id="playground-title">C playground · local GCC</span>
+        <button class="dsa-playground-close" id="dsaClose" type="button">Close</button>
+      </div>
+
+      <!-- ===== resizable region ===== -->
+      <div class="dsa-split" id="dsaSplit">
+
+        <!-- editor -->
+        <div class="dsa-split-pane dsa-split-editor">
+          <textarea class="dsa-playground-editor" id="dsaCode" spellcheck="false">#include &lt;stdio.h&gt;
+
+int main(void) {
+  int queue[5], rear = -1, front = -1, count = 0, value, choice;
+  while (1) {
+    printf("\n1. Enqueue\n2. Dequeue\n3. Display\n4. Exit\nEnter your choice: "); fflush(stdout);
+    scanf("%d", &amp;choice);
+    if (choice == 1) { printf("Enter value: "); fflush(stdout); scanf("%d", &amp;value); if (count &lt; 5) { if (front == -1) front = 0; rear = (rear + 1) % 5; queue[rear] = value; count++; } }
+    else if (choice == 2) { if (count == 0) printf("Queue is empty\n"); else { printf("Dequeued value: %d\n", queue[front]); front = (front + 1) % 5; count--; } }
+    else if (choice == 3) { for (int i = 0; i &lt; count; i++) printf("%d ", queue[(front + i) % 5]); printf("\n"); }
+    else break;
+  }
+  return 0;
+}</textarea>
+        </div>
+
+        <!-- toolbar -->
+        <div class="dsa-playground-controls">
+          <button class="run" id="dsaRun" type="button">Run</button>
+          <button id="dsaStop" type="button">Stop</button>
+          <button id="dsaReset" type="button">Reset</button>
+          <span id="dsaStatus" class="dsa-playground-meta"></span>
+        </div>
+
+        <!-- drag handle -->
+        <div class="dsa-split-handle" id="dsaSplitHandle"
+             role="separator"
+             aria-orientation="horizontal"
+             aria-label="Resize code editor and terminal"
+             title="Drag to resize · double-click to reset to 4:1"
+             tabindex="0"></div>
+
+        <!-- terminal -->
+        <div class="dsa-split-pane dsa-split-terminal">
+          <div class="dsa-terminal">
+            <div class="dsa-terminal-head">
+              <span>Terminal · PTY</span><span>type directly below</span>
+            </div>
+            <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="C terminal"></div>
+          </div>
+        </div>
+
+      </div><!-- /.dsa-split -->
+    </section>
     <!-- ================= CHAPTER 1: FUNCTIONS ================= -->
     <h2 class="chapter" id="ch1"><span class="num">01</span>Functions</h2>
     <p class="chapter-intro">A function packages a sequence of code so it can be invoked repeatedly with different inputs. Before we can talk about data structures, we need to be completely comfortable with how functions work in C — especially how arguments are passed, because almost every trick used later (linked lists, stacks) depends on pointers moving data in and out of functions correctly.</p>
@@ -1550,7 +1663,6 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   // ---------- Sidebar collapse (mobile) ----------
   var sidebar = document.getElementById('sidebar');
   var menuToggle = document.getElementById('menuToggle');
-  menuToggle.addEventListener('click', function(){ sidebar.classList.toggle('open'); });
   document.querySelectorAll('.toc-list a').forEach(function(a){
     a.addEventListener('click', function(){ sidebar.classList.remove('open'); });
   });
@@ -1609,6 +1721,362 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   document.getElementById('backTop').addEventListener('click', function(){
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+})();
+</script>
+<script>
+(function(){
+  return;
+  var editor = document.getElementById('dsaCode');
+  var runButton = document.getElementById('dsaRun');
+  var sendButton = document.getElementById('dsaSend');
+  var resetButton = document.getElementById('dsaReset');
+  var stdin = document.getElementById('dsaStdin');
+  var output = document.getElementById('dsaOutput');
+  var openButton = document.getElementById('dsaOpen');
+  var closeButton = document.getElementById('dsaClose');
+  var resizeHandle = document.getElementById('dsaResize');
+  var initialCode = editor.value;
+  var running = false;
+  var pendingInput = null;
+  var inputQueue = [];
+
+  var sidebar = document.getElementById('sidebar');
+  var menuToggle = document.getElementById('menuToggle');
+  openButton.addEventListener('click', function(){
+    document.body.classList.add('playground-open');
+    sidebar.classList.remove('open');
+    sidebar.classList.add('closed');
+  });
+  closeButton.addEventListener('click', function(){ stopProgram(); document.body.classList.remove('playground-open'); });
+  document.addEventListener('keydown', function(event){
+    if(event.key === 'Escape'){ stopProgram(); document.body.classList.remove('playground-open'); }
+  });
+
+  menuToggle.addEventListener('click', function(){
+    if(window.matchMedia('(max-width:760px)').matches){
+      sidebar.classList.toggle('open');
+    } else {
+      sidebar.classList.toggle('closed');
+    }
+  });
+
+  resizeHandle.addEventListener('pointerdown', function(event){
+    if(window.matchMedia('(max-width:480px)').matches) return;
+    event.preventDefault();
+    resizeHandle.classList.add('active');
+    resizeHandle.setPointerCapture(event.pointerId);
+    function resize(moveEvent){
+      var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
+      document.body.style.setProperty('--playground-width', width + 'px');
+    }
+    function stop(){
+      resizeHandle.classList.remove('active');
+      resizeHandle.removeEventListener('pointermove', resize);
+      resizeHandle.removeEventListener('pointerup', stop);
+      resizeHandle.removeEventListener('pointercancel', stop);
+    }
+    resizeHandle.addEventListener('pointermove', resize);
+    resizeHandle.addEventListener('pointerup', stop);
+    resizeHandle.addEventListener('pointercancel', stop);
+  });
+
+  function show(text, isError){
+    output.textContent = text;
+    output.classList.toggle('error', isError);
+  }
+
+  function print(text){
+    output.textContent += String(text) + '\n';
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function input(prompt){
+    print(prompt);
+    if(inputQueue.length){
+      var queued = inputQueue.shift();
+      print(queued);
+      return Promise.resolve(queued);
+    }
+    sendButton.disabled = false;
+    return new Promise(function(resolve, reject){ pendingInput = {resolve:resolve, reject:reject}; });
+  }
+
+  function stopProgram(){
+    running = false;
+    sendButton.disabled = true;
+    inputQueue = [];
+    if(pendingInput){
+      pendingInput.reject(new Error('Program stopped.'));
+      pendingInput = null;
+    }
+    runButton.disabled = false;
+    runButton.textContent = 'Run';
+  }
+
+  runButton.addEventListener('click', function(){
+    if(running){ stopProgram(); return; }
+    running = true;
+    runButton.textContent = 'Stop';
+    sendButton.disabled = false;
+    inputQueue = [];
+    show('', false);
+    try {
+      if(/#include\s*</.test(editor.value) || /\bscanf\s*\(/.test(editor.value)){
+        throw new Error('This playground runs JavaScript. Convert C scanf/printf code to await input() and print().');
+      }
+      var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
+      Promise.resolve(new AsyncFunction('input', 'print', editor.value)(input, print))
+        .catch(function(error){ print(error.message); output.classList.add('error'); })
+        .finally(function(){
+          running = false;
+          sendButton.disabled = true;
+          runButton.textContent = 'Run';
+        });
+    } catch(error){
+      running = false;
+      show(error.message, true);
+      runButton.textContent = 'Run';
+    }
+  });
+
+  sendButton.addEventListener('click', function(){
+    if(!running || !stdin.value) return;
+    var value = stdin.value;
+    stdin.value = '';
+    if(pendingInput){
+      print(value);
+      var resolve = pendingInput.resolve;
+      pendingInput = null;
+      resolve(value);
+    } else {
+      inputQueue.push(value);
+    }
+    sendButton.disabled = !running;
+  });
+
+  stdin.addEventListener('keydown', function(event){
+    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){
+      event.preventDefault();
+      sendButton.click();
+    }
+  });
+
+  resetButton.addEventListener('click', function(){
+    stopProgram();
+    editor.value = initialCode;
+    stdin.value = '';
+    show('Output will appear here.', false);
+  });
+
+  editor.addEventListener('keydown', function(event){
+    if((event.ctrlKey || event.metaKey) && event.key === 'Enter') runButton.click();
+    if(event.key === 'Tab'){
+      event.preventDefault();
+      var start = editor.selectionStart;
+      editor.setRangeText('    ', start, editor.selectionEnd, 'end');
+    }
+  });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js"></script>
+<script>
+(function(){
+  var editor = document.getElementById('dsaCode');
+  var runButton = document.getElementById('dsaRun');
+  var stopButton = document.getElementById('dsaStop');
+  var resetButton = document.getElementById('dsaReset');
+  var statusEl = document.getElementById('dsaStatus');
+  var openButton = document.getElementById('dsaOpen');
+  var closeButton = document.getElementById('dsaClose');
+  var resizeHandle = document.getElementById('dsaResize');
+  var sidebar = document.getElementById('sidebar');
+  var menuToggle = document.getElementById('menuToggle');
+  var terminal = new Terminal({cursorBlink:true, convertEol:true, fontFamily:'IBM Plex Mono, monospace', fontSize:13, theme:{background:'#080d17', foreground:'#eaf3ff', cursor:'#60a5fa'}});
+  terminal.open(document.getElementById('dsaTerminal'));
+  var remoteBackend = window.TYN_BACKEND_HOST || localStorage.getItem('tyn_backend_host') || '';
+  var wsHost = '';
+  var wsProto = 'ws://';
+
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    wsHost = location.host;
+    wsProto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+  } else if (location.protocol === 'file:') {
+    wsHost = '127.0.0.1:3002';
+    wsProto = 'ws://';
+  } else if (remoteBackend) {
+    wsHost = remoteBackend.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '').replace(/\/+$/, '');
+    wsProto = 'wss://';
+  }
+
+  var socket = null;
+  if(wsHost){
+    try {
+      socket = new WebSocket(wsProto + wsHost);
+    } catch(e) {}
+  }
+  var running = false;
+
+  openButton.addEventListener('click', function(){
+    document.body.classList.add('playground-open');
+    sidebar.classList.remove('open');
+    if(window.matchMedia('(min-width:761px)').matches) sidebar.classList.add('closed');
+    terminal.focus();
+  });
+  closeButton.addEventListener('click', function(){ document.body.classList.remove('playground-open'); });
+  document.addEventListener('keydown', function(event){ if(event.key === 'Escape') document.body.classList.remove('playground-open'); });
+  menuToggle.addEventListener('click', function(){
+    if(window.matchMedia('(max-width:760px)').matches) sidebar.classList.toggle('open');
+    else sidebar.classList.toggle('closed');
+  });
+  resizeHandle.addEventListener('pointerdown', function(event){
+    if(window.matchMedia('(max-width:480px)').matches) return;
+    event.preventDefault();
+    resizeHandle.classList.add('active');
+    resizeHandle.setPointerCapture(event.pointerId);
+    function resize(moveEvent){
+      var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
+      document.body.style.setProperty('--playground-width', width + 'px');
+      terminal.fit && terminal.fit();
+    }
+    function stop(){
+      resizeHandle.classList.remove('active');
+      resizeHandle.removeEventListener('pointermove', resize);
+      resizeHandle.removeEventListener('pointerup', stop);
+      resizeHandle.removeEventListener('pointercancel', stop);
+    }
+    resizeHandle.addEventListener('pointermove', resize);
+    resizeHandle.addEventListener('pointerup', stop);
+    resizeHandle.addEventListener('pointercancel', stop);
+  });
+
+  function status(text){ statusEl.textContent = text || ''; }
+  function send(message){ if(socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message)); }
+
+  if(socket){
+    socket.addEventListener('open', function(){ status('connected'); });
+    socket.addEventListener('error', function(){ status('server unavailable'); terminal.writeln('\r\n[Start with: npm install, then npm start]'); });
+    socket.addEventListener('message', function(event){
+      var message = JSON.parse(event.data);
+      if(message.type === 'output') terminal.write(message.data);
+      if(message.type === 'compile-error') { terminal.writeln('\r\n[compile error]'); terminal.write(message.data.replace(/\n/g, '\r\n')); running = false; status('compile failed'); }
+      if(message.type === 'error') { terminal.writeln('\r\n[error] ' + message.data); running = false; status('failed'); }
+      if(message.type === 'exit') { terminal.writeln('\r\n[process exited with code ' + message.data.code + ']'); running = false; status('finished'); }
+      runButton.textContent = running ? 'Running' : 'Run';
+    });
+  } else {
+    status('server offline');
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.protocol !== 'file:') {
+      terminal.writeln('C compiler backend not connected.\r\nDeploy your backend (e.g. Railway/Render) and set: localStorage.setItem("tyn_backend_host", "your-backend.up.railway.app")\r\n');
+    } else {
+      terminal.writeln('C Playground ready. Start the backend with: npm start\r\n');
+    }
+  }
+
+  terminal.onData(function(data){ if(running) send({type:'input', data:data}); });
+
+  runButton.addEventListener('click', function(){
+    if(running) return;
+    terminal.clear();
+    terminal.write('\x1b[90mStarting GCC...\x1b[0m\r\n');
+    running = true;
+    runButton.textContent = 'Running';
+    status('compiling');
+    send({type:'start', code:editor.value});
+    terminal.focus();
+  });
+
+  stopButton.addEventListener('click', function(){ if(running) send({type:'input', data:'\u0003'}); });
+  resetButton.addEventListener('click', function(){ editor.value = editor.defaultValue; terminal.clear(); terminal.write('Press Run to compile and start the C program.\r\n'); status(''); });
+  editor.addEventListener('keydown', function(event){
+    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
+    if(event.key === 'Tab'){ event.preventDefault(); editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end'); }
+  });
+  /* --- Resizable Split Controller (4:1 initial ratio) --- */
+  var split = document.getElementById('dsaSplit');
+  if(split){
+    var handle = document.getElementById('dsaSplitHandle');
+    var editorPane = split.querySelector('.dsa-split-editor');
+    var termPane = split.querySelector('.dsa-split-terminal');
+
+    var MIN_EDITOR = 120;
+    var MIN_TERM = 90;
+    var DEFAULT_EDITOR_SHARE = 0.8; // 4:1 ratio (80% / 20%)
+
+    function setEditorHeight(px, total){
+      if(total <= 0) return;
+      var maxEditor = Math.max(MIN_EDITOR, total - MIN_TERM);
+      var h = Math.min(Math.max(px, MIN_EDITOR), maxEditor);
+      var ratio = h / total;
+      editorPane.style.flexGrow = String(ratio);
+      termPane.style.flexGrow = String(1 - ratio);
+      terminal.fit && terminal.fit();
+    }
+
+    function measure(){
+      return {
+        editor: editorPane.getBoundingClientRect().height,
+        term: termPane.getBoundingClientRect().height
+      };
+    }
+
+    function totalSpace(){
+      var m = measure();
+      return m.editor + m.term;
+    }
+
+    function resetRatio(){
+      var total = totalSpace();
+      setEditorHeight(total * DEFAULT_EDITOR_SHARE, total);
+    }
+
+    var drag = null;
+    handle.addEventListener('pointerdown', function(e){
+      if(e.pointerType === 'mouse' && e.button !== 0) return;
+      var m = measure();
+      drag = {
+        id: e.pointerId,
+        startY: e.clientY,
+        startEditor: m.editor,
+        total: m.editor + m.term
+      };
+      handle.setPointerCapture(e.pointerId);
+      document.body.classList.add('dsa-resizing');
+      e.preventDefault();
+    });
+
+    handle.addEventListener('pointermove', function(e){
+      if(!drag || e.pointerId !== drag.id) return;
+      var delta = e.clientY - drag.startY;
+      setEditorHeight(drag.startEditor + delta, drag.total);
+    });
+
+    function endDrag(e){
+      if(!drag || (e && e.pointerId !== drag.id)) return;
+      if(handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
+      drag = null;
+      document.body.classList.remove('dsa-resizing');
+    }
+
+    handle.addEventListener('pointerup', endDrag);
+    handle.addEventListener('pointercancel', endDrag);
+    handle.addEventListener('lostpointercapture', endDrag);
+
+    handle.addEventListener('keydown', function(e){
+      var m = measure();
+      var total = m.editor + m.term;
+      var step = (e.shiftKey ? 0.05 : 0.02) * total;
+      var next = null;
+      if(e.key === 'ArrowUp') next = m.editor - step;
+      else if(e.key === 'ArrowDown') next = m.editor + step;
+      else if(e.key === 'Home') next = total * DEFAULT_EDITOR_SHARE;
+      else if(e.key === 'End') next = total;
+      if(next === null) return;
+      e.preventDefault();
+      setEditorHeight(next, total);
+    });
+
+    handle.addEventListener('dblclick', resetRatio);
+  }
 })();
 </script>
 <script>document.body.appendChild(document.getElementById('themeBtn'));</script>
