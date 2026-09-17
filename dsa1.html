@@ -9,56 +9,56 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#F4F5F2;
-  --bg-elev:#FFFFFF;
-  --ink:#1B1F1D;
-  --ink-soft:#4A5049;
-  --ink-faint:#8A9089;
-  --border:#DCDFD8;
-  --sidebar-bg:#ECEEE8;
-  --code-bg:#1E2320;
-  --code-ink:#E7EFE9;
-  --accent:#146356;
-  --accent-soft:#DCEEE9;
-  --accent-2:#B5651D;
-  --accent-2-soft:#FBEADB;
-  --link:#146356;
-  --shadow: 0 1px 2px rgba(20,25,20,0.06);
+  --bg:#f3f3f1;
+  --bg-elev:#f8f8f6;
+  --ink:#1c1f1d;
+  --ink-soft:#565f5a;
+  --ink-faint:#8a9089;
+  --border:#dfe1dc;
+  --sidebar-bg:#eceae5;
+  --code-bg:#101b2d;
+  --code-ink:#eaf3ff;
+  --accent:#2c5f52;
+  --accent-soft:#dfe9e4;
+  --accent-2:#2c5f52;
+  --accent-2-soft:#dfe9e4;
+  --link:#2c5f52;
+  --shadow:none;
   --radius: 3px;
 }
 :root:not([data-theme="light"]){
   @media (prefers-color-scheme: dark){
-    --bg:#12140F;
-    --bg-elev:#191C16;
-    --ink:#E9EBE4;
-    --ink-soft:#B7BCAF;
-    --ink-faint:#767C6F;
-    --border:#2C312A;
-    --sidebar-bg:#171A14;
-    --code-bg:#0D0F0C;
-    --code-ink:#DCE7DC;
-    --accent:#5FBFA6;
-    --accent-soft:#1B332C;
-    --accent-2:#E0985A;
-    --accent-2-soft:#332417;
-    --shadow: 0 1px 2px rgba(0,0,0,0.4);
+    --bg:#070b14;
+    --bg-elev:#0d1524;
+    --ink:#eaf3ff;
+    --ink-soft:#a9bbd8;
+    --ink-faint:#7d8eaf;
+    --border:#1d2d47;
+    --sidebar-bg:#101d33;
+    --code-bg:#101b2d;
+    --code-ink:#eaf3ff;
+    --accent:#60a5fa;
+    --accent-soft:#10213d;
+    --accent-2:#60a5fa;
+    --accent-2-soft:#10213d;
+    --shadow:none;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#12140F;
-  --bg-elev:#191C16;
-  --ink:#E9EBE4;
-  --ink-soft:#B7BCAF;
-  --ink-faint:#767C6F;
-  --border:#2C312A;
-  --sidebar-bg:#171A14;
-  --code-bg:#0D0F0C;
-  --code-ink:#DCE7DC;
-  --accent:#5FBFA6;
-  --accent-soft:#1B332C;
-  --accent-2:#E0985A;
-  --accent-2-soft:#332417;
-  --shadow: 0 1px 2px rgba(0,0,0,0.4);
+  --bg:#070b14;
+  --bg-elev:#0d1524;
+  --ink:#eaf3ff;
+  --ink-soft:#a9bbd8;
+  --ink-faint:#7d8eaf;
+  --border:#1d2d47;
+  --sidebar-bg:#101d33;
+  --code-bg:#101b2d;
+  --code-ink:#eaf3ff;
+  --accent:#60a5fa;
+  --accent-soft:#10213d;
+  --accent-2:#60a5fa;
+  --accent-2-soft:#10213d;
+  --shadow:none;
 }
 
 *{box-sizing:border-box;}
@@ -487,6 +487,11 @@ footer{
   font-size:12.5px;
 }
 </style>
+<style>
+#themeBtn{position:fixed;top:18px;right:88px;z-index:700;}
+.home-link{top:18px;bottom:auto;}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeBtn{top:12px;right:76px;}}
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
@@ -616,15 +621,7 @@ footer{
 
   <main>
     <h1 class="doc-title">Data Structures &amp; Applications</h1>
-    <p class="doc-sub">Unit 1 — Complete Notes: Functions, Recursion, Pointers, Arrays, Structures, Dynamic Memory, Abstract Data Types, Linked Lists, Stacks, Multilists &amp; Skiplists. Compiled and expanded from the course slides and lecture notes, with added explanations, diagrams and highlighted formulas.</p>
-
-    <div class="chips">
-      <span class="chip">Language: C</span>
-      <span class="chip">9 chapters</span>
-      <span class="chip">40 sections</span>
-      <span class="chip">Diagrams included</span>
-    </div>
-
+    <p class="doc-sub">Unit 1 — Study Notes</p>
     <!-- ================= CHAPTER 1: FUNCTIONS ================= -->
     <h2 class="chapter" id="ch1"><span class="num">01</span>Functions</h2>
     <p class="chapter-intro">A function packages a sequence of code so it can be invoked repeatedly with different inputs. Before we can talk about data structures, we need to be completely comfortable with how functions work in C — especially how arguments are passed, because almost every trick used later (linked lists, stacks) depends on pointers moving data in and out of functions correctly.</p>
@@ -1614,5 +1611,6 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   });
 })();
 </script>
+<script>document.body.appendChild(document.getElementById('themeBtn'));</script>
 </body>
 </html>

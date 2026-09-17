@@ -523,6 +523,11 @@ main{max-width:820px;padding:36px 48px 120px;}
   main{padding:56px 20px 100px;}
 }
 </style>
+<style>
+#themeBtn{position:fixed;top:18px;right:88px;z-index:700;}
+.home-link{top:18px;bottom:auto;}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeBtn{top:12px;right:76px;}}
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
@@ -1582,5 +1587,6 @@ R' = R</pre>
   });
   backToTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
 </script>
+<script>document.body.appendChild(document.getElementById('themeBtn'));</script>
 </body>
 </html>

@@ -181,6 +181,11 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 .site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
 .site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
 </style>
+<style>
+#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
+.home-link{top:18px;bottom:auto;}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
@@ -235,5 +240,6 @@ themeBtn.addEventListener('click', () => {
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 </script>
+<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>

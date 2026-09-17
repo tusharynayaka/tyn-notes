@@ -221,9 +221,15 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 .site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
 .site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
 .site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
+.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
+#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
+@media (max-width:600px){.home-link{right:12px;padding:7px 10px;}#themeToggle{right:76px;}}
 </style>
 </head>
 <body>
+
+<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 
 <div class="container">
   <header class="site-header">
@@ -372,5 +378,6 @@ themeBtn.addEventListener('click', () => {
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 </script>
+<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>
