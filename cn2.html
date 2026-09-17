@@ -3,239 +3,1390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-<script>
-  // Apply saved theme instantly (no flash)
-  (function() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const isDark = saved
-      ? saved === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) root.classList.add('dark');
-  })();
-</script>
-<title>Coming Soon</title>
+<title>Computer Networks · Unit 2 — Slide-by-Slide Reference</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <style>
 :root{
-  --bg:#f3f3f1;
-  --surface:#f8f8f6;
-  --surface-2:#eceae5;
-  --text:#1c1f1d;
-  --text-soft:#565f5a;
-  --text-faint:#8a9089;
-  --border:#dfe1dc;
-  --accent:#2c5f52;
-  --accent-soft:#dfe9e4;
-  --accent-text:#1f4238;
-  --radius: 3px;
-  color-scheme: light;
+  --bg:#faf9f6; --surface:#ffffff; --surface-2:#f2f0ea; --text:#1c1f1d; --text-soft:#565f5a;
+  --text-faint:#8a9089; --border:#e3e0d6; --accent:#2c5f52; --accent-soft:#dfe9e4; --accent-text:#1f4238;
+  --formula-bg:#f4ecd8; --formula-border:#c9a95c; --code-bg:#eef0ec; --mark-bg:#f6d989;
+  --radius:3px; --sidebar-w:300px; color-scheme:light;
 }
 html.dark{
-  --bg:#070b14;
-  --surface:#0d1524;
-  --surface-2:#101d33;
-  --text:#eaf3ff;
-  --text-soft:#a9bbd8;
-  --text-faint:#7d8eaf;
-  --border:#1d2d47;
-  --accent:#60a5fa;
-  --accent-soft:#10213d;
-  --accent-text:#dceeff;
-  color-scheme: dark;
+  --bg:#14181a; --surface:#1a1f21; --surface-2:#20262a; --text:#e7e9e4; --text-soft:#a3aca6;
+  --text-faint:#6d766f; --border:#2b3234; --accent:#78c4ab; --accent-soft:#243430; --accent-text:#a9e0c9;
+  --formula-bg:#2b2717; --formula-border:#9a7d3d; --code-bg:#1e2426; --mark-bg:#5a4a1e; color-scheme:dark;
 }
 *{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'IBM Plex Sans', sans-serif;
-  line-height:1.45;
-  transition:background .25s ease, color .25s ease;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 30px 16px;
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;transition:background .25s ease,color .25s ease;}
+::selection{background:var(--mark-bg);color:#1c1f1d;}
+#progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--accent);z-index:500;transition:width .1s linear;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px 60px;}
+.sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:18px;}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--text-faint);}
+.brand strong{display:block;font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:var(--text);font-weight:600;margin-top:2px;}
+#themeToggle{border:1px solid var(--border);background:var(--surface-2);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
+#themeToggle:hover{background:var(--accent-soft);}
+#themeToggle svg{width:16px;height:16px;}
+.search-wrap{position:relative;margin-bottom:18px;}
+#searchInput{width:100%;padding:9px 12px 9px 32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;outline:none;}
+#searchInput:focus{border-color:var(--accent);}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-faint);pointer-events:none;}
+#searchCount{font-size:11.5px;color:var(--text-faint);margin:6px 2px 0;min-height:14px;}
+nav.toc{font-size:13.5px;}
+.toc-group{margin-bottom:4px;}
+.toc-group-title{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-faint);padding:14px 8px 6px;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;}
+.toc-group-title:hover{color:var(--text-soft);}
+.toc-group-title .chev{transition:transform .15s ease;width:9px;height:9px;}
+.toc-group.collapsed .chev{transform:rotate(-90deg);}
+.toc-group.collapsed .toc-list{display:none;}
+.toc-list{list-style:none;margin:0;padding:0;}
+.toc-list li a{display:block;padding:6px 10px 6px 16px;margin:1px 0;border-radius:var(--radius);color:var(--text-soft);text-decoration:none;border-left:2px solid transparent;font-size:12.5px;}
+.toc-list li a:hover{background:var(--surface-2);color:var(--text);}
+.toc-list li a.active{color:var(--accent-text);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500;}
+.toc-list li.hidden{display:none;}
+.toc-list li a .n{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-faint);margin-right:5px;}
+main{flex:1;min-width:0;padding:56px clamp(20px,6vw,90px) 140px;display:flex;justify-content:center;}
+.content{max-width:740px;width:100%;}
+.masthead{margin-bottom:52px;}
+.masthead .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent-text);letter-spacing:.04em;}
+.masthead h1{font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,4.4vw,48px);margin:8px 0 14px;line-height:1.08;letter-spacing:-0.01em;}
+.masthead p{color:var(--text-soft);font-size:15.5px;max-width:62ch;}
+section.topic{margin-bottom:52px;scroll-margin-top:28px;}
+section.topic>h2{font-family:'Newsreader',serif;font-weight:500;font-size:24px;border-bottom:1px solid var(--border);padding-bottom:12px;margin:0 0 16px;letter-spacing:-0.01em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.slide-badge{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.04em;color:var(--accent-text);background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;padding:2px 9px;white-space:nowrap;}
+section.topic h3{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:15px;margin:22px 0 8px;color:var(--text);}
+section.topic h4{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:13.5px;margin:16px 0 6px;color:var(--accent-text);}
+section.topic p{font-family:'Newsreader',serif;font-size:15.5px;color:var(--text);margin:0 0 10px;}
+section.topic p,section.topic li{font-size:15px;}
+section.topic ul,section.topic ol{font-family:'IBM Plex Sans',sans-serif;font-size:14.3px;padding-left:20px;margin:0 0 12px;}
+section.topic ul li,section.topic ol li{margin-bottom:5px;}
+section.topic ul ul,section.topic ol ul{margin:5px 0 5px;font-size:13.6px;}
+strong{font-weight:600;}
+code{font-family:'IBM Plex Mono',monospace;font-size:.86em;background:var(--code-bg);padding:1.5px 5px;border-radius:3px;color:var(--accent-text);}
+pre{font-family:'IBM Plex Mono',monospace;font-size:12.3px;background:var(--code-bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;overflow-x:auto;margin:0 0 14px;line-height:1.55;}
+pre code{background:none;padding:0;color:var(--text);}
+.box{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:10px 14px;margin:0 0 14px;background:var(--surface-2);}
+.box p:last-child{margin-bottom:0;}
+.box .label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--accent-text);margin-bottom:4px;display:block;}
+.box ul{margin-bottom:0;}
+.explain{border:1px solid var(--formula-border);background:var(--formula-bg);border-radius:var(--radius);padding:12px 16px;margin:14px 0;}
+.explain .label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8a6d1f;display:block;margin-bottom:6px;}
+html.dark .explain .label{color:#d8b25b;}
+.explain ul{margin-bottom:0;}
+.formula{border:1px solid var(--formula-border);background:var(--formula-bg);border-radius:var(--radius);padding:14px 18px;margin:16px 0;}
+.formula .label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:#8a6d1f;display:block;margin-bottom:6px;}
+html.dark .formula .label{color:#d8b25b;}
+.formula .expr{font-family:'IBM Plex Mono',monospace;font-size:15px;text-align:center;margin:6px 0;}
+.formula .note{font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;color:var(--text-soft);margin-top:6px;}
+table{width:100%;border-collapse:collapse;margin:0 0 16px;font-size:13.6px;font-family:'IBM Plex Sans',sans-serif;}
+th{text-align:left;font-weight:600;font-size:11.3px;letter-spacing:.03em;color:var(--text-faint);border-bottom:1px solid var(--border);padding:7px 10px;}
+td{padding:7px 10px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+figure{margin:0 0 18px;}
+figure figcaption{font-size:11.5px;color:var(--text-faint);margin-top:6px;font-family:'IBM Plex Mono',monospace;text-align:center;}
+.diagram{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface-2);padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:14px;overflow-x:auto;}
+.diagram svg{max-width:100%;height:auto;}
+.svg-box{fill:var(--surface);stroke:var(--border);stroke-width:1;}
+.svg-box-accent{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1;}
+.svg-txt{font-family:'IBM Plex Mono',monospace;fill:var(--text);}
+.svg-txt-soft{font-family:'IBM Plex Mono',monospace;fill:var(--text-soft);}
+.svg-txt-accent{font-family:'IBM Plex Mono',monospace;fill:var(--accent-text);font-weight:600;}
+.svg-line{stroke:var(--text-faint);stroke-width:1.4;}
+.svg-line-accent{stroke:var(--accent);stroke-width:1.6;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+.footnote{font-size:12.5px;color:var(--text-faint);border-top:1px solid var(--border);padding-top:14px;margin-top:40px;}
+mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
+.backtotop{position:fixed;bottom:24px;right:28px;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:400;}
+.backtotop.show{opacity:1;pointer-events:auto;}
+.backtotop svg{width:15px;height:15px;}
+.menu-btn{display:none;}
+@media (max-width:880px){
+  .sidebar{position:fixed;left:0;top:0;z-index:600;transform:translateX(-100%);transition:transform .2s ease;box-shadow:0 0 40px rgba(0,0,0,.25);}
+  .sidebar.open{transform:translateX(0);}
+  main{padding:56px 18px 120px;}
+  .menu-btn{display:flex;position:fixed;top:16px;left:16px;z-index:601;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;}
+  .menu-btn svg{width:17px;height:17px;}
+  .masthead{padding-top:26px;}
 }
-
-.container{
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-}
-
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.brand{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  letter-spacing:.04em;
-  color:var(--text-faint);
-  text-transform: uppercase;
-}
-.brand strong{
-  display:block;
-  font-family:'Newsreader', serif;
-  font-size:22px;
-  color:var(--text);
-  font-weight:500;
-  text-transform: none;
-  margin-top:2px;
-  line-height: 1.1;
-}
-
-#themeToggle{
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--text);
-  width:32px;
-  height:32px;
-  border-radius:var(--radius);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  transition: background .15s ease;
-}
-#themeToggle:hover{ background:var(--accent-soft); }
-#themeToggle svg{ width:15px; height:15px; }
-
-.card{
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s ease;
-}
-.card:hover{
-  border-color: var(--accent);
-}
-
-.title{
-  font-family: 'Newsreader', serif;
-  font-size: 32px;
-  font-weight: 500;
-  margin: 0 0 12px 0;
-  color: var(--text);
-}
-
-.signature{
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  color: var(--text-faint);
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.footer{
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--text-faint);
-}
-
-.footer a{
-  color: var(--accent-text);
-  text-decoration: none;
-  border-bottom: 1px dashed var(--border);
-}
-.footer a:hover{
-  border-bottom-color: var(--accent);
-}
-</style>
-<style>
-:root{--bg:#f3f3f1;--surface:#f8f8f6;--surface-2:#eceae5;--text:#1c1f1d;--text-soft:#565f5a;--text-faint:#8a9089;--border:#dfe1dc;--accent:#2c5f52;--accent-soft:#dfe9e4;--accent-text:#1f4238;}
-html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--text-soft:#a9bbd8;--text-faint:#7d8eaf;--border:#1d2d47;--accent:#60a5fa;--accent-soft:#10213d;--accent-text:#dceeff;}
-.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
-@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
-</style>
-<style>
-.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
-.site-footer a{color:var(--accent-text);text-decoration:none;}
-.site-footer a:hover{color:var(--accent);}
-@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
-.site-header{border-color:var(--border);color:var(--text);}
-.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
-.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
-.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
-</style>
-<style>
-#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
-.home-link{top:18px;bottom:auto;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
+.chip{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;padding:2px 8px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text-soft);margin:2px 4px 2px 0;}
+.q-item{border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;background:var(--surface);}
+.q-item .q{font-weight:600;font-family:'IBM Plex Sans',sans-serif;font-size:13.6px;margin-bottom:4px;}
+.q-item .a{font-family:'IBM Plex Sans',sans-serif;font-size:13.3px;color:var(--text-soft);margin:0;}
 </style>
 </head>
 <body>
-<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
-
-<div class="container">
-  <header class="site-header">
-    <div class="brand">
-      Reference Portal
-      <strong>Coming Soon</strong>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">TEAM NETWORKS<strong>Computer Networks</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
     </div>
-    <button id="themeToggle" aria-label="Toggle theme">
-      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-      </svg>
-    </button>
-  </header>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search slides…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Course Intro (Slides 1-3)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s1" data-title="Cover Team Networks Department CSE"><span class="n">1-2</span>Cover &amp; Application Layer</a></li>
+          <li><a href="#s3" data-title="Unit 2 Application Layer TOC DNS P2P Sockets Other Protocols"><span class="n">3</span>Unit 2 roadmap (2.3–2.6)</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>DNS Basics (Slides 4-11)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s4" data-title="DNS Domain Name System"><span class="n">4</span>DNS: Domain Name System</a></li>
+          <li><a href="#s5" data-title="DNS Services Structure"><span class="n">5</span>DNS: Services, Structure</a></li>
+          <li><a href="#s6" data-title="DNS distributed hierarchical database"><span class="n">6</span>DNS: distributed hierarchical database</a></li>
+          <li><a href="#s7" data-title="DNS Zone vs Domain"><span class="n">7</span>DNS Zone vs Domain</a></li>
+          <li><a href="#s8" data-title="DNS root name servers"><span class="n">8</span>DNS: root name servers</a></li>
+          <li><a href="#s9" data-title="DNSSEC Why It Matters"><span class="n">9</span>DNSSEC – Why It Matters</a></li>
+          <li><a href="#s10" data-title="TLD authoritative servers"><span class="n">10</span>TLD: authoritative servers</a></li>
+          <li><a href="#s11" data-title="Local DNS Name Servers"><span class="n">11</span>Local DNS Name Servers</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Resolution &amp; Caching (12-15)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s12" data-title="DNS name resolution iterated query"><span class="n">12</span>Iterated query</a></li>
+          <li><a href="#s13" data-title="DNS name resolution recursive query"><span class="n">13</span>Recursive query</a></li>
+          <li><a href="#s14" data-title="Iterated vs Recursive Query Side by Side"><span class="n">14</span>Iterated vs Recursive — side by side</a></li>
+          <li><a href="#s15" data-title="Caching and Updating DNS Records TTL"><span class="n">15</span>Caching &amp; Updating DNS Records</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Records &amp; Protocol (16-23)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s16" data-title="DNS Records A NS CNAME MX"><span class="n">16</span>DNS Records</a></li>
+          <li><a href="#s17" data-title="DNS Record Types Extended Reference"><span class="n">17</span>DNS Record Types — Extended Reference</a></li>
+          <li><a href="#s18" data-title="DNS Protocol Messages header"><span class="n">18</span>DNS Protocol Messages</a></li>
+          <li><a href="#s19" data-title="DNS Protocol Messages annotated continued"><span class="n">19</span>DNS Protocol Messages (annotated)</a></li>
+          <li><a href="#s20" data-title="DNS Demo Toolkit Command Cheat Sheet dig nslookup"><span class="n">20</span>DNS Demo Toolkit — Cheat Sheet</a></li>
+          <li><a href="#s21" data-title="Emulating Local DNS Server Step 1 Ask Root"><span class="n">21</span>Emulating a Local Resolver — Step 1</a></li>
+          <li><a href="#s22" data-title="Steps 2-3 Ask net example net servers"><span class="n">22</span>Steps 2–3: .net &amp; example.net</a></li>
+          <li><a href="#s23" data-title="Inserting records into DNS registrar"><span class="n">23</span>Inserting records into DNS</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Wireshark &amp; Wrap-up (24-29)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s24" data-title="DNS Request Wireshark Packet Capture"><span class="n">24</span>DNS Request — Wireshark</a></li>
+          <li><a href="#s25" data-title="DNS Response Wireshark Packet Capture"><span class="n">25</span>DNS Response — Wireshark</a></li>
+          <li><a href="#s26" data-title="Suggested Readings DNS"><span class="n">26</span>Suggested Readings</a></li>
+          <li><a href="#s27" data-title="Questions 1 2 3 4 5"><span class="n">27</span>Questions (1–5)</a></li>
+          <li><a href="#s28" data-title="Questions 6 7 8 9 10"><span class="n">28</span>Questions (6–10)</a></li>
+          <li><a href="#s29" data-title="Questions 11 12 13 14 15"><span class="n">29</span>Questions (11–15)</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>P2P &amp; Sockets (30-32)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s30" data-title="Peer to peer P2P architecture BitTorrent Skype"><span class="n">30</span>Peer-to-peer (P2P) architecture</a></li>
+          <li><a href="#s31" data-title="Unit 2 TOC Socket Programming with TCP UDP dealt later"><span class="n">31</span>Roadmap check-in: 2.5 Sockets</a></li>
+          <li><a href="#s32" data-title="Unit 2 TOC Other Application Layer Protocols"><span class="n">32</span>Roadmap check-in: 2.6 Other Protocols</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Other Protocols (33-37)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s33" data-title="Other Application Layer Protocols FTP File Transfer Protocol"><span class="n">33</span>FTP</a></li>
+          <li><a href="#s34" data-title="Other Application Layer Protocols SMTP Simple Mail Transfer Protocol"><span class="n">34</span>SMTP</a></li>
+          <li><a href="#s35" data-title="Other Application Layer Protocols DHCP Dynamic Host Configuration"><span class="n">35</span>DHCP</a></li>
+          <li><a href="#s36" data-title="Other Application Layer Protocols SNMP Simple Network Management"><span class="n">36</span>SNMP</a></li>
+          <li><a href="#s37" data-title="Other Application Layer Protocols Telnet SSH"><span class="n">37</span>Telnet &amp; SSH</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Closing (38-41)</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#s38" data-title="Summary of Application Layer Protocols port table"><span class="n">38</span>Summary of App-Layer Protocols (ports)</a></li>
+          <li><a href="#s39" data-title="Summary application architectures transport service model"><span class="n">39</span>Summary</a></li>
+          <li><a href="#s40" data-title="Summary more themes protocols"><span class="n">40</span>Summary (more)</a></li>
+          <li><a href="#s41" data-title="Thank You Team Networks"><span class="n">41</span>Thank You</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 
-  <div class="card">
-    <h1 class="title">Coming Soon</h1>
-    <p class="signature">-TYN</p>
-  </div>
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">COMPUTER NETWORKS — Team Networks, Dept. of CSE</div>
+        <h1>Computer Networks, Unit 2</h1>
+        <p>Slide-by-slide reference following the exact order and titles of the original deck (41 slides) — every slide's content reproduced with a detailed explanation box underneath, so nothing is reorganized or skipped.</p>
+      </header>
 
-  <footer class="site-footer"><span>TYN Notes · Computer Networks</span><a href="index.html">Home</a></footer>
+      <!-- ===== SLIDES 1-2 ===== -->
+      <section class="topic" id="s1">
+        <h2>Cover &amp; "Application Layer" <span class="slide-badge">Slides 1–2</span></h2>
+        <ul>
+          <li><strong>Slide 1:</strong> "COMPUTER NETWORKS" — Team Networks, Department of Computer Science and Engineering (PES University).</li>
+          <li><strong>Slide 2:</strong> "COMPUTER NETWORKS — Application Layer" — the section-divider slide marking the start of the Application Layer unit.</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>These are the deck's title/divider slides. The Application Layer is the topmost layer of the network stack — the one applications (browsers, mail clients, torrent clients) talk to directly. Everything covered in this unit (DNS, P2P, sockets, FTP/SMTP/DHCP/SNMP/Telnet/SSH) lives at this single layer, even though the mechanisms look wildly different from each other.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 3 ===== -->
+      <section class="topic" id="s3">
+        <h2>Unit – 2 Application Layer <span class="slide-badge">Slide 3</span></h2>
+        <p>The unit's roadmap, as listed on the slide:</p>
+        <ol>
+          <li><strong>2.3</strong> The Domain Name System</li>
+          <li><strong>2.4</strong> P2P Applications</li>
+          <li><strong>2.5</strong> Socket Programming with TCP &amp; UDP</li>
+          <li><strong>2.6</strong> Other Application Layer Protocols</li>
+        </ol>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>Note the deliberate ordering: DNS first, because virtually every other application-layer protocol (including the ones covered later, like SMTP and FTP) depends on being able to resolve a hostname before it can even open a connection.</li>
+          <li>P2P is introduced as the second major <em>architecture</em> (alongside client-server, which underlies DNS/FTP/SMTP/etc.) — so the unit is really organized as: naming (DNS) → architectures (client-server vs P2P) → the programming interface (sockets) → a tour of concrete protocols (2.6).</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 4 ===== -->
+      <section class="topic" id="s4">
+        <h2>DNS: Domain Name System <span class="slide-badge">Slide 4</span></h2>
+        <ul>
+          <li><strong>people:</strong> many identifiers — SSN, name, passport #</li>
+          <li><strong>Internet hosts, routers:</strong>
+            <ul>
+              <li>IP address (32 bit) — used for addressing datagrams</li>
+              <li>"name", e.g. <code>cs.umass.edu</code> — used by humans</li>
+            </ul>
+          </li>
+          <li><strong>Q:</strong> how to map between IP address and name, and vice versa?</li>
+          <li><strong>Domain Name System:</strong> distributed database implemented in hierarchy of many name servers</li>
+          <li><strong>application-layer protocol:</strong> hosts, name servers communicate to <em>resolve</em> names (address/name translation)
+            <ul>
+              <li>note: core Internet function, implemented as application-layer protocol</li>
+              <li>complexity at network's "edge"</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 640 140">
+            <rect x="20" y="45" width="150" height="50" rx="3" class="svg-box"/>
+            <text x="95" y="65" text-anchor="middle" class="svg-txt" font-size="12">people:</text>
+            <text x="95" y="82" text-anchor="middle" class="svg-txt-soft" font-size="10.5">SSN, name, passport#</text>
+            <rect x="245" y="20" width="170" height="100" rx="3" class="svg-box-accent"/>
+            <text x="330" y="45" text-anchor="middle" class="svg-txt-accent" font-size="12">DNS</text>
+            <text x="330" y="65" text-anchor="middle" class="svg-txt" font-size="10.5">resolves</text>
+            <text x="330" y="80" text-anchor="middle" class="svg-txt" font-size="10.5">name ⇄ IP address</text>
+            <text x="330" y="100" text-anchor="middle" class="svg-txt-soft" font-size="9.5">(distributed database)</text>
+            <rect x="470" y="45" width="150" height="50" rx="3" class="svg-box"/>
+            <text x="545" y="65" text-anchor="middle" class="svg-txt" font-size="12">hosts / routers:</text>
+            <text x="545" y="82" text-anchor="middle" class="svg-txt-soft" font-size="10.5">IP address, hostname</text>
+            <line x1="170" y1="70" x2="245" y2="70" class="svg-line" marker-end="url(#arrow)"/>
+            <line x1="415" y1="70" x2="470" y2="70" class="svg-line" marker-end="url(#arrow)"/>
+            <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--text-faint)"/></marker></defs>
+          </svg>
+          <figcaption>DNS bridges human-memorable names and router-usable IP addresses</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>An <strong>IPv4</strong> address is 32 bits (e.g. <code>145.37.93.126</code>) — routers only ever look at this number, never the name.</li>
+          <li>Names exist purely for humans; a router given <code>cs.umass.edu</code> directly would have no idea what to do with it.</li>
+          <li><strong>Historical motivation:</strong> before DNS (pre-1983), every ARPANET host kept one shared flat file, <code>HOSTS.TXT</code>, manually maintained and distributed from a single site — this broke down almost immediately as the network grew past a few hundred hosts, which is exactly why a distributed, hierarchical system was designed instead.</li>
+          <li>"Complexity at the network's edge" is a recurring design philosophy of the Internet: routers in the middle stay simple (just forward IP packets); all the smart resolving logic sits in end systems and DNS servers at the edge.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 5 ===== -->
+      <section class="topic" id="s5">
+        <h2>DNS: Services, Structure <span class="slide-badge">Slide 5</span></h2>
+        <h3>DNS services</h3>
+        <ul>
+          <li>hostname to IP address translation</li>
+          <li>host aliasing
+            <ul><li>canonical, alias names</li></ul>
+          </li>
+          <li>mail server aliasing</li>
+          <li>load distribution
+            <ul><li>replicated Web servers: many IP addresses correspond to one name</li></ul>
+          </li>
+        </ul>
+        <pre><code>www.abc.example.com -> Canonical Host Name
+www.example.com     -> Alias Name
+
+www.abc.example.com -> Canonical Host Name
+bob@example.com      -> Alias Name</code></pre>
+        <h3>Q: Why not centralize DNS?</h3>
+        <ul>
+          <li>single point of failure</li>
+          <li>traffic volume</li>
+          <li>distant centralized database</li>
+          <li>maintenance</li>
+        </ul>
+        <div class="formula">
+          <span class="label">A: DOESN'T SCALE!</span>
+          <div class="expr">Comcast DNS servers alone: <mark>600B</mark> queries/day &nbsp;·&nbsp; Akamai DNS servers alone: <mark>2.2T</mark> queries/day</div>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Host aliasing</strong> in plain terms: one server can be reachable under several names, but only one of those names is the "real" (canonical) one that the server's actual DNS record points to — the rest are just aliases (CNAME records, covered in slide 16) redirecting to it.</li>
+          <li><strong>Load distribution</strong> works in the other direction — instead of many names pointing to one machine, one name (<code>www.google.com</code>) can resolve to <em>many different IP addresses</em>, and DNS can rotate which one it hands out (round-robin DNS), spreading incoming traffic across replicas without the client ever knowing.</li>
+          <li>Each centralization objection maps to a concrete failure mode: single point of failure = one outage kills the Internet's naming; traffic volume = literally trillions of queries/day, no single farm handles that; distant database = physically far users get slow lookups; maintenance = every domain owner in the world would need to coordinate writes to the same database.</li>
+          <li>This single slide is the entire justification for the tree-shaped, delegated design shown next.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 6 ===== -->
+      <section class="topic" id="s6">
+        <h2>DNS: A Distributed, Hierarchical Database <span class="slide-badge">Slide 6</span></h2>
+        <div class="diagram">
+          <svg viewBox="0 0 680 260">
+            <rect x="270" y="10" width="140" height="40" rx="3" class="svg-box-accent"/>
+            <text x="340" y="35" text-anchor="middle" class="svg-txt-accent" font-size="12">Root DNS Servers</text>
+            <line x1="340" y1="50" x2="130" y2="95" class="svg-line"/>
+            <line x1="340" y1="50" x2="340" y2="95" class="svg-line"/>
+            <line x1="340" y1="50" x2="550" y2="95" class="svg-line"/>
+            <rect x="55" y="95" width="150" height="38" rx="3" class="svg-box"/>
+            <text x="130" y="119" text-anchor="middle" class="svg-txt" font-size="11">.com DNS servers</text>
+            <rect x="265" y="95" width="150" height="38" rx="3" class="svg-box"/>
+            <text x="340" y="119" text-anchor="middle" class="svg-txt" font-size="11">.org DNS servers</text>
+            <rect x="475" y="95" width="150" height="38" rx="3" class="svg-box"/>
+            <text x="550" y="119" text-anchor="middle" class="svg-txt" font-size="11">.edu DNS servers</text>
+            <line x1="90" y1="133" x2="55" y2="178" class="svg-line"/>
+            <line x1="170" y1="133" x2="195" y2="178" class="svg-line"/>
+            <line x1="305" y1="133" x2="290" y2="178" class="svg-line"/>
+            <line x1="375" y1="133" x2="390" y2="178" class="svg-line"/>
+            <line x1="515" y1="133" x2="500" y2="178" class="svg-line"/>
+            <line x1="585" y1="133" x2="600" y2="178" class="svg-line"/>
+            <rect x="10" y="178" width="90" height="42" rx="3" class="svg-box"/>
+            <text x="55" y="199" text-anchor="middle" class="svg-txt-soft" font-size="9.5">yahoo.com</text>
+            <text x="55" y="212" text-anchor="middle" class="svg-txt-soft" font-size="9.5">DNS servers</text>
+            <rect x="150" y="178" width="90" height="42" rx="3" class="svg-box"/>
+            <text x="195" y="199" text-anchor="middle" class="svg-txt-soft" font-size="9.5">amazon.com</text>
+            <text x="195" y="212" text-anchor="middle" class="svg-txt-soft" font-size="9.5">DNS servers</text>
+            <rect x="245" y="178" width="90" height="42" rx="3" class="svg-box"/>
+            <text x="290" y="199" text-anchor="middle" class="svg-txt-soft" font-size="9.5">pbs.org</text>
+            <text x="290" y="212" text-anchor="middle" class="svg-txt-soft" font-size="9.5">DNS servers</text>
+            <rect x="345" y="178" width="90" height="42" rx="3" class="svg-box"/>
+            <text x="390" y="199" text-anchor="middle" class="svg-txt-soft" font-size="9.5">nyu.edu</text>
+            <text x="390" y="212" text-anchor="middle" class="svg-txt-soft" font-size="9.5">DNS servers</text>
+            <rect x="455" y="178" width="90" height="42" rx="3" class="svg-box"/>
+            <text x="500" y="199" text-anchor="middle" class="svg-txt-soft" font-size="9.5">umass.edu</text>
+            <text x="500" y="212" text-anchor="middle" class="svg-txt-soft" font-size="9.5">DNS servers</text>
+            <text x="650" y="30" class="svg-txt-accent" font-size="10.5">Root</text>
+            <text x="650" y="118" class="svg-txt-accent" font-size="10.5">TLD</text>
+            <text x="650" y="200" class="svg-txt-accent" font-size="10.5">Authoritative</text>
+          </svg>
+          <figcaption>Root → Top-Level Domain (TLD) → Authoritative servers</figcaption>
+        </div>
+        <p><strong>Client wants IP address for <code>www.amazon.com</code>; 1st approximation:</strong></p>
+        <ol>
+          <li>client queries root server to find <code>.com</code> DNS server</li>
+          <li>client queries <code>.com</code> DNS server to get <code>amazon.com</code> DNS server</li>
+          <li>client queries <code>amazon.com</code> DNS server to get IP address for <code>www.amazon.com</code></li>
+        </ol>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>Each level only needs to know about the level immediately below it — the root doesn't know Amazon's IP, only which server handles <code>.com</code>; the <code>.com</code> server doesn't know Amazon's IP either, only which server handles <code>amazon.com</code>. No single machine ever needs a full map of the Internet.</li>
+          <li><strong>Delegation</strong> is the technical term for a parent zone handing off responsibility to a child — the <code>.com</code> TLD server stores an <code>NS</code> record for <code>amazon.com</code> pointing at Amazon's own servers, rather than storing Amazon's actual records itself.</li>
+          <li>This 3-hop walk is the <em>cold-cache, worst-case</em> path — in practice, caching (slide 15) means most real-world queries never reach root or TLD servers at all.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 7 ===== -->
+      <section class="topic" id="s7">
+        <h2>DNS Zone vs Domain <span class="slide-badge">Slide 7</span></h2>
+        <div class="diagram">
+          <svg viewBox="0 0 640 200">
+            <ellipse cx="150" cy="40" rx="80" ry="30" class="svg-box-accent"/>
+            <text x="150" y="36" text-anchor="middle" class="svg-txt-accent" font-size="10.5">Zone 1</text>
+            <text x="150" y="50" text-anchor="middle" class="svg-txt" font-size="9.5">example.com</text>
+            <line x1="150" y1="70" x2="90" y2="110" class="svg-line"/>
+            <line x1="150" y1="70" x2="220" y2="110" class="svg-line"/>
+            <line x1="150" y1="70" x2="340" y2="110" class="svg-line"/>
+            <ellipse cx="90" cy="130" rx="72" ry="28" class="svg-box"/>
+            <text x="90" y="126" text-anchor="middle" class="svg-txt-accent" font-size="9.5">Zone 2</text>
+            <text x="90" y="139" text-anchor="middle" class="svg-txt" font-size="9">usa.example.com</text>
+            <ellipse cx="220" cy="130" rx="60" ry="26" class="svg-box"/>
+            <text x="220" y="126" text-anchor="middle" class="svg-txt-accent" font-size="9.5">Zone 3</text>
+            <text x="220" y="139" text-anchor="middle" class="svg-txt" font-size="9">uk.example.com</text>
+            <ellipse cx="345" cy="130" rx="65" ry="26" class="svg-box"/>
+            <text x="345" y="126" text-anchor="middle" class="svg-txt-accent" font-size="9.5">Zone 4</text>
+            <text x="345" y="139" text-anchor="middle" class="svg-txt" font-size="9">france.example.com</text>
+            <line x1="90" y1="158" x2="35" y2="185" class="svg-line"/>
+            <line x1="90" y1="158" x2="115" y2="185" class="svg-line"/>
+            <text x="35" y="192" text-anchor="middle" class="svg-txt-soft" font-size="9">chicago</text>
+            <text x="115" y="192" text-anchor="middle" class="svg-txt-soft" font-size="9">boston</text>
+            <ellipse cx="170" cy="190" rx="60" ry="20" class="svg-box"/>
+            <text x="170" y="186" text-anchor="middle" class="svg-txt-accent" font-size="9">Zone 5</text>
+            <text x="170" y="198" text-anchor="middle" class="svg-txt" font-size="8.5">nyc.example.com</text>
+          </svg>
+          <figcaption>example.com split into multiple independently-managed zones</figcaption>
+        </div>
+        <ul>
+          <li>DNS is organized according to zones.</li>
+          <li>A zone groups contiguous domains and subdomains on the domain tree.</li>
+          <li>Assign management authority to an entity.</li>
+          <li>The tree structure depicts subdomains within <code>example.com</code> domain.</li>
+          <li>Multiple DNS zones one for each country. The zone keeps records of who the authority is for each of its subdomains.</li>
+          <li>The zone for <code>example.com</code> contains only the DNS records for the hostnames that do not belong to any subdomain like <code>mail.example.com</code>.</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Domain</strong> = a naming subtree (everything under <code>example.com</code>). <strong>Zone</strong> = an administrative boundary — who is actually responsible for maintaining a piece of that tree. One domain can be split into many independently-managed zones, exactly as shown.</li>
+          <li>Worked example of a real zone file's header — the <strong>SOA (Start of Authority)</strong> record, which every zone has:</li>
+        </ul>
+        <pre><code>@   IN  SOA   ns1.example.com. admin.example.com. (
+                2024031501 ; serial   - version #, bump on every edit
+                7200       ; refresh  - secondary checks primary this often
+                3600       ; retry    - retry interval if refresh failed
+                1209600    ; expire   - secondary discards zone if unreachable this long
+                86400 )    ; minimum  - negative-caching TTL (NXDOMAIN)</code></pre>
+        <ul>
+          <li>The <strong>serial number</strong> is critical: secondary servers compare it to their own copy and only pull a fresh zone transfer if the primary's serial is higher — forgetting to bump it after an edit means secondaries silently keep serving stale data.</li>
+          <li><strong>Practical reason to split zones:</strong> a CSE department can manage its own <code>cse.university.edu</code> zone without needing central IT to touch it for every change — and a mistake in one zone doesn't take down the others.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 8 ===== -->
+      <section class="topic" id="s8">
+        <h2>DNS: Root Name Servers <span class="slide-badge">Slide 8</span></h2>
+        <ul>
+          <li>official, contact-of-last-resort by name servers that can not resolve name</li>
+          <li>incredibly important Internet function
+            <ul>
+              <li>Internet couldn't function without it!</li>
+              <li>DNSSEC – provides security (authentication and message integrity)</li>
+            </ul>
+          </li>
+          <li>ICANN (Internet Corporation for Assigned Names and Numbers) manages root DNS domain</li>
+          <li><strong>13 logical root name "servers" worldwide</strong> each "server" replicated many times (~200 servers in US)</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 640 130">
+            <g class="svg-box-accent">
+              <rect x="20" y="30" width="60" height="60" rx="3"/>
+              <rect x="105" y="20" width="60" height="70" rx="3"/>
+              <rect x="190" y="35" width="60" height="55" rx="3"/>
+              <rect x="275" y="15" width="60" height="75" rx="3"/>
+              <rect x="360" y="40" width="60" height="50" rx="3"/>
+              <rect x="445" y="25" width="60" height="65" rx="3"/>
+              <rect x="530" y="35" width="60" height="55" rx="3"/>
+            </g>
+            <text x="50" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">N.America</text>
+            <text x="135" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">Europe</text>
+            <text x="220" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">Asia</text>
+            <text x="305" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">S.America</text>
+            <text x="390" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">Africa</text>
+            <text x="475" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">Oceania</text>
+            <text x="560" y="105" text-anchor="middle" class="svg-txt-soft" font-size="9">Others</text>
+          </svg>
+          <figcaption>13 logical root servers, replicated globally (bar height ≈ relative replica count)</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>Root servers are named <code>a.root-servers.net</code> through <code>m.root-servers.net</code> — 13 letters, each operated by a different organization (Verisign, USC-ISI, Cogent, University of Maryland, NASA, ICANN, U.S. Army Research Lab, Netnod, RIPE NCC, and others).</li>
+          <li>Each letter is <strong>anycast</strong> — physically hundreds of machines worldwide, but logically one IP address per letter; BGP routes your query to the topologically nearest instance, which is how "13 servers" handle global load without being a bottleneck.</li>
+          <li>They are "contact of last resort" precisely because thanks to caching (slide 15), they're rarely actually contacted — most resolvers already have the relevant TLD server cached.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 9 ===== -->
+      <section class="topic" id="s9">
+        <h2>DNSSEC – Why It Matters <span class="slide-badge">Slide 9</span></h2>
+        <ul>
+          <li>Plain DNS has no authentication — a response claiming to be from an authoritative server could be forged (cache poisoning / spoofing)</li>
+          <li>DNSSEC adds digital signatures (RRSIG records) to DNS responses, so a resolver can verify a record actually came from the zone's authoritative server</li>
+          <li>Trust is chained: Root → TLD → Authoritative — each level signs the key of the level below it</li>
+          <li>It provides authentication and integrity, not confidentiality — DNS queries are still visible in plaintext</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION — HOW THE CHAIN ACTUALLY WORKS</span><ul>
+          <li>Each zone has a key pair. The <strong>private key</strong> signs the zone's records, producing <code>RRSIG</code> entries.</li>
+          <li>A <code>DNSKEY</code> record publishes the zone's <em>public</em> key so anyone can verify its signatures.</li>
+          <li>A <code>DS</code> (Delegation Signer) record sits in the <strong>parent</strong> zone and contains a hash of the child zone's public key — this is what lets the parent formally vouch for the child.</li>
+          <li>The chain terminates at the root zone's key, which is the single universally-trusted <strong>trust anchor</strong> baked into resolver software — verify that one key, and (transitively, via the DS chain) you can trust every signed zone below it.</li>
+          <li>"Authentication, not confidentiality" is the key nuance: DNSSEC stops an attacker from <em>forging</em> a fake answer, but it does nothing to hide what you're looking up — anyone sniffing the network still sees the plaintext query (DoH/DoT, mentioned under slide 11, is the fix for that separate problem).</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 10 ===== -->
+      <section class="topic" id="s10">
+        <h2>TLD: Authoritative Servers <span class="slide-badge">Slide 10</span></h2>
+        <h3>Top-Level Domain (TLD) servers:</h3>
+        <ul>
+          <li>responsible for <code>.com</code>, <code>.org</code>, <code>.net</code>, <code>.edu</code>, <code>.aero</code>, <code>.jobs</code>, <code>.museums</code>, and all top-level country domains, e.g.: <code>.cn</code>, <code>.uk</code>, <code>.fr</code>, <code>.ca</code>, <code>.jp</code></li>
+          <li>Network Solutions: authoritative registry for <code>.com</code>, <code>.net</code> TLD</li>
+          <li>Educause: <code>.edu</code> TLD</li>
+        </ul>
+        <h3>Authoritative DNS servers:</h3>
+        <ul>
+          <li>organization's own DNS server(s), providing authoritative hostname to IP mappings for organization's named hosts</li>
+          <li>can be maintained by organization or service provider</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>gTLD vs ccTLD:</strong> <code>.com</code>/<code>.org</code>/<code>.net</code>/<code>.edu</code> are "generic" TLDs; <code>.cn</code>/<code>.uk</code>/<code>.jp</code> are "country-code" TLDs (two-letter ISO 3166 codes) — some ccTLDs like <code>.io</code> or <code>.co</code> get repurposed commercially even though they're technically a country's code.</li>
+          <li><strong>Registry vs registrar</strong> — a distinction often confused: the <strong>registry</strong> (e.g. Verisign for <code>.com</code>) operates the actual TLD servers and owns the master database for that TLD; the <strong>registrar</strong> (e.g. GoDaddy, Namecheap) is the retail front-end that sells domain names to the public and talks to the registry on your behalf. When you "buy a domain," you're buying from a registrar, not the registry.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 11 ===== -->
+      <section class="topic" id="s11">
+        <h2>Local DNS Name Servers <span class="slide-badge">Slide 11</span></h2>
+        <ul>
+          <li>does not strictly belong to hierarchy</li>
+          <li>each ISP (residential ISP, company, university) has local DNS Server
+            <ul>
+              <li>also called "default name server"</li>
+              <li>MacOS: <code>% scutil --dns</code></li>
+              <li>Windows: <code>&gt;ipconfig /all</code></li>
+            </ul>
+          </li>
+          <li>when host makes DNS query, query is sent to its local DNS server</li>
+          <li>Local DNS server returns reply, answering:
+            <ul>
+              <li>From its local cache of recent name-to-address translation pairs (but may be out of date!)</li>
+              <li>acts as proxy, forwards query into hierarchy</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Stub resolver vs recursive resolver:</strong> your laptop/phone runs a lightweight <em>stub resolver</em> — it doesn't walk the hierarchy itself; it just forwards every query to a configured <em>recursive resolver</em> (usually your ISP's local DNS server) and trusts whatever answer comes back. The recursive resolver is the one that actually does the walking (or serves from cache).</li>
+          <li><strong>You aren't locked into your ISP's resolver</strong> — well-known public alternatives include Google (<code>8.8.8.8</code>), Cloudflare (<code>1.1.1.1</code>), and Quad9 (<code>9.9.9.9</code>).</li>
+          <li><strong>DNS over HTTPS (DoH) / DNS over TLS (DoT)</strong> encrypt the query itself between the stub and recursive resolver — this is the piece DNSSEC (slide 9) explicitly does <em>not</em> cover.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 12 ===== -->
+      <section class="topic" id="s12">
+        <h2>DNS Name Resolution: Iterated Query <span class="slide-badge">Slide 12</span></h2>
+        <p><strong>Example:</strong> host at <code>engineering.nyu.edu</code> wants IP address for <code>gaia.cs.umass.edu</code>.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 660 220">
+            <rect x="10" y="90" width="100" height="40" rx="3" class="svg-box"/>
+            <text x="60" y="106" text-anchor="middle" class="svg-txt-soft" font-size="8.5">requesting host</text>
+            <text x="60" y="118" text-anchor="middle" class="svg-txt-soft" font-size="8">engineering.nyu.edu</text>
+            <rect x="160" y="90" width="110" height="40" rx="3" class="svg-box-accent"/>
+            <text x="215" y="106" text-anchor="middle" class="svg-txt-accent" font-size="9">local DNS server</text>
+            <text x="215" y="118" text-anchor="middle" class="svg-txt" font-size="8">dns.nyu.edu</text>
+            <rect x="330" y="10" width="100" height="36" rx="3" class="svg-box"/>
+            <text x="380" y="32" text-anchor="middle" class="svg-txt" font-size="9">root DNS server</text>
+            <rect x="460" y="55" width="100" height="36" rx="3" class="svg-box"/>
+            <text x="510" y="77" text-anchor="middle" class="svg-txt" font-size="9">TLD DNS server</text>
+            <rect x="460" y="145" width="120" height="46" rx="3" class="svg-box"/>
+            <text x="520" y="163" text-anchor="middle" class="svg-txt" font-size="8.5">authoritative server</text>
+            <text x="520" y="176" text-anchor="middle" class="svg-txt-soft" font-size="8">dns.cs.umass.edu</text>
+            <line x1="110" y1="105" x2="160" y2="105" class="svg-line-accent" marker-end="url(#a2)"/>
+            <text x="135" y="98" text-anchor="middle" font-size="9" class="svg-txt-accent">1</text>
+            <line x1="270" y1="100" x2="330" y2="40" class="svg-line" marker-end="url(#a2)"/>
+            <text x="290" y="65" font-size="9" class="svg-txt-accent">2</text>
+            <line x1="330" y1="45" x2="270" y2="105" class="svg-line" marker-end="url(#a2)"/>
+            <text x="315" y="80" font-size="9" class="svg-txt-accent">3</text>
+            <line x1="270" y1="112" x2="460" y2="75" class="svg-line" marker-end="url(#a2)"/>
+            <text x="380" y="88" font-size="9" class="svg-txt-accent">4</text>
+            <line x1="460" y1="80" x2="270" y2="118" class="svg-line" marker-end="url(#a2)"/>
+            <text x="380" y="112" font-size="9" class="svg-txt-accent">5</text>
+            <line x1="270" y1="122" x2="460" y2="165" class="svg-line" marker-end="url(#a2)"/>
+            <text x="380" y="150" font-size="9" class="svg-txt-accent">6</text>
+            <line x1="460" y1="172" x2="270" y2="126" class="svg-line" marker-end="url(#a2)"/>
+            <text x="400" y="170" font-size="9" class="svg-txt-accent">7</text>
+            <line x1="160" y1="118" x2="110" y2="118" class="svg-line-accent" marker-end="url(#a2)"/>
+            <text x="135" y="132" text-anchor="middle" font-size="9" class="svg-txt-accent">8</text>
+            <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+          </svg>
+          <figcaption>Iterated query — local server does all the walking, 8 total messages</figcaption>
+        </div>
+        <ul>
+          <li>contacted server replies with name of server to contact</li>
+          <li>"I don't know this name, but ask this server"</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>The <strong>local DNS server itself</strong> walks root → TLD → authoritative (steps 2–7), then relays the final answer back to the requesting host (step 8).</li>
+          <li><strong>Why root/TLD insist on this mode:</strong> they handle an enormous fraction of the world's DNS traffic. If they had to do full recursive resolution for every resolver on Earth, their load would explode. By replying with only a referral, they offload the actual walking work onto the (much more numerous, much less loaded) local resolvers — a deliberate load-shedding design choice.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 13 ===== -->
+      <section class="topic" id="s13">
+        <h2>DNS Name Resolution: Recursive Query <span class="slide-badge">Slide 13</span></h2>
+        <p><strong>Example:</strong> host at <code>engineering.nyu.edu</code> wants IP address for <code>gaia.cs.umass.edu</code>.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 660 220">
+            <rect x="10" y="90" width="100" height="40" rx="3" class="svg-box"/>
+            <text x="60" y="106" text-anchor="middle" class="svg-txt-soft" font-size="8.5">requesting host</text>
+            <text x="60" y="118" text-anchor="middle" class="svg-txt-soft" font-size="8">engineering.nyu.edu</text>
+            <rect x="160" y="90" width="110" height="40" rx="3" class="svg-box-accent"/>
+            <text x="215" y="106" text-anchor="middle" class="svg-txt-accent" font-size="9">local DNS server</text>
+            <text x="215" y="118" text-anchor="middle" class="svg-txt" font-size="8">dns.nyu.edu</text>
+            <rect x="330" y="10" width="100" height="36" rx="3" class="svg-box"/>
+            <text x="380" y="32" text-anchor="middle" class="svg-txt" font-size="9">root DNS server</text>
+            <rect x="460" y="55" width="100" height="36" rx="3" class="svg-box"/>
+            <text x="510" y="77" text-anchor="middle" class="svg-txt" font-size="9">TLD DNS server</text>
+            <rect x="460" y="145" width="120" height="46" rx="3" class="svg-box"/>
+            <text x="520" y="163" text-anchor="middle" class="svg-txt" font-size="8.5">authoritative server</text>
+            <text x="520" y="176" text-anchor="middle" class="svg-txt-soft" font-size="8">dns.cs.umass.edu</text>
+            <line x1="110" y1="105" x2="160" y2="105" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="135" y="98" text-anchor="middle" font-size="9" class="svg-txt-accent">1</text>
+            <line x1="270" y1="100" x2="330" y2="40" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="290" y="65" font-size="9" class="svg-txt-accent">2</text>
+            <line x1="380" y1="46" x2="460" y2="65" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="415" y="50" font-size="9" class="svg-txt-accent">3</text>
+            <line x1="460" y1="90" x2="460" y2="145" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="470" y="120" font-size="9" class="svg-txt-accent">4</text>
+            <line x1="500" y1="145" x2="500" y2="91" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="490" y="120" font-size="9" class="svg-txt-accent">5</text>
+            <line x1="470" y1="55" x2="395" y2="45" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="440" y="40" font-size="9" class="svg-txt-accent">6</text>
+            <line x1="335" y1="42" x2="270" y2="102" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="300" y="90" font-size="9" class="svg-txt-accent">7</text>
+            <line x1="160" y1="118" x2="110" y2="118" class="svg-line-accent" marker-end="url(#a3)"/>
+            <text x="135" y="132" text-anchor="middle" font-size="9" class="svg-txt-accent">8</text>
+            <defs><marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+          </svg>
+          <figcaption>Recursive query — each contacted server does the walking on the client's behalf</figcaption>
+        </div>
+        <ul>
+          <li>puts burden of name resolution on contacted name server</li>
+          <li>heavy load at upper levels of hierarchy?</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>In recursive mode, each server says, in effect, "I don't know, let me ask for you" — it queries the next server on the client's behalf and only replies once it has the final answer, rather than handing back a referral.</li>
+          <li>The slide's own rhetorical question — "heavy load at upper levels of hierarchy?" — is exactly why in practice root and TLD servers never actually offer recursion; it's typically only offered between a client and its own local resolver (compare with slide 14).</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 14 ===== -->
+      <section class="topic" id="s14">
+        <h2>Iterated vs Recursive Query – Side by Side <span class="slide-badge">Slide 14</span></h2>
+        <table>
+          <thead><tr><th></th><th>Iterated Query</th><th>Recursive Query</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Who does the walking?</strong></td><td>The requesting client / local DNS server itself</td><td>Each contacted server, on the client's behalf</td></tr>
+            <tr><td><strong>Where does the load land?</strong></td><td>Distributed — every hop answers only what it knows</td><td>Concentrated — pushed onto upper-hierarchy servers</td></tr>
+            <tr><td><strong>"I don't know this name…"</strong></td><td>"…but ask this server" (referral)</td><td>"…let me ask for you" (relay)</td></tr>
+            <tr><td><strong>Typically used</strong></td><td>Local resolver ↔ root / TLD / authoritative</td><td>Client ↔ local DNS resolver</td></tr>
+          </tbody>
+        </table>
+        <div class="explain"><span class="label">EXPLANATION</span><p>Real-world DNS combines both: the client-to-local-resolver leg is recursive (simple for the client — it just gets a final answer), while the local-resolver-to-root/TLD/authoritative leg is iterated (keeps load off the top of the hierarchy). This table is the direct comparison of the two diagrams from slides 12 and 13.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 15 ===== -->
+      <section class="topic" id="s15">
+        <h2>Caching and Updating DNS Records <span class="slide-badge">Slide 15</span></h2>
+        <ul>
+          <li>Suppose that a host <code>apricot.nyu.edu</code> queries <code>dns.nyu.edu</code> for the IP address for the hostname <code>cnn.com</code>. After an hour later, another NYU host, say, <code>kiwi.nyu.edu</code>, also queries <code>dns.nyu.edu</code>.</li>
+          <li>once (any) name server learns mapping, it caches mapping and immediately returns a cached mapping in response to a query
+            <ul>
+              <li>Caching improves response time</li>
+              <li>cache entries timeout (disappear) after some time (TTL)</li>
+              <li>TLD servers typically cached in local name servers
+                <ul><li>thus root name servers not often visited</li></ul>
+              </li>
+            </ul>
+          </li>
+          <li>If <code>cnn.com</code> changes its IP address right now, how would you find out that some corner of the internet is still resolving it to the old IP?</li>
+          <li>cached entries may be out-of-date (best-effort name-to-address translation!)
+            <ul><li>if name host changes IP address, may not be known Internet-wide until all TTLs expire!</li></ul>
+          </li>
+          <li>update/notify mechanisms proposed IETF standard
+            <ul><li>RFC 2136</li></ul>
+          </li>
+        </ul>
+        <div class="formula">
+          <span class="label">KEY IDEA — TTL</span>
+          <div class="expr">cache entry valid for <strong>TTL</strong> seconds → discarded → next query re-walks the hierarchy</div>
+          <div class="note">TTL controls the trade-off: long TTL = cheap/fast but stale; short TTL = fresh but more load.</div>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Negative caching:</strong> resolvers also cache the fact that a name doesn't exist (<code>NXDOMAIN</code>), so repeated typos don't hammer the authoritative server. How long is controlled by the zone's <strong>SOA minimum field</strong> (see slide 7), not a per-record TTL.</li>
+          <li><strong>Typical TTLs:</strong> a static corporate site might use 1 hour–1 day (rarely changes, cheap); a load-balanced/CDN service might use 60–300 sec (may need fast failover).</li>
+          <li><strong>Operational fix for planned IP changes:</strong> lower the TTL well in advance → wait for the old (long) TTL to fully drain everywhere → make the change → raise TTL back up. This bounds the worst-case staleness window rather than eliminating it — DNS caching is fundamentally best-effort.</li>
+          <li><strong>Security note (DNS rebinding):</strong> because TTLs are attacker-controllable on a domain the attacker owns, a malicious site can serve a very short TTL, then "rebind" the same hostname to an internal/private IP after browser same-origin checks have passed — a known technique for reaching internal network services from a public webpage.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 16 ===== -->
+      <section class="topic" id="s16">
+        <h2>DNS Records <span class="slide-badge">Slide 16</span></h2>
+        <p>DNS: distributed database storing resource records (RR)</p>
+        <div class="formula">
+          <span class="label">RR FORMAT</span>
+          <div class="expr">(name, value, type, ttl)</div>
+        </div>
+        <div class="two-col">
+          <div>
+            <h4>type=A</h4>
+            <ul><li>name is hostname</li><li>value is IP address</li></ul>
+            <pre><code>relay1.bar.foo.com, 145.37.93.126, A</code></pre>
+            <h4>type=NS</h4>
+            <ul><li>name is domain (e.g., foo.com)</li><li>value is hostname of authoritative name server for this domain</li></ul>
+            <pre><code>foo.com, dns.foo.com, NS</code></pre>
+          </div>
+          <div>
+            <h4>type=CNAME</h4>
+            <ul><li>name is alias name for some "canonical" (the real) name</li><li>www.ibm.com is really servereast.backup2.ibm.com</li><li>value is canonical name</li></ul>
+            <pre><code>ibm.com, servereast.backup2.ibm.com, CNAME</code></pre>
+            <h4>type=MX</h4>
+            <ul><li>value is canonical name of a mailserver associated with alias hostname name</li></ul>
+            <pre><code>example.com, mail.example.com, MX</code></pre>
+          </div>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><p><strong>CNAME</strong> is a generic hostname alias; <strong>MX</strong> specifically tells you where a domain's <em>email</em> should be delivered, and — unlike CNAME — supports multiple entries with priority values, so a fallback mail server can take over automatically if the primary is down. This is why you can't use a CNAME where an MX is required.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 17 ===== -->
+      <section class="topic" id="s17">
+        <h2>DNS Record Types – Extended Reference <span class="slide-badge">Slide 17</span></h2>
+        <table>
+          <thead><tr><th>Type</th><th>Purpose</th><th>Example (name, value)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>A</strong></td><td>Hostname → IPv4 address (covered, slide 16)</td><td>relay1.bar.foo.com → 145.37.93.126</td></tr>
+            <tr><td><strong>AAAA</strong></td><td>Hostname → IPv6 address</td><td>www.example.com → 2606:2800:220:1:248:...</td></tr>
+            <tr><td><strong>NS</strong></td><td>Domain → authoritative name server (covered, slide 16)</td><td>foo.com → dns.foo.com</td></tr>
+            <tr><td><strong>CNAME</strong></td><td>Alias → canonical name (covered, slide 16)</td><td>www.ibm.com → servereast.backup2.ibm.com</td></tr>
+            <tr><td><strong>MX</strong></td><td>Domain → mail server, with priority (covered, slide 16)</td><td>example.com → mail.example.com</td></tr>
+            <tr><td><strong>TXT</strong></td><td>Free-text data — domain verification, SPF/DKIM anti-spam records</td><td>example.com → "v=spf1 include:_spf..."</td></tr>
+            <tr><td><strong>SOA</strong></td><td>Start of Authority — zone's primary server, admin contact, TTL defaults</td><td>example.com → ns1.example.com, admin...</td></tr>
+          </tbody>
+        </table>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>AAAA</strong> is simply the IPv6 counterpart of <code>A</code> — same idea, 128-bit address instead of 32-bit.</li>
+          <li><strong>TXT</strong> has no fixed structure at all (it's just free text) — which is exactly why it's reused for two very different real purposes: proving domain ownership (e.g. <code>google-site-verification=…</code>) and publishing email anti-spoofing policies like SPF/DKIM.</li>
+          <li><strong>SOA</strong> was already introduced in slide 7's zone-file example — this table simply reconfirms its role as "the header record" every zone must have.</li>
+          <li>Two commonly-tested types <em>not</em> on this slide but worth knowing: <strong>PTR</strong> (reverse DNS: IP → hostname, used by mail servers to fight spam) and <strong>SRV</strong> (service discovery: maps a service+protocol+domain to a hostname and port).</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 18 ===== -->
+      <section class="topic" id="s18">
+        <h2>DNS Protocol Messages <span class="slide-badge">Slide 18</span></h2>
+        <p>DNS query and reply messages, both have same format:</p>
+        <div class="diagram">
+          <svg viewBox="0 0 500 260">
+            <rect x="10" y="10" width="240" height="30" class="svg-box"/><text x="130" y="30" text-anchor="middle" class="svg-txt" font-size="10.5">identification</text>
+            <rect x="250" y="10" width="240" height="30" class="svg-box"/><text x="370" y="30" text-anchor="middle" class="svg-txt" font-size="10.5">flags</text>
+            <rect x="10" y="40" width="240" height="30" class="svg-box"/><text x="130" y="60" text-anchor="middle" class="svg-txt" font-size="10.5"># questions</text>
+            <rect x="250" y="40" width="240" height="30" class="svg-box"/><text x="370" y="60" text-anchor="middle" class="svg-txt" font-size="10.5"># answer RRs</text>
+            <rect x="10" y="70" width="240" height="30" class="svg-box"/><text x="130" y="90" text-anchor="middle" class="svg-txt" font-size="10.5"># authority RRs</text>
+            <rect x="250" y="70" width="240" height="30" class="svg-box"/><text x="370" y="90" text-anchor="middle" class="svg-txt" font-size="10.5"># additional RRs</text>
+            <rect x="10" y="100" width="480" height="34" class="svg-box-accent"/><text x="250" y="121" text-anchor="middle" class="svg-txt-accent" font-size="10.5">questions (variable # of questions)</text>
+            <rect x="10" y="134" width="480" height="34" class="svg-box-accent"/><text x="250" y="155" text-anchor="middle" class="svg-txt-accent" font-size="10.5">answers (variable # of RRs)</text>
+            <rect x="10" y="168" width="480" height="34" class="svg-box-accent"/><text x="250" y="189" text-anchor="middle" class="svg-txt-accent" font-size="10.5">authority (variable # of RRs)</text>
+            <rect x="10" y="202" width="480" height="34" class="svg-box-accent"/><text x="250" y="223" text-anchor="middle" class="svg-txt-accent" font-size="10.5">additional info (variable # of RRs)</text>
+            <text x="130" y="248" text-anchor="middle" class="svg-txt-soft" font-size="9">2 bytes</text>
+            <text x="370" y="248" text-anchor="middle" class="svg-txt-soft" font-size="9">2 bytes</text>
+          </svg>
+          <figcaption>12-byte header + 4 variable-length record sections</figcaption>
+        </div>
+        <h3>message header:</h3>
+        <ul>
+          <li>identification: 16 bit # for query, reply to query uses same #</li>
+          <li>flags:
+            <ul>
+              <li>query (0) or reply (1-bit)</li>
+              <li>recursion desired</li>
+              <li>recursion available</li>
+              <li>reply is authoritative</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>The <strong>identification</strong> field is what lets a resolver match a reply to the query it sent — critical when many queries are in flight at once. The four <strong>flag bits</strong> listed here reappear directly in slide 20's <code>dig</code> output (as <code>qr</code>, <code>rd</code>, <code>ra</code>, <code>aa</code>) — this slide is the abstract definition, slide 20 is where you actually see them on the wire.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 19 ===== -->
+      <section class="topic" id="s19">
+        <h2>DNS Protocol Messages (continued) <span class="slide-badge">Slide 19</span></h2>
+        <p>DNS query and reply messages, both have same format — same diagram as slide 18, annotated further:</p>
+        <ul>
+          <li><strong>name, type fields for a query</strong> → the <code>questions</code> section</li>
+          <li><strong>RRs in response to query</strong> → the <code>answers</code> section</li>
+          <li><strong>records for authoritative servers</strong> → the <code>authority</code> section</li>
+          <li><strong>additional "helpful" info that may be used</strong> → the <code>additional info</code> section</li>
+          <li>Each record carries: <strong>Type</strong> (for example, A, NS, CNAME, and MX), the <strong>Value</strong>, and the <strong>TTL</strong>.</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>This annotated repeat of slide 18 is making one specific point: every RR in every section (answer, authority, additional) follows the exact same <code>(Type, Value, TTL)</code> shape defined back in slide 16's <code>(name, value, type, ttl)</code> format — the message format and the record format are the same building block, reused everywhere.</li>
+          <li><strong>Transport detail not shown on the slide:</strong> DNS runs on port 53, over UDP by default (low overhead, no handshake). Classic messages were capped at 512 bytes over UDP — if a reply would exceed that, the server sets the <strong>TC (truncated)</strong> flag and the client retries the same query over TCP. Zone transfers (AXFR/IXFR) always use TCP.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 20 ===== -->
+      <section class="topic" id="s20">
+        <h2>DNS Demo Toolkit – Command Cheat Sheet <span class="slide-badge">Slide 20</span></h2>
+        <table>
+          <thead><tr><th>Command</th><th>What it does</th><th>Use it for</th></tr></thead>
+          <tbody>
+            <tr><td><code>dig @server name</code></td><td>Sends the query directly to one named server</td><td>Emulating a single hop of resolution</td></tr>
+            <tr><td><code>dig +trace name</code></td><td>Automatically walks root → TLD → authoritative</td><td>Showing the full iterated path in one shot</td></tr>
+            <tr><td><code>dig name</code></td><td>Standard lookup via your local resolver</td><td>Baseline lookup before diving into hops</td></tr>
+            <tr><td><code>nslookup name</code></td><td>Cross-platform basic lookup</td><td>Quick check on machines without dig</td></tr>
+            <tr><td><code>host name</code></td><td>Minimal, one-line lookup</td><td>Fast sanity check mid-demo</td></tr>
+            <tr><td><code>scutil --dns</code> (macOS)</td><td>Shows the local/default resolver</td><td>Slide 11 — identifying the local DNS server</td></tr>
+            <tr><td><code>ipconfig /all</code> (Windows)</td><td>Shows the local/default resolver</td><td>Slide 11 — identifying the local DNS server</td></tr>
+          </tbody>
+        </table>
+        <div class="explain"><span class="label">EXPLANATION — READING dig'S FLAGS</span>
+        <table>
+          <thead><tr><th>Flag</th><th>Meaning when set</th></tr></thead>
+          <tbody>
+            <tr><td><code>qr</code></td><td>This message is a response, not a query</td></tr>
+            <tr><td><code>aa</code></td><td>Authoritative answer — came straight from the zone's own server, not a cache</td></tr>
+            <tr><td><code>rd</code></td><td>Recursion desired — client asked for full recursive resolution</td></tr>
+            <tr><td><code>ra</code></td><td>Recursion available — responder is willing to do it (never set by root/TLD)</td></tr>
+            <tr><td><code>tc</code></td><td>Truncated — didn't fit in UDP, retry over TCP</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <!-- ===== SLIDE 21 ===== -->
+      <section class="topic" id="s21">
+        <h2>Emulating Local DNS Server (Step 1: Ask Root) <span class="slide-badge">Slide 21</span></h2>
+        <pre><code>seed@ubuntu:~$ dig @a.root-servers.net www.example.net
+
+(Only a portion of the reply is shown here)
+;; QUESTION SECTION:
+;www.example.net.        IN   A
+
+;; AUTHORITY SECTION:
+net.  172800  IN  NS  m.gtld-servers.net.
+net.  172800  IN  NS  l.gtld-servers.net.
+net.  172800  IN  NS  k.gtld-servers.net.
+
+;; ADDITIONAL SECTION:
+m.gtld-servers.net.  172800  IN  A  192.55.83.30
+l.gtld-servers.net.  172800  IN  A  192.41.162.30
+k.gtld-servers.net.  172800  IN  A  192.52.178.30</code></pre>
+        <ul>
+          <li>Directly send the query to this server.</li>
+          <li>No answer (the root does not know the answer)</li>
+          <li>Go ask them!</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>This is the iterated-query behavior from slide 12 captured live: the root has no <code>ANSWER SECTION</code> at all — only an <code>AUTHORITY SECTION</code> (a referral to the <code>.net</code> TLD servers) plus an <code>ADDITIONAL SECTION</code> giving their IP addresses directly. That additional-section IP is a <strong>glue record</strong> — without it, the resolver would need to resolve <code>m.gtld-servers.net</code> to get its IP, but it can't resolve that name without first knowing... its IP. Glue records break this circular dependency.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 22 ===== -->
+      <section class="topic" id="s22">
+        <h2>Steps 2-3: Ask .net &amp; example.net servers <span class="slide-badge">Slide 22</span></h2>
+        <pre><code>seed@ubuntu:~$ dig @m.gtld-servers.net www.example.net
+
+;; QUESTION SECTION:
+;www.example.net.        IN   A
+
+;; AUTHORITY SECTION:
+example.net.  172800  IN  NS  a.iana-servers.net.
+example.net.  172800  IN  NS  b.iana-servers.net.
+
+;; ADDITIONAL SECTION:
+a.iana-servers.net.  172800  IN  A  199.43.132.53
+b.iana-servers.net.  172800  IN  A  199.43.133.53
+
+seed@ubuntu:$ dig @a.iana-servers.net www.example.net
+
+;; QUESTION SECTION:
+;www.example.net.        IN   A
+
+;; ANSWER SECTION:
+www.example.net.  86400  IN  A  93.184.216.34</code></pre>
+        <ul>
+          <li>Go ask them!</li>
+          <li>Ask an example.net nameservers.</li>
+          <li>Finally got the answer</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>This completes the full iterated walk begun in slide 21: root → <code>.net</code> TLD (this slide, first query) → <code>example.net</code> authoritative (this slide, second query), which finally returns an <code>ANSWER SECTION</code> with the real <code>A</code> record. Notice the second query's response has no <code>AUTHORITY</code>/<code>ADDITIONAL</code> sections needed — the authoritative server is the end of the line, it simply answers.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 23 ===== -->
+      <section class="topic" id="s23">
+        <h2>Inserting records into DNS <span class="slide-badge">Slide 23</span></h2>
+        <p><strong>Example: new startup "Network Utopia"</strong></p>
+        <ul>
+          <li>register name <code>networkuptopia.com</code> at DNS registrar (e.g., Network Solutions)
+            <ul>
+              <li>provide names, IP addresses of authoritative name server (primary and secondary)</li>
+              <li>registrar inserts NS, A RRs into <code>.com</code> TLD server:
+                <pre><code>(networkutopia.com, dns1.networkutopia.com, NS)
+(dns1.networkutopia.com, 212.212.212.1, A)</code></pre>
+              </li>
+            </ul>
+          </li>
+          <li>create authoritative server locally with IP address <code>212.212.212.1</code>
+            <ul>
+              <li>type A record for <code>www.networkuptopia.com</code></li>
+              <li>type MX record for <code>networkutopia.com</code></li>
+            </ul>
+          </li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>The <strong>registrar</strong> (retail seller, e.g. Network Solutions) forwards your registration to the <strong>registry</strong> (the TLD's database operator) via a standard protocol called <strong>EPP</strong> (Extensible Provisioning Protocol) — this is the "insert NS, A RRs into .com TLD server" step, done on your behalf.</li>
+          <li>Domains are registered for a fixed term and must be <strong>renewed</strong>; letting one lapse means it becomes available for anyone else to register once a grace period passes.</li>
+          <li><strong>WHOIS</strong> is the separate public lookup protocol/database showing who registered a domain and its expiry date.</li>
+          <li>Changing which authoritative servers a domain uses (migrating DNS providers) means updating the <code>NS</code> records at the registrar — this is exactly why such migrations come with "may take up to 48 hours to propagate" warnings: it's bounded by the old NS record's TTL, tying directly back to slide 15's caching discussion.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 24 ===== -->
+      <section class="topic" id="s24">
+        <h2>DNS Request - Wireshark Packet Capture <span class="slide-badge">Slide 24</span></h2>
+        <ul>
+          <li>Captured packet: <code>Standard query 0x9f7d  A www.ietf.org</code>, protocol <strong>DNS</strong>, sent from the host to its local resolver <code>10.40.4.44</code>.</li>
+          <li>Header details shown: <code>Flags: 0x0100 Standard query</code>, <code>Questions: 1</code>, <code>Answer RRs: 0</code>, <code>Authority RRs: 0</code>, <code>Additional RRs: 0</code>.</li>
+          <li>Query section: <code>www.ietf.org: type A, class IN</code>.</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>This is a live packet showing exactly the message header format from slides 18–19: an <code>identification</code> (<code>0x9f7d</code>), <code>flags</code> (<code>0x0100</code>), and the four counts — here only <code>Questions</code> is non-zero, confirming this is a query, not a reply (no answers yet). Note the whole thing is one UDP datagram to port 53.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 25 ===== -->
+      <section class="topic" id="s25">
+        <h2>DNS Response - Wireshark Packet Capture <span class="slide-badge">Slide 25</span></h2>
+        <ul>
+          <li>Same transaction — <code>Flags: 0x8180 Standard query response, No error</code>.</li>
+          <li><code>Questions: 1</code>, <code>Answer RRs: 1</code>, <code>Authority RRs: 6</code>, <code>Additional RRs: 11</code>.</li>
+          <li><strong>Answers:</strong> <code>www.ietf.org: type A, class IN, addr 64.170.98.30</code></li>
+          <li><strong>Authoritative nameservers:</strong> <code>ietf.org: type NS, ns ns1.yyz1.afilias-nst.info</code>, plus <code>ns0.ietf.org</code>, <code>ns1.sea1.afilias-nst.info</code>, <code>ns1.ams1.afilias-nst.info</code>, <code>ns1.mia1.afilias-nst.info</code>.</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>The <code>0x8180</code> flags value decodes directly using the table from slide 20: <code>qr=1</code> (this is a response), <code>rd=1</code> (recursion was requested), <code>ra=1</code> (recursion was available), <code>rcode=0</code> (NOERROR, "success"). The same <strong>Transaction ID</strong> as slide 24's request is what lets the resolver match this reply to its original query — this is the <code>identification</code> field from slide 18 doing its job in practice.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 26 ===== -->
+      <section class="topic" id="s26">
+        <h2>Suggested Readings <span class="slide-badge">Slide 26</span></h2>
+        <ul>
+          <li>DNS (Domain Name System) – Explained – <code>https://youtu.be/JkEYOt08-rU</code></li>
+          <li>How a DNS Server (Domain Name System) works – <code>https://youtu.be/rdVPflECed8</code></li>
+          <li>Wireshark Lab: DNS v7.0 – <code>http://www-net.cs.umass.edu/wireshark-labs/Wireshark_DNS_v7.0.pdf</code></li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>This marks the end of the DNS section of the deck — everything from slide 4 through slide 25 is DNS. The Wireshark Lab reference is exactly what produced the packet captures shown in slides 24–25; working through it hands-on is the recommended way to see the iterated/recursive behavior from slides 12–13 for yourself.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 27 ===== -->
+      <section class="topic" id="s27">
+        <h2>Questions <span class="slide-badge">Slide 27 (1–5)</span></h2>
+        <div class="q-item"><div class="q">1. Why can't we just use IP addresses everywhere and skip names entirely?</div><p class="a">Names are human-memorable and stable even when the underlying IP changes; DNS exists specifically to bridge "what humans use" and "what routers use."</p></div>
+        <div class="q-item"><div class="q">2. Why isn't DNS just one giant centralized server?</div><p class="a">It wouldn't scale — single point of failure, unmanageable traffic volume (Comcast alone: 600B queries/day), distant/slow lookups, and impossible maintenance.</p></div>
+        <div class="q-item"><div class="q">3. Put these in order: TLD server, Authoritative server, Root server.</div><p class="a">Root → TLD → Authoritative. Root points to the right TLD, TLD points to the right organization's authoritative server, authoritative server has the actual answer.</p></div>
+        <div class="q-item"><div class="q">4. What's the difference between a domain and a zone?</div><p class="a">A domain is the naming subtree (e.g. everything under example.com); a zone is an administrative boundary — who actually manages and maintains the records for a piece of that tree. One domain can be split into many independently-managed zones.</p></div>
+        <div class="q-item"><div class="q">5. Give a practical reason an organization would split its domain into multiple zones.</div><p class="a">To delegate control — e.g. a CSE department managing its own cse.pes.edu records without needing central IT to make every change, and so a mistake in one zone doesn't take down the others.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 28 ===== -->
+      <section class="topic" id="s28">
+        <h2>Questions <span class="slide-badge">Slide 28 (6–10)</span></h2>
+        <div class="q-item"><div class="q">6. In an iterated query, what does a server say when it doesn't know the answer?</div><p class="a">"I don't know this name, but ask this server" — it gives a referral and hands the querying party the responsibility. (Slide 12)</p></div>
+        <div class="q-item"><div class="q">7. In a recursive query, who does the extra work of following referrals?</div><p class="a">The server that was contacted does it on the client's behalf, rather than sending the client elsewhere. (Slide 13)</p></div>
+        <div class="q-item"><div class="q">8. Which DNS flag in a response tells you whether a server is willing to do recursive resolution for you?</div><p class="a">The RA (Recursion Available) flag. Root and TLD servers never set it — by design, they only operate iteratively.</p></div>
+        <div class="q-item"><div class="q">9. What does a TTL control, and what happens right after it hits zero?</div><p class="a">How long a resolver may keep serving a cached answer without re-checking. Once it expires, the entry is discarded and the resolver must re-query — walking the hierarchy fresh if needed. (Slide 15)</p></div>
+        <div class="q-item"><div class="q">10. A company changes a server's IP address. Why might some users still reach the old IP for hours afterward?</div><p class="a">DNS caching is best-effort — any resolver that already cached the old record keeps serving it until its TTL expires; there's no way to force-flush every cache on the internet at once. (Slide 15)</p></div>
+      </section>
+
+      <!-- ===== SLIDE 29 ===== -->
+      <section class="topic" id="s29">
+        <h2>Questions <span class="slide-badge">Slide 29 (11–15)</span></h2>
+        <div class="q-item"><div class="q">11. What's the standard operational fix for minimizing disruption during a planned IP change?</div><p class="a">Lower the TTL well in advance, wait for the old (long) TTL to fully drain everywhere, make the change, then raise the TTL back — bounding the worst-case staleness window instead of eliminating it.</p></div>
+        <div class="q-item"><div class="q">12. Name the four DNS record types and what each maps.</div><p class="a">A: hostname → IPv4 address. NS: domain → authoritative name server. CNAME: alias name → canonical name. MX: domain → mail server.</p></div>
+        <div class="q-item"><div class="q">13. What's the difference between host aliasing (CNAME) and mail server aliasing (MX)?</div><p class="a">CNAME points one hostname at another hostname (e.g. www.ibm.com → servereast.backup2.ibm.com); MX specifically tells you where a domain's email should be delivered, and — unlike CNAME — supports priority/fallback servers.</p></div>
+        <div class="q-item"><div class="q">14. What kind of DNS record has no fixed structure, and what are two real uses for it?</div><p class="a">TXT — arbitrary free text. Used for domain ownership verification (e.g. google-site-verification=...) and email anti-spoofing policies like SPF/DKIM.</p></div>
+        <div class="q-item"><div class="q">15. What problem does DNSSEC solve that TTL/caching does not?</div><p class="a">Authenticity and integrity — DNSSEC lets a resolver verify a response actually came from the real authoritative server (via signed records, chained root → TLD → authoritative), preventing forged/poisoned answers. It says nothing about staleness of a legitimately-changed record — that's still governed by TTL.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 30 ===== -->
+      <section class="topic" id="s30">
+        <h2>Peer-to-peer (P2P) architecture <span class="slide-badge">Slide 30</span></h2>
+        <ul>
+          <li><em>no</em> centralized server</li>
+          <li>arbitrary end systems directly communicate</li>
+          <li>peers request service from other peers, provide service in return to other peers
+            <ul>
+              <li>self scalability – new peers bring new service capacity, and new service demands</li>
+              <li>Efficient resource sharing</li>
+              <li>Cost-effective, High availability.</li>
+              <li>Load is distributed among peers.</li>
+            </ul>
+          </li>
+          <li>peers are intermittently connected and change IP addresses
+            <ul><li>complex management</li></ul>
+          </li>
+          <li>examples: P2P file sharing (BitTorrent), media streaming (Spotify), VoIP (Skype), Blockchain and cryptocurrencies, Video and Content Distribution</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 620 160">
+            <text x="150" y="18" text-anchor="middle" class="svg-txt-soft" font-size="10">client-server</text>
+            <rect x="120" y="60" width="60" height="30" rx="3" class="svg-box-accent"/><text x="150" y="80" text-anchor="middle" class="svg-txt-accent" font-size="9">server</text>
+            <circle cx="60" cy="130" r="14" class="svg-box"/><circle cx="105" cy="140" r="14" class="svg-box"/>
+            <circle cx="195" cy="140" r="14" class="svg-box"/><circle cx="240" cy="130" r="14" class="svg-box"/>
+            <line x1="150" y1="90" x2="60" y2="120" class="svg-line"/><line x1="150" y1="90" x2="105" y2="128" class="svg-line"/>
+            <line x1="150" y1="90" x2="195" y2="128" class="svg-line"/><line x1="150" y1="90" x2="240" y2="120" class="svg-line"/>
+            <text x="470" y="18" text-anchor="middle" class="svg-txt-soft" font-size="10">peer-to-peer (P2P)</text>
+            <circle cx="400" cy="60" r="14" class="svg-box-accent"/><circle cx="470" cy="45" r="14" class="svg-box-accent"/>
+            <circle cx="540" cy="65" r="14" class="svg-box-accent"/><circle cx="420" cy="120" r="14" class="svg-box-accent"/>
+            <circle cx="500" cy="125" r="14" class="svg-box-accent"/>
+            <line x1="400" y1="60" x2="470" y2="45" class="svg-line-accent"/><line x1="470" y1="45" x2="540" y2="65" class="svg-line-accent"/>
+            <line x1="400" y1="60" x2="420" y2="120" class="svg-line-accent"/><line x1="420" y1="120" x2="500" y2="125" class="svg-line-accent"/>
+            <line x1="500" y1="125" x2="540" y2="65" class="svg-line-accent"/><line x1="400" y1="60" x2="500" y2="125" class="svg-line-accent"/>
+            <line x1="470" y1="45" x2="420" y2="120" class="svg-line-accent"/>
+          </svg>
+          <figcaption>Client-server (star topology) vs P2P (mesh, every peer can serve every other peer)</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Three flavors of P2P architecture</strong> not spelled out on the slide but implied by the examples given:
+            <ul>
+              <li><strong>Centralized/hybrid P2P</strong> — peers exchange data directly, but a central server still handles indexing/discovery (original Napster).</li>
+              <li><strong>Pure/decentralized P2P</strong> — no central server even for discovery; peers find each other via a Distributed Hash Table (DHT) (modern trackerless BitTorrent).</li>
+              <li><strong>Hybrid "supernode" P2P</strong> — designated high-bandwidth peers take on extra routing/indexing responsibility for a cluster of ordinary peers (Skype's original design).</li>
+            </ul>
+          </li>
+          <li><strong>How BitTorrent (the slide's named example) actually works:</strong> a file is split into pieces, each with a hash for integrity; a tracker or DHT tells a new peer who else has the file; <strong>rarest-first</strong> piece selection keeps every piece well-replicated across the swarm; <strong>tit-for-tat choking</strong> prioritizes uploading to peers who reciprocate, discouraging free-riding.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 31 ===== -->
+      <section class="topic" id="s31">
+        <h2>Unit – 2 Application Layer (roadmap check-in) <span class="slide-badge">Slide 31</span></h2>
+        <ol>
+          <li>2.3 The Domain Name System</li>
+          <li>2.4 P2P Applications</li>
+          <li><strong>2.5 Socket Programming with TCP &amp; UDP</strong> (Dealt after introducing Transport layer functions)</li>
+          <li>2.6 Other Application Layer Protocols</li>
+        </ol>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>This is the same roadmap slide as slide 3, re-shown with 2.5 highlighted to mark the transition point — signaling that Socket Programming is being <strong>deliberately deferred</strong> until the Transport Layer unit, since sockets are the programming interface built directly on top of TCP/UDP's service models.</li>
+          <li>Preview worth knowing anyway: a <strong>TCP socket</strong> gives connection-oriented, reliable, ordered byte-stream delivery (<code>socket()</code> → <code>bind()</code> → <code>listen()</code> → <code>accept()</code> on the server; <code>socket()</code> → <code>connect()</code> on the client, triggering the 3-way handshake). A <strong>UDP socket</strong> is connectionless — <code>sendto()</code>/<code>recvfrom()</code>, no handshake, no delivery guarantee, lower overhead.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 32 ===== -->
+      <section class="topic" id="s32">
+        <h2>Unit – 2 Application Layer (roadmap check-in) <span class="slide-badge">Slide 32</span></h2>
+        <ol>
+          <li>2.3 The Domain Name System</li>
+          <li>2.4 P2P Applications</li>
+          <li>2.5 Socket Programming with TCP &amp; UDP</li>
+          <li><strong>2.6 Other Application Layer Protocols</strong></li>
+        </ol>
+        <div class="explain"><span class="label">EXPLANATION</span><p>Same roadmap slide again, now highlighting <strong>2.6</strong> — signaling the deck is moving into a tour of concrete, named application-layer protocols beyond DNS: FTP, SMTP, DHCP, SNMP, and Telnet/SSH, each covered one per slide next.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 33 ===== -->
+      <section class="topic" id="s33">
+        <h2>Other Application Layer Protocols - FTP <span class="slide-badge">Slide 33</span></h2>
+        <ul>
+          <li>File Transfer Protocol (FTP) - used to exchange large files on the internet</li>
+          <li>TCP</li>
+          <li>Invoked from the command prompt or some GUI.</li>
+          <li>Allows to update (delete, rename, move, and copy) files at a server.</li>
+          <li>Data connection (Port No. 20) &amp; Control connection (Port No. 21)</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 500 160">
+            <rect x="10" y="55" width="120" height="50" rx="3" class="svg-box"/><text x="70" y="84" text-anchor="middle" class="svg-txt" font-size="11">FTP CLIENT</text>
+            <rect x="370" y="55" width="120" height="50" rx="3" class="svg-box-accent"/><text x="430" y="84" text-anchor="middle" class="svg-txt-accent" font-size="11">FTP SERVER</text>
+            <circle cx="180" cy="30" r="20" class="svg-box"/><text x="180" y="34" text-anchor="middle" class="svg-txt-soft" font-size="8">random port 1</text>
+            <circle cx="320" cy="30" r="20" class="svg-box"/><text x="320" y="34" text-anchor="middle" class="svg-txt-soft" font-size="8">port 21</text>
+            <circle cx="180" cy="130" r="20" class="svg-box"/><text x="180" y="134" text-anchor="middle" class="svg-txt-soft" font-size="8">random port 2</text>
+            <circle cx="320" cy="130" r="20" class="svg-box"/><text x="320" y="134" text-anchor="middle" class="svg-txt-soft" font-size="8">port 20</text>
+            <line x1="130" y1="65" x2="160" y2="35" class="svg-line"/>
+            <line x1="200" y1="30" x2="300" y2="30" class="svg-line-accent"/><text x="250" y="22" text-anchor="middle" class="svg-txt-accent" font-size="9">1 · control</text>
+            <line x1="340" y1="35" x2="370" y2="65" class="svg-line"/>
+            <line x1="130" y1="95" x2="160" y2="125" class="svg-line"/>
+            <line x1="200" y1="130" x2="300" y2="130" class="svg-line-accent"/><text x="250" y="148" text-anchor="middle" class="svg-txt-accent" font-size="9">2 · data</text>
+            <line x1="340" y1="125" x2="370" y2="95" class="svg-line"/>
+          </svg>
+          <figcaption>FTP uses two TCP connections: control (port 21) and data (port 20)</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Active vs passive mode</strong> (the diagram shows active mode): in <strong>active mode</strong> the client tells the server which port to connect back to, and the server initiates the data connection — this often fails through firewalls/NAT since the client wasn't expecting an inbound connection. In <strong>passive mode (PASV)</strong> the server opens a random port and the client connects to it — the client initiates both connections, which plays much better with modern NAT, so it's the default in most modern clients.</li>
+          <li>Common commands over the control connection: <code>USER</code>, <code>PASS</code>, <code>LIST</code>, <code>RETR</code> (download), <code>STOR</code> (upload), <code>QUIT</code>.</li>
+          <li><strong>Security note:</strong> plain FTP sends credentials in cleartext; <strong>FTPS</strong> (FTP over TLS) or <strong>SFTP</strong> (a subsystem of SSH, unrelated protocol despite the similar name) are the encrypted alternatives used today.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 34 ===== -->
+      <section class="topic" id="s34">
+        <h2>Other Application Layer Protocols - SMTP <span class="slide-badge">Slide 34</span></h2>
+        <ul>
+          <li>Simple Mail Transfer Protocol - an internet standard for e-mail Transmission.</li>
+          <li>Connections are secured with SSL (Secure Socket Layer).</li>
+          <li>Messages are stored and then forwarded to the destination (relay).</li>
+          <li>SMTP uses a port number 25 of TCP.</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 620 130">
+            <text x="30" y="35" text-anchor="middle" class="svg-txt-soft" font-size="18">👤</text><text x="30" y="55" text-anchor="middle" class="svg-txt-soft" font-size="8">Bob's user agent</text>
+            <rect x="130" y="15" width="110" height="60" rx="3" class="svg-box-accent"/><text x="185" y="40" text-anchor="middle" class="svg-txt-accent" font-size="9">Bob's Mail Server</text><text x="185" y="55" text-anchor="middle" class="svg-txt-soft" font-size="8">(gmail)</text>
+            <rect x="360" y="15" width="110" height="60" rx="3" class="svg-box-accent"/><text x="415" y="40" text-anchor="middle" class="svg-txt-accent" font-size="9">Alice's Mail Server</text><text x="415" y="55" text-anchor="middle" class="svg-txt-soft" font-size="8">(yahoo)</text>
+            <text x="560" y="35" text-anchor="middle" class="svg-txt-soft" font-size="18">👤</text><text x="560" y="55" text-anchor="middle" class="svg-txt-soft" font-size="8">Alice's user agent</text>
+            <line x1="55" y1="30" x2="125" y2="30" class="svg-line-accent" marker-end="url(#a4)"/><text x="90" y="20" text-anchor="middle" class="svg-txt-accent" font-size="9">SMTP</text>
+            <line x1="245" y1="30" x2="355" y2="30" class="svg-line-accent" marker-end="url(#a4)"/><text x="300" y="20" text-anchor="middle" class="svg-txt-accent" font-size="9">SMTP</text>
+            <line x1="475" y1="30" x2="535" y2="30" class="svg-line-accent" marker-end="url(#a4)"/><text x="505" y="20" text-anchor="middle" class="svg-txt-accent" font-size="8">POP3/IMAP</text>
+            <defs><marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+          </svg>
+          <figcaption>SMTP moves mail server-to-server; POP3/IMAP is used only for final retrieval</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION — WHAT AN ACTUAL SMTP SESSION LOOKS LIKE</span>
+        <pre><code>C: HELO client.example.com
+S: 250 Hello, pleased to meet you
+C: MAIL FROM:&lt;bob@example.com&gt;
+S: 250 Sender OK
+C: RCPT TO:&lt;alice@example.com&gt;
+S: 250 Recipient OK
+C: DATA
+S: 354 Start mail input, end with &lt;CRLF&gt;.&lt;CRLF&gt;
+C: Subject: hello ... &lt;message body&gt; ... .
+S: 250 Message accepted for delivery
+C: QUIT</code></pre>
+        <ul>
+          <li>Every response is a 3-digit status code — <code>2xx</code> success, <code>3xx</code> continue, <code>4xx</code> temporary failure, <code>5xx</code> permanent failure.</li>
+          <li>Note the asymmetry the diagram shows: SMTP sends mail all the way to the recipient's mail server, but the recipient's own client retrieves it using a <em>different</em> protocol — <strong>POP3</strong> (downloads and typically removes from server) or <strong>IMAP</strong> (keeps mail synced on the server, standard for multi-device access).</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 35 ===== -->
+      <section class="topic" id="s35">
+        <h2>Other Application Layer Protocols - DHCP <span class="slide-badge">Slide 35</span></h2>
+        <ul>
+          <li>Dynamic Host Configuration Protocol - assign IP addresses to computers in a network dynamically.</li>
+          <li>IP addresses may change even when computer is in network (DHCP leases).</li>
+          <li>DHCP port number for server is 67 and for the client is 68.</li>
+          <li>A client-server model &amp; based on discovery, offer, request, and ACK.</li>
+          <li>Includes subnet mask, DNS server address, default gateway</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 420 150">
+            <rect x="10" y="55" width="90" height="40" rx="3" class="svg-box"/><text x="55" y="79" text-anchor="middle" class="svg-txt" font-size="10">DHCP Client</text>
+            <rect x="320" y="55" width="90" height="40" rx="3" class="svg-box-accent"/><text x="365" y="79" text-anchor="middle" class="svg-txt-accent" font-size="10">DHCP Server</text>
+            <line x1="100" y1="60" x2="320" y2="60" class="svg-line-accent" marker-end="url(#a5)"/><text x="210" y="52" text-anchor="middle" class="svg-txt-accent" font-size="9">1 · Discover</text>
+            <line x1="320" y1="80" x2="100" y2="80" class="svg-line-accent" marker-end="url(#a5)"/><text x="210" y="72" text-anchor="middle" class="svg-txt-accent" font-size="9">2 · Offer</text>
+            <line x1="100" y1="100" x2="320" y2="100" class="svg-line-accent" marker-end="url(#a5)"/><text x="210" y="112" text-anchor="middle" class="svg-txt-accent" font-size="9">3 · Request</text>
+            <line x1="320" y1="120" x2="100" y2="120" class="svg-line-accent" marker-end="url(#a5)"/><text x="210" y="135" text-anchor="middle" class="svg-txt-accent" font-size="9">4 · ACK</text>
+            <defs><marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+          </svg>
+          <figcaption>DORA sequence: Discover → Offer → Request → ACK</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li>The 4-step sequence is commonly remembered by the acronym <strong>DORA</strong> — Discover, Offer, Request, ACK — matching exactly the "discovery, offer, request, and ACK" the slide lists.</li>
+          <li><strong>Lease renewal timers, not shown on the slide:</strong> <strong>T1</strong> (renewal, ≈50% of lease) — client tries to renew directly with the original server. <strong>T2</strong> (rebinding, ≈87.5% of lease) — if that failed, client broadcasts to rebind with <em>any</em> DHCP server. If the lease fully expires with no renewal, the client restarts DORA from scratch.</li>
+          <li>DHCP is <strong>stateful</strong> — the server tracks which addresses are leased to which client (by MAC address) — unlike DNS, which is largely stateless.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 36 ===== -->
+      <section class="topic" id="s36">
+        <h2>Other Application Layer Protocols - SNMP <span class="slide-badge">Slide 36</span></h2>
+        <p>Simple Network Management Protocol - exchange management information between network devices.</p>
+        <p><strong>Basic components &amp; functionalities</strong></p>
+        <ul>
+          <li>SNMP Manager</li>
+          <li>Managed Devices</li>
+          <li>SNMP Agents</li>
+          <li>MIB (Management Information Base)</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 500 190">
+            <rect x="170" y="10" width="160" height="36" rx="3" class="svg-box-accent"/><text x="250" y="32" text-anchor="middle" class="svg-txt-accent" font-size="10">SNMP Manager (NMS)</text>
+            <line x1="250" y1="46" x2="60" y2="90" class="svg-line"/><line x1="250" y1="46" x2="190" y2="90" class="svg-line"/>
+            <line x1="250" y1="46" x2="310" y2="90" class="svg-line"/><line x1="250" y1="46" x2="440" y2="90" class="svg-line"/>
+            <rect x="20" y="90" width="80" height="32" rx="3" class="svg-box"/><text x="60" y="110" text-anchor="middle" class="svg-txt" font-size="9">Server</text>
+            <rect x="150" y="90" width="80" height="32" rx="3" class="svg-box"/><text x="190" y="110" text-anchor="middle" class="svg-txt" font-size="9">Router</text>
+            <rect x="270" y="90" width="80" height="32" rx="3" class="svg-box"/><text x="310" y="110" text-anchor="middle" class="svg-txt" font-size="9">Switch</text>
+            <rect x="400" y="90" width="80" height="32" rx="3" class="svg-box"/><text x="440" y="110" text-anchor="middle" class="svg-txt" font-size="9">Desktop</text>
+            <rect x="20" y="140" width="80" height="34" rx="3" class="svg-box-accent"/><text x="60" y="161" text-anchor="middle" class="svg-txt-accent" font-size="8.5">Agent + MIB</text>
+            <rect x="150" y="140" width="80" height="34" rx="3" class="svg-box-accent"/><text x="190" y="161" text-anchor="middle" class="svg-txt-accent" font-size="8.5">Agent + MIB</text>
+            <rect x="270" y="140" width="80" height="34" rx="3" class="svg-box-accent"/><text x="310" y="161" text-anchor="middle" class="svg-txt-accent" font-size="8.5">Agent + MIB</text>
+            <rect x="400" y="140" width="80" height="34" rx="3" class="svg-box-accent"/><text x="440" y="161" text-anchor="middle" class="svg-txt-accent" font-size="8.5">Agent + MIB</text>
+          </svg>
+          <figcaption>SNMP Manager ↔ Managed Devices ↔ SNMP Agents (each holding a local MIB)</figcaption>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><ul>
+          <li><strong>Manager</strong> = the console (NMS) an admin uses. <strong>Managed device</strong> = the physical hardware. <strong>Agent</strong> = software on the device that actually talks SNMP and reports/acts on data. <strong>MIB</strong> = the structured database of exactly what can be queried or set on that device.</li>
+          <li><strong>Core operations, not named on the slide:</strong> <code>GET</code> (manager asks agent for a value), <code>SET</code> (manager changes a config value), <code>TRAP</code> (agent proactively notifies the manager of an event, e.g. link down).</li>
+          <li><strong>Version history:</strong> SNMPv1/v2c authenticate with a plaintext "community string" (often left at the default <code>public</code>/<code>private</code> — a classic misconfiguration); SNMPv3 adds real user-based authentication and encryption, and is what's recommended in production today.</li>
+        </ul></div>
+      </section>
+
+      <!-- ===== SLIDE 37 ===== -->
+      <section class="topic" id="s37">
+        <h2>Other Application Layer Protocols – Telnet &amp; SSH <span class="slide-badge">Slide 37</span></h2>
+        <ul>
+          <li>Allows a user to communicate with a remote device.</li>
+          <li>Used mostly by network admin to remotely access and manage devices.</li>
+          <li>Telnet client and server installed – uses TCP port no. 23</li>
+          <li>SSH – uses public key encryption &amp; TCP port 22 by default.</li>
+        </ul>
+        <p><strong>SSH authentication (per the slide's diagram):</strong></p>
+        <ol>
+          <li><strong>Server authentication:</strong> Server proves its identity to the client</li>
+          <li><strong>User authentication:</strong> Client proves user's identity to the server</li>
+        </ol>
+        <div class="explain"><span class="label">EXPLANATION — WHAT ACTUALLY HAPPENS ON `ssh user@host`</span>
+        <ol>
+          <li>TCP connection on port 22; both sides exchange protocol version strings.</li>
+          <li><strong>Key exchange (KEX)</strong> — client and server negotiate a shared session key (e.g. via Diffie-Hellman) without ever transmitting the key itself.</li>
+          <li><strong>Server authentication</strong> — server presents its host key; client checks it against its <code>known_hosts</code> file (the "authenticity of host can't be established" first-connection prompt).</li>
+          <li>All further traffic is symmetrically encrypted with the negotiated session key.</li>
+          <li><strong>User authentication</strong> — password, or (more common in production) a public/private key pair, proving possession of the private key without ever sending it.</li>
+        </ol>
+        <p><strong>Telnet vs SSH, the one thing to remember:</strong> Telnet sends everything — including your password — in plaintext, trivially sniffable on a shared network. SSH is encrypted end-to-end from the first byte after key exchange, plus cryptographic host identity verification. This is why Telnet is effectively obsolete outside legacy/lab equipment.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 38 ===== -->
+      <section class="topic" id="s38">
+        <h2>Summary of Application Layer Protocols <span class="slide-badge">Slide 38</span></h2>
+        <table>
+          <thead><tr><th>Port #</th><th>Application Layer Protocol</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>20</td><td>FTP</td><td>TCP</td><td>File Transfer Protocol - data</td></tr>
+            <tr><td>21</td><td>FTP</td><td>TCP</td><td>File Transfer Protocol - control</td></tr>
+            <tr><td>22</td><td>SSH</td><td>TCP/UDP</td><td>Secure Shell for secure login</td></tr>
+            <tr><td>23</td><td>Telnet</td><td>TCP</td><td>Unencrypted login</td></tr>
+            <tr><td>25</td><td>SMTP</td><td>TCP</td><td>Simple Mail Transfer Protocol</td></tr>
+            <tr><td>53</td><td>DNS</td><td>TCP/UDP</td><td>Domain Name Server</td></tr>
+            <tr><td>67/68</td><td>DHCP</td><td>UDP</td><td>Dynamic Host</td></tr>
+            <tr><td>80</td><td>HTTP</td><td>TCP</td><td>HyperText Transfer Protocol</td></tr>
+            <tr><td>123</td><td>NTP</td><td>UDP</td><td>Network Time Protocol</td></tr>
+            <tr><td>161,162</td><td>SNMP</td><td>TCP/UDP</td><td>Simple Network Management Protocol</td></tr>
+            <tr><td>389</td><td>LDAP</td><td>TCP/UDP</td><td>Lightweight Directory Authentication Protocol</td></tr>
+            <tr><td>443</td><td>HTTPS</td><td>TCP/UDP</td><td>HTTP with Secure Socket Layer</td></tr>
+          </tbody>
+        </table>
+        <div class="explain"><span class="label">EXPLANATION — PORT RANGES, THE BIGGER PICTURE</span>
+        <table>
+          <thead><tr><th>Range</th><th>Name</th><th>Who assigns them</th></tr></thead>
+          <tbody>
+            <tr><td>0 – 1023</td><td><strong>Well-known ports</strong></td><td>IANA; reserved for standard services (everything in the table above)</td></tr>
+            <tr><td>1024 – 49151</td><td><strong>Registered ports</strong></td><td>IANA, on request, for specific applications</td></tr>
+            <tr><td>49152 – 65535</td><td><strong>Dynamic/ephemeral ports</strong></td><td>OS hands these out temporarily to <em>client</em> sockets for outgoing connections</td></tr>
+          </tbody>
+        </table>
+        <p>This is exactly the "random port" labelled in slide 33's FTP diagram — a client's side of any connection typically gets an ephemeral port automatically, while the server listens on the well-known port from this table. Notice the pattern: protocols needing two logical channels (FTP: 20/21, DHCP: 67/68, SNMP: 161/162) get a pair of adjacent-ish port numbers; everything else gets one.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 39 ===== -->
+      <section class="topic" id="s39">
+        <h2>Summary <span class="slide-badge">Slide 39</span></h2>
+        <p><strong>our study of network application layer is now complete!</strong></p>
+        <div class="two-col">
+          <div>
+            <h4>application architectures</h4>
+            <ul><li>client-server</li><li>P2P</li></ul>
+            <h4>application service requirements</h4>
+            <ul><li>reliability, bandwidth, delay</li></ul>
+            <h4>Internet transport service model</h4>
+            <ul><li>connection-oriented, reliable: TCP</li><li>unreliable, datagrams: UDP</li></ul>
+          </div>
+          <div>
+            <h4>specific protocols:</h4>
+            <ul><li>HTTP</li><li>DNS</li><li>P2P: BitTorrent</li></ul>
+            <h4>socket programming:</h4>
+            <ul><li>TCP, UDP sockets</li></ul>
+          </div>
+        </div>
+        <div class="explain"><span class="label">EXPLANATION</span><p>This slide is the deck's own table of contents in retrospect — every bullet maps to a slide already covered: architectures → slides 6 (client-server hierarchy) and 30 (P2P); transport service model → slides 31's TCP/UDP preview; DNS → slides 4–29; BitTorrent → slide 30; sockets → slide 31.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 40 ===== -->
+      <section class="topic" id="s40">
+        <h2>Summary (more) <span class="slide-badge">Slide 40</span></h2>
+        <p><strong>Most importantly: learned about protocols!</strong></p>
+        <ul>
+          <li>typical request/reply message exchange:
+            <ul>
+              <li>client requests info or service</li>
+              <li>server responds with data, status code</li>
+            </ul>
+          </li>
+          <li>message formats:
+            <ul>
+              <li>headers: fields giving info about data</li>
+              <li>data: info (payload) being communicated</li>
+            </ul>
+          </li>
+        </ul>
+        <p><strong>important themes:</strong></p>
+        <ul>
+          <li>centralized vs. decentralized</li>
+          <li>stateless vs. stateful</li>
+          <li>scalability</li>
+          <li>reliable vs. unreliable message transfer</li>
+          <li>"complexity at network edge"</li>
+        </ul>
+        <div class="explain"><span class="label">EXPLANATION</span><p>Each theme has a direct example already seen in this deck: <strong>centralized vs decentralized</strong> = DNS's hierarchy vs P2P (slides 6, 30); <strong>stateless vs stateful</strong> = DNS's query/response has no memory of past queries, but DHCP (slide 35) tracks leases per client; <strong>scalability</strong> = the entire justification in slide 5; <strong>reliable vs unreliable transfer</strong> = TCP vs UDP, previewed in slide 31; <strong>"complexity at network edge"</strong> = slide 4's closing note, restated here as the unit's overarching design philosophy.</p></div>
+      </section>
+
+      <!-- ===== SLIDE 41 ===== -->
+      <section class="topic" id="s41">
+        <h2>Thank You <span class="slide-badge">Slide 41</span></h2>
+        <p>Team Networks — Department of Computer Science and Engineering.</p>
+        <div class="explain"><span class="label">EXPLANATION</span><p>Closing slide of the deck — the deck's own final word. End of Unit 2, Application Layer.</p></div>
+      </section>
+
+      <div class="footnote">
+        <p>41-slide reference, faithfully following the original deck's order and titles — Team Networks, Department of Computer Science and Engineering.</p>
+      </div>
+    </div>
+  </main>
 </div>
 
+<div class="backtotop" id="backToTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
+
 <script>
-// Theme Toggle with localStorage persistence
-const root = document.documentElement;
+const iconSun = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`;
+const iconMoon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`;
 const themeBtn = document.getElementById('themeToggle');
-const iconSun = document.getElementById('iconSun');
-
-const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
-const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-
-function applyTheme(dark) {
-  root.classList.toggle('dark', dark);
-  iconSun.innerHTML = dark ? moonIcon : sunIcon;
+function applyTheme(t){
+  document.documentElement.classList.toggle('dark', t === 'dark');
+  themeBtn.innerHTML = t === 'dark' ? iconMoon : iconSun;
+  try{ localStorage.setItem('cn-notes-theme', t); }catch(e){}
 }
+let savedTheme = 'light';
+try{ savedTheme = localStorage.getItem('cn-notes-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }catch(e){}
+applyTheme(savedTheme);
+themeBtn.addEventListener('click', () => { applyTheme(document.documentElement.classList.contains('dark') ? 'light' : 'dark'); });
 
-// Determine initial theme: saved preference or system preference
-const savedTheme = localStorage.getItem('theme');
-let isDark = savedTheme
-  ? savedTheme === 'dark'
-  : window.matchMedia('(prefers-color-scheme: dark)').matches;
+document.querySelectorAll('.toc-group-title').forEach(t => { t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed')); });
 
-applyTheme(isDark);
-
-themeBtn.addEventListener('click', () => {
-  isDark = !isDark;
-  applyTheme(isDark);
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+const tocLinks = Array.from(document.querySelectorAll('.toc-list li'));
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  let shown = 0;
+  tocLinks.forEach(li => {
+    const a = li.querySelector('a');
+    const text = (a.textContent + ' ' + (a.dataset.title||'')).toLowerCase();
+    const match = q === '' || text.includes(q);
+    li.classList.toggle('hidden', !match);
+    if(match) shown++;
+  });
+  document.querySelectorAll('.toc-group').forEach(g => {
+    g.classList.remove('collapsed');
+    const anyVisible = Array.from(g.querySelectorAll('.toc-list li')).some(li => !li.classList.contains('hidden'));
+    g.style.display = (q !== '' && !anyVisible) ? 'none' : '';
+  });
+  searchCount.textContent = q === '' ? '' : shown + ' match' + (shown===1?'':'es');
 });
+
+const sections = Array.from(document.querySelectorAll('section.topic'));
+const linkMap = {};
+document.querySelectorAll('.toc-list a').forEach(a => linkMap[a.getAttribute('href').slice(1)] = a);
+function onScroll(){
+  let current = sections[0];
+  const scrollPos = window.scrollY + 100;
+  for(const s of sections){ if(s.offsetTop <= scrollPos) current = s; }
+  document.querySelectorAll('.toc-list a.active').forEach(a => a.classList.remove('active'));
+  if(current && linkMap[current.id]) linkMap[current.id].classList.add('active');
+  const doc = document.documentElement;
+  const total = doc.scrollHeight - doc.clientHeight;
+  document.getElementById('progress').style.width = total > 0 ? (window.scrollY/total*100)+'%' : '0%';
+  document.getElementById('backToTop').classList.toggle('show', window.scrollY > 400);
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+onScroll();
+document.getElementById('backToTop').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+const menuBtn = document.getElementById('menuBtn');
+const sidebar = document.getElementById('sidebar');
+menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
 </script>
-<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>
