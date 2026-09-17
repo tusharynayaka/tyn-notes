@@ -1978,20 +1978,35 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   terminal.onData(function(data){ if(running) send({type:'input', data:data}); });
 
   runButton.addEventListener('click', function(){
-    /* Guard: reset stale running flag if socket is not open */
-    if(running && (!socket || socket.readyState !== WebSocket.OPEN)){
+    /* Reset stale running flag if socket dropped mid-run */
+    if(running && (!socket || socket.readyState > WebSocket.OPEN)){
       running = false; runButton.textContent = 'Run';
     }
     if(running) return;
-    if(!socket || socket.readyState !== WebSocket.OPEN){
-      status('not connected'); terminal.writeln('\r\n[Server not connected. Run: npm start]\r\n'); return;
+
+    /* If socket is null or definitively closed, warn and bail */
+    if(!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING){
+      status('not connected');
+      terminal.writeln('\r\n[Server offline — open http://127.0.0.1:3002/dsa1.html or run: npm start]\r\n');
+      return;
     }
+
+    /* Socket is OPEN or still CONNECTING — proceed (send is guarded by readyState check) */
     terminal.clear();
     terminal.write('\x1b[90mStarting GCC...\x1b[0m\r\n');
     running = true;
     runButton.textContent = 'Running';
     status('compiling');
-    send({type:'start', code:editor.value});
+
+    if(socket.readyState === WebSocket.OPEN){
+      send({type:'start', code:editor.value});
+    } else {
+      /* CONNECTING: queue send for when it opens */
+      socket.addEventListener('open', function onceOpen(){
+        socket.removeEventListener('open', onceOpen);
+        send({type:'start', code:editor.value});
+      });
+    }
     terminal.focus();
   });
 
