@@ -1955,6 +1955,9 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   if(socket){
     socket.addEventListener('open', function(){ status('connected'); });
     socket.addEventListener('error', function(){ status('server unavailable'); terminal.writeln('\r\n[Start with: npm install, then npm start]'); });
+    socket.addEventListener('close', function(){
+      if(running){ running = false; runButton.textContent = 'Run'; status('disconnected'); }
+    });
     socket.addEventListener('message', function(event){
       var message = JSON.parse(event.data);
       if(message.type === 'output') terminal.write(message.data);
@@ -1975,7 +1978,14 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   terminal.onData(function(data){ if(running) send({type:'input', data:data}); });
 
   runButton.addEventListener('click', function(){
+    /* Guard: reset stale running flag if socket is not open */
+    if(running && (!socket || socket.readyState !== WebSocket.OPEN)){
+      running = false; runButton.textContent = 'Run';
+    }
     if(running) return;
+    if(!socket || socket.readyState !== WebSocket.OPEN){
+      status('not connected'); terminal.writeln('\r\n[Server not connected. Run: npm start]\r\n'); return;
+    }
     terminal.clear();
     terminal.write('\x1b[90mStarting GCC...\x1b[0m\r\n');
     running = true;
