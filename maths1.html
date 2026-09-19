@@ -110,11 +110,30 @@ mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
   .sidebar.open{transform:translateX(0);}
   main{padding:56px 20px 120px;}
   .menu-btn{display:flex;position:fixed;top:16px;left:16px;z-index:601;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;}
-  .menu-btn svg{width:17px;height:17px;}
-.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background .15s ease,color .15s ease,border-color .15s ease;display:inline-flex;align-items:center;gap:4px;}
+  .menu-btn svg{width:17px;height:17px;}}
+.home-link{
+  position:fixed;top:18px;right:18px;z-index:700;
+  height:34px;                          /* match theme toggle */
+  padding:0 12px;                       /* remove vertical padding */
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  color:var(--text);
+  font:500 12px 'IBM Plex Mono',monospace;
+  text-decoration:none;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  transition:background .15s ease,color .15s ease,border-color .15s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;               /* center the arrow + text */
+  gap:4px;
+}
 .home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
 #themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
+@media (max-width:600px){
+  .home-link{top:12px;right:12px;height:34px;padding:0 10px;}
+  #themeToggle{top:12px;right:76px;}
+}
 </style>
 </head>
 <body>
@@ -176,8 +195,8 @@ mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
     <div class="content">
       <header class="masthead">
         <div class="kicker">UE25MA242A — Mathematical Foundation for AI &amp; Data Science</div>
-        <h1>Unit 1 — Super Notes</h1>
-        <p>Every core idea from Sessions 1–11, explained: what it is, when you reach for it, how to actually do it step by step, and the formula to remember.</p>
+        <h1>Unit 1</h1>
+        <p>NOTES</p>
       </header>
 
       <!-- ============================================================ -->
