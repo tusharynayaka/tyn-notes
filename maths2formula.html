@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit 1 - Rapid Revision Sheet</title>
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  color: #111111;
+  background: #ffffff;
+  font-size: 14px;
+  line-height: 1.35;
+}
+h1 { font-size: 20px; margin: 0 0 4px; }
+p.intro { color: #444444; margin: 0 0 18px; font-size: 13px; }
+.sheet { column-count: 2; column-gap: 20px; }
+@media (max-width: 700px) { .sheet { column-count: 1; } }
+.block { break-inside: avoid; border: 1px solid #999999; margin-bottom: 14px; padding: 10px 12px; }
+.block h2 { font-size: 14px; margin: 0 0 6px; border-bottom: 1px solid #cccccc; padding-bottom: 4px; }
+.block ul { margin: 0; padding-left: 18px; }
+.block li { margin-bottom: 5px; }
+.formula {
+  font-family: "Courier New", monospace;
+  background: #f2f2f2;
+  border: 1px solid #999999;
+  padding: 5px 7px;
+  margin: 4px 0;
+  display: block;
+  font-size: 13px;
+}
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 4px 0; }
+td, th { border: 1px solid #999999; padding: 3px 5px; text-align: left; }
+</style>
+</head>
+<body>
+
+<h1>Unit 1 - Rapid Revision Sheet</h1>
+<p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
+
+<div class="sheet">
+
+<div class="block">
+<h2>1. Row and Column Pictures</h2>
+<span class="formula">A x = b</span>
+<ul>
+<li>Row way: each equation is a line, answer is where all lines cross.</li>
+<li>Column way: mix the columns of A to hit target b.</li>
+<li>Use when: checking why a system has 0, 1, or infinite answers.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>2. Gaussian Elimination</h2>
+<span class="formula">multiplier = a / pivot</span>
+<span class="formula">new row = old row - (multiplier x pivot row)</span>
+<ul>
+<li>Cancel one unknown at a time using the pivot row, then solve bottom to top.</li>
+<li>Use when: solving a system for actual numbers.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>3. Rank and Consistency</h2>
+<table>
+<tr><th>rank(A) vs rank(A,b)</th><th>Answer count</th></tr>
+<tr><td>equal, = n</td><td>1 solution</td></tr>
+<tr><td>equal, less than n</td><td>infinite solutions</td></tr>
+<tr><td>not equal</td><td>0 solutions</td></tr>
+</table>
+<ul>
+<li>Rank = number of useful (non-repeated) equations.</li>
+<li>Use when: predicting solution count before solving.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>4. LU Factorization</h2>
+<span class="formula">A = L x U</span>
+<span class="formula">solve: L c = b, then U x = c</span>
+<ul>
+<li>L = saved cancel-numbers, U = leftover triangle from elimination.</li>
+<li>Use when: solving the same A for many different b values.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>5. Inverse (Gauss-Jordan)</h2>
+<span class="formula">[A | I] -&gt; [I | inverse of A]</span>
+<ul>
+<li>Inverse is the matrix version of "1 divided by a number".</li>
+<li>Use when: you need the inverse itself, not just one solve (otherwise use elimination, it is faster).</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>6. Vector Spaces and Subspaces</h2>
+<span class="formula">0 in W &nbsp; u+v in W &nbsp; c*u in W</span>
+<ul>
+<li>A valid space stays "closed" when you add items or scale them.</li>
+<li>Use when: checking if a given set counts as a subspace.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>7. Column Space and Null Space</h2>
+<span class="formula">A x = b solvable only if b is in column space of A</span>
+<ul>
+<li>Column space = every output A can produce. Null space = every input that gives zero.</li>
+<li>Use when: checking if b is reachable, or why answers are not unique.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>8. Four Fundamental Subspaces</h2>
+<table>
+<tr><th>Space</th><th>Size</th></tr>
+<tr><td>column space</td><td>r</td></tr>
+<tr><td>row space</td><td>r</td></tr>
+<tr><td>null space</td><td>n - r</td></tr>
+<tr><td>left null space</td><td>m - r</td></tr>
+</table>
+<ul>
+<li>r = rank. n = number of unknowns. m = number of equations.</li>
+<li>Use when: needing the full existence/uniqueness picture in one shot.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>9. Independence, Basis, Dimension</h2>
+<span class="formula">A c = 0 only when c = 0 -&gt; independent</span>
+<ul>
+<li>Basis = smallest set that still covers everything (independent + spans).</li>
+<li>Dimension = number of vectors in that basis.</li>
+<li>Use when: checking for redundant vectors or features.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>10. Linear Transformations</h2>
+<span class="formula">T(c x + d y) = c T(x) + d T(y)</span>
+<ul>
+<li>Scaling/adding inputs scales/adds outputs the same way, no twisting.</li>
+<li>Matrix columns = T applied to each basis vector.</li>
+<li>Use when: turning a rule (rotate, project, reflect) into a matrix.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>11. Gram-Schmidt and QR</h2>
+<span class="formula">new vector = old vector - (its part already covered)</span>
+<span class="formula">A = Q x R</span>
+<ul>
+<li>Removes overlap, then shrinks each vector to length 1.</li>
+<li>Use when: needing a perpendicular basis, or stable least-squares fitting.</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>
