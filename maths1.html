@@ -3,243 +3,619 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-<script>
-  // Apply saved theme instantly (no flash)
-  (function() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const isDark = saved
-      ? saved === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) root.classList.add('dark');
-  })();
-</script>
-<title>Coming Soon</title>
+<title>MFAD · Unit 1 Super Notes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <style>
 :root{
-  --bg:#f3f3f1;
-  --surface:#f8f8f6;
-  --surface-2:#eceae5;
-  --text:#1c1f1d;
-  --text-soft:#565f5a;
-  --text-faint:#8a9089;
-  --border:#dfe1dc;
-  --accent:#2c5f52;
-  --accent-soft:#dfe9e4;
-  --accent-text:#1f4238;
-  --radius: 3px;
-  color-scheme: light;
+  --bg:#f3f3f1; --surface:#f8f8f6; --surface-2:#eceae5; --text:#1c1f1d; --text-soft:#565f5a;
+  --text-faint:#8a9089; --border:#dfe1dc; --accent:#2c5f52; --accent-soft:#dfe9e4; --accent-text:#1f4238;
+  --formula-bg:#f3ecdc; --formula-border:#c9a95c; --code-bg:#eef0ec; --mark-bg:#f6d989; --use-bg:#e7eef2; --use-border:#7fa8bd;
+  --radius:3px; --sidebar-w:300px; color-scheme:light;
 }
 html.dark{
-  --bg:#070b14;
-  --surface:#0d1524;
-  --surface-2:#101d33;
-  --text:#eaf3ff;
-  --text-soft:#a9bbd8;
-  --text-faint:#7d8eaf;
-  --border:#1d2d47;
-  --accent:#60a5fa;
-  --accent-soft:#10213d;
-  --accent-text:#dceeff;
-  --formula-bg:#101a2d;
-  --formula-border:#8ab4ff;
-  --code-bg:#101b2d;
-  --mark-bg:#3b5d9c;
-  color-scheme: dark;
+  --bg:#070b14; --surface:#0d1524; --surface-2:#101d33; --text:#eaf3ff; --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf; --border:#1d2d47; --accent:#60a5fa; --accent-soft:#10213d; --accent-text:#dceeff;
+  --formula-bg:#101a2d; --formula-border:#8ab4ff; --code-bg:#101b2d; --mark-bg:#3b5d9c; --use-bg:#0d2130; --use-border:#4a90b8; color-scheme:dark;
 }
 *{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'IBM Plex Sans', sans-serif;
-  line-height:1.45;
-  transition:background .25s ease, color .25s ease;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 30px 16px;
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.55;transition:background .25s ease,color .25s ease;}
+::selection{background:var(--mark-bg);color:#1c1f1d;}
+#progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--accent);z-index:500;transition:width .1s linear;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px 60px;}
+.sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:14px;}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--text-faint);}
+.brand strong{display:block;font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:var(--text);font-weight:600;margin-top:2px;}
+#themeToggle{border:1px solid var(--border);background:var(--surface-2);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
+#themeToggle:hover{background:var(--accent-soft);}
+#themeToggle svg{width:16px;height:16px;}
+.search-wrap{position:relative;margin-bottom:18px;}
+#searchInput{width:100%;padding:9px 12px 9px 32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;outline:none;}
+#searchInput:focus{border-color:var(--accent);}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-faint);pointer-events:none;}
+#searchCount{font-size:11.5px;color:var(--text-faint);margin:6px 2px 0;min-height:14px;}
+nav.toc{font-size:13.5px;}
+.toc-group{margin-bottom:4px;}
+.toc-group-title{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-faint);padding:14px 8px 6px;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;}
+.toc-group-title:hover{color:var(--text-soft);}
+.toc-group-title .chev{transition:transform .15s ease;width:9px;height:9px;}
+.toc-group.collapsed .chev{transform:rotate(-90deg);}
+.toc-group.collapsed .toc-list{display:none;}
+.toc-list{list-style:none;margin:0;padding:0;}
+.toc-list li a{display:block;padding:6px 10px 6px 16px;margin:1px 0;border-radius:var(--radius);color:var(--text-soft);text-decoration:none;border-left:2px solid transparent;font-size:13px;}
+.toc-list li a:hover{background:var(--surface-2);color:var(--text);}
+.toc-list li a.active{color:var(--accent-text);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500;}
+.toc-list li.hidden{display:none;}
+main{flex:1;min-width:0;padding:56px clamp(20px,6vw,90px) 140px;display:flex;justify-content:center;}
+.content{max-width:720px;width:100%;}
+.masthead{margin-bottom:52px;border-bottom:1px solid var(--border);padding-bottom:20px;}
+.masthead .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent-text);letter-spacing:.04em;}
+.masthead h1{font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,4.4vw,48px);margin:8px 0 14px;line-height:1.08;letter-spacing:-0.01em;}
+.masthead p{color:var(--text-soft);font-size:15.5px;max-width:58ch;}
+section.topic{margin-bottom:68px;scroll-margin-top:28px;}
+section.topic>h2{font-family:'Newsreader',serif;font-weight:500;font-size:27px;border-bottom:1px solid var(--border);padding-bottom:12px;margin:0 0 20px;letter-spacing:-0.01em;}
+section.topic h3{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:15.5px;margin:28px 0 10px;color:var(--text);}
+section.topic h4{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:14px;margin:20px 0 8px;color:var(--accent-text);}
+section.topic p{font-family:'Newsreader',serif;font-size:16.5px;color:var(--text);margin:0 0 14px;}
+section.topic p,section.topic li{font-size:16.5px;}
+section.topic ul,section.topic ol{font-family:'Newsreader',serif;padding-left:22px;margin:0 0 14px;}
+section.topic ul li,section.topic ol li{margin-bottom:6px;}
+strong{font-weight:600;}
+code{font-family:'IBM Plex Mono',monospace;font-size:.86em;background:var(--code-bg);padding:1.5px 5px;border-radius:3px;color:var(--accent-text);}
+.box{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--surface-2);}
+.box p:last-child{margin-bottom:0;}
+.box .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--accent-text);margin-bottom:5px;display:block;}
+.use{border:1px solid var(--use-border);border-left:3px solid var(--use-border);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--use-bg);}
+.use p:last-child,.use ul:last-child{margin-bottom:0;}
+.use .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-soft);margin-bottom:6px;display:block;}
+.use ul{margin-bottom:0;padding-left:20px;}
+.formula{border:1px solid var(--formula-border);background:var(--formula-bg);border-radius:var(--radius);padding:16px 20px;margin:18px 0;}
+.formula .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#8a6d1f;display:block;margin-bottom:8px;}
+html.dark .formula .label{color:#d8b25b;}
+.formula .expr{font-family:'IBM Plex Mono',monospace;font-size:16.5px;text-align:center;margin:6px 0;}
+.formula .note{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text-soft);margin-top:8px;}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14px;font-family:'IBM Plex Sans',sans-serif;}
+th{text-align:left;font-weight:600;font-size:12px;letter-spacing:.03em;color:var(--text-faint);border-bottom:1px solid var(--border);padding:8px 10px;}
+td{padding:8px 10px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%;}
+.flow .step{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:8px 14px;font-size:13px;font-family:'IBM Plex Mono',monospace;text-align:center;}
+.flow .arrow{color:var(--text-faint);font-size:14px;}
+mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
+.footnote{font-size:13px;color:var(--text-faint);border-top:1px solid var(--border);padding-top:16px;margin-top:46px;}
+.backtotop{position:fixed;bottom:22px;right:18px;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:400;}
+.backtotop.show{opacity:1;pointer-events:auto;}
+.backtotop svg{width:15px;height:15px;}
+.menu-btn{display:none;}
+@media (max-width:880px){
+  .sidebar{position:fixed;left:0;top:0;z-index:600;transform:translateX(-100%);transition:transform .2s ease;box-shadow:0 0 40px rgba(0,0,0,.25);}
+  .sidebar.open{transform:translateX(0);}
+  main{padding:56px 20px 120px;}
+  .menu-btn{display:flex;position:fixed;top:16px;left:16px;z-index:601;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;}
+  .menu-btn svg{width:17px;height:17px;}
 }
-
-.container{
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-}
-
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.brand{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  letter-spacing:.04em;
-  color:var(--text-faint);
-  text-transform: uppercase;
-}
-.brand strong{
-  display:block;
-  font-family:'Newsreader', serif;
-  font-size:22px;
-  color:var(--text);
-  font-weight:500;
-  text-transform: none;
-  margin-top:2px;
-  line-height: 1.1;
-}
-
-#themeToggle{
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--text);
-  width:32px;
-  height:32px;
-  border-radius:var(--radius);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  transition: background .15s ease;
-}
-#themeToggle:hover{ background:var(--accent-soft); }
-#themeToggle svg{ width:15px; height:15px; }
-
-.card{
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s ease;
-}
-.card:hover{
-  border-color: var(--accent);
-}
-
-.title{
-  font-family: 'Newsreader', serif;
-  font-size: 32px;
-  font-weight: 500;
-  margin: 0 0 12px 0;
-  color: var(--text);
-}
-
-.signature{
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  color: var(--text-faint);
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.footer{
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--text-faint);
-}
-
-.footer a{
-  color: var(--accent-text);
-  text-decoration: none;
-  border-bottom: 1px dashed var(--border);
-}
-.footer a:hover{
-  border-bottom-color: var(--accent);
-}
-</style>
-<style>
-:root{--bg:#f3f3f1;--surface:#f8f8f6;--surface-2:#eceae5;--text:#1c1f1d;--text-soft:#565f5a;--text-faint:#8a9089;--border:#dfe1dc;--accent:#2c5f52;--accent-soft:#dfe9e4;--accent-text:#1f4238;}
-html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--text-soft:#a9bbd8;--text-faint:#7d8eaf;--border:#1d2d47;--accent:#60a5fa;--accent-soft:#10213d;--accent-text:#dceeff;}
-.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
-@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
-</style>
-<style>
-.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
-.site-footer a{color:var(--accent-text);text-decoration:none;}
-.site-footer a:hover{color:var(--accent);}
-@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
-.site-header{border-color:var(--border);color:var(--text);}
-.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
-.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
-.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
-</style>
-<style>
-#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
-.home-link{top:18px;bottom:auto;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 </head>
 <body>
-<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
 
-<div class="container">
-  <header class="site-header">
-    <div class="brand">
-      Reference Portal
-      <strong>Coming Soon</strong>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">UE25MA242A<strong>Unit 1 Super Notes</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
     </div>
-    <button id="themeToggle" aria-label="Toggle theme">
-      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-      </svg>
-    </button>
-  </header>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Foundations</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#pictures" data-title="Row and Column Pictures">Row &amp; column pictures</a></li>
+          <li><a href="#elimination" data-title="Gaussian Elimination">Gaussian elimination</a></li>
+          <li><a href="#rank" data-title="Matrix Rank and Consistency">Rank &amp; consistency</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Factorizations</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#lu" data-title="LU LDU and PA=LU Factorization">LU · LDU · PA=LU</a></li>
+          <li><a href="#inverse" data-title="Inverse by Gauss Jordan">Inverse (Gauss–Jordan)</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Vector Spaces</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#spaces" data-title="Vector Spaces and Subspaces">Vector spaces &amp; subspaces</a></li>
+          <li><a href="#colnull" data-title="Column Space and Nullspace">Column space &amp; nullspace</a></li>
+          <li><a href="#four" data-title="Four Fundamental Subspaces">Four fundamental subspaces</a></li>
+          <li><a href="#basis" data-title="Independence Basis Dimension">Independence, basis, dimension</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Maps &amp; Orthogonality</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#transforms" data-title="Linear Transformations">Linear transformations</a></li>
+          <li><a href="#gs" data-title="Gram Schmidt and QR">Gram–Schmidt &amp; QR</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 
-  <div class="card">
-    <h1 class="title">Coming Soon</h1>
-    <p class="signature">-TYN</p>
-  </div>
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">UE25MA242A — Mathematical Foundation for AI &amp; Data Science</div>
+        <h1>Unit 1 — Super Notes</h1>
+        <p>Every core idea from Sessions 1–11, explained: what it is, when you reach for it, how to actually do it step by step, and the formula to remember.</p>
+      </header>
 
-  <footer class="site-footer"><span>TYN Notes · Mathematics</span><a href="index.html">Home</a></footer>
+      <!-- ============================================================ -->
+      <section class="topic" id="pictures">
+        <h2>Row &amp; Column Pictures</h2>
+        <h3>What it is</h3>
+        <p>Two ways to read the same system <code>Ax = b</code>. The <strong>row picture</strong> treats each equation as a hyperplane (a line in 2D, a plane in 3D); the solution is the point where all n hyperplanes meet. The <strong>column picture</strong> treats the system as one vector equation — a weighted sum of the columns of A equalling b — so solving means finding the right weights.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Before running elimination, to build intuition for <em>why</em> a system has 0, 1, or infinitely many solutions.</li>
+            <li>To reason about whether a target vector <code>b</code> is even reachable — the column picture is the geometric root of "is b in the column space?" (used constantly in regression: can this outcome be explained by these features at all?).</li>
+            <li>To quickly diagnose a 2×2 or 3×3 system by eye, without setting up full elimination.</li>
+          </ul>
+        </div>
+        <h3>How to use it</h3>
+        <ol>
+          <li><strong>Row picture:</strong> plot/imagine each equation as a line or plane; visually or algebraically find their common intersection.</li>
+          <li><strong>Column picture:</strong> rewrite <code>Ax=b</code> as <code>x₁(col 1) + x₂(col 2) + … = b</code>; ask what combination of the column vectors lands exactly on b.</li>
+          <li>If the planes are parallel/coincide, or the columns collapse into a lower-dimensional plane that misses b, expect a singular case (see below).</li>
+        </ol>
+        <div class="box"><span class="label">Key fact</span><p>Rows are dependent ⟺ columns are dependent, in every dimension. If the row picture breaks down, so does the column picture — this is why the two views always agree on singularity.</p></div>
+        <h3>Singular cases</h3>
+        <ul>
+          <li><strong>No solution:</strong> planes are parallel / form a triangle in end view (columns lie in a lower-dimensional plane and b sits outside it).</li>
+          <li><strong>Infinite solutions:</strong> planes share a whole line/plane (columns dependent, but b happens to lie inside their span).</li>
+        </ul>
+        <div class="formula"><span class="label">Cramer's Rule (2×2)</span><div class="expr">x = (b·d − c·f)/(a·d − b·c), &nbsp; y = ratio of determinants</div><p class="note">Correct but a "total disaster" for large n (uses n! work); <strong>Gaussian elimination</strong> (~n³/3 ops) is what's actually used in practice and in software.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="elimination">
+        <h2>Gaussian Elimination</h2>
+        <h3>What it is</h3>
+        <p>The standard algorithm for solving <code>Ax=b</code>: turn A into an upper-triangular matrix U by <strong>forward elimination</strong> (subtracting multiples of each row from the rows beneath it), then solve the simple triangular system by <strong>back-substitution</strong>, from the last unknown up to the first.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Any time you need to actually <em>solve</em> a linear system numerically — this is the default method every calculator, library, and exam question expects.</li>
+            <li>To test whether a system is solvable, and if so whether uniquely (watch what happens to the pivots).</li>
+            <li>As the engine behind rank, determinant, LU factorization, and inverse — nearly everything else in Unit 1 is built on this one procedure.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Write the augmented matrix <code>[A : b]</code>.</li>
+          <li>Take the top-left entry as the first pivot (assuming it's nonzero).</li>
+          <li>For every row below, compute the multiplier <code>ℓ = (entry to eliminate) / pivot</code> and do <code>row ← row − ℓ × pivot row</code> to create a zero beneath the pivot.</li>
+          <li>Move to the next column and repeat with the next pivot, working only on the rows below it.</li>
+          <li>If a pivot position is zero but a nonzero entry sits below it, swap rows (this is a temporary breakdown — the matrix is still nonsingular). If everything below is also zero, elimination has permanently broken down (matrix singular) — stop and check consistency instead.</li>
+          <li>Once U is triangular, back-substitute: solve the last equation for the last unknown, then work upward substituting known values into each equation above.</li>
+        </ol>
+        <div class="formula"><span class="label">Multiplier &amp; row operation</span><div class="expr">ℓᵢⱼ = aᵢⱼ / aⱼⱼ &nbsp;&nbsp; rowᵢ ← rowᵢ − ℓᵢⱼ · rowⱼ</div><p class="note">aⱼⱼ is the current pivot; pivots are never zero, because we divide by them.</p></div>
+        <h3>Breakdown of elimination</h3>
+        <table>
+          <tr><th>Situation</th><th>Meaning</th><th>Fix</th></tr>
+          <tr><td>Zero pivot, nonzero entry below</td><td>Temporary breakdown — matrix still nonsingular</td><td>Exchange rows, continue</td></tr>
+          <tr><td>Zero pivot, only zeros below</td><td>Permanent breakdown — matrix singular</td><td>Inspect right side: no solution or ∞ solutions</td></tr>
+        </table>
+        <div class="box"><span class="label">Where pivots appear</span><p>Depends only on A, never on b. The right-hand side only decides — in the singular case — between no solution and infinitely many.</p></div>
+        <div class="formula"><span class="label">Operation count</span><div class="expr">(n³ − n)/3 ≈ n³/3 &nbsp;(forward) &nbsp;+&nbsp; ~n²/2 &nbsp;(back-substitution)</div><p class="note">Doubling n multiplies the cost by roughly 8 — this is why factoring once and re-solving (LU) matters for repeated right-hand sides.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="rank">
+        <h2>Matrix Rank &amp; Consistency</h2>
+        <h3>What it is</h3>
+        <p>Rank is the single number that captures the "true size" of a matrix — how many rows (equivalently columns) actually carry independent information. Comparing <code>r(A)</code> to <code>r[A:b]</code> tells you, without fully solving the system, whether it's consistent and how many solutions it has.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Before solving a rectangular (over- or under-determined) system, to know in advance whether to expect one solution, infinitely many, or none.</li>
+            <li>To detect redundant/dependent rows or columns quickly — e.g. duplicate or derived features in a dataset (multicollinearity), which show up as rank deficiency.</li>
+            <li>As a fast pass/fail test for invertibility of a square matrix (<code>r(A)=n ⟺ invertible</code>).</li>
+          </ul>
+        </div>
+        <h3>How to use it</h3>
+        <ol>
+          <li>Reduce A (and, for consistency, the augmented matrix <code>[A:b]</code>) to echelon form using elimination.</li>
+          <li>Count the nonzero rows — that count is the rank. (Do this by elimination, never by hunting through minors — far cheaper.)</li>
+          <li>Compare <code>r(A)</code> with <code>r[A:b]</code> using the table below to read off the number of solutions.</li>
+        </ol>
+        <div class="formula"><span class="label">Useful facts</span><div class="expr">0 ≤ r(A) ≤ min(m, n)</div><p class="note">For square n×n A: r(A)=n ⟺ det A ≠ 0 ⟺ A nonsingular ⟺ A⁻¹ exists ⟺ full set of n pivots.</p></div>
+        <h3>Consistency theorem — compare r(A) with r[A : b]</h3>
+        <table>
+          <tr><th>Condition</th><th>Verdict</th><th>Solutions</th></tr>
+          <tr><td>r(A) = r[A:b] = n</td><td>Consistent</td><td>Exactly one (n − r = 0 free params)</td></tr>
+          <tr><td>r(A) = r[A:b] = r &lt; n</td><td>Consistent</td><td>∞, with n − r free parameters</td></tr>
+          <tr><td>r(A) ≠ r[A:b]</td><td>Inconsistent</td><td>None (a row 0 = c, c≠0, appears)</td></tr>
+        </table>
+        <p>Elementary row operations never change rank, so it's safe to compute it at any convenient stage of elimination.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="lu">
+        <h2>LU, LDU &amp; PA = LU Factorization</h2>
+        <h3>What it is</h3>
+        <p>Instead of throwing away the multipliers used during elimination, collect them into a lower-triangular matrix L; the resulting triangular matrix is U. Together, <code>A = LU</code> is a complete, reusable record of the elimination that was performed.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever you must solve <code>Ax=b</code> for the <strong>same A but many different b's</strong> — factor once, then each new solve is cheap. This is exactly what <code>numpy.linalg.solve</code> and every serious numerical library do internally.</li>
+            <li>To compute a determinant efficiently: <code>det A = ±</code> product of the pivots, in n³/3 operations instead of a catastrophic n! cofactor expansion.</li>
+            <li>Whenever elimination hits a zero pivot in the "natural" row order — use PA=LU (row exchanges) to keep going without declaring the matrix singular by mistake.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Run forward elimination on A as usual, but instead of discarding each multiplier <code>ℓᵢⱼ</code>, store it in the (i,j) position of L.</li>
+          <li>L gets 1s on its diagonal; U is exactly the triangular matrix elimination produced (pivots on its diagonal).</li>
+          <li>To use the factorization for a right-hand side b: first solve <code>Lc = b</code> by forward substitution, then <code>Ux = c</code> by back-substitution.</li>
+          <li>If a zero pivot appears with no way to fix it in place, swap rows and track the swap in a permutation matrix P, giving <code>PA = LU</code>.</li>
+          <li>For the symmetric LDU form: divide each row of U by its own pivot, collecting the pivots into a diagonal matrix D.</li>
+        </ol>
+        <div class="formula"><span class="label">Triangular factorization</span><div class="expr">A = LU</div><p class="note">L = unit lower triangular (multipliers below the diagonal); U = upper triangular from forward elimination (pivots on its diagonal). No extra arithmetic needed — you just record what elimination already did.</p></div>
+        <div class="formula"><span class="label">Symmetric version</span><div class="expr">A = LDŪ</div><p class="note">D = diag(pivots); L and Ū both have unit diagonals. LU and LDU are <strong>uniquely</strong> determined by A.</p></div>
+        <h3>One system = two triangular systems</h3>
+        <div class="flow"><div class="step">Solve Lc = b (forward)</div><span class="arrow">→</span><div class="step">Solve Ux = c (backward)</div></div>
+        <p>Factor once (~n³/3), solve cheaply (~n²) for every new right-hand side that arrives later.</p>
+        <div class="formula"><span class="label">Determinant</span><div class="expr">det A = ± (product of the pivots)</div><p class="note">Sign flips with each row exchange recorded in P.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="inverse">
+        <h2>Inverse by Gauss–Jordan</h2>
+        <h3>What it is</h3>
+        <p>The Gauss–Jordan method solves n systems at once — <code>Axᵢ = eᵢ</code> for each column eᵢ of the identity — by pushing elimination further than usual: clearing <em>above</em> each pivot as well as below, then dividing every row by its pivot, so <code>[A : I] → [I : A⁻¹]</code>.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>When you genuinely need the <em>entries</em> of A⁻¹ themselves — for example a precision matrix in statistics, or a symbolic formula that has A⁻¹ built into it.</li>
+            <li><strong>Not</strong> as the everyday way to solve Ax=b — computing A⁻¹ costs three times as much as an LU factorization, and A⁻¹b is no cheaper than two triangular solves. Prefer LU/Gaussian elimination for actually solving systems.</li>
+            <li>To determine invertibility conceptually alongside rank and determinant checks.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Form the augmented block <code>[A : I]</code>.</li>
+          <li>Run forward elimination as usual to reach <code>[U : C]</code> (C turns out to equal L⁻¹).</li>
+          <li>Continue upward: clear every entry above each pivot, starting from the last pivot and working back to the first.</li>
+          <li>Divide each row by its own pivot so the left block becomes the identity — the right block is now A⁻¹.</li>
+        </ol>
+        <div class="box"><span class="label">Six facts worth memorising</span>
+          <ul style="margin-bottom:0">
+            <li><strong>Existence:</strong> A⁻¹ exists ⟺ elimination gives n pivots.</li>
+            <li><strong>Solving:</strong> x = A⁻¹b is the one and only solution of Ax = b.</li>
+            <li><strong>Failure:</strong> a nonzero x with Ax = 0 ⟹ no inverse exists.</li>
+            <li><strong>2×2 formula:</strong> [a b; c d]⁻¹ = (1/(ad−bc))·[d −b; −c a].</li>
+            <li><strong>Diagonal:</strong> diag(d₁,…,dₙ)⁻¹ = diag(1/d₁,…,1/dₙ).</li>
+            <li><strong>Reverse order:</strong> (AB)⁻¹ = B⁻¹A⁻¹; (A⁻¹)ᵀ = (Aᵀ)⁻¹.</li>
+          </ul>
+        </div>
+        <div class="formula"><span class="label">Cost comparison</span><div class="expr">Computing A⁻¹: n³ &nbsp;&nbsp;vs.&nbsp;&nbsp; one LU factor + solve: n³/3 + n²</div><p class="note">Symmetric A: use A = LDLᵀ, half the arithmetic and no separate pivoting needed.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="spaces">
+        <h2>Vector Spaces &amp; Subspaces</h2>
+        <h3>What it is</h3>
+        <p>A vector space is any set of objects (columns, polynomials, matrices, functions…) that is closed under addition and scalar multiplication and satisfies the eight vector-space axioms. A subspace is a subset of a vector space that is itself a vector space under the same operations.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever you need to check that a set of solutions, functions, or transformed objects still "behaves linearly" — e.g. confirming that all solutions of a homogeneous system, or all symmetric matrices, form a valid space you can take bases and dimensions of.</li>
+            <li>Before applying any later machinery (basis, dimension, rank, orthogonality) — all of it assumes you're inside a genuine vector space or subspace.</li>
+            <li>To quickly rule out a candidate set (e.g. "does this constraint define a subspace, or just a subset?").</li>
+          </ul>
+        </div>
+        <h3>How to use it — the subspace test</h3>
+        <ol>
+          <li>Check <strong>0 ∈ W</strong> — if the zero vector fails the defining condition, stop: it's not a subspace.</li>
+          <li>Check <strong>closure under addition:</strong> pick two arbitrary elements of W, add them, verify the sum still satisfies W's condition.</li>
+          <li>Check <strong>closure under scalar multiplication:</strong> take an arbitrary element and an arbitrary scalar, verify the result still satisfies W's condition.</li>
+          <li>If all three hold, W is a subspace; if any fails, it isn't.</li>
+        </ol>
+        <div class="box"><span class="label">Rule of thumb</span><p>A set missing the origin can never be a subspace — that's the fastest first check. In short: linear combinations must stay inside.</p></div>
+        <p>Every subspace of Rⁿ is one of: <code>{0}</code>, a line, a plane, …, up to an (n−1)-dimensional hyperplane, or Rⁿ itself — and every one of them passes through the origin.</p>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="colnull">
+        <h2>Column Space &amp; Nullspace</h2>
+        <h3>What it is</h3>
+        <p>Two subspaces attached to every matrix A. The <strong>column space C(A)</strong> is every vector reachable as Ax — it lives in Rᵐ. The <strong>nullspace N(A)</strong> is every x that Ax sends to zero — it lives in Rⁿ.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li><strong>C(A):</strong> to decide, before solving, whether a given b is even reachable — <code>Ax=b</code> is solvable exactly when b ∈ C(A). This is the geometric root of "can this model fit this outcome at all?" in regression.</li>
+            <li><strong>N(A):</strong> to understand non-uniqueness — a nonzero nullspace means the solution (if one exists) is not unique, and describes exactly the redundant/free directions (e.g. a feature that's a copy or sum of others).</li>
+          </ul>
+        </div>
+        <h3>How to use it — finding C(A) and N(A)</h3>
+        <ol>
+          <li>Reduce A to reduced row-echelon form R.</li>
+          <li><strong>Column space:</strong> identify which columns of R contain pivots; the <em>corresponding columns of the original A</em> (not of R) form a basis for C(A).</li>
+          <li><strong>Nullspace:</strong> the pivot columns give the pivot variables; the remaining columns give the free variables.</li>
+          <li>For each free variable in turn, set it to 1 and every other free variable to 0, then solve for the pivot variables — this gives one "special solution."</li>
+          <li>The collection of special solutions (one per free variable) is a basis for N(A).</li>
+        </ol>
+        <div class="two-col">
+          <div>
+            <h4>Column space C(A)</h4>
+            <p>All linear combinations of the columns of A. Subspace of <strong>Rᵐ</strong>.</p>
+            <div class="formula"><span class="label">Solvability</span><div class="expr">Ax = b solvable ⟺ b ∈ C(A)</div></div>
+          </div>
+          <div>
+            <h4>Nullspace N(A)</h4>
+            <p>All x with Ax = 0. Subspace of <strong>Rⁿ</strong> (only homogeneous systems form a subspace — b ≠ 0 breaks closure).</p>
+          </div>
+        </div>
+        <div class="formula"><span class="label">Special solutions</span><div class="expr">set one free variable = 1, all others = 0, solve for pivot variables</div><p class="note">One special solution per free variable; together they form a basis for N(A).</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="four">
+        <h2>Four Fundamental Subspaces</h2>
+        <h3>What it is</h3>
+        <p>Every m×n matrix of rank r has exactly four associated subspaces — the column space and left nullspace live in Rᵐ; the row space and nullspace live in Rⁿ. Together they explain everything about existence and uniqueness for Ax=b.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>To fully characterise a matrix at a glance: how many independent equations does it really carry (rank), how much redundancy is there (nullspaces), what's the exact reachable output space (column space)?</li>
+            <li>To justify why least-squares residuals are orthogonal to the column space — the left nullspace is exactly where "unfittable error" lives.</li>
+            <li>As the natural setup for the rank–nullity theorem, used constantly when counting degrees of freedom in a model.</li>
+          </ul>
+        </div>
+        <h3>How to find each basis</h3>
+        <p>One elimination run (to echelon form U) supplies all four bases at once: nonzero rows of U (row space), pivot columns of the <em>original</em> A (column space), special solutions (nullspace), and the row combinations that produced U's zero rows (left nullspace, found e.g. by solving Aᵀy=0).</p>
+        <table>
+          <tr><th>Subspace</th><th>Lives in</th><th>Dimension</th><th>Basis</th></tr>
+          <tr><td>Column space C(A)</td><td>Rᵐ</td><td>r</td><td>Pivot columns of <strong>A</strong> (not U)</td></tr>
+          <tr><td>Row space C(Aᵀ)</td><td>Rⁿ</td><td>r</td><td>Nonzero rows of U</td></tr>
+          <tr><td>Nullspace N(A)</td><td>Rⁿ</td><td>n − r</td><td>Special solutions</td></tr>
+          <tr><td>Left nullspace N(Aᵀ)</td><td>Rᵐ</td><td>m − r</td><td>Row combos giving zero rows of U</td></tr>
+        </table>
+        <div class="formula"><span class="label">Rank–nullity theorem</span><div class="expr">r + (n − r) = n &nbsp;&nbsp;&nbsp; r + (m − r) = m</div></div>
+        <div class="box"><span class="label">Row rank = column rank</span><p>The number of independent rows always equals the number of independent columns — both equal r.</p></div>
+        <h3>Existence / uniqueness — one-sided inverses</h3>
+        <ul>
+          <li><strong>Full row rank (r = m):</strong> Ax=b solvable for every b (existence). Right-inverse: <code>C = Aᵀ(AAᵀ)⁻¹</code>.</li>
+          <li><strong>Full column rank (r = n):</strong> Ax=b has at most one solution (uniqueness). Left-inverse: <code>B = (AᵀA)⁻¹Aᵀ</code>.</li>
+        </ul>
+        <div class="formula"><span class="label">Rank-1 matrices</span><div class="expr">A = u vᵀ</div><p class="note">Column times row — the elementary building block behind the SVD in Unit 2.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="basis">
+        <h2>Linear Independence, Basis &amp; Dimension</h2>
+        <h3>What it is</h3>
+        <p><strong>Independence</strong> means no vector in a set can be written using the others (only the trivial combination gives zero). <strong>Spanning</strong> means a set of vectors can reach every point of a space via combinations. A <strong>basis</strong> does both at once — independent and spanning — giving every vector in the space exactly one representation. <strong>Dimension</strong> is the (always constant) number of vectors in any basis.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>To check whether a set of vectors/features carries genuinely new information, or whether one is redundant (a linear combination of the others).</li>
+            <li>To build a minimal, non-redundant representation of a subspace — the foundation of dimensionality reduction (choosing a smaller basis that still spans what matters).</li>
+            <li>To count the true "degrees of freedom" of a space before doing further analysis (e.g. deciding how many parameters a model actually needs).</li>
+          </ul>
+        </div>
+        <h3>How to use it</h3>
+        <ol>
+          <li><strong>Test independence:</strong> place the vectors as columns of a matrix A and solve <code>Ac=0</code>. If the only solution is c=0 (i.e. N(A)={0}, no free variables), they're independent.</li>
+          <li><strong>Quick rule:</strong> any n vectors in Rᵐ with n &gt; m are automatically dependent — there simply isn't room for that many pivots.</li>
+          <li><strong>Build a basis:</strong> if a spanning set is too large, discard dependent vectors (columns without a pivot) until only an independent spanning set remains; if an independent set is too small, add vectors until it spans.</li>
+          <li><strong>Read off dimension:</strong> once you have a basis, its vector count is the dimension — every other basis of the same space will have the same count.</li>
+        </ol>
+        <div class="box"><span class="label">Independence — the test</span><p>c₁v₁+…+cₖvₖ=0 only when every cᵢ=0. Test: put vectors in columns of A, solve Ac=0 — independent ⟺ N(A)={0} ⟺ r=n (no free variables).</p></div>
+        <h3>Spanning</h3>
+        <p>w₁,…,wₗ <strong>span</strong> V if every v ∈ V is some combination of them. <code>span(W)</code> is always a subspace.</p>
+        <div class="formula"><span class="label">Dimension</span><div class="expr">dim(V) = number of vectors in any basis for V</div><p class="note">A basis is a maximal independent set and, equally, a minimal spanning set — you can't remove a vector without losing spanning, or add one without losing independence.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="transforms">
+        <h2>Linear Transformations</h2>
+        <h3>What it is</h3>
+        <p>A transformation T is linear if it respects combinations: <code>T(cx + dy) = c·T(x) + d·T(y)</code>. Every linear transformation between finite-dimensional spaces can be written as a matrix once a basis is chosen for the input and output spaces.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever a rule is claimed to be "linear" (rotation, scaling, projection, differentiation, a neural-network layer) and you need its matrix to actually compute with it.</li>
+            <li>To verify whether a given rule is linear at all — checking <code>T(0)=0</code> is the fastest way to rule one out.</li>
+            <li>To combine transformations: composing two linear maps is exactly multiplying their matrices, so you can chain rotations/projections/reflections by multiplying.</li>
+          </ul>
+        </div>
+        <h3>How to use it — building the matrix</h3>
+        <ol>
+          <li>Choose a basis for the input space and a basis for the output space (the same basis, if T maps a space to itself).</li>
+          <li>Apply T to each input basis vector in turn.</li>
+          <li>Write each resulting image as coordinates in the output basis — that column of numbers becomes column j of the matrix.</li>
+          <li>Stack all the columns together: that matrix is the complete representation of T with respect to the chosen bases.</li>
+        </ol>
+        <h3>Standard transformations of the plane (θ-line, c=cosθ, s=sinθ)</h3>
+        <table>
+          <tr><th>Type</th><th>Matrix</th><th>Key identity</th></tr>
+          <tr><td>Rotation Q</td><td>[c −s; s c]</td><td>QθQφ=Qθ₊φ; Qᵀ=Q⁻¹ (length-preserving)</td></tr>
+          <tr><td>Projection P</td><td>[c² cs; cs s²]</td><td>P² = P (idempotent, not invertible)</td></tr>
+          <tr><td>Reflection H</td><td>2P − I</td><td>H² = I (self-inverse)</td></tr>
+        </table>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="gs">
+        <h2>Gram–Schmidt &amp; QR Factorization</h2>
+        <h3>What it is</h3>
+        <p>Gram–Schmidt turns any independent set of vectors into an orthonormal one (perpendicular, unit-length) by repeatedly subtracting off the components already captured by earlier vectors, then normalising. Recording the process gives <code>A = QR</code>: Q has orthonormal columns, R is upper triangular.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever you need a "nice" (orthonormal) basis for a subspace instead of an arbitrary skewed one — e.g. before projecting onto a subspace, or as groundwork for eigenvector/SVD algorithms in Unit 2.</li>
+            <li>For solving <strong>least squares</strong> (regression) numerically <em>without</em> forming AᵀA — which squares the conditioning and can wreck accuracy when features are nearly collinear. QR is the stable alternative used by real libraries.</li>
+            <li>To orthogonalise correlated features one at a time — removing from each new feature whatever the earlier ones already explain.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Start with independent vectors a, b, c, … Normalise the first: <code>q₁ = a/‖a‖</code>.</li>
+          <li>For each subsequent vector, subtract its projection onto every q already found: <code>Aⱼ = aⱼ − Σ (qᵢᵀaⱼ)qᵢ</code> (sum over all earlier i).</li>
+          <li>Normalise the result: <code>qⱼ = Aⱼ/‖Aⱼ‖</code>. If Aⱼ comes out as zero, the original vectors were not actually independent.</li>
+          <li>Collect the q's as the columns of Q. Compute <code>R = QᵀA</code> — upper triangular by construction.</li>
+          <li>To solve least squares Ax=b, solve <code>Rx̂ = Qᵀb</code> directly by back-substitution — no need to ever form or invert AᵀA.</li>
+        </ol>
+        <div class="box"><span class="label">Orthonormal basis</span><p>qᵢᵀqⱼ = 0 (i≠j), qᵢᵀqᵢ = 1.</p></div>
+        <div class="formula"><span class="label">Orthogonal matrix Q</span><div class="expr">QᵀQ = I &nbsp;&nbsp;⟹ (square Q)⟹&nbsp;&nbsp; Qᵀ = Q⁻¹</div><p class="note">‖Qx‖ = ‖x‖ — lengths &amp; angles preserved, so no numerical instability is introduced.</p></div>
+        <div class="formula"><span class="label">Coordinates — no elimination needed</span><div class="expr">x = Qᵀb, &nbsp; i.e. &nbsp; b = Σ (qᵢᵀb) qᵢ</div></div>
+        <div class="formula"><span class="label">QR factorization</span><div class="expr">A = QR &nbsp;&nbsp; Q: orthonormal columns &nbsp;&nbsp; R: upper triangular, R = QᵀA</div></div>
+        <div class="box"><span class="label">Least squares via QR</span><p>Normal equations AᵀAx̂=Aᵀb become <code>Rx̂ = Qᵀb</code> — solved by back-substitution, never forming AᵀA (which would square the conditioning and amplify error).</p></div>
+      </section>
+
+      <footer class="footnote">MFAD Unit 1 · Revision Super Notes · Compiled from Sessions 1–11</footer>
+    </div>
+  </main>
+</div>
+
+<div class="backtotop" id="backTop" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
 </div>
 
 <script>
-// Theme Toggle with localStorage persistence
 const root = document.documentElement;
 const themeBtn = document.getElementById('themeToggle');
 const iconSun = document.getElementById('iconSun');
-
-const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
-const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-
-function applyTheme(dark) {
+function setTheme(dark){
   root.classList.toggle('dark', dark);
-  iconSun.innerHTML = dark ? moonIcon : sunIcon;
+  iconSun.innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
 }
+let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+setTheme(isDark);
+themeBtn.addEventListener('click', () => { isDark = !isDark; setTheme(isDark); });
 
-// Determine initial theme: saved preference or system preference
-const savedTheme = localStorage.getItem('theme');
-let isDark = savedTheme
-  ? savedTheme === 'dark'
-  : window.matchMedia('(prefers-color-scheme: dark)').matches;
+const sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
 
-applyTheme(isDark);
-
-themeBtn.addEventListener('click', () => {
-  isDark = !isDark;
-  applyTheme(isDark);
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+document.querySelectorAll('.toc-group-title').forEach(t => {
+  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
 });
+
+const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = '#' + entry.target.id;
+    const link = navLinks.find(a => a.getAttribute('href') === id);
+    if (!link) return;
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => s && io.observe(s));
+
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+let marks = [];
+function clearMarks(){
+  marks.forEach(m => { const p = m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); });
+  marks = [];
+}
+function highlightInContent(term){
+  clearMarks();
+  if (!term) return 0;
+  const lower = term.toLowerCase();
+  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets = []; let n;
+  while (n = walker.nextNode()) targets.push(n);
+  let count = 0;
+  targets.forEach(node => {
+    const text = node.nodeValue;
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+    if (!regex.test(text)) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(regex, (match, p1, offset) => {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement('mark');
+      mark.textContent = match;
+      frag.appendChild(mark);
+      marks.push(mark);
+      count++;
+      lastIndex = offset + match.length;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  return count;
+}
+function filterNav(term){
+  const lower = term.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.toc-group').forEach(group => {
+    let groupHas = false;
+    group.querySelectorAll('.toc-list li').forEach(li => {
+      const a = li.querySelector('a');
+      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+      const match = !lower || hay.includes(lower);
+      li.classList.toggle('hidden', !match);
+      if (match){ groupHas = true; visible++; }
+    });
+    group.style.display = groupHas || !lower ? '' : 'none';
+    if (lower && groupHas) group.classList.remove('collapsed');
+  });
+  return visible;
+}
+let searchTimer;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const term = e.target.value.trim();
+  searchTimer = setTimeout(() => {
+    const navVisible = filterNav(term);
+    const contentMatches = highlightInContent(term);
+    if (!term) { searchCount.textContent = ''; return; }
+    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es');
+  }, 150);
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && marks.length){ marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+});
+
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+  backTop.classList.toggle('show', h.scrollTop > 600);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
-<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>

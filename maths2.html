@@ -3,243 +3,649 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
-</script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
-<script>
-  // Apply saved theme instantly (no flash)
-  (function() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const isDark = saved
-      ? saved === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) root.classList.add('dark');
-  })();
-</script>
-<title>Coming Soon</title>
+<title>MFAD · Unit 2 Super Notes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <style>
 :root{
-  --bg:#f3f3f1;
-  --surface:#f8f8f6;
-  --surface-2:#eceae5;
-  --text:#1c1f1d;
-  --text-soft:#565f5a;
-  --text-faint:#8a9089;
-  --border:#dfe1dc;
-  --accent:#2c5f52;
-  --accent-soft:#dfe9e4;
-  --accent-text:#1f4238;
-  --radius: 3px;
-  color-scheme: light;
+  --bg:#f3f3f1; --surface:#f8f8f6; --surface-2:#eceae5; --text:#1c1f1d; --text-soft:#565f5a;
+  --text-faint:#8a9089; --border:#dfe1dc; --accent:#2c5f52; --accent-soft:#dfe9e4; --accent-text:#1f4238;
+  --formula-bg:#f3ecdc; --formula-border:#c9a95c; --code-bg:#eef0ec; --mark-bg:#f6d989; --use-bg:#e7eef2; --use-border:#7fa8bd;
+  --radius:3px; --sidebar-w:300px; color-scheme:light;
 }
 html.dark{
-  --bg:#070b14;
-  --surface:#0d1524;
-  --surface-2:#101d33;
-  --text:#eaf3ff;
-  --text-soft:#a9bbd8;
-  --text-faint:#7d8eaf;
-  --border:#1d2d47;
-  --accent:#60a5fa;
-  --accent-soft:#10213d;
-  --accent-text:#dceeff;
-  --formula-bg:#101a2d;
-  --formula-border:#8ab4ff;
-  --code-bg:#101b2d;
-  --mark-bg:#3b5d9c;
-  color-scheme: dark;
+  --bg:#070b14; --surface:#0d1524; --surface-2:#101d33; --text:#eaf3ff; --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf; --border:#1d2d47; --accent:#60a5fa; --accent-soft:#10213d; --accent-text:#dceeff;
+  --formula-bg:#101a2d; --formula-border:#8ab4ff; --code-bg:#101b2d; --mark-bg:#3b5d9c; --use-bg:#0d2130; --use-border:#4a90b8; color-scheme:dark;
 }
 *{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'IBM Plex Sans', sans-serif;
-  line-height:1.45;
-  transition:background .25s ease, color .25s ease;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding: 30px 16px;
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.55;transition:background .25s ease,color .25s ease;}
+::selection{background:var(--mark-bg);color:#1c1f1d;}
+#progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--accent);z-index:500;transition:width .1s linear;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px 60px;}
+.sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:14px;}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--text-faint);}
+.brand strong{display:block;font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:var(--text);font-weight:600;margin-top:2px;}
+#themeToggle{border:1px solid var(--border);background:var(--surface-2);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
+#themeToggle:hover{background:var(--accent-soft);}
+#themeToggle svg{width:16px;height:16px;}
+.search-wrap{position:relative;margin-bottom:18px;}
+#searchInput{width:100%;padding:9px 12px 9px 32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;outline:none;}
+#searchInput:focus{border-color:var(--accent);}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-faint);pointer-events:none;}
+#searchCount{font-size:11.5px;color:var(--text-faint);margin:6px 2px 0;min-height:14px;}
+nav.toc{font-size:13.5px;}
+.toc-group{margin-bottom:4px;}
+.toc-group-title{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-faint);padding:14px 8px 6px;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;}
+.toc-group-title:hover{color:var(--text-soft);}
+.toc-group-title .chev{transition:transform .15s ease;width:9px;height:9px;}
+.toc-group.collapsed .chev{transform:rotate(-90deg);}
+.toc-group.collapsed .toc-list{display:none;}
+.toc-list{list-style:none;margin:0;padding:0;}
+.toc-list li a{display:block;padding:6px 10px 6px 16px;margin:1px 0;border-radius:var(--radius);color:var(--text-soft);text-decoration:none;border-left:2px solid transparent;font-size:13px;}
+.toc-list li a:hover{background:var(--surface-2);color:var(--text);}
+.toc-list li a.active{color:var(--accent-text);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500;}
+.toc-list li.hidden{display:none;}
+main{flex:1;min-width:0;padding:56px clamp(20px,6vw,90px) 140px;display:flex;justify-content:center;}
+.content{max-width:720px;width:100%;}
+.masthead{margin-bottom:52px;border-bottom:1px solid var(--border);padding-bottom:20px;}
+.masthead .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent-text);letter-spacing:.04em;}
+.masthead h1{font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,4.4vw,48px);margin:8px 0 14px;line-height:1.08;letter-spacing:-0.01em;}
+.masthead p{color:var(--text-soft);font-size:15.5px;max-width:58ch;}
+section.topic{margin-bottom:68px;scroll-margin-top:28px;}
+section.topic>h2{font-family:'Newsreader',serif;font-weight:500;font-size:27px;border-bottom:1px solid var(--border);padding-bottom:12px;margin:0 0 20px;letter-spacing:-0.01em;}
+section.topic h3{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:15.5px;margin:28px 0 10px;color:var(--text);}
+section.topic h4{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:14px;margin:20px 0 8px;color:var(--accent-text);}
+section.topic p{font-family:'Newsreader',serif;font-size:16.5px;color:var(--text);margin:0 0 14px;}
+section.topic p,section.topic li{font-size:16.5px;}
+section.topic ul,section.topic ol{font-family:'Newsreader',serif;padding-left:22px;margin:0 0 14px;}
+section.topic ul li,section.topic ol li{margin-bottom:6px;}
+strong{font-weight:600;}
+code{font-family:'IBM Plex Mono',monospace;font-size:.86em;background:var(--code-bg);padding:1.5px 5px;border-radius:3px;color:var(--accent-text);}
+.box{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--surface-2);}
+.box p:last-child{margin-bottom:0;}
+.box .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--accent-text);margin-bottom:5px;display:block;}
+.use{border:1px solid var(--use-border);border-left:3px solid var(--use-border);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--use-bg);}
+.use p:last-child,.use ul:last-child{margin-bottom:0;}
+.use .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-soft);margin-bottom:6px;display:block;}
+.use ul{margin-bottom:0;padding-left:20px;}
+.formula{border:1px solid var(--formula-border);background:var(--formula-bg);border-radius:var(--radius);padding:16px 20px;margin:18px 0;}
+.formula .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#8a6d1f;display:block;margin-bottom:8px;}
+html.dark .formula .label{color:#d8b25b;}
+.formula .expr{font-family:'IBM Plex Mono',monospace;font-size:16.5px;text-align:center;margin:6px 0;}
+.formula .note{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text-soft);margin-top:8px;}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14px;font-family:'IBM Plex Sans',sans-serif;}
+th{text-align:left;font-weight:600;font-size:12px;letter-spacing:.03em;color:var(--text-faint);border-bottom:1px solid var(--border);padding:8px 10px;}
+td{padding:8px 10px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%;}
+.flow .step{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:8px 14px;font-size:13px;font-family:'IBM Plex Mono',monospace;text-align:center;}
+.flow .arrow{color:var(--text-faint);font-size:14px;}
+mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
+.footnote{font-size:13px;color:var(--text-faint);border-top:1px solid var(--border);padding-top:16px;margin-top:46px;}
+.backtotop{position:fixed;bottom:22px;right:18px;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:400;}
+.backtotop.show{opacity:1;pointer-events:auto;}
+.backtotop svg{width:15px;height:15px;}
+.menu-btn{display:none;}
+@media (max-width:880px){
+  .sidebar{position:fixed;left:0;top:0;z-index:600;transform:translateX(-100%);transition:transform .2s ease;box-shadow:0 0 40px rgba(0,0,0,.25);}
+  .sidebar.open{transform:translateX(0);}
+  main{padding:56px 20px 120px;}
+  .menu-btn{display:flex;position:fixed;top:16px;left:16px;z-index:601;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;}
+  .menu-btn svg{width:17px;height:17px;}
 }
-
-.container{
-  max-width: 480px;
-  width: 100%;
-  text-align: center;
-}
-
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.brand{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  letter-spacing:.04em;
-  color:var(--text-faint);
-  text-transform: uppercase;
-}
-.brand strong{
-  display:block;
-  font-family:'Newsreader', serif;
-  font-size:22px;
-  color:var(--text);
-  font-weight:500;
-  text-transform: none;
-  margin-top:2px;
-  line-height: 1.1;
-}
-
-#themeToggle{
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--text);
-  width:32px;
-  height:32px;
-  border-radius:var(--radius);
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  transition: background .15s ease;
-}
-#themeToggle:hover{ background:var(--accent-soft); }
-#themeToggle svg{ width:15px; height:15px; }
-
-.card{
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.15s ease;
-}
-.card:hover{
-  border-color: var(--accent);
-}
-
-.title{
-  font-family: 'Newsreader', serif;
-  font-size: 32px;
-  font-weight: 500;
-  margin: 0 0 12px 0;
-  color: var(--text);
-}
-
-.signature{
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 14px;
-  color: var(--text-faint);
-  letter-spacing: 0.08em;
-  margin: 0;
-}
-
-.footer{
-  margin-top: 20px;
-  font-size: 12px;
-  color: var(--text-faint);
-}
-
-.footer a{
-  color: var(--accent-text);
-  text-decoration: none;
-  border-bottom: 1px dashed var(--border);
-}
-.footer a:hover{
-  border-bottom-color: var(--accent);
-}
-</style>
-<style>
-:root{--bg:#f3f3f1;--surface:#f8f8f6;--surface-2:#eceae5;--text:#1c1f1d;--text-soft:#565f5a;--text-faint:#8a9089;--border:#dfe1dc;--accent:#2c5f52;--accent-soft:#dfe9e4;--accent-text:#1f4238;}
-html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--text-soft:#a9bbd8;--text-faint:#7d8eaf;--border:#1d2d47;--accent:#60a5fa;--accent-soft:#10213d;--accent-text:#dceeff;}
-.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
-.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
-@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
-</style>
-<style>
-.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
-.site-footer a{color:var(--accent-text);text-decoration:none;}
-.site-footer a:hover{color:var(--accent);}
-@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
-.site-header{border-color:var(--border);color:var(--text);}
-.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
-.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
-.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
-</style>
-<style>
-#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
-.home-link{top:18px;bottom:auto;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 </head>
 <body>
-<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
 
-<div class="container">
-  <header class="site-header">
-    <div class="brand">
-      Reference Portal
-      <strong>Coming Soon</strong>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">UE25MA242A<strong>Unit 2 Super Notes</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
     </div>
-    <button id="themeToggle" aria-label="Toggle theme">
-      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-      </svg>
-    </button>
-  </header>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Orthogonality</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#lengths" data-title="Length, Inner Product and Norms">Length, inner product &amp; norms</a></li>
+          <li><a href="#orthosets" data-title="Orthogonal Sets, Subspaces and Complements">Orthogonal sets &amp; complements</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Projections &amp; Fitting</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#projections" data-title="Orthogonal Projections">Orthogonal projections</a></li>
+          <li><a href="#leastsq" data-title="Least Squares Approximation">Least squares approximation</a></li>
+          <li><a href="#gs" data-title="Gram Schmidt and QR Factorization">Gram–Schmidt &amp; QR</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Eigenstructure</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#eigen" data-title="Eigenvalues and Eigenvectors">Eigenvalues &amp; eigenvectors</a></li>
+          <li><a href="#diag" data-title="Diagonalization of Matrices">Diagonalization</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Definiteness &amp; SVD</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#quad" data-title="Quadratic Forms and Covariance">Quadratic forms &amp; covariance</a></li>
+          <li><a href="#pd" data-title="Tests for Positive Definiteness">Tests for definiteness</a></li>
+          <li><a href="#svd" data-title="Singular Value Decomposition">Singular value decomposition</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Data Science</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#pca" data-title="Principal Component Analysis">Principal component analysis</a></li>
+          <li><a href="#dimred" data-title="Dimensionality Reduction">Dimensionality reduction</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
 
-  <div class="card">
-    <h1 class="title">Coming Soon</h1>
-    <p class="signature">-TYN</p>
-  </div>
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">UE25MA242A — Mathematical Foundation for AI &amp; Data Science</div>
+        <h1>Unit 2 — Super Notes</h1>
+        <p>Every core idea from Sessions 1–10, explained: what it is, when you reach for it, how to actually do it step by step, and the formula to remember. Covers orthogonality through to PCA and dimensionality reduction.</p>
+      </header>
 
-  <footer class="site-footer"><span>TYN Notes · Mathematics</span><a href="index.html">Home</a></footer>
+      <!-- ============================================================ -->
+      <section class="topic" id="lengths">
+        <h2>Length, Inner Product &amp; Norms</h2>
+        <h3>What it is</h3>
+        <p>The <strong>length</strong> ‖x‖ of a vector generalises the Pythagorean hypotenuse to n dimensions, and the <strong>inner product</strong> (dot product) xᵀy = x₁y₁+…+xₙyₙ is the single number that carries both length and angle information. Setting y = x recovers the length: xᵀx = ‖x‖². Two vectors are <strong>orthogonal</strong> exactly when xᵀy = 0.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever you need to measure "how similar" two vectors, embeddings, or feature rows are — the inner product, normalised into a cosine, is the most-used operation in machine learning.</li>
+            <li>To test perpendicularity of any two vectors in any dimension, instantly, without geometry.</li>
+            <li>To decide which norm (L1, L2, L∞) suits a modelling goal — this choice underlies ridge regression, the lasso, and robustness arguments.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>To find a length: square every component, add them, take the square root — ‖x‖ = √(xᵀx).</li>
+          <li>To find the inner product: multiply corresponding components of x and y and add — xᵀy = Σxᵢyᵢ.</li>
+          <li>To test orthogonality: compute xᵀy. If it is exactly 0, the vectors are perpendicular; if positive the angle is under 90°, if negative it is over 90°.</li>
+          <li>To get a unit vector pointing the same way as x, divide by its own length: x/‖x‖.</li>
+        </ol>
+        <div class="formula"><span class="label">Length &amp; inner product</span><div class="expr">‖x‖² = xᵀx = x₁²+…+xₙ² &nbsp;&nbsp; xᵀy = x₁y₁+…+xₙyₙ</div><p class="note">The zero vector is the only vector of length zero, and the only vector orthogonal to itself.</p></div>
+        <div class="formula"><span class="label">Family of norms</span><div class="expr">‖x‖₁ = Σ|xᵢ| &nbsp;&nbsp; ‖x‖₂ = √(Σxᵢ²) &nbsp;&nbsp; ‖x‖∞ = max|xᵢ|</div><p class="note">Unless stated otherwise ‖x‖ means the Euclidean ‖x‖₂ — the only one built from an inner product, so the only one that carries a notion of angle.</p></div>
+        <h3>Orthogonal sets are independent</h3>
+        <p>If non-zero vectors v₁,…,vₖ are mutually orthogonal, they are automatically linearly independent (take the inner product of c₁v₁+…+cₖvₖ=0 with each vᵢ in turn; every cross term vanishes, forcing cᵢ=0). The converse fails — independent vectors need not be orthogonal, e.g. (2,1) and (1,2) in R².</p>
+        <div class="box"><span class="label">Cosine &amp; the Schwarz inequality</span><p>cos θ = xᵀy/(‖x‖‖y‖), and since |cos θ| ≤ 1 this gives |xᵀy| ≤ ‖x‖‖y‖ — equality only when x and y are parallel. This is the cosine-similarity formula used everywhere to compare embeddings.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="orthosets">
+        <h2>Orthogonal Subspaces &amp; Complements</h2>
+        <h3>What it is</h3>
+        <p>Two subspaces V, W are <strong>orthogonal</strong> if every vector of V is perpendicular to every vector of W. The <strong>orthogonal complement</strong> V⊥ is the (stronger) set of <em>all</em> vectors orthogonal to V. The Fundamental Theorem of Orthogonality says the four fundamental subspaces of Unit 1 are complementary pairs: row space ⊥ nullspace in Rⁿ, column space ⊥ left nullspace in Rᵐ.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>To decide solvability "backwards": Ax=b is solvable exactly when b ⊥ every y with yᵀA=0 — often far fewer conditions to check than finding C(A) directly.</li>
+            <li>To split any vector x uniquely into a row-space part and a nullspace part, x = xᵣ + xₙ — the geometric root of least squares.</li>
+            <li>To reason about redundant/uncorrelated features: after centring, orthogonal columns are exactly uncorrelated features.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>To find a vector orthogonal to a set of given vectors, set up the equations "(unknown)·(each given vector) = 0" and solve.</li>
+          <li>To find N(A)⊥ (= row space) or C(A)⊥ (= left nullspace), it is enough to describe the space using A itself — no extra computation is needed.</li>
+          <li>To split x = xᵣ + xₙ: find a basis for N(A) (or the row space), project x onto that line/subspace to get xₙ, then xᵣ = x − xₙ.</li>
+        </ol>
+        <div class="formula"><span class="label">Fundamental theorem of orthogonality</span><div class="expr">N(A) = C(Aᵀ)⊥ &nbsp;&nbsp; N(Aᵀ) = C(A)⊥</div><p class="note">dim V + dim V⊥ = n always; V⊥⊥ = V. In R³ a plane can never be orthogonal to a plane — only lines can be orthogonal to lines or to planes.</p></div>
+        <div class="box"><span class="label">Key fact</span><p>Every x splits uniquely as x = xᵣ + xₙ (row space + nullspace). A destroys the nullspace part and carries the row space part one-to-one onto the column space — nothing ever lands in the left nullspace.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="projections">
+        <h2>Orthogonal Projections</h2>
+        <h3>What it is</h3>
+        <p>Given a point b and a subspace S, the <strong>projection</strong> p is the point of S closest to b; the key fact is purely geometric — the error e = b − p must be perpendicular to S. Projections range from onto a single line up to onto the whole column space of a matrix.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Any time a system Ax=b has no exact solution and you need the closest achievable answer.</li>
+            <li>To split a vector into "the part a model can explain" (p, in C(A)) and "the part it cannot" (e, in the left nullspace) — exactly the logic of regression residuals.</li>
+            <li>To build a rank-1 or rank-r matrix that carries out this projection automatically, reusable for many b's.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li><strong>Onto a line through a:</strong> the error aᵀ(b − x̂a)=0 gives x̂ = aᵀb/aᵀa, so p = x̂a and the projection matrix is P = aaᵀ/aᵀa.</li>
+          <li><strong>Onto the column space of A</strong> (m &gt; n, independent columns): solve the normal equations AᵀAx̂ = Aᵀb for x̂, then p = Ax̂; the projection matrix is P = A(AᵀA)⁻¹Aᵀ.</li>
+          <li>Verify e = b − p is perpendicular to every column of A (equivalently Aᵀe = 0) — this is the defining check of every projection.</li>
+          <li>Use I − P to project onto the orthogonal complement (the left nullspace) in one step: (I−P)b = e.</li>
+        </ol>
+        <div class="formula"><span class="label">Projection onto a line</span><div class="expr">x̂ = aᵀb/aᵀa &nbsp;&nbsp; p = x̂a &nbsp;&nbsp; P = aaᵀ/aᵀa</div><p class="note">Rank 1; scaling a changes nothing. If a is already a unit vector, P = aaᵀ.</p></div>
+        <div class="formula"><span class="label">Projection onto a subspace — normal equations</span><div class="expr">AᵀA x̂ = Aᵀb &nbsp;&nbsp; x̂ = (AᵀA)⁻¹Aᵀb &nbsp;&nbsp; p = A x̂ = A(AᵀA)⁻¹Aᵀ b</div><p class="note">Needs independent columns of A so that AᵀA is invertible — AᵀA has the same nullspace as A.</p></div>
+        <div class="box"><span class="label">The two defining properties</span><p>Every projection matrix satisfies P² = P (projecting twice changes nothing) and Pᵀ = P (symmetric). Conversely any symmetric idempotent matrix is a projection. trace(P) = rank(P) = dimension of the subspace projected onto.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="leastsq">
+        <h2>Least Squares Approximation</h2>
+        <h3>What it is</h3>
+        <p>When Ax=b is overdetermined (more equations than unknowns) and has no exact solution, least squares finds the x̂ that minimises ‖Ax−b‖ — equivalently, the x̂ whose Ax̂ is the projection of b onto C(A). This is exactly linear regression.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Fitting a straight line, plane, or any linear model to noisy measurements — curve fitting, regression, surveying.</li>
+            <li>Any time there are more data points/equations than parameters and an exact fit is impossible.</li>
+            <li>Weighted least squares when some measurements should be trusted more than others.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Set up A (design matrix of the model, e.g. columns 1 and t for a line C+Dt) and b (the observed values).</li>
+          <li>Compute AᵀA and Aᵀb, then solve the normal equations AᵀAx̂ = Aᵀb for x̂ (invert the 2×2/3×3 system directly, or use Cramer's Rule).</li>
+          <li>Compute the fitted values p = Ax̂ and the residual e = b − p.</li>
+          <li><strong>Always verify:</strong> e must be perpendicular to every column of A (Aᵀe = 0) — this is the proof the fit is correct.</li>
+          <li>For weighted least squares, replace the normal equations with AᵀWA xw = AᵀWb, where W is the (diagonal) weight matrix.</li>
+        </ol>
+        <div class="formula"><span class="label">Normal equations (unweighted)</span><div class="expr">AᵀA x̂ = Aᵀb</div><p class="note">Obtained simply by left-multiplying the unsolvable Ax=b by Aᵀ.</p></div>
+        <div class="formula"><span class="label">Weighted least squares</span><div class="expr">AᵀW A xw = AᵀW b</div><p class="note">W trusts some equations more than others; ordinary least squares is the special case W = I.</p></div>
+        <h3>Straight-line fitting</h3>
+        <p>To fit b = C + Dt to points (t₁,b₁),…,(tₘ,bₘ): A has columns (1,…,1) and (t₁,…,tₘ); solve AᵀA[C;D]=Aᵀb. The fitted line always passes through the centroid point (t̄, b̄) — a direct consequence of the first normal equation.</p>
+        <div class="box"><span class="label">Where the residual lives (the four subspaces, again)</span><p>e = b − Ax̂ always lies in N(Aᵀ), the left nullspace of A — it is exactly the piece of b orthogonal to every column, i.e. orthogonal to C(A).</p></div>
+        <div class="use"><span class="label">AI/DS reading</span><p>P = A(AᵀA)⁻¹Aᵀ is the statistician's "hat matrix" (it puts the hat on b); its diagonal entries are leverages and trace(P)=rank is the effective number of parameters. Collinear features make AᵀA singular — ridge regression fixes this via (AᵀA+λI)x̂=Aᵀb. Forming AᵀA squares the conditioning of the problem, which is why real solvers use the QR factorization instead (next topic).</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="gs">
+        <h2>Gram–Schmidt &amp; QR Factorization</h2>
+        <h3>What it is</h3>
+        <p>Gram–Schmidt turns any independent set of vectors a, b, c, … into an orthonormal set q₁, q₂, q₃, … by subtracting off, from each new vector, whatever the earlier q's already explain, then normalising. Recording the process as a matrix equation gives <code>A = QR</code>: Q has orthonormal columns, R is upper triangular.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Whenever you need a "nice" orthonormal basis for a subspace instead of an arbitrary skewed one — the standard groundwork for eigenvector/SVD algorithms.</li>
+            <li>To solve least squares numerically <em>without</em> forming AᵀA (which squares the conditioning) — solve Rx̂ = Qᵀb by back-substitution instead.</li>
+            <li>To extend a partial orthonormal set (e.g. finding a third column to complete an orthogonal matrix) or verify orthogonality of a set of vectors.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Normalise the first vector: q₁ = a/‖a‖.</li>
+          <li>For each next vector, subtract its projection onto every q already found: <code>B = b − (bᵀq₁)q₁</code>, then <code>C = c − (cᵀq₁)q₁ − (cᵀq₂)q₂</code>, and so on.</li>
+          <li>Normalise the result at each step: qⱼ = (that leftover vector)/‖leftover‖. If the leftover is zero, the original vectors were not independent.</li>
+          <li>Collect the q's as columns of Q. Compute R = QᵀA — upper triangular by construction, with the norms used in step 1–3 appearing on its diagonal.</li>
+          <li>To solve least squares Ax=b: solve Rx̂ = Qᵀb directly by back-substitution.</li>
+        </ol>
+        <div class="formula"><span class="label">Gram–Schmidt step</span><div class="expr">Aⱼ = aⱼ − Σᵢ&lt;ⱼ (qᵢᵀaⱼ) qᵢ &nbsp;&nbsp; qⱼ = Aⱼ/‖Aⱼ‖</div><p class="note">Subtract the components already captured by earlier q's, then normalise.</p></div>
+        <div class="formula"><span class="label">QR factorization</span><div class="expr">A = QR &nbsp;&nbsp; QᵀQ = I &nbsp;&nbsp; R upper triangular, R = QᵀA</div><p class="note">For n vectors with m components: A is m×n, Q is m×n (orthonormal columns), R is n×n upper triangular.</p></div>
+        <div class="box"><span class="label">Least squares via QR</span><p>The normal equations AᵀAx̂=Aᵀb become <code>Rx̂ = Qᵀb</code>, solved by back-substitution — never forming AᵀA, so no loss of numerical accuracy.</p></div>
+        <div class="use"><span class="label">Completing an orthogonal matrix</span><p>Given some orthonormal columns, a further column must be a unit vector orthogonal to all the others — solve the resulting homogeneous system, normalise, and note the only remaining freedom is an overall sign flip. Since Q is square with orthonormal columns, QᵀQ=I ⟹ QQᵀ=I too, so the rows become orthonormal automatically.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="eigen">
+        <h2>Eigenvalues &amp; Eigenvectors</h2>
+        <h3>What it is</h3>
+        <p>Instead of Ax=b, we now ask <code>Ax = λx</code>: for which special directions x does multiplying by A only stretch or shrink the vector, never turn it aside? λ is the <strong>eigenvalue</strong>, x the <strong>eigenvector</strong>. This underlies solutions of du/dt=Au (pure exponential solutions eλtx) and every method that "finds structure" in data.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>To solve coupled linear differential/difference equations — each eigenvalue gives a growth or decay rate, each eigenvector the direction it happens in.</li>
+            <li>To judge the stability of a repeated process (Markov chains, PageRank, RNN gradients, iterative solvers) — the largest |λ| eventually dominates.</li>
+            <li>Wherever "the direction of greatest variance/spread" is needed — this is exactly what PCA computes on a covariance matrix.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Form <code>det(A − λI) = 0</code>, the characteristic polynomial of degree n — its roots are the n eigenvalues (with repetition).</li>
+          <li>For each eigenvalue λ, solve <code>(A − λI)x = 0</code> for a non-zero x (its nullspace) — this is the eigenvector, unique only up to scaling.</li>
+          <li>Sanity-check: sum of eigenvalues = trace(A); product of eigenvalues = det(A).</li>
+          <li>For a triangular matrix, read the eigenvalues straight off the diagonal — no computation needed.</li>
+        </ol>
+        <div class="formula"><span class="label">Characteristic equation</span><div class="expr">(A − λI)x = 0 &nbsp;⟹&nbsp; det(A − λI) = 0</div><p class="note">Eigenvectors are never unique — the whole eigenspace (nullspace of A−λI) consists of eigenvectors for that λ.</p></div>
+        <div class="formula"><span class="label">Trace &amp; determinant checks (2×2 shortcut)</span><div class="expr">λ₁+λ₂+…+λₙ = trace(A) &nbsp;&nbsp; λ₁λ₂…λₙ = det(A) &nbsp;&nbsp; λ = [tr ± √(tr²−4det)]/2</div></div>
+        <table>
+          <tr><th>Rule</th><th>Statement</th></tr>
+          <tr><td>Powers</td><td>Aᵏx = λᵏx — λᵏ is an eigenvalue of Aᵏ, same eigenvector</td></tr>
+          <tr><td>Inverse</td><td>if λ≠0, A⁻¹x = (1/λ)x</td></tr>
+          <tr><td>Shift</td><td>eigenvalues of A−cI are λ−c; eigenvectors unchanged</td></tr>
+          <tr><td>Transpose</td><td>A and Aᵀ share eigenvalues (not eigenvectors)</td></tr>
+          <tr><td>Projection</td><td>P²=P ⟹ eigenvalues are only 0 or 1</td></tr>
+          <tr><td>Singular</td><td>A singular ⟺ λ=0 is an eigenvalue</td></tr>
+        </table>
+        <div class="box"><span class="label">Cayley–Hamilton</span><p>Every matrix satisfies its own characteristic equation: if det(A−λI)=λⁿ+c₁λⁿ⁻¹+…+cₙ, then Aⁿ+c₁Aⁿ⁻¹+…+cₙI=0. This reduces high powers of A to low ones, and gives A⁻¹ algebraically — for a 2×2 with λ²−λ−2=0, A⁻¹=½(A−I).</p></div>
+        <div class="use"><span class="label">Warning</span><p>Pivots, diagonal entries, and eigenvalues are three different things in general — they coincide only for triangular matrices. Elimination changes eigenvalues, which is exactly why elimination cannot be used to find them.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="diag">
+        <h2>Diagonalization of Matrices</h2>
+        <h3>What it is</h3>
+        <p>If an n×n matrix A has n independent eigenvectors, putting them as columns of S and the eigenvalues as diag(λ₁,…,λₙ)=Λ gives <code>S⁻¹AS = Λ</code>, equivalently <code>A = SΛS⁻¹</code>. In the eigenvector coordinates, A is nothing but n independent scalings.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Computing high powers Aᵏ cheaply: Aᵏ = SΛᵏS⁻¹ turns matrix multiplication into scalar exponentiation.</li>
+            <li>Solving linear recurrences/differential equation systems in closed form.</li>
+            <li>Deciding long-run stability of an iterative process: Aᵏ → 0 exactly when every |λ| &lt; 1.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Find all eigenvalues and a full set of eigenvectors (previous topic).</li>
+          <li>Check there are n independent eigenvectors — guaranteed automatically if all n eigenvalues are distinct.</li>
+          <li>Place the eigenvectors as the columns of S (any order), and the corresponding eigenvalues in the same order on the diagonal of Λ.</li>
+          <li>Then A = SΛS⁻¹. Use Aᵏ = SΛᵏS⁻¹ and A⁻¹ = SΛ⁻¹S⁻¹ for powers/inverses.</li>
+        </ol>
+        <div class="formula"><span class="label">Diagonalization</span><div class="expr">AS = SΛ &nbsp;&nbsp; S⁻¹AS = Λ &nbsp;&nbsp; A = SΛS⁻¹</div><p class="note">S is never unique — eigenvectors can be rescaled freely. Order of columns in S and diagonal of Λ must match.</p></div>
+        <div class="formula"><span class="label">Powers</span><div class="expr">Aᵏ = S Λᵏ S⁻¹</div><p class="note">Aᵏ → 0 as k→∞ exactly when every |λᵢ| &lt; 1.</p></div>
+        <h3>When it fails</h3>
+        <p>Diagonalization needs enough eigenvectors, not non-zero eigenvalues — the two properties are unrelated. A repeated eigenvalue (algebraic multiplicity p) is diagonalizable only if its eigenspace also has dimension p (geometric multiplicity = p, i.e. rank(A−λI)=n−p). Classic failure: <code>[0 1; 0 0]</code> has λ=0 twice but only one eigenvector.</p>
+        <div class="box"><span class="label">Distinct eigenvalues ⟹ independent eigenvectors</span><p>If λ₁,…,λₖ are all different, their eigenvectors are automatically linearly independent. So any matrix with n distinct eigenvalues can always be diagonalized — the typical, easy case.</p></div>
+        <div class="use"><span class="label">Symmetric matrices are special</span><p>When A is symmetric, eigenvectors can always be chosen orthonormal, so S becomes an orthogonal matrix Q with S⁻¹=Sᵀ. This is the spectral theorem <code>A = QΛQᵀ</code> — it is what makes PCA on a covariance matrix both possible and numerically safe, and it is the seed of the SVD.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="quad">
+        <h2>Quadratic Forms &amp; Covariance Matrices</h2>
+        <h3>What it is</h3>
+        <p>For a symmetric matrix A, <code>xᵀAx</code> is a pure quadratic form — no linear or constant terms. Whether xᵀAx is always positive (<strong>positive definite</strong>), always non-negative (<strong>positive semidefinite</strong>), always negative, or mixed (<strong>indefinite</strong>) decides whether a stationary point is a bowl, valley, dome, or saddle. Any unsymmetric A can be replaced by the symmetric Â=(A+Aᵀ)/2 without changing xᵀAx.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Classifying stationary points of a multivariable function (the matrix of second partial derivatives, the Hessian).</li>
+            <li>Recognising that a covariance matrix is always positive semidefinite, and exactly when it is strictly positive definite (no redundant/collinear feature).</li>
+            <li>Confirming AᵀA is invertible for least squares (positive definite ⟺ independent columns of A).</li>
+          </ul>
+        </div>
+        <h3>How to use it — the 2×2 test, then general</h3>
+        <ol>
+          <li>Write f = ax²+2bxy+cy² and its matrix A=[a b; b c].</li>
+          <li>Complete the square: ax²+2bxy+cy² = a(x+(b/a)y)² + ((ac−b²)/a)y².</li>
+          <li>f is positive definite ⟺ a &gt; 0 and ac &gt; b². (Positive coefficients alone are never enough.)</li>
+          <li>For a general symmetric matrix, recover it from a quadratic form by halving every cross-coefficient and placing it symmetrically off the diagonal.</li>
+        </ol>
+        <div class="formula"><span class="label">Quadratic form ↔ symmetric matrix</span><div class="expr">xᵀA x = Σᵢ Σⱼ aᵢⱼxᵢxⱼ = a₁₁x₁² + 2a₁₂x₁x₂ + … </div></div>
+        <table>
+          <tr><th>Type</th><th>2×2 condition</th><th>Eigenvalues</th><th>Graph</th></tr>
+          <tr><td>Positive definite</td><td>a&gt;0, ac&gt;b²</td><td>all λ&gt;0</td><td>bowl</td></tr>
+          <tr><td>Positive semidefinite</td><td>a≥0, ac=b²</td><td>all λ≥0, some λ=0</td><td>valley</td></tr>
+          <tr><td>Negative definite</td><td>a&lt;0, ac&gt;b²</td><td>all λ&lt;0</td><td>dome</td></tr>
+          <tr><td>Indefinite</td><td>ac&lt;b²</td><td>mixed signs</td><td>saddle</td></tr>
+        </table>
+        <h3>Why AᵀA is always positive semidefinite</h3>
+        <p>For any matrix A, <code>xᵀ(AᵀA)x = (Ax)ᵀ(Ax) = ‖Ax‖² ≥ 0</code>. It is strictly positive definite exactly when N(A)={0}, i.e. the columns of A are independent. This is the reason AᵀA was invertible in the normal equations.</p>
+        <div class="formula"><span class="label">The covariance matrix</span><div class="expr">S = (1/(n−1)) YᵀY, &nbsp; Y = centred data</div><p class="note">(i,i) entry = variance of feature i; (i,j) entry = covariance of features i,j. S is always positive semidefinite (cᵀSc = ‖Yc‖²/(n−1) ≥ 0 is the variance of the combined feature Yc), and positive definite exactly when no feature is an exact linear combination of the others.</p></div>
+        <div class="box"><span class="label">Key fact for PCA</span><p>S is symmetric, so its eigenvalues are real and non-negative and its eigenvectors can be chosen orthonormal. Along a unit eigenvector u, uᵀSu=λ is the variance of the data in that direction — the largest eigenvalue is the direction of greatest spread.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="pd">
+        <h2>Tests for Positive Definiteness</h2>
+        <h3>What it is</h3>
+        <p>Four completely equivalent tests decide whether a real symmetric matrix A is positive definite, and a fifth (A=RᵀR) connects the idea to least squares and prepares the ground for the SVD.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Checking positive definiteness of a matrix quickly by hand (determinant test) or as software does it internally (pivot test).</li>
+            <li>Proving general theorems about positive definite matrices (eigenvalue test is most convenient for proofs).</li>
+            <li>Producing a "square root" factor R of a positive definite matrix — Cholesky decomposition, used in simulation and optimisation.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Form the leading principal submatrices A₁, A₂, …, Aₙ=A (the top-left k×k blocks).</li>
+          <li>Compute det(A₁), det(A₂), …, det(Aₙ). If <em>all</em> are strictly positive, A is positive definite (test III).</li>
+          <li>Equivalently, run elimination without row exchanges; if every pivot is positive, A is positive definite (test IV) — this is what a computer actually does.</li>
+          <li>To classify a semidefinite/indefinite case, check where a leading determinant first becomes zero or negative.</li>
+        </ol>
+        <div class="formula"><span class="label">Four equivalent tests (Statement 6B)</span><div class="expr">(I) xᵀAx&gt;0 ∀x≠0 &nbsp; (II) all λᵢ&gt;0 &nbsp; (III) all leading det(Aₖ)&gt;0 &nbsp; (IV) all pivots dₖ&gt;0</div><p class="note">Every diagonal entry of a PD matrix must itself be positive, but that alone never suffices.</p></div>
+        <div class="formula"><span class="label">The fifth test</span><div class="expr">A is PD &nbsp;⟺&nbsp; A = RᵀR for some R with independent columns</div><p class="note">Cholesky: A=LDLᵀ=(L√D)(√D Lᵀ), so R=√D Lᵀ. From eigenvalues: A=QΛQᵀ=(Q√Λ)(√Λ Qᵀ), so R=√Λ Qᵀ, or the symmetric square root R=Q√Λ Qᵀ. R is never unique.</p></div>
+        <div class="box"><span class="label">Why the tests agree, in one line each</span><p>I⟺II via xᵀAx=Σcᵢ²λᵢ in the eigenvector basis. I⟹III by restricting x to the first k coordinates. III⟹IV since pivot dₖ=det(Aₖ)/det(Aₖ₋₁). IV⟹I via A=LDLᵀ, so xᵀAx = Σdᵢ(Lᵀx)ᵢ² — elimination and completing the square are the same operation.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="svd">
+        <h2>Singular Value Decomposition (SVD)</h2>
+        <h3>What it is</h3>
+        <p>Every matrix — square or rectangular, singular or not — factors as <code>A = UΣVᵀ</code>: an orthogonal matrix, times a diagonal matrix of non-negative <strong>singular values</strong> σ₁≥σ₂≥…≥σᵣ&gt;0, times another orthogonal matrix. U holds eigenvectors of AAᵀ, V holds eigenvectors of AᵀA, and the whole factorization is the single statement <code>Avⱼ = σⱼuⱼ</code>.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Getting orthonormal bases for <em>all four fundamental subspaces</em> of any matrix in one stroke.</li>
+            <li>Data compression / low-rank approximation — images, recommender systems, latent semantic analysis.</li>
+            <li>Numerically stable least squares and the pseudoinverse, when AᵀA is singular or ill-conditioned.</li>
+            <li>Separating "rotation" from "stretching" in a linear map (polar decomposition) — robotics, mechanics.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Compute AᵀA (n×n, symmetric PSD); find its eigenvalues σᵢ² and unit eigenvectors vᵢ — these are the columns of V, ordered by decreasing σᵢ.</li>
+          <li>For each σⱼ&gt;0, get the matching left singular vector via <code>uⱼ = Avⱼ/σⱼ</code> — never guess signs, always fix them from Avⱼ=σⱼuⱼ.</li>
+          <li>For σⱼ=0 (j&gt;r), fill in the remaining uⱼ's and vⱼ's by orthogonality (they span the left nullspace / nullspace).</li>
+          <li>Assemble Σ as an m×n diagonal matrix (or r×r for the reduced/thin form) holding the σ's.</li>
+          <li>Check: A = σ₁u₁v₁ᵀ + … + σᵣuᵣvᵣᵀ (sum of rank-one pieces) should reproduce A.</li>
+        </ol>
+        <div class="formula"><span class="label">The factorization</span><div class="expr">A = UΣVᵀ &nbsp;&nbsp; AAᵀ=UΣΣᵀUᵀ &nbsp;&nbsp; AᵀA=VΣᵀΣVᵀ &nbsp;&nbsp; Avⱼ = σⱼuⱼ</div><p class="note">A matrix of rank r has exactly r non-zero singular values, since N(AᵀA)=N(A) forces λ=0 to have multiplicity n−r.</p></div>
+        <table>
+          <tr><th>Subspace</th><th>Basis</th></tr>
+          <tr><td>Column space C(A)</td><td>first r columns of U</td></tr>
+          <tr><td>Left nullspace N(Aᵀ)</td><td>last m−r columns of U</td></tr>
+          <tr><td>Row space C(Aᵀ)</td><td>first r columns of V</td></tr>
+          <tr><td>Nullspace N(A)</td><td>last n−r columns of V</td></tr>
+        </table>
+        <div class="formula"><span class="label">Rank-one expansion &amp; best approximation (Eckart–Young)</span><div class="expr">A = σ₁u₁v₁ᵀ+…+σᵣuᵣvᵣᵀ &nbsp;&nbsp; Aₖ = Σᵢ₌₁ᵏ σᵢuᵢvᵢᵀ is the best rank-k approximation</div><p class="note">‖A−Aₖ‖² = σₖ₊₁²+…+σᵣ² (total squared error); ‖A−Aₖ‖₂ = σₖ₊₁ (worst-case stretching). Nothing else of rank k can do better.</p></div>
+        <div class="box"><span class="label">Effective rank &amp; condition number</span><p>Singular values are stable where pivots are not: count σ's above a chosen tolerance for the effective rank. condition number = σₘₐₓ/σₘᵢₙ measures how badly errors are amplified when solving a system — large condition number signals multicollinearity / numerical trouble.</p></div>
+        <div class="formula"><span class="label">Polar decomposition</span><div class="expr">A = QS, &nbsp; Q = UVᵀ (orthogonal), &nbsp; S = VΣVᵀ (symmetric PSD, S²=AᵀA)</div><p class="note">Separates rotation (Q) from stretching (S) — used in mechanics and robotics.</p></div>
+        <div class="formula"><span class="label">Pseudoinverse &amp; shortest least-squares solution</span><div class="expr">A⁺ = VΣ⁺Uᵀ &nbsp;&nbsp; x⁺ = A⁺b (shortest solution, lies in the row space)</div><p class="note">Σ⁺ inverts each non-zero σᵢ and leaves zeros alone. Special cases: independent columns ⟹ A⁺=(AᵀA)⁻¹Aᵀ; independent rows ⟹ A⁺=Aᵀ(AAᵀ)⁻¹.</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="pca">
+        <h2>Principal Component Analysis (PCA)</h2>
+        <h3>What it is</h3>
+        <p>PCA is an orthogonal transformation that converts correlated features into uncorrelated <strong>principal components</strong>, found greedily: the first component is the direction of maximum variance, the second is the max-variance direction orthogonal to the first, and so on. It is exactly the SVD of the <em>centred</em> data matrix — no separate machinery is needed.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Compressing many correlated features into a handful of uncorrelated ones while keeping most of the variance (signal).</li>
+            <li>Fighting multicollinearity in regression, since the resulting components are uncorrelated by construction.</li>
+            <li>Visualising high-dimensional data in 2 or 3 dimensions, or as a preprocessing step before another model to relieve overfitting.</li>
+          </ul>
+        </div>
+        <h3>How to use it — the six-step procedure</h3>
+        <ol>
+          <li>Start with the data matrix X (choose a layout: features×samples or samples×features, and be consistent).</li>
+          <li>Centre it: subtract each row's (or column's) own mean, so X̃ has every row (or column) summing to zero.</li>
+          <li>Take the SVD: X̃ = UΣVᵀ.</li>
+          <li>Read off the principal directions — with features in rows, they are the columns of U.</li>
+          <li>Read off the variance explained by each direction: σᵢ²/(n−1).</li>
+          <li>Project: Z = UᵀX̃ gives every sample's coordinates in principal-component space; keep only the first k columns of U for a reduced representation.</li>
+        </ol>
+        <div class="formula"><span class="label">Why the SVD delivers PCA</span><div class="expr">S = X̃X̃ᵀ/(n−1) = U[ΣΣᵀ/(n−1)]Uᵀ</div><p class="note">Substituting X̃=UΣVᵀ into S makes every V cancel (VᵀV=I) — U is exactly the eigenvector matrix of the covariance matrix, with eigenvalues σᵢ²/(n−1). Working from the SVD avoids ever forming S, which would square the condition number.</p></div>
+        <div class="formula"><span class="label">Variance retained by the first k components</span><div class="expr">(λ₁+…+λₖ)/(λ₁+…+λₘ), &nbsp; λᵢ = σᵢ²/(n−1)</div><p class="note">Keep the smallest k reaching a chosen threshold (commonly 90–95%), or use the "elbow" where the eigenvalue curve flattens.</p></div>
+        <div class="box"><span class="label">Feature selection vs. feature extraction</span><p>Selection keeps a subset of original features (interpretable, meaning preserved). Extraction (PCA) builds new features as blends of all the old ones — compact and uncorrelated, but harder to interpret. PCA is unsupervised (ignores any target/label) and is <em>not</em> scale-invariant: standardise features measured in different units before running it (equivalent to using the correlation matrix instead of the covariance matrix).</p></div>
+      </section>
+
+      <!-- ============================================================ -->
+      <section class="topic" id="dimred">
+        <h2>Dimensionality Reduction</h2>
+        <h3>What it is</h3>
+        <p>Real high-dimensional data (images, text, genomics) typically occupies a far smaller "thin sheet" than the space it's recorded in. Dimensionality reduction re-describes the data inside that smaller sheet, and the SVD's rank-k truncation is the theorem that makes this rigorous and optimal.</p>
+        <div class="use">
+          <span class="label">When to use it</span>
+          <ul>
+            <li>Compressing images, audio, or any large matrix while keeping the visually/statistically important structure (eigenfaces, latent semantic analysis).</li>
+            <li>Filling in missing entries of a user–item matrix (recommender systems) via low-rank structure.</li>
+            <li>Whenever the number of features approaches or exceeds the number of samples, to avoid guaranteed overfitting.</li>
+          </ul>
+        </div>
+        <h3>How to use it — step by step</h3>
+        <ol>
+          <li>Compute (or estimate) the singular values of the data/image matrix.</li>
+          <li>Decide a target k either by a storage budget, an energy/variance threshold (e.g. 95% of Σσᵢ²), or the "elbow" of the singular-value plot.</li>
+          <li>Form Aₖ = UₖΣₖVₖᵀ using only the first k singular triples — this is provably the best rank-k approximation of A.</li>
+          <li>If the covariance-style matrix (e.g. PPᵀ for stacked images) is too large to diagonalize directly, diagonalize the much smaller PᵀP instead and recover v = Pu — same non-zero eigenvalues, far cheaper.</li>
+        </ol>
+        <div class="formula"><span class="label">Storage cost &amp; break-even</span><div class="expr">cost(Aₖ) = k(m+n+1) numbers &nbsp;&nbsp; worthwhile when k &lt; mn/(m+n+1)</div><p class="note">For a 512×512 image, truncation saves space up to about k≈255; k=20 already gives roughly 12.8:1 compression.</p></div>
+        <div class="formula"><span class="label">Error of the best rank-k fit</span><div class="expr">‖A−Aₖ‖² = σₖ₊₁²+…+σᵣ² &nbsp;&nbsp; ‖A−Aₖ‖₂ = σₖ₊₁</div><p class="note">Exactly what was discarded — no other rank-k matrix does better (Eckart–Young theorem).</p></div>
+        <div class="box"><span class="label">The PᵀP trick</span><p>If P (m×N, m huge, N samples) is too big for PPᵀ to be practical, diagonalize PᵀP (N×N, small) instead: if PᵀPu=λu with λ≠0, then P u is an eigenvector of PPᵀ with the same eigenvalue. This makes eigenface-style computations on thousands of pixels feasible using only as many eigenvectors as there are images.</p></div>
+        <div class="use"><span class="label">Filtering is not reduction</span><p>An image convolution/filter (e.g. averaging or sharpening kernel) is linear but maps an m×n image to another m×n image — the dimension is unchanged. Truncating the SVD genuinely moves the data to a smaller space. Keep the distinction: filtering changes what the data looks like; reduction changes how much of it there is.</p></div>
+        <table>
+          <tr><th>Question</th><th>Answer</th></tr>
+          <tr><td>Best rank-k fit?</td><td>Aₖ = UₖΣₖVₖᵀ — truncate the rank-one expansion</td></tr>
+          <tr><td>How large is the error?</td><td>Σ of discarded σᵢ², or σₖ₊₁ in the 2-norm</td></tr>
+          <tr><td>How many components?</td><td>smallest k reaching 90–99% of Σσᵢ² (energy), or the elbow</td></tr>
+          <tr><td>Huge covariance matrix?</td><td>use PᵀP instead of PPᵀ — same non-zero eigenvalues</td></tr>
+          <tr><td>Which method?</td><td>PCA if unsupervised, LDA if class labels are known</td></tr>
+        </table>
+      </section>
+
+      <footer class="footnote">MFAD Unit 2 · Revision Super Notes · Compiled from Sessions 1–10 (Strang, Linear Algebra and Its Applications, 4th Ed.)</footer>
+    </div>
+  </main>
+</div>
+
+<div class="backtotop" id="backTop" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
 </div>
 
 <script>
-// Theme Toggle with localStorage persistence
 const root = document.documentElement;
 const themeBtn = document.getElementById('themeToggle');
 const iconSun = document.getElementById('iconSun');
-
-const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
-const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-
-function applyTheme(dark) {
+function setTheme(dark){
   root.classList.toggle('dark', dark);
-  iconSun.innerHTML = dark ? moonIcon : sunIcon;
+  iconSun.innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
 }
+let isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+setTheme(isDark);
+themeBtn.addEventListener('click', () => { isDark = !isDark; setTheme(isDark); });
 
-// Determine initial theme: saved preference or system preference
-const savedTheme = localStorage.getItem('theme');
-let isDark = savedTheme
-  ? savedTheme === 'dark'
-  : window.matchMedia('(prefers-color-scheme: dark)').matches;
+const sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
 
-applyTheme(isDark);
-
-themeBtn.addEventListener('click', () => {
-  isDark = !isDark;
-  applyTheme(isDark);
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+document.querySelectorAll('.toc-group-title').forEach(t => {
+  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
 });
+
+const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = '#' + entry.target.id;
+    const link = navLinks.find(a => a.getAttribute('href') === id);
+    if (!link) return;
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => s && io.observe(s));
+
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+let marks = [];
+function clearMarks(){
+  marks.forEach(m => { const p = m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); });
+  marks = [];
+}
+function highlightInContent(term){
+  clearMarks();
+  if (!term) return 0;
+  const lower = term.toLowerCase();
+  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets = []; let n;
+  while (n = walker.nextNode()) targets.push(n);
+  let count = 0;
+  targets.forEach(node => {
+    const text = node.nodeValue;
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+    if (!regex.test(text)) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(regex, (match, p1, offset) => {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement('mark');
+      mark.textContent = match;
+      frag.appendChild(mark);
+      marks.push(mark);
+      count++;
+      lastIndex = offset + match.length;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  return count;
+}
+function filterNav(term){
+  const lower = term.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.toc-group').forEach(group => {
+    let groupHas = false;
+    group.querySelectorAll('.toc-list li').forEach(li => {
+      const a = li.querySelector('a');
+      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+      const match = !lower || hay.includes(lower);
+      li.classList.toggle('hidden', !match);
+      if (match){ groupHas = true; visible++; }
+    });
+    group.style.display = groupHas || !lower ? '' : 'none';
+    if (lower && groupHas) group.classList.remove('collapsed');
+  });
+  return visible;
+}
+let searchTimer;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const term = e.target.value.trim();
+  searchTimer = setTimeout(() => {
+    const navVisible = filterNav(term);
+    const contentMatches = highlightInContent(term);
+    if (!term) { searchCount.textContent = ''; return; }
+    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es');
+  }, 150);
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && marks.length){ marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+});
+
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+  backTop.classList.toggle('show', h.scrollTop > 600);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
-<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>
