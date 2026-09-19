@@ -3,6 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
 
 <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <script>
@@ -222,10 +236,10 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 .site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
 .site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
 .site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
-.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background .15s ease,color .15s ease,border-color .15s ease;display:inline-flex;align-items:center;gap:4px;}
 .home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
 #themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
-@media (max-width:600px){.home-link{right:12px;padding:7px 10px;}#themeToggle{right:76px;}}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 </head>
 <body>
@@ -344,11 +358,11 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
           Unit 2
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <button class="unit-btn" onclick="location.href='mathsformula1.html'">
+        <button class="unit-btn" onclick="location.href='maths1formula.html'">
           Unit 1 Formulas
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-        <button class="unit-btn" onclick="location.href='mathsformula2.html'">
+        <button class="unit-btn" onclick="location.href='maths2formula.html'">
           Unit 2 Formulas
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
@@ -387,7 +401,8 @@ const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
 
 function applyTheme(dark) {
   root.classList.toggle('dark', dark);
-  iconSun.innerHTML = dark ? moonIcon : sunIcon;
+  root.setAttribute('data-theme', dark ? 'dark' : 'light');
+  if (iconSun) iconSun.innerHTML = dark ? moonIcon : sunIcon;
 }
 
 // Determine initial theme: saved preference or system preference

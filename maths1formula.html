@@ -3,40 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
 <title>Unit 1 - Rapid Revision Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg:#f3f3f1;
+  --surface:#f8f8f6;
+  --surface-2:#eceae5;
+  --text:#1c1f1d;
+  --text-soft:#565f5a;
+  --text-faint:#8a9089;
+  --border:#dfe1dc;
+  --accent:#2c5f52;
+  --accent-soft:#dfe9e4;
+  --accent-text:#1f4238;
+  --formula-bg:#f3ecdc;
+  --formula-border:#c9a95c;
+  --radius:3px;
+  color-scheme:light;
+}
+html.dark{
+  --bg:#070b14;
+  --surface:#0d1524;
+  --surface-2:#101d33;
+  --text:#eaf3ff;
+  --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf;
+  --border:#1d2d47;
+  --accent:#60a5fa;
+  --accent-soft:#10213d;
+  --accent-text:#dceeff;
+  --formula-bg:#101a2d;
+  --formula-border:#8ab4ff;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;}
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 20px;
-  color: #111111;
-  background: #ffffff;
+  padding: 30px 20px 60px;
+  color: var(--text);
+  background: var(--bg);
   font-size: 14px;
-  line-height: 1.35;
+  line-height: 1.45;
+  transition: background .25s ease, color .25s ease;
 }
-h1 { font-size: 20px; margin: 0 0 4px; }
-p.intro { color: #444444; margin: 0 0 18px; font-size: 13px; }
+h1 { font-family: 'Newsreader', serif; font-size: 26px; font-weight: 600; margin: 0 0 6px; }
+p.intro { color: var(--text-soft); margin: 0 0 24px; font-size: 13.5px; }
 .sheet { column-count: 2; column-gap: 20px; }
 @media (max-width: 700px) { .sheet { column-count: 1; } }
-.block { break-inside: avoid; border: 1px solid #999999; margin-bottom: 14px; padding: 10px 12px; }
-.block h2 { font-size: 14px; margin: 0 0 6px; border-bottom: 1px solid #cccccc; padding-bottom: 4px; }
-.block ul { margin: 0; padding-left: 18px; }
+.block { break-inside: avoid; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); margin-bottom: 14px; padding: 12px 14px; }
+.block h2 { font-size: 14.5px; margin: 0 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 5px; color: var(--text); }
+.block ul { margin: 0; padding-left: 18px; color: var(--text-soft); }
 .block li { margin-bottom: 5px; }
 .formula {
-  font-family: "Courier New", monospace;
-  background: #f2f2f2;
-  border: 1px solid #999999;
-  padding: 5px 7px;
-  margin: 4px 0;
+  font-family: "IBM Plex Mono", monospace;
+  background: var(--formula-bg);
+  border: 1px solid var(--formula-border);
+  color: var(--text);
+  padding: 6px 9px;
+  margin: 6px 0;
   display: block;
   font-size: 13px;
+  border-radius: var(--radius);
 }
-table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 4px 0; }
-td, th { border: 1px solid #999999; padding: 3px 5px; text-align: left; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 6px 0; background: var(--surface-2); border-radius: var(--radius); }
+td, th { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
+th { background: var(--surface); color: var(--text); }
+.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background .15s ease,color .15s ease,border-color .15s ease;display:inline-flex;align-items:center;gap:4px;}
+.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
+#themeToggle{position:fixed;top:18px;right:88px;z-index:700;border:1px solid var(--border);background:var(--surface);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
+#themeToggle:hover{background:var(--accent-soft);}
+#themeToggle svg{width:16px;height:16px;}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 </head>
 <body>
+<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
+<button id="themeToggle" aria-label="Toggle theme">
+  <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+  </svg>
+</button>
 
 <h1>Unit 1 - Rapid Revision Sheet</h1>
 <p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
@@ -160,5 +225,33 @@ td, th { border: 1px solid #999999; padding: 3px 5px; text-align: left; }
 </div>
 
 </div>
+
+<script>
+  (function() {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const icon = document.getElementById('iconSun');
+    const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+    const moon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+    
+    function updateIcon(dark) {
+      if (icon) icon.innerHTML = dark ? moon : sun;
+    }
+    
+    const saved = localStorage.getItem('theme');
+    let isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    updateIcon(isDark);
+    
+    if (btn) {
+      btn.addEventListener('click', () => {
+        isDark = !root.classList.contains('dark');
+        root.classList.toggle('dark', isDark);
+        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        updateIcon(isDark);
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+    }
+  })();
+</script>
 </body>
 </html>

@@ -15,7 +15,13 @@
     const isDark = saved
       ? saved === 'dark'
       : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) root.classList.add('dark');
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
   })();
 </script>
 <title>Operating Systems · Unit 1 Reference</title>
@@ -1685,11 +1691,15 @@ const themeBtn = document.getElementById('themeToggle');
 const iconSun = document.getElementById('iconSun');
 function setTheme(dark){
   root.classList.toggle('dark', dark);
+  root.setAttribute('data-theme', dark ? 'dark' : 'light');
   iconSun.innerHTML = dark
     ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
 }
-let isDark = document.documentElement.classList.contains('dark');
+let isDark = (() => {
+  const saved = localStorage.getItem('theme');
+  return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+})();
 setTheme(isDark);
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
