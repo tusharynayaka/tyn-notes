@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script>
-    (function() {
-      const root = document.documentElement;
-      const saved = localStorage.getItem('theme');
-      const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (isDark) {
-        root.classList.add('dark');
-        root.setAttribute('data-theme', 'dark');
-      } else {
-        root.classList.remove('dark');
-        root.setAttribute('data-theme', 'light');
-      }
-    })();
-  </script>
-  <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
-  <title>Unit 2 - Rapid Revision Sheet</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+<title>Unit 2 - Rapid Revision Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
 :root{
   --bg:#f3f3f1;
   --surface:#f8f8f6;
@@ -85,6 +84,8 @@ p.intro { color: var(--text-soft); margin: 0 0 24px; font-size: 13.5px; }
   font-size: 13px;
   border-radius: var(--radius);
 }
+.formula sup { font-size: 10px; }
+.formula sub { font-size: 10px; }
 table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 6px 0; background: var(--surface-2); border-radius: var(--radius); }
 td, th { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
 th { background: var(--surface); color: var(--text); }
@@ -94,9 +95,8 @@ th { background: var(--surface); color: var(--text); }
 #themeToggle:hover{background:var(--accent-soft);}
 #themeToggle svg{width:16px;height:16px;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
-  </style>
+</style>
 </head>
-
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 <button id="themeToggle" aria-label="Toggle theme">
@@ -106,185 +106,154 @@ th { background: var(--surface); color: var(--text); }
   </svg>
 </button>
 
-  <h1>Unit 2 - Rapid Revision Sheet</h1>
-  <p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
+<h1>Unit 2 - Rapid Revision Sheet</h1>
+<p class="intro">Orthogonality, projections, eigen-decomposition and SVD - each idea explained in one plain line. For a quick last-minute recap.</p>
 
-  <div class="sheet">
+<div class="sheet">
 
-    <div class="block">
-      <h2>1. Length, Inner Product, Norms</h2>
-      <span class="formula">length of x = sqrt(x . x)</span>
-      <span class="formula">x . y = x1y1 + x2y2 + ... + xnyn</span>
-      <ul>
-        <li>Length = square root of a vector dotted with itself.</li>
-        <li>Dot product = multiply matching entries and add them up.</li>
-        <li>If x . y = 0, the two vectors are perpendicular (orthogonal).</li>
-        <li>Use when: measuring similarity, angle, or perpendicularity between vectors.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>1. Norm, Dot Product &amp; Orthogonality</h2>
+<span class="formula">||x||<sup>2</sup> = x<sup>T</sup>x &nbsp;&nbsp; x<sup>T</sup>y = 0 &rArr; orthogonal</span>
+<ul>
+<li>Norm = length of a vector; the zero vector is the only vector with norm 0.</li>
+<li>x<sup>T</sup>y = ||x|| ||y|| cos&theta;; angle &lt; 90&deg; gives a positive dot product, &gt; 90&deg; gives negative.</li>
+<li>The zero vector is orthogonal to every other vector, including itself.</li>
+<li>Use when: checking if two vectors meet at a right angle.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>2. Orthogonal Subspaces</h2>
-      <span class="formula">null space of A = perpendicular to row space of A</span>
-      <span class="formula">left null space of A = perpendicular to column space of A</span>
-      <ul>
-        <li>Every vector splits into a "row space part" plus a "null space part".</li>
-        <li>Use when: deciding if A x = b is solvable, or splitting a vector cleanly in two.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>2. Orthogonal Subspaces &amp; Fundamental Theorem</h2>
+<span class="formula">N(A) = C(A<sup>T</sup>)<sup>&perp;</sup> in R<sup>n</sup> &nbsp;&nbsp; N(A<sup>T</sup>) = C(A)<sup>&perp;</sup> in R<sup>m</sup></span>
+<ul>
+<li>Two subspaces S, T are orthogonal if x<sup>T</sup>y = 0 for every x in S, y in T.</li>
+<li>Every Ax lands in C(A); the null-space part of x is annihilated (sent to 0), the row-space part maps into the column space.</li>
+<li>Ax = b is solvable iff y<sup>T</sup>b = 0 whenever y<sup>T</sup>A = 0 (b is orthogonal to the left null space).</li>
+<li>Use when: splitting R<sup>n</sup> into its row-space and null-space pieces, x = x<sub>r</sub> + x<sub>n</sub>.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>3. Orthogonal Projections</h2>
-      <span class="formula">onto a line: x_hat = (a . b) / (a . a), p = x_hat x a</span>
-      <span class="formula">onto a subspace: A^T A x_hat = A^T b, p = A x_hat</span>
-      <ul>
-        <li>Projection = the closest point in a line or subspace to a given point.</li>
-        <li>Projecting twice does nothing extra (once you land there, you stay there).</li>
-        <li>Use when: a target point is not exactly reachable and you want the nearest reachable point.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>3. Orthogonal Complement</h2>
+<span class="formula">V<sup>&perp;</sup> = { x : x<sup>T</sup>v = 0 &nbsp;&forall; v &isin; V }</span>
+<ul>
+<li>The orthogonal complement of a subspace V is unique; if S, T are complements in R<sup>n</sup> then dim S + dim T = n.</li>
+<li>To find it: solve the homogeneous system whose rows are the given spanning vectors.</li>
+<li>Use when: finding all vectors perpendicular to a given plane/row space, or splitting a vector x = x<sub>r</sub> + x<sub>n</sub>.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>4. Least Squares Approximation</h2>
-      <span class="formula">A^T A x_hat = A^T b</span>
-      <span class="formula">error = b - A x_hat, always perpendicular to columns of A</span>
-      <ul>
-        <li>Used when A x = b has no exact answer (more equations than unknowns).</li>
-        <li>The leftover error is always perpendicular to your data columns - this is how you check your work.</li>
-        <li>Use when: fitting a best-fit line or plane to noisy data.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>4. Orthonormal Bases &amp; Orthogonal Matrix Q</h2>
+<span class="formula">Q<sup>T</sup>Q = I &nbsp;&nbsp; Q<sup>T</sup> = Q<sup>-1</sup></span>
+<ul>
+<li>Orthonormal vectors: mutually perpendicular AND each of unit length.</li>
+<li>Q with orthonormal columns preserves length and angle: (Qx)<sup>T</sup>(Qy) = x<sup>T</sup>y.</li>
+<li>If Q is square, x&#770; = Q<sup>T</sup>b solves Qx = b directly (no elimination needed).</li>
+<li>Use when: simplifying projections or solving systems with a nice orthonormal basis.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>5. Gram-Schmidt and QR</h2>
-      <span class="formula">new vector = old vector - (its part already covered)</span>
-      <span class="formula">A = Q x R</span>
-      <ul>
-        <li>Removes overlap between vectors, then shrinks each one to length 1.</li>
-        <li>Q = the clean perpendicular version of A, R keeps track of what was removed.</li>
-        <li>Use when: needing a clean basis, or solving least squares without losing accuracy.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>5. Gram-Schmidt Process</h2>
+<span class="formula">q<sub>1</sub> = a / ||a|| &nbsp;&nbsp; B = b - (q<sub>1</sub><sup>T</sup>b)q<sub>1</sub>, &nbsp; q<sub>2</sub> = B / ||B||</span>
+<ul>
+<li>Repeatedly subtract from each new vector the component already covered by earlier q's, then normalise.</li>
+<li>For a third vector c: subtract its q<sub>1</sub> and q<sub>2</sub> components before normalising to get q<sub>3</sub>.</li>
+<li>Use when: converting any independent set of vectors into an orthonormal basis.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>6. Eigenvalues and Eigenvectors</h2>
-      <span class="formula">A x = lambda x</span>
-      <span class="formula">det(A - lambda I) = 0</span>
-      <ul>
-        <li>Eigenvector = a special direction that A only stretches, never turns.</li>
-        <li>Eigenvalue (lambda) = how much it gets stretched by.</li>
-        <li>Sum of eigenvalues = trace(A). Product of eigenvalues = det(A).</li>
-        <li>Use when: understanding repeated processes, growth/decay, or long-term stability.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>6. QR Factorization</h2>
+<span class="formula">A = QR &nbsp;&nbsp; R = Q<sup>T</sup>A (upper triangular) &nbsp;&nbsp; R x&#770; = Q<sup>T</sup>b</span>
+<ul>
+<li>Columns of Q come from Gram-Schmidt on the columns of A; R records the dot products used to build each q.</li>
+<li>R is upper triangular because q<sub>i</sub> is built using only a<sub>1</sub> ... a<sub>i</sub> (never later columns).</li>
+<li>Use when: Ax = b is not solvable directly, or for numerically stable least-squares.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>7. Diagonalization</h2>
-      <span class="formula">A = S x Lambda x S^-1</span>
-      <span class="formula">A^k = S x Lambda^k x S^-1</span>
-      <ul>
-        <li>Rewrites A as "switch to eigenvector view, scale simply, switch back".</li>
-        <li>Needs enough independent eigenvectors (n of them for an n by n matrix).</li>
-        <li>Use when: computing big powers of A, or solving repeated/step-by-step systems.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>7. Projections &amp; Projection Matrix</h2>
+<span class="formula">p = (a<sup>T</sup>b / a<sup>T</sup>a) a &nbsp;&nbsp; P = aa<sup>T</sup> / a<sup>T</sup>a &nbsp;(rank 1)</span>
+<ul>
+<li>p is the point on the line through a closest to b; the error e = b - p is orthogonal to a.</li>
+<li>A projection matrix is symmetric and idempotent: P<sup>n</sup> = P for n = 1, 2, 3, ...</li>
+<li>General subspace projection: P = A(A<sup>T</sup>A)<sup>-1</sup>A<sup>T</sup>, and x&#770; = (A<sup>T</sup>A)<sup>-1</sup>A<sup>T</sup>b.</li>
+<li>Use when: finding the closest point in a subspace to a given vector.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>8. Quadratic Forms and Covariance</h2>
-      <span class="formula">x^T A x = sum of aij times xi times xj</span>
-      <span class="formula">covariance matrix S = (1 / (n-1)) x Y^T Y</span>
-      <ul>
-        <li>Tells you if a matrix always gives a positive, negative, or mixed result.</li>
-        <li>Covariance matrix shows how spread out each feature is, and how features move together.</li>
-        <li>Use when: classifying a stationary point, or checking if data features are correlated.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>8. Least Squares &amp; Normal Equations</h2>
+<span class="formula">A<sup>T</sup>A x&#770; = A<sup>T</sup>b</span>
+<ul>
+<li>Used when Ax = b is inconsistent; minimises the total squared error E<sup>2</sup> = &Sigma; (a<sub>i</sub>x - b<sub>i</sub>)<sup>2</sup>.</li>
+<li>The error vector e = b - Ax&#770; is orthogonal to every column of A (it lies in the left null space).</li>
+<li>Fitting a line b = C + Dt: build the normal equations from the data points and solve for C, D.</li>
+<li>Use when: no exact solution exists but you need the "best fit" answer.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>9. Positive Definite Tests</h2>
-      <table>
-        <tr>
-          <th>Test</th>
-          <th>Condition</th>
-        </tr>
-        <tr>
-          <td>direct</td>
-          <td>x^T A x &gt; 0 for every x</td>
-        </tr>
-        <tr>
-          <td>eigenvalues</td>
-          <td>every eigenvalue &gt; 0</td>
-        </tr>
-        <tr>
-          <td>determinants</td>
-          <td>every leading determinant &gt; 0</td>
-        </tr>
-        <tr>
-          <td>pivots</td>
-          <td>every pivot &gt; 0</td>
-        </tr>
-      </table>
-      <ul>
-        <li>Four different ways to check the same thing - pick whichever is quickest to compute.</li>
-        <li>Use when: confirming a matrix is safe to treat like a "positive number" (e.g. before inverting it).</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>9. Eigenvalues &amp; Eigenvectors</h2>
+<span class="formula">Ax = &lambda;x &nbsp;&nbsp; det(A - &lambda;I) = 0</span>
+<ul>
+<li>x is an eigenvector (nonzero) of A if Ax is just a scaled version of x; &lambda; is the eigenvalue.</li>
+<li>det(A - &lambda;I) = 0 is the characteristic equation; its roots are the eigenvalues.</li>
+<li>Trace (sum of the diagonal) = sum of the eigenvalues; det(A) = product of the eigenvalues.</li>
+<li>Shifted matrix A - cI has the same eigenvectors as A, with every eigenvalue shifted by -c.</li>
+<li>Use when: finding directions a matrix only stretches, never rotates.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>10. Singular Value Decomposition (SVD)</h2>
-      <span class="formula">A = U x Sigma x V^T</span>
-      <span class="formula">A v = sigma x u</span>
-      <table>
-        <tr>
-          <th>Space</th>
-          <th>Comes from</th>
-        </tr>
-        <tr>
-          <td>column space</td>
-          <td>first r columns of U</td>
-        </tr>
-        <tr>
-          <td>left null space</td>
-          <td>rest of U</td>
-        </tr>
-        <tr>
-          <td>row space</td>
-          <td>first r columns of V</td>
-        </tr>
-        <tr>
-          <td>null space</td>
-          <td>rest of V</td>
-        </tr>
-      </table>
-      <ul>
-        <li>Works for ANY matrix, even rectangular ones (unlike plain eigenvalues).</li>
-        <li>Singular values are always zero or positive, and rank how "important" each direction is.</li>
-        <li>Use when: compressing data, or finding all four fundamental subspaces at once.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>10. Diagonalization &amp; Matrix Powers</h2>
+<span class="formula">A = S&Lambda;S<sup>-1</sup> &nbsp;&nbsp; A<sup>n</sup> = S&Lambda;<sup>n</sup>S<sup>-1</sup></span>
+<ul>
+<li>S = matrix of eigenvectors (columns), &Lambda; = diagonal matrix of eigenvalues; needs n independent eigenvectors.</li>
+<li>Distinct eigenvalues always give independent eigenvectors, so A is always diagonalizable in that case.</li>
+<li>Fractional/negative powers (e.g. A<sup>1/2</sup>) are found the same way, applying the power to &Lambda; only.</li>
+<li>Use when: computing high powers of A quickly, or solving recurrences/systems of ODEs.</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>11. Principal Component Analysis (PCA)</h2>
-      <span class="formula">center the data, then take its SVD</span>
-      <span class="formula">variance kept by direction i = sigma_i^2 / (n-1)</span>
-      <ul>
-        <li>PCA is really just: subtract the mean, then run SVD.</li>
-        <li>The new directions are uncorrelated and ranked by how much information they carry.</li>
-        <li>Use when: turning many correlated features into a few important, clean ones.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>11. Positive Definiteness &amp; Quadratic Forms</h2>
+<span class="formula">f(x) = x<sup>T</sup>Ax &nbsp;(A symmetric)</span>
+<ul>
+<li>Positive-definite tests (any one confirms it): all eigenvalues &gt; 0; all pivots &gt; 0; all leading principal minors &gt; 0 (Sylvester's criterion).</li>
+<li>Positive definite &rArr; x<sup>T</sup>Ax &gt; 0 for every nonzero x; negative definite &rArr; always &lt; 0; indefinite &rArr; mixed signs.</li>
+<li>Semidefinite allows zero: x<sup>T</sup>Ax &ge; 0 (positive semidefinite) or &le; 0 (negative semidefinite).</li>
+<li>Use when: checking if a symmetric matrix behaves like a "positive number" (e.g. optimization, covariance matrices).</li>
+</ul>
+</div>
 
-    <div class="block">
-      <h2>12. Dimensionality Reduction</h2>
-      <span class="formula">keep only the top k pieces of the SVD sum</span>
-      <span class="formula">worth it when k &lt; (m x n) / (m + n + 1)</span>
-      <ul>
-        <li>Keeping only the biggest pieces gives the best possible approximation of the original data.</li>
-        <li>Use when: saving storage or computation while keeping most of the important information.</li>
-      </ul>
-    </div>
+<div class="block">
+<h2>12. Singular Value Decomposition (SVD)</h2>
+<span class="formula">A = U&Sigma;V<sup>T</sup> &nbsp;(any m &times; n matrix)</span>
+<ul>
+<li>Columns of U = eigenvectors of AA<sup>T</sup>; columns of V = eigenvectors of A<sup>T</sup>A; both share the same nonzero eigenvalues.</li>
+<li>Singular values &sigma;<sub>i</sub> = &radic;&lambda;<sub>i</sub>, placed in descending order on the diagonal of &Sigma;.</li>
+<li>Shortcut: find the eigen-pairs of the smaller of AA<sup>T</sup> / A<sup>T</sup>A first, then get the other side via v<sub>i</sub> = A<sup>T</sup>u<sub>i</sub> / &sigma;<sub>i</sub> (or u<sub>i</sub> = Av<sub>i</sub> / &sigma;<sub>i</sub>).</li>
+<li>If A is symmetric positive definite, SVD collapses to diagonalization: A = Q&Lambda;Q<sup>T</sup>.</li>
+<li>Use when: factorizing any matrix (square or rectangular) into orthogonal &times; diagonal &times; orthogonal pieces.</li>
+</ul>
+</div>
 
-  </div>
+<div class="block">
+<h2>13. PCA via SVD</h2>
+<span class="formula">X&#771; = X - mean(X) &nbsp;&nbsp; X&#771; = U&Sigma;V<sup>T</sup> &nbsp;&nbsp; Z = U<sup>T</sup>X&#771;</span>
+<ul>
+<li>Center the data first (subtract each feature's row-mean), then take the SVD of the centered matrix.</li>
+<li>Columns of U = principal components (directions of maximum spread); &sigma;<sub>i</sub><sup>2</sup> = variance captured by each component.</li>
+<li>PC1 is the direction of highest variance; PC2 is the next-highest direction, forced orthogonal (uncorrelated) to PC1.</li>
+<li>Use when: reducing high-dimensional, correlated data down to a few informative uncorrelated features.</li>
+</ul>
+</div>
+
+</div>
 
 <script>
   (function() {
@@ -293,15 +262,15 @@ th { background: var(--surface); color: var(--text); }
     const icon = document.getElementById('iconSun');
     const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
     const moon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-
+    
     function updateIcon(dark) {
       if (icon) icon.innerHTML = dark ? moon : sun;
     }
-
+    
     const saved = localStorage.getItem('theme');
     let isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
     updateIcon(isDark);
-
+    
     if (btn) {
       btn.addEventListener('click', () => {
         isDark = !root.classList.contains('dark');
@@ -314,5 +283,4 @@ th { background: var(--surface); color: var(--text); }
   })();
 </script>
 </body>
-
 </html>

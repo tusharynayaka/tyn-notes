@@ -84,6 +84,8 @@ p.intro { color: var(--text-soft); margin: 0 0 24px; font-size: 13.5px; }
   font-size: 13px;
   border-radius: var(--radius);
 }
+.formula sup { font-size: 10px; }
+.formula sub { font-size: 10px; }
 table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 6px 0; background: var(--surface-2); border-radius: var(--radius); }
 td, th { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
 th { background: var(--surface); color: var(--text); }
@@ -105,123 +107,163 @@ th { background: var(--surface); color: var(--text); }
 </button>
 
 <h1>Unit 1 - Rapid Revision Sheet</h1>
-<p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
+<p class="intro">Systems of equations, elimination, factorization and vector spaces - each idea explained in one plain line. For a quick last-minute recap.</p>
 
 <div class="sheet">
 
 <div class="block">
-<h2>1. Row and Column Pictures</h2>
+<h2>1. Linear Equations &amp; Systems</h2>
+<span class="formula">a<sub>1</sub>x<sub>1</sub> + a<sub>2</sub>x<sub>2</sub> + ... + a<sub>n</sub>x<sub>n</sub> = b</span>
+<ul>
+<li>Homogeneous: all b's are zero (always has the trivial solution x = 0).</li>
+<li>Non-homogeneous: at least one b is non-zero.</li>
+<li>Superposition: A(c<sub>1</sub>x<sub>1</sub> + c<sub>2</sub>x<sub>2</sub>) = c<sub>1</sub>(Ax<sub>1</sub>) + c<sub>2</sub>(Ax<sub>2</sub>) - holds only for linear systems.</li>
+<li>Use when: writing any system in matrix form Ax = b.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>2. Row and Column Pictures</h2>
 <span class="formula">A x = b</span>
 <ul>
-<li>Row way: each equation is a line, answer is where all lines cross.</li>
-<li>Column way: mix the columns of A to hit target b.</li>
-<li>Use when: checking why a system has 0, 1, or infinite answers.</li>
+<li>Row way: each equation is a line/plane, answer is where all lines cross.</li>
+<li>Column way: mix the columns of A (scaled by x, y, ...) to hit target vector b.</li>
+<li>Intersecting lines &rarr; unique solution; parallel &rarr; no solution; overlapping &rarr; infinite solutions.</li>
+<li>Use when: visualising why a system has 0, 1, or infinitely many answers.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>2. Gaussian Elimination</h2>
-<span class="formula">multiplier = a / pivot</span>
-<span class="formula">new row = old row - (multiplier x pivot row)</span>
+<h2>3. Elementary Row Operations &amp; Echelon Form</h2>
+<span class="formula">R<sub>i</sub> &rarr; kR<sub>i</sub> &nbsp; R<sub>i</sub> &rarr; R<sub>i</sub> + kR<sub>j</sub> &nbsp; R<sub>i</sub> &harr; R<sub>j</sub></span>
 <ul>
-<li>Cancel one unknown at a time using the pivot row, then solve bottom to top.</li>
-<li>Use when: solving a system for actual numbers.</li>
+<li>Echelon form: pivots step to the right going down, zeros below every pivot.</li>
+<li>RREF: every pivot scaled to 1, zeros above and below each pivot too.</li>
+<li>Elementary matrix E<sub>ij</sub> = identity matrix after one row operation.</li>
+<li>Use when: reducing a matrix by hand or tracking operations as matrix multiplication.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>3. Rank and Consistency</h2>
+<h2>4. Rank of a Matrix</h2>
+<span class="formula">rank(A) = number of non-zero rows in echelon form</span>
+<ul>
+<li>Also = max number of linearly independent rows or columns of A.</li>
+<li>Found via minors: largest order of a non-vanishing minor.</li>
+<li>Use when: predicting how many "useful" independent equations a system has.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>5. Rank, Consistency &amp; Solutions</h2>
 <table>
-<tr><th>rank(A) vs rank(A,b)</th><th>Answer count</th></tr>
-<tr><td>equal, = n</td><td>1 solution</td></tr>
-<tr><td>equal, less than n</td><td>infinite solutions</td></tr>
-<tr><td>not equal</td><td>0 solutions</td></tr>
+<tr><th>rank(A) vs rank[A:b]</th><th>Result</th></tr>
+<tr><td>equal, = n</td><td>unique solution</td></tr>
+<tr><td>equal, &lt; n</td><td>infinite solutions</td></tr>
+<tr><td>not equal</td><td>no solution (inconsistent)</td></tr>
 </table>
 <ul>
-<li>Rank = number of useful (non-repeated) equations.</li>
-<li>Use when: predicting solution count before solving.</li>
+<li>n = number of unknowns; consistent means at least one solution exists.</li>
+<li>Use when: deciding solvability before actually solving.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>4. LU Factorization</h2>
-<span class="formula">A = L x U</span>
-<span class="formula">solve: L c = b, then U x = c</span>
+<h2>6. Gaussian Elimination</h2>
+<span class="formula">[A : b] &rarr; [U : c] by row ops, then back-substitute</span>
 <ul>
-<li>L = saved cancel-numbers, U = leftover triangle from elimination.</li>
-<li>Use when: solving the same A for many different b values.</li>
+<li>No row exchange &rarr; retain first row; first non-zero entry of each row is the pivot.</li>
+<li>Singular system (det A = 0): no solution or infinitely many solutions.</li>
+<li>Zero in pivot spot, curable by row exchange &rarr; non-singular, full set of pivots recovered.</li>
+<li>Zero in pivot spot, permanent breakdown &rarr; singular, incurable.</li>
+<li>Use when: solving Ax = b for actual numbers while checking consistency.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>5. Inverse (Gauss-Jordan)</h2>
-<span class="formula">[A | I] -&gt; [I | inverse of A]</span>
+<h2>7. Elementary Matrices &amp; LU Factorization</h2>
+<span class="formula">E<sub>k</sub> ... E<sub>2</sub>E<sub>1</sub> A = U &nbsp;&nbsp; A = LU</span>
 <ul>
-<li>Inverse is the matrix version of "1 divided by a number".</li>
-<li>Use when: you need the inverse itself, not just one solve (otherwise use elimination, it is faster).</li>
+<li>L = record of the multipliers used (1's on the diagonal), U = resulting upper triangular matrix.</li>
+<li>Undo elimination: reverse the sign of the row operation to go back from U to A.</li>
+<li>Use when: solving the same A for many different b's without repeating elimination each time.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>6. Vector Spaces and Subspaces</h2>
-<span class="formula">0 in W &nbsp; u+v in W &nbsp; c*u in W</span>
+<h2>8. LDU Factorization &amp; Permutation Matrices</h2>
+<span class="formula">A = LDU &nbsp;&nbsp; PA = LU</span>
 <ul>
-<li>A valid space stays "closed" when you add items or scale them.</li>
-<li>Use when: checking if a given set counts as a subspace.</li>
+<li>D pulls the pivots onto the diagonal so both L and U end with 1's on their diagonal.</li>
+<li>If A is symmetric, then U = L<sup>T</sup>, so A = LDL<sup>T</sup>.</li>
+<li>Permutation matrix P = identity matrix with rows reordered; needed when a zero sits in the pivot spot and rows must be swapped.</li>
+<li>Use when: elimination needs a row swap, or a symmetric factorization is wanted.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>7. Column Space and Null Space</h2>
-<span class="formula">A x = b solvable only if b is in column space of A</span>
+<h2>9. Inverse of a Matrix (Gauss-Jordan)</h2>
+<span class="formula">[A | I] &rarr; [I | A<sup>-1</sup>]</span>
 <ul>
-<li>Column space = every output A can produce. Null space = every input that gives zero.</li>
-<li>Use when: checking if b is reachable, or why answers are not unique.</li>
+<li>Inverse exists (A non-singular) iff elimination produces n pivots, with or without row exchange.</li>
+<li>(ABCD)<sup>-1</sup> = D<sup>-1</sup>C<sup>-1</sup>B<sup>-1</sup>A<sup>-1</sup> &nbsp;&nbsp; (A<sup>T</sup>)<sup>-1</sup> = (A<sup>-1</sup>)<sup>T</sup></li>
+<li>Use when: you need the inverse itself, not just one solve (otherwise elimination alone is faster).</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>8. Four Fundamental Subspaces</h2>
+<h2>10. Vector Spaces &amp; Subspaces</h2>
+<span class="formula">0 &isin; W &nbsp; u+v &isin; W &nbsp; cu &isin; W</span>
+<ul>
+<li>Vector space needs both closure conditions plus 8 axioms (commutative, associative, zero vector, inverses, distributive laws).</li>
+<li>A subspace defined by a homogeneous linear equation is automatically a subspace ("0" always satisfies both addition and scaling).</li>
+<li>Use when: checking if a given set counts as a (sub)space.</li>
+</ul>
+</div>
+
+<div class="block">
+<h2>11. Four Fundamental Subspaces &amp; Rank-Nullity</h2>
 <table>
-<tr><th>Space</th><th>Size</th></tr>
-<tr><td>column space</td><td>r</td></tr>
-<tr><td>row space</td><td>r</td></tr>
-<tr><td>null space</td><td>n - r</td></tr>
-<tr><td>left null space</td><td>m - r</td></tr>
+<tr><th>Space</th><th>Lives in</th><th>Dimension</th></tr>
+<tr><td>column space C(A)</td><td>R<sup>m</sup></td><td>r</td></tr>
+<tr><td>row space C(A<sup>T</sup>)</td><td>R<sup>n</sup></td><td>r</td></tr>
+<tr><td>null space N(A)</td><td>R<sup>n</sup></td><td>n - r</td></tr>
+<tr><td>left null space N(A<sup>T</sup>)</td><td>R<sup>m</sup></td><td>m - r</td></tr>
 </table>
 <ul>
-<li>r = rank. n = number of unknowns. m = number of equations.</li>
-<li>Use when: needing the full existence/uniqueness picture in one shot.</li>
+<li>r = rank(A); n = number of columns; m = number of rows. Rank-Nullity: r + (n - r) = n.</li>
+<li>Row space and null space are orthogonal complements in R<sup>n</sup> (similarly for the other pair in R<sup>m</sup>).</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>9. Independence, Basis, Dimension</h2>
-<span class="formula">A c = 0 only when c = 0 -&gt; independent</span>
+<h2>12. Independence, Basis, Dimension</h2>
+<span class="formula">c<sub>1</sub>v<sub>1</sub> + c<sub>2</sub>v<sub>2</sub> + ... = 0 &rArr; all c<sub>i</sub> = 0 (independent)</span>
 <ul>
-<li>Basis = smallest set that still covers everything (independent + spans).</li>
-<li>Dimension = number of vectors in that basis.</li>
-<li>Use when: checking for redundant vectors or features.</li>
+<li>Basis = independent set that also spans the space; dimension = number of vectors in that basis.</li>
+<li>A free column (no pivot) in echelon form signals dependence among the vectors.</li>
+<li>Use when: checking for redundant vectors, or finding a basis for a subspace.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>10. Linear Transformations</h2>
-<span class="formula">T(c x + d y) = c T(x) + d T(y)</span>
+<h2>13. Linear Transformations</h2>
+<span class="formula">T(cx + dy) = cT(x) + dT(y)</span>
 <ul>
-<li>Scaling/adding inputs scales/adds outputs the same way, no twisting.</li>
-<li>Matrix columns = T applied to each basis vector.</li>
-<li>Use when: turning a rule (rotate, project, reflect) into a matrix.</li>
+<li>Linear transformations always send the origin to the origin: T(0) = 0 (converse not guaranteed).</li>
+<li>Matrix columns = T applied to each standard basis vector.</li>
+<li>Use when: turning a rule (rotate, project, reflect, stretch) into a matrix.</li>
 </ul>
 </div>
 
 <div class="block">
-<h2>11. Gram-Schmidt and QR</h2>
-<span class="formula">new vector = old vector - (its part already covered)</span>
-<span class="formula">A = Q x R</span>
+<h2>14. Special Transformation Matrices (R<sup>2</sup>)</h2>
+<span class="formula">stretch: (x,y) &rarr; (cx,cy) &nbsp;|&nbsp; rotate 90&deg;: (x,y) &rarr; (-y,x)</span>
+<span class="formula">reflect on y=x: (x,y) &rarr; (y,x) &nbsp;|&nbsp; project on x-axis: (x,y) &rarr; (x,0)</span>
 <ul>
-<li>Removes overlap, then shrinks each vector to length 1.</li>
-<li>Use when: needing a perpendicular basis, or stable least-squares fitting.</li>
+<li>Stretching/scaling matrices expand or contract the whole space by factor c.</li>
+<li>Rotation and reflection matrices are invertible; projection matrices are not (they collapse a dimension).</li>
+<li>Use when: recognising or building the matrix behind a geometric operation.</li>
 </ul>
 </div>
 
