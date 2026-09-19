@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  (function() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      root.classList.add('dark');
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
-    }
-  })();
-</script>
-<title>Unit 2 - Rapid Revision Sheet</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function() {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('theme');
+      const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        root.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <title>Unit 2 - Rapid Revision Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <style>
 :root{
   --bg:#f3f3f1;
   --surface:#f8f8f6;
@@ -92,8 +93,9 @@ th { background: var(--surface); color: var(--text); }
 #themeToggle:hover{background:var(--accent-soft);}
 #themeToggle svg{width:16px;height:16px;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
-</style>
+  </style>
 </head>
+
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 <button id="themeToggle" aria-label="Toggle theme">
@@ -103,128 +105,185 @@ th { background: var(--surface); color: var(--text); }
   </svg>
 </button>
 
-<h1>Unit 1 - Rapid Revision Sheet</h1>
-<p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
+  <h1>Unit 2 - Rapid Revision Sheet</h1>
+  <p class="intro">Real formulas, each explained in one plain line. For a quick last-minute recap.</p>
 
-<div class="sheet">
+  <div class="sheet">
 
-<div class="block">
-<h2>1. Row and Column Pictures</h2>
-<span class="formula">A x = b</span>
-<ul>
-<li>Row way: each equation is a line, answer is where all lines cross.</li>
-<li>Column way: mix the columns of A to hit target b.</li>
-<li>Use when: checking why a system has 0, 1, or infinite answers.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>1. Length, Inner Product, Norms</h2>
+      <span class="formula">length of x = sqrt(x . x)</span>
+      <span class="formula">x . y = x1y1 + x2y2 + ... + xnyn</span>
+      <ul>
+        <li>Length = square root of a vector dotted with itself.</li>
+        <li>Dot product = multiply matching entries and add them up.</li>
+        <li>If x . y = 0, the two vectors are perpendicular (orthogonal).</li>
+        <li>Use when: measuring similarity, angle, or perpendicularity between vectors.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>2. Gaussian Elimination</h2>
-<span class="formula">multiplier = a / pivot</span>
-<span class="formula">new row = old row - (multiplier x pivot row)</span>
-<ul>
-<li>Cancel one unknown at a time using the pivot row, then solve bottom to top.</li>
-<li>Use when: solving a system for actual numbers.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>2. Orthogonal Subspaces</h2>
+      <span class="formula">null space of A = perpendicular to row space of A</span>
+      <span class="formula">left null space of A = perpendicular to column space of A</span>
+      <ul>
+        <li>Every vector splits into a "row space part" plus a "null space part".</li>
+        <li>Use when: deciding if A x = b is solvable, or splitting a vector cleanly in two.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>3. Rank and Consistency</h2>
-<table>
-<tr><th>rank(A) vs rank(A,b)</th><th>Answer count</th></tr>
-<tr><td>equal, = n</td><td>1 solution</td></tr>
-<tr><td>equal, less than n</td><td>infinite solutions</td></tr>
-<tr><td>not equal</td><td>0 solutions</td></tr>
-</table>
-<ul>
-<li>Rank = number of useful (non-repeated) equations.</li>
-<li>Use when: predicting solution count before solving.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>3. Orthogonal Projections</h2>
+      <span class="formula">onto a line: x_hat = (a . b) / (a . a), p = x_hat x a</span>
+      <span class="formula">onto a subspace: A^T A x_hat = A^T b, p = A x_hat</span>
+      <ul>
+        <li>Projection = the closest point in a line or subspace to a given point.</li>
+        <li>Projecting twice does nothing extra (once you land there, you stay there).</li>
+        <li>Use when: a target point is not exactly reachable and you want the nearest reachable point.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>4. LU Factorization</h2>
-<span class="formula">A = L x U</span>
-<span class="formula">solve: L c = b, then U x = c</span>
-<ul>
-<li>L = saved cancel-numbers, U = leftover triangle from elimination.</li>
-<li>Use when: solving the same A for many different b values.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>4. Least Squares Approximation</h2>
+      <span class="formula">A^T A x_hat = A^T b</span>
+      <span class="formula">error = b - A x_hat, always perpendicular to columns of A</span>
+      <ul>
+        <li>Used when A x = b has no exact answer (more equations than unknowns).</li>
+        <li>The leftover error is always perpendicular to your data columns - this is how you check your work.</li>
+        <li>Use when: fitting a best-fit line or plane to noisy data.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>5. Inverse (Gauss-Jordan)</h2>
-<span class="formula">[A | I] -&gt; [I | inverse of A]</span>
-<ul>
-<li>Inverse is the matrix version of "1 divided by a number".</li>
-<li>Use when: you need the inverse itself, not just one solve (otherwise use elimination, it is faster).</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>5. Gram-Schmidt and QR</h2>
+      <span class="formula">new vector = old vector - (its part already covered)</span>
+      <span class="formula">A = Q x R</span>
+      <ul>
+        <li>Removes overlap between vectors, then shrinks each one to length 1.</li>
+        <li>Q = the clean perpendicular version of A, R keeps track of what was removed.</li>
+        <li>Use when: needing a clean basis, or solving least squares without losing accuracy.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>6. Vector Spaces and Subspaces</h2>
-<span class="formula">0 in W &nbsp; u+v in W &nbsp; c*u in W</span>
-<ul>
-<li>A valid space stays "closed" when you add items or scale them.</li>
-<li>Use when: checking if a given set counts as a subspace.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>6. Eigenvalues and Eigenvectors</h2>
+      <span class="formula">A x = lambda x</span>
+      <span class="formula">det(A - lambda I) = 0</span>
+      <ul>
+        <li>Eigenvector = a special direction that A only stretches, never turns.</li>
+        <li>Eigenvalue (lambda) = how much it gets stretched by.</li>
+        <li>Sum of eigenvalues = trace(A). Product of eigenvalues = det(A).</li>
+        <li>Use when: understanding repeated processes, growth/decay, or long-term stability.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>7. Column Space and Null Space</h2>
-<span class="formula">A x = b solvable only if b is in column space of A</span>
-<ul>
-<li>Column space = every output A can produce. Null space = every input that gives zero.</li>
-<li>Use when: checking if b is reachable, or why answers are not unique.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>7. Diagonalization</h2>
+      <span class="formula">A = S x Lambda x S^-1</span>
+      <span class="formula">A^k = S x Lambda^k x S^-1</span>
+      <ul>
+        <li>Rewrites A as "switch to eigenvector view, scale simply, switch back".</li>
+        <li>Needs enough independent eigenvectors (n of them for an n by n matrix).</li>
+        <li>Use when: computing big powers of A, or solving repeated/step-by-step systems.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>8. Four Fundamental Subspaces</h2>
-<table>
-<tr><th>Space</th><th>Size</th></tr>
-<tr><td>column space</td><td>r</td></tr>
-<tr><td>row space</td><td>r</td></tr>
-<tr><td>null space</td><td>n - r</td></tr>
-<tr><td>left null space</td><td>m - r</td></tr>
-</table>
-<ul>
-<li>r = rank. n = number of unknowns. m = number of equations.</li>
-<li>Use when: needing the full existence/uniqueness picture in one shot.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>8. Quadratic Forms and Covariance</h2>
+      <span class="formula">x^T A x = sum of aij times xi times xj</span>
+      <span class="formula">covariance matrix S = (1 / (n-1)) x Y^T Y</span>
+      <ul>
+        <li>Tells you if a matrix always gives a positive, negative, or mixed result.</li>
+        <li>Covariance matrix shows how spread out each feature is, and how features move together.</li>
+        <li>Use when: classifying a stationary point, or checking if data features are correlated.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>9. Independence, Basis, Dimension</h2>
-<span class="formula">A c = 0 only when c = 0 -&gt; independent</span>
-<ul>
-<li>Basis = smallest set that still covers everything (independent + spans).</li>
-<li>Dimension = number of vectors in that basis.</li>
-<li>Use when: checking for redundant vectors or features.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>9. Positive Definite Tests</h2>
+      <table>
+        <tr>
+          <th>Test</th>
+          <th>Condition</th>
+        </tr>
+        <tr>
+          <td>direct</td>
+          <td>x^T A x &gt; 0 for every x</td>
+        </tr>
+        <tr>
+          <td>eigenvalues</td>
+          <td>every eigenvalue &gt; 0</td>
+        </tr>
+        <tr>
+          <td>determinants</td>
+          <td>every leading determinant &gt; 0</td>
+        </tr>
+        <tr>
+          <td>pivots</td>
+          <td>every pivot &gt; 0</td>
+        </tr>
+      </table>
+      <ul>
+        <li>Four different ways to check the same thing - pick whichever is quickest to compute.</li>
+        <li>Use when: confirming a matrix is safe to treat like a "positive number" (e.g. before inverting it).</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>10. Linear Transformations</h2>
-<span class="formula">T(c x + d y) = c T(x) + d T(y)</span>
-<ul>
-<li>Scaling/adding inputs scales/adds outputs the same way, no twisting.</li>
-<li>Matrix columns = T applied to each basis vector.</li>
-<li>Use when: turning a rule (rotate, project, reflect) into a matrix.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>10. Singular Value Decomposition (SVD)</h2>
+      <span class="formula">A = U x Sigma x V^T</span>
+      <span class="formula">A v = sigma x u</span>
+      <table>
+        <tr>
+          <th>Space</th>
+          <th>Comes from</th>
+        </tr>
+        <tr>
+          <td>column space</td>
+          <td>first r columns of U</td>
+        </tr>
+        <tr>
+          <td>left null space</td>
+          <td>rest of U</td>
+        </tr>
+        <tr>
+          <td>row space</td>
+          <td>first r columns of V</td>
+        </tr>
+        <tr>
+          <td>null space</td>
+          <td>rest of V</td>
+        </tr>
+      </table>
+      <ul>
+        <li>Works for ANY matrix, even rectangular ones (unlike plain eigenvalues).</li>
+        <li>Singular values are always zero or positive, and rank how "important" each direction is.</li>
+        <li>Use when: compressing data, or finding all four fundamental subspaces at once.</li>
+      </ul>
+    </div>
 
-<div class="block">
-<h2>11. Gram-Schmidt and QR</h2>
-<span class="formula">new vector = old vector - (its part already covered)</span>
-<span class="formula">A = Q x R</span>
-<ul>
-<li>Removes overlap, then shrinks each vector to length 1.</li>
-<li>Use when: needing a perpendicular basis, or stable least-squares fitting.</li>
-</ul>
-</div>
+    <div class="block">
+      <h2>11. Principal Component Analysis (PCA)</h2>
+      <span class="formula">center the data, then take its SVD</span>
+      <span class="formula">variance kept by direction i = sigma_i^2 / (n-1)</span>
+      <ul>
+        <li>PCA is really just: subtract the mean, then run SVD.</li>
+        <li>The new directions are uncorrelated and ranked by how much information they carry.</li>
+        <li>Use when: turning many correlated features into a few important, clean ones.</li>
+      </ul>
+    </div>
 
-</div>
+    <div class="block">
+      <h2>12. Dimensionality Reduction</h2>
+      <span class="formula">keep only the top k pieces of the SVD sum</span>
+      <span class="formula">worth it when k &lt; (m x n) / (m + n + 1)</span>
+      <ul>
+        <li>Keeping only the biggest pieces gives the best possible approximation of the original data.</li>
+        <li>Use when: saving storage or computation while keeping most of the important information.</li>
+      </ul>
+    </div>
+
+  </div>
 
 <script>
   (function() {
@@ -233,15 +292,15 @@ th { background: var(--surface); color: var(--text); }
     const icon = document.getElementById('iconSun');
     const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
     const moon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-    
+
     function updateIcon(dark) {
       if (icon) icon.innerHTML = dark ? moon : sun;
     }
-    
+
     const saved = localStorage.getItem('theme');
     let isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
     updateIcon(isDark);
-    
+
     if (btn) {
       btn.addEventListener('click', () => {
         isDark = !root.classList.contains('dark');
@@ -254,4 +313,5 @@ th { background: var(--surface); color: var(--text); }
   })();
 </script>
 </body>
+
 </html>

@@ -577,7 +577,7 @@ function highlightInContent(term){
   if (!term) return 0;
   const lower = term.toLowerCase();
   const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
-    acceptNode(node){
+    acceptNode: function(node){
       if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
       if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;

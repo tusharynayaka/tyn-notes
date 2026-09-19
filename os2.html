@@ -290,6 +290,16 @@ mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px
   .menu-btn svg{ width:17px; height:17px; }
   .masthead{ padding-top:26px; }
 }
+@media (max-width:600px){
+  main{ padding:52px 14px 100px; }
+  section.topic > h2{ font-size:22px; }
+  section.topic h3{ font-size:15px; }
+  section.topic p, section.topic li{ font-size:15px; }
+  .formula .expr{ font-size:clamp(13px,4vw,16.5px); overflow-x:auto; display:block; }
+  table{ display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  pre{ font-size:12px; padding:10px 12px; }
+  .masthead h1{ font-size:clamp(26px,7vw,34px); }
+}
 
 /* Extra elements for Unit 2 */
 .rag-diagram{
@@ -2023,7 +2033,7 @@ function highlightInContent(term){
   if (!term) return 0;
   const lower = term.toLowerCase();
   const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
-    acceptNode(node){
+    acceptNode: function(node){
       if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
       if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
