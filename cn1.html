@@ -18,7 +18,7 @@
     if (isDark) root.classList.add('dark');
   })();
 </script>
-<title>Computer Networks · Application Layer Reference</title>
+<title>Coming Soon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
@@ -34,13 +34,7 @@
   --accent:#2c5f52;
   --accent-soft:#dfe9e4;
   --accent-text:#1f4238;
-  --formula-bg:#f3ecdc;
-  --formula-border:#c9a95c;
-  --code-bg:#eef0ec;
-  --mark-bg:#f6d989;
-  --shadow: none;
   --radius: 3px;
-  --sidebar-w: 300px;
   color-scheme: light;
 }
 html.dark{
@@ -61,227 +55,113 @@ html.dark{
   color-scheme: dark;
 }
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
 body{
   margin:0;
   background:var(--bg);
   color:var(--text);
   font-family:'IBM Plex Sans', sans-serif;
-  line-height:1.5;
+  line-height:1.45;
   transition:background .25s ease, color .25s ease;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 30px 16px;
 }
-::selection{background:var(--mark-bg); color:#1c1f1d;}
 
-#progress{
-  position:fixed; top:0; left:0; height:2px; width:0%;
-  background:var(--accent); z-index:500; transition:width .1s linear;
+.container{
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
 }
 
-.app{ display:flex; min-height:100vh; }
-
-.sidebar{
-  width:var(--sidebar-w);
-  flex-shrink:0;
-  border-right:1px solid var(--border);
-  background:var(--surface);
-  position:sticky; top:0; height:100vh; overflow-y:auto;
-  padding:22px 16px 60px;
-}
-.sidebar-head{
-  display:flex; align-items:flex-start; justify-content:space-between;
-  gap:8px; margin-bottom:18px;
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 .brand{
   font-family:'IBM Plex Mono', monospace;
-  font-size:12.5px; letter-spacing:.02em; color:var(--text-faint);
+  font-size:11px;
+  letter-spacing:.04em;
+  color:var(--text-faint);
+  text-transform: uppercase;
 }
-.brand strong{ display:block; font-family:'IBM Plex Sans',sans-serif; font-size:16px; color:var(--text); font-weight:600; margin-top:2px;}
+.brand strong{
+  display:block;
+  font-family:'Newsreader', serif;
+  font-size:22px;
+  color:var(--text);
+  font-weight:500;
+  text-transform: none;
+  margin-top:2px;
+  line-height: 1.1;
+}
+
 #themeToggle{
-  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
-  width:34px; height:34px; border-radius:var(--radius); cursor:pointer;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--text);
+  width:32px;
+  height:32px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
   transition: background .15s ease;
 }
 #themeToggle:hover{ background:var(--accent-soft); }
-#themeToggle svg{ width:16px; height:16px; }
+#themeToggle svg{ width:15px; height:15px; }
 
-.search-wrap{ position:relative; margin-bottom:18px; }
-#searchInput{
-  width:100%; padding:9px 12px 9px 32px; border-radius:var(--radius);
-  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
-  font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; outline:none;
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease;
 }
-#searchInput:focus{ border-color:var(--accent); }
-.search-wrap svg{
-  position:absolute; left:10px; top:50%; transform:translateY(-50%);
-  width:14px; height:14px; color:var(--text-faint); pointer-events:none;
-}
-#searchCount{ font-size:11.5px; color:var(--text-faint); margin:6px 2px 0; min-height:14px; }
-
-nav.toc{ font-size:13.5px; }
-.toc-group{ margin-bottom:4px; }
-.toc-group-title{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10.5px; letter-spacing:.06em; color:var(--text-faint);
-  padding:14px 8px 6px; cursor:pointer; user-select:none;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.toc-group-title:hover{ color:var(--text-soft); }
-.toc-group-title .chev{ transition:transform .15s ease; width:9px; height:9px; }
-.toc-group.collapsed .chev{ transform:rotate(-90deg); }
-.toc-group.collapsed .toc-list{ display:none; }
-.toc-list{ list-style:none; margin:0; padding:0; }
-.toc-list li a{
-  display:block; padding:6px 10px 6px 16px; margin:1px 0; border-radius:var(--radius);
-  color:var(--text-soft); text-decoration:none; border-left:2px solid transparent;
-  font-size:13px;
-}
-.toc-list li a:hover{ background:var(--surface-2); color:var(--text); }
-.toc-list li a.active{
-  color:var(--accent-text); border-left-color:var(--accent); background:var(--accent-soft);
-  font-weight:500;
-}
-.toc-list li.hidden{ display:none; }
-
-main{
-  flex:1; min-width:0;
-  padding:56px clamp(20px, 6vw, 90px) 140px;
-  display:flex; justify-content:center;
-}
-.content{ max-width:700px; width:100%; }
-
-.masthead{ margin-bottom:52px; }
-.masthead .kicker{
-  font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent-text);
-  letter-spacing:.04em;
-}
-.masthead h1{
-  font-family:'Newsreader', serif; font-weight:500; font-size:clamp(34px,4.4vw,48px);
-  margin:8px 0 14px; line-height:1.08; letter-spacing:-0.01em;
-}
-.masthead p{ color:var(--text-soft); font-size:15.5px; max-width:56ch; }
-
-section.topic{ margin-bottom:64px; scroll-margin-top:28px; }
-section.topic > h2{
-  font-family:'Newsreader', serif; font-weight:500; font-size:27px;
-  border-bottom:1px solid var(--border); padding-bottom:12px; margin:0 0 20px;
-  letter-spacing:-0.01em;
-}
-section.topic h3{
-  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:16.5px;
-  margin:30px 0 10px; color:var(--text);
-}
-section.topic h4{
-  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:14px;
-  margin:20px 0 8px; color:var(--accent-text);
-}
-section.topic p{ font-family:'Newsreader', serif; font-size:16.5px; color:var(--text); margin:0 0 14px; }
-section.topic p, section.topic li{ font-size:16.5px; }
-section.topic ul, section.topic ol{ font-family:'Newsreader', serif; padding-left:22px; margin:0 0 14px;}
-section.topic ul li, section.topic ol li{ margin-bottom:6px; }
-section.topic ul ul, section.topic ol ul{ margin:6px 0 6px; }
-strong{ font-weight:600; }
-code{
-  font-family:'IBM Plex Mono',monospace; font-size:.86em; background:var(--code-bg);
-  padding:1.5px 5px; border-radius:3px; color:var(--accent-text);
-}
-pre{
-  font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--code-bg);
-  border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;
-  overflow-x:auto; margin:0 0 16px; line-height:1.6;
-}
-pre code{ background:none; padding:0; color:var(--text); }
-
-.box{ border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--radius);
-  padding:12px 16px; margin:0 0 16px; background:var(--surface-2); }
-.box p:last-child{ margin-bottom:0; }
-.box .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
-  color:var(--accent-text); margin-bottom:5px; display:block; }
-
-.formula{
-  border:1px solid var(--formula-border); background:var(--formula-bg);
-  border-radius:var(--radius); padding:16px 20px; margin:18px 0;
-}
-.formula .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
-  color:#8a6d1f; display:block; margin-bottom:8px; }
-html.dark .formula .label{ color:#d8b25b; }
-.formula .expr{ font-family:'IBM Plex Mono',monospace; font-size:17px; text-align:center; margin:6px 0; }
-.formula .note{ font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text-soft); margin-top:8px;}
-
-table{ width:100%; border-collapse:collapse; margin:0 0 18px; font-size:14.5px; font-family:'IBM Plex Sans',sans-serif;}
-th{ text-align:left; font-weight:600; font-size:12px; letter-spacing:.03em; color:var(--text-faint);
-  border-bottom:1px solid var(--border); padding:8px 12px; }
-td{ padding:8px 12px; border-bottom:1px solid var(--border); }
-tr:last-child td{ border-bottom:none; }
-
-figure{ margin:0 0 20px; }
-figure figcaption{ font-size:12.5px; color:var(--text-faint); margin-top:8px; font-family:'IBM Plex Mono',monospace;}
-
-.diagram{
-  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface-2);
-  padding:22px; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:16px;
-}
-.stack{ display:flex; flex-direction:column; width:100%; max-width:420px; }
-.stack .layer{
-  border:1px solid var(--border); background:var(--surface); text-align:center; padding:10px;
-  font-size:13px; font-family:'IBM Plex Mono',monospace;
-}
-.stack .layer.accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
-.stack .layer + .layer{ border-top:none; }
-
-.flow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; width:100%; }
-.flow .step{
-  border:1px solid var(--border); background:var(--surface); border-radius:var(--radius);
-  padding:8px 14px; font-size:13px; font-family:'IBM Plex Mono',monospace; text-align:center;
-}
-.flow .arrow{ color:var(--text-faint); font-size:14px; }
-
-.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
-@media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
-
-.footnote{ font-size:13px; color:var(--text-faint); border-top:1px solid var(--border); padding-top:16px; margin-top:46px;}
-
-mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px; }
-
-.backtotop{
-  position:fixed; bottom:66px; right:18px; width:38px; height:38px; border-radius:50%;
-  background:var(--surface); border:1px solid var(--border); color:var(--text-soft);
-  display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0;
-  pointer-events:none; transition:opacity .2s ease; z-index:400;
-}
-.backtotop.show{ opacity:1; pointer-events:auto; }
-.backtotop svg{ width:15px; height:15px; }
-
-.menu-btn{ display:none; }
-@media (max-width:880px){
-  .sidebar{
-    position:fixed; left:0; top:0; z-index:600; transform:translateX(-100%);
-    transition:transform .2s ease; box-shadow:0 0 40px rgba(0,0,0,.25);
-  }
-  .sidebar.open{ transform:translateX(0); }
-  main{ padding:56px 20px 120px; }
-  .menu-btn{
-    display:flex; position:fixed; top:16px; left:16px; z-index:601;
-    width:38px; height:38px; border-radius:var(--radius); border:1px solid var(--border);
-    background:var(--surface); align-items:center; justify-content:center; cursor:pointer;
-  }
-  .menu-btn svg{ width:17px; height:17px; }
-  .masthead{ padding-top:26px; }
+.card:hover{
+  border-color: var(--accent);
 }
 
-.chip{
-  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
-  padding:2px 8px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
-  color:var(--text-soft); margin:2px 4px 2px 0;
+.title{
+  font-family: 'Newsreader', serif;
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: var(--text);
 }
-.solved{
-  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);
-  padding:16px 18px; margin:0 0 22px;
+
+.signature{
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  margin: 0;
 }
-.solved h4{ margin-top:0; }
-.solved .qtag{
-  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--surface);
-  background:var(--accent); padding:2px 8px; border-radius:12px; margin-right:8px;
+
+.footer{
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.footer a{
+  color: var(--accent-text);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border);
+}
+.footer a:hover{
+  border-bottom-color: var(--accent);
 }
 </style>
 <style>
@@ -292,7 +172,7 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 @media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
 </style>
 <style>
-.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:46px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
 .site-footer a{color:var(--accent-text);text-decoration:none;}
 .site-footer a:hover{color:var(--accent);}
 @media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
@@ -309,993 +189,56 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
-<div id="progress"></div>
 
-<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head">
-      <div class="brand">TEAM NETWORKS<strong>Application Layer</strong></div>
-      <button id="themeToggle" aria-label="Toggle theme">
-        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
+<div class="container">
+  <header class="site-header">
+    <div class="brand">
+      Reference Portal
+      <strong>Coming Soon</strong>
     </div>
-
-    <div class="search-wrap">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
-    </div>
-    <div id="searchCount"></div>
-
-    <nav class="toc" id="toc">
-      <div class="toc-group">
-        <div class="toc-group-title"><span>Principles of Network Apps</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <ul class="toc-list">
-          <li><a href="#app-overview" data-title="Application Layer Overview Some Network Apps Creating a Network App">Overview &amp; example apps</a></li>
-          <li><a href="#client-server" data-title="Client Server Paradigm Peer to Peer Architecture Self Scalability">Client-server vs P2P</a></li>
-          <li><a href="#processes-sockets" data-title="Processes Communicating Sockets Addressing Processes Port Numbers">Processes, sockets &amp; addressing</a></li>
-          <li><a href="#protocol-defs" data-title="Application Layer Protocol Defines Open vs Proprietary Protocols">What a protocol defines</a></li>
-          <li><a href="#transport-needs" data-title="Transport Service Requirements Data Integrity Timing Throughput Security TCP UDP">Transport service requirements</a></li>
-        </ul>
-      </div>
-      <div class="toc-group">
-        <div class="toc-group-title"><span>Web, HTTP &amp; HTTPS</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <ul class="toc-list">
-          <li><a href="#http-overview" data-title="HTTP Overview Hypertext Transfer Protocol Stateless">HTTP overview &amp; statelessness</a></li>
-          <li><a href="#http-connections" data-title="Non Persistent Persistent HTTP Pipelining Response Time RTT">Persistent vs non-persistent HTTP</a></li>
-          <li><a href="#http-messages" data-title="HTTP Request Response Message Format GET POST HEAD PUT Status Codes">Request &amp; response messages</a></li>
-          <li><a href="#cookies" data-title="Cookies Maintaining User Server State First Party Third Party">Cookies &amp; state</a></li>
-          <li><a href="#web-caching" data-title="Web Caches Proxy Servers Caching Example Conditional GET">Web caching &amp; conditional GET</a></li>
-          <li><a href="#http2-http3" data-title="HTTP/2 HTTP/3 Head of Line Blocking QUIC">HTTP/2 and HTTP/3</a></li>
-          <li><a href="#https-tls" data-title="HTTPS TLS Transport Layer Security SSL Certificates Handshake">HTTPS &amp; TLS</a></li>
-        </ul>
-      </div>
-      <div class="toc-group">
-        <div class="toc-group-title"><span>Delay Problems</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <ul class="toc-list">
-          <li><a href="#delay-basics" data-title="Delay Components Transmission Propagation Processing Queuing Nodal Delay">Delay components recap</a></li>
-          <li><a href="#delay-q1-q5" data-title="Q1 Q2 Q3 Q4 Q5 Transmission Delay Propagation Delay Nodal Delay">Q1–Q5: transmission &amp; propagation</a></li>
-          <li><a href="#delay-q9-q10" data-title="Q9 Q10 End to End Delay Bandwidth Delay Product Bit Width">Q9–Q10: bandwidth-delay product</a></li>
-          <li><a href="#delay-q11-q14" data-title="Q11 Q12 Q13 Q14 ISP Promise Transmission Speed Lossy Channel">Q11–Q14: applied scenarios</a></li>
-        </ul>
-      </div>
-      <div class="toc-group">
-        <div class="toc-group-title"><span>Throughput Problems</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <ul class="toc-list">
-          <li><a href="#throughput-q6-q8" data-title="Q6 Q7 Q8 Throughput Efficiency Circuit Switching">Q6–Q8: throughput &amp; efficiency</a></li>
-        </ul>
-      </div>
-    </nav>
-  </aside>
-
-  <main>
-    <div class="content">
-      <header class="masthead site-header">
-        <div class="kicker">TEAM NETWORKS — PES University</div>
-        <h1>Computer Networks, Application Layer</h1>
-        <p>A single-page reference covering the principles of network applications (client-server vs. peer-to-peer, sockets, transport service requirements), the Web via HTTP and HTTPS (persistent connections, cookies, caching, HTTP/2–3, TLS), and fully worked delay and throughput problems — expanded from the lecture slides with explanations.</p>
-      </header>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="app-overview">
-        <h2>Application Layer: Overview &amp; Example Apps</h2>
-        <p>The application layer is where network software actually lives. Our goals in studying it are twofold: understand the <strong>conceptual and implementation aspects</strong> of application-layer protocols (transport-layer service models, the client-server paradigm, the peer-to-peer paradigm), and learn about real protocols by examining popular ones — chiefly HTTP.</p>
-
-        <h3>Some network apps</h3>
-        <p>The application layer hosts almost everything a user actually interacts with on the internet:</p>
-        <div class="two-col">
-          <div>
-            <ul>
-              <li>social networking (TikTok, Facebook, Instagram, X, WeChat)</li>
-              <li>Web</li>
-              <li>text messaging</li>
-              <li>e-mail (Gmail, Yahoo Mail)</li>
-              <li>multi-user network games</li>
-              <li>streaming stored video (YouTube, Hulu, Netflix)</li>
-              <li>P2P file sharing</li>
-            </ul>
-          </div>
-          <div>
-            <ul>
-              <li>voice over IP</li>
-              <li>real-time video conferencing (Skype, Hangouts)</li>
-              <li>Internet search</li>
-              <li>remote login</li>
-              <li>generative AI (chatbots, text-to-image/video)</li>
-              <li>…</li>
-            </ul>
-          </div>
-        </div>
-
-        <h3>Creating a network app</h3>
-        <p>Writing a network application means writing programs that: (1) run on different end systems, and (2) communicate over the network — e.g. web server software communicates with browser software.</p>
-        <div class="box"><span class="label">Key insight</span>
-          <p style="margin-bottom:0">There is <strong>no need to write software for network-core devices</strong>. Routers and switches in the core do not run user applications — only end systems (hosts) do. Confining applications to end systems is precisely what allows for rapid application development and propagation: a new app can be deployed just by installing it on end systems, without touching the core.</p>
-        </div>
-        <figure class="diagram">
-          <div class="stack">
-            <div class="layer accent">application</div>
-            <div class="layer">transport</div>
-            <div class="layer">network</div>
-            <div class="layer">data link</div>
-            <div class="layer">physical</div>
-          </div>
-          <figcaption>every end system runs the full stack; only the application layer differs per host — mobile network, home network, and datacenter/content-provider network all connect through national/global and local/regional ISPs</figcaption>
-        </figure>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="client-server">
-        <h2>Client-Server Paradigm &amp; Peer-to-Peer Architecture</h2>
-        <p>Two broad architectures describe how network applications organize their communicating end systems.</p>
-
-        <h3>Client-server paradigm</h3>
-        <div class="two-col">
-          <div>
-            <h4>Server</h4>
-            <ul>
-              <li>always-on host</li>
-              <li>permanent IP address</li>
-              <li>often housed in data centers, for scaling</li>
-            </ul>
-          </div>
-          <div>
-            <h4>Clients</h4>
-            <ul>
-              <li>contact and communicate with the server</li>
-              <li>may be intermittently connected</li>
-              <li>may have dynamic IP addresses</li>
-              <li>do <strong>not</strong> communicate directly with each other</li>
-            </ul>
-          </div>
-        </div>
-        <p><strong>Examples:</strong> HTTP, IMAP, FTP.</p>
-
-        <h3>Peer-to-peer (P2P) architecture</h3>
-        <ul>
-          <li><strong>no</strong> always-on server</li>
-          <li>arbitrary end systems communicate directly with each other</li>
-          <li>peers request service from other peers and provide service in return to other peers</li>
-        </ul>
-        <div class="box"><span class="label">Self scalability</span>
-          <p style="margin-bottom:0">New peers bring new service <em>capacity</em> as well as new service <em>demand</em> — unlike a fixed server whose capacity is bounded, a P2P system's total capacity grows as its user base grows.</p>
-        </div>
-        <p>Peers are intermittently connected and change IP addresses, which makes management complex. <strong>Example:</strong> P2P file sharing (BitTorrent).</p>
-
-        <h3>Processes communicating</h3>
-        <p>A <strong>process</strong> is a program running within a host. Two processes within the <em>same</em> host communicate using inter-process communication, a mechanism defined by the operating system. Processes in <em>different</em> hosts communicate by exchanging <strong>messages</strong>.</p>
-        <div class="box"><span class="label">Client vs server process</span>
-          <p style="margin-bottom:4px"><strong>Client process:</strong> the process that initiates the communication.</p>
-          <p style="margin-bottom:0"><strong>Server process:</strong> the process that waits to be contacted.</p>
-        </div>
-        <p>Note: applications built with a P2P architecture still have client processes and server processes — a peer plays the client role when it initiates a request and the server role when it responds to one.</p>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="processes-sockets">
-        <h2>Sockets &amp; Addressing Processes</h2>
-        <h3>Sockets</h3>
-        <p>A process sends and receives messages to and from its <strong>socket</strong>. The socket is analogous to a door: the sending process shoves the message out the door and relies on the transport infrastructure on the other side of the door to deliver the message to the socket at the receiving process. Two sockets are involved in any exchange — one on each side.</p>
-        <figure class="diagram">
-          <div class="flow"><div class="step">process → socket → transport/network/link/physical → Internet → transport/network/link/physical → socket → process</div></div>
-          <figcaption>the application developer controls everything above the socket; the OS controls everything below it</figcaption>
-        </figure>
-
-        <h3>Addressing processes</h3>
-        <p>To receive messages, a process must have an identifier. Every host device has a unique 32-bit IP address — but does the IP address of the host on which a process runs suffice to identify the process itself?</p>
-        <div class="box"><span class="label">No</span><p style="margin-bottom:0">Many processes can be running on the same host, so the IP address alone is not enough. The identifier must include both the <strong>IP address</strong> and a <strong>port number</strong> associated with the process on that host.</p></div>
-        <p>Example port numbers: HTTP server → port 80; mail server → port 25. To send an HTTP message to a web server at <code>gaia.cs.umass.edu</code>: IP address <code>128.119.245.12</code>, port number <code>80</code>.</p>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="protocol-defs">
-        <h2>What an Application-Layer Protocol Defines</h2>
-        <p>An application-layer protocol specifies exactly how the processes within an application communicate with one another. It defines:</p>
-        <ul>
-          <li><strong>Types of messages exchanged</strong> — e.g. request, response</li>
-          <li><strong>Message syntax</strong> — what fields appear in messages, and how those fields are delineated</li>
-          <li><strong>Message semantics</strong> — the meaning of the information contained in each field</li>
-          <li><strong>Rules</strong> for when and how processes send and respond to messages</li>
-        </ul>
-
-        <h3>Open vs proprietary protocols</h3>
-        <div class="two-col">
-          <div>
-            <h4>Open protocols</h4>
-            <p>Defined in RFCs; everyone has access to the protocol definition. This allows for interoperability. Examples: HTTP, SMTP.</p>
-          </div>
-          <div>
-            <h4>Proprietary protocols</h4>
-            <p>Not openly published. Example: Skype.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="transport-needs">
-        <h2>What Transport Service Does an App Need?</h2>
-        <p>When designing an application, four transport-service dimensions matter:</p>
-        <div class="two-col">
-          <div>
-            <h4>Data integrity</h4>
-            <p>Some apps (file transfer, web transactions) require 100% reliable data transfer. Others (audio) can tolerate some loss.</p>
-          </div>
-          <div>
-            <h4>Throughput</h4>
-            <p>Some apps (multimedia) require a minimum amount of throughput to be "effective." Other, "elastic" apps make use of whatever throughput they get.</p>
-          </div>
-        </div>
-        <div class="two-col">
-          <div>
-            <h4>Timing</h4>
-            <p>Some apps (Internet telephony, interactive games) require low delay to be "effective."</p>
-          </div>
-          <div>
-            <h4>Security</h4>
-            <p>Encryption, data integrity, and related guarantees.</p>
-          </div>
-        </div>
-
-        <h3>Transport service requirements: common apps</h3>
-        <table>
-          <tr><th>Application</th><th>Data loss</th><th>Throughput</th><th>Time sensitive?</th></tr>
-          <tr><td>file transfer/download</td><td>no loss</td><td>elastic</td><td>no</td></tr>
-          <tr><td>e-mail</td><td>no loss</td><td>elastic</td><td>no</td></tr>
-          <tr><td>Web documents</td><td>no loss</td><td>elastic</td><td>no</td></tr>
-          <tr><td>real-time audio/video</td><td>loss-tolerant</td><td>audio: 5Kbps–1Mbps; video: 10Kbps–5Mbps</td><td>yes, 10's msec</td></tr>
-          <tr><td>streaming audio/video</td><td>loss-tolerant</td><td>same as above</td><td>yes, few secs</td></tr>
-          <tr><td>interactive games</td><td>loss-tolerant</td><td>Kbps+</td><td>yes, 10's msec</td></tr>
-          <tr><td>text messaging</td><td>no loss</td><td>elastic</td><td>yes and no</td></tr>
-        </table>
-
-        <h3>Internet transport protocol services</h3>
-        <div class="two-col">
-          <div>
-            <h4>TCP service</h4>
-            <ul>
-              <li><strong>reliable transport</strong> between sending and receiving process</li>
-              <li><strong>flow control:</strong> sender won't overwhelm receiver</li>
-              <li><strong>congestion control:</strong> throttles the sender when the network is overloaded</li>
-              <li>does <strong>not</strong> provide: timing, minimum throughput guarantee, security</li>
-              <li><strong>connection-oriented:</strong> setup required between client and server processes</li>
-            </ul>
-          </div>
-          <div>
-            <h4>UDP service</h4>
-            <ul>
-              <li><strong>unreliable data transfer</strong> between sending and receiving process</li>
-              <li>does <strong>not</strong> provide: reliability, flow control, congestion control, timing, throughput guarantee, security, or connection setup</li>
-            </ul>
-          </div>
-        </div>
-
-        <h3>Application, protocol, transport mapping</h3>
-        <table>
-          <tr><th>Application</th><th>Application-layer protocol</th><th>Transport protocol</th></tr>
-          <tr><td>file transfer/download</td><td>FTP [RFC 959]</td><td>TCP</td></tr>
-          <tr><td>e-mail</td><td>SMTP [RFC 5321]</td><td>TCP</td></tr>
-          <tr><td>Web documents</td><td>HTTP 1.1 [RFC 7230]</td><td>TCP</td></tr>
-          <tr><td>Internet telephony</td><td>SIP [RFC 3261], RTP [RFC 3550], or proprietary (Skype)</td><td>TCP or UDP</td></tr>
-          <tr><td>streaming audio/video</td><td>DASH</td><td>TCP</td></tr>
-          <tr><td>interactive games</td><td>WOW, FPS (proprietary)</td><td>UDP or TCP</td></tr>
-        </table>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="http-overview">
-        <h2>Web, HTTP and HTTPS: Overview</h2>
-        <p><strong>First, a quick review of the Web:</strong> a web page consists of <strong>objects</strong>, each of which can be stored on different web servers. An object can be an HTML file, a JPEG image, a Java applet, an audio file, and so on. A web page consists of a <strong>base HTML file</strong> which includes several referenced objects, each addressable by a <strong>URL</strong>.</p>
-        <p>Example: <code>www.someschool.edu/someDept/pic.gif</code> — <code>www.someschool.edu</code> is the host name, <code>/someDept/pic.gif</code> is the path name. If a web page contains HTML text plus 5 JPEG images, the page has <strong>6 objects</strong> in total: the base HTML file plus the 5 images.</p>
-
-        <h3>HTTP: hypertext transfer protocol</h3>
-        <p>HTTP is the Web's application-layer protocol, defined in RFC 1945 and RFC 2616. It follows a <strong>client/server model</strong>:</p>
-        <ul>
-          <li><strong>client:</strong> the browser that requests, receives (using the HTTP protocol), and "displays" web objects</li>
-          <li><strong>server:</strong> the web server that sends (using the HTTP protocol) objects in response to requests</li>
-        </ul>
-
-        <h3>HTTP uses TCP</h3>
-        <ol>
-          <li>client initiates a TCP connection (creates a socket) to the server, port 80</li>
-          <li>server accepts the TCP connection from the client</li>
-          <li>HTTP messages (application-layer protocol messages) are exchanged between the browser (HTTP client) and the web server (HTTP server)</li>
-          <li>TCP connection is closed</li>
-        </ol>
-
-        <h3>HTTP is "stateless"</h3>
-        <p>The server maintains <strong>no</strong> information about past client requests.</p>
-        <div class="box"><span class="label">Aside: why statelessness is a deliberate design choice</span>
-          <p style="margin-bottom:4px">Protocols that maintain "state" are complex! Past history (state) must be maintained, and if the server or client crashes, their views of "state" may become inconsistent and must be reconciled.</p>
-          <p style="margin-bottom:0">With HTTP being stateless: there is no need for client/server to track the "state" of a multi-step exchange, all HTTP requests are independent of each other, and there is no need for client/server to "recover" from a partially-completed-but-never-completely-completed transaction.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="http-connections">
-        <h2>HTTP Connections: Persistent vs Non-Persistent</h2>
-        <div class="two-col">
-          <div>
-            <h4>Non-persistent HTTP</h4>
-            <ol>
-              <li>TCP connection opened</li>
-              <li>at most one object sent over the TCP connection</li>
-              <li>TCP connection closed</li>
-            </ol>
-            <p>Downloading multiple objects required multiple connections.</p>
-          </div>
-          <div>
-            <h4>Persistent HTTP</h4>
-            <p>TCP connection opened to a server; multiple objects can be sent over a <strong>single</strong> TCP connection between the client and that server; the TCP connection is closed only afterward.</p>
-          </div>
-        </div>
-
-        <h3>Non-persistent HTTP: example walkthrough</h3>
-        <p>User enters URL <code>www.someSchool.edu/someDepartment/home.index</code> (a base HTML file containing text plus references to 10 JPEG images):</p>
-        <ol>
-          <li>HTTP client initiates a TCP connection to the HTTP server (process) at <code>www.someSchool.edu</code> on port 80</li>
-          <li>HTTP server at that host, waiting for a TCP connection at port 80, "accepts" the connection and notifies the client</li>
-          <li>HTTP client sends an HTTP <em>request message</em> (containing the URL) into the TCP connection socket — the message indicates that the client wants the object <code>someDepartment/home.index</code></li>
-          <li>HTTP server receives the request message, forms a <em>response message</em> containing the requested object, and sends the message into its socket</li>
-          <li>HTTP server closes the TCP connection</li>
-          <li>HTTP client receives the response message containing the HTML file and displays it; parsing the HTML file, it finds 10 referenced JPEG objects</li>
-          <li>Steps 1–5 are repeated for <strong>each</strong> of the 10 JPEG objects</li>
-        </ol>
-
-        <h3>Non-persistent HTTP: response time</h3>
-        <p><strong>RTT (round-trip time)</strong> is the time for a small packet to travel from client to server and back. Per object, the HTTP response time requires: one RTT to initiate the TCP connection, one RTT for the HTTP request and the first few bytes of the HTTP response to return, plus the object/file transmission time.</p>
-        <div class="formula"><span class="label">Non-persistent HTTP response time</span><div class="expr">2·RTT + file transmission time</div></div>
-
-        <h3>Persistent HTTP (HTTP/1.1)</h3>
-        <p><strong>Non-persistent HTTP issues:</strong> requires 2 RTTs per object; OS overhead for <em>each</em> TCP connection (TCP buffers and variables must be allocated); browsers often open multiple parallel TCP connections to fetch referenced objects in parallel, to compensate.</p>
-        <p><strong>Persistent HTTP (HTTP/1.1) fixes this:</strong> the server leaves the connection open after sending a response; subsequent HTTP messages between the same client/server are sent over the still-open connection; the client sends requests as soon as it encounters a referenced object. This brings response time down to as little as <strong>one RTT for all the referenced objects</strong> (cutting response time roughly in half compared to sequential non-persistent connections).</p>
-
-        <h3>Connection management in HTTP/1.x</h3>
-        <p>Three connection-management patterns exist in practice: <strong>short-lived connections</strong> (a fresh TCP establish/close for every object — the non-persistent model), a <strong>persistent connection</strong> (one TCP connection reused sequentially for each request/response), and <strong>HTTP pipelining</strong> (multiple requests fired back-to-back over one persistent connection, without waiting for each response before sending the next request).</p>
-
-        <div class="solved">
-          <h4><span class="qtag">Worked</span>Comparing non-persistent, persistent, and pipelined HTTP</h4>
-          <p>A webpage consists of: 1 HTML file + 6 images. Assume: one RTT = 80 ms, and object transmission time is negligible.</p>
-          <p><strong>(a) Non-persistent HTTP.</strong> Each object requires 1 RTT to establish a TCP connection + 1 RTT for the HTTP request and the beginning of the response = 2 RTT per object. There are 7 objects (1 HTML + 6 images):</p>
-          <div class="formula"><div class="expr">7 × 2RTT = 14 RTT = 14 × 80 ms = <strong>1120 ms = 1.12 s</strong></div></div>
-          <p><strong>(b) Persistent HTTP, without pipelining.</strong> The TCP connection is established only once (1 RTT). Then: 1 RTT to request/receive the base HTML file, and 6 RTT to request/receive the 6 images sequentially (1 RTT per image, since the client waits for each response before requesting the next).</p>
-          <div class="formula"><div class="expr">1 RTT (TCP) + 1 RTT (HTML) + 6 RTT (images) = 8 RTT = 8 × 80 ms = <strong>640 ms = 0.64 s</strong></div></div>
-          <p><strong>(c) Persistent HTTP with pipelining.</strong> The client opens a single TCP connection and sends multiple HTTP requests back-to-back without waiting for each response. After the TCP connection (1 RTT) and the HTML file (1 RTT), the client parses the HTML, discovers all 6 images, and requests all of them together in a single batch — needing only about 1 more RTT for all of them.</p>
-          <div class="formula"><div class="expr">1 RTT (TCP) + 1 RTT (HTML) + 1 RTT (all 6 images) = 3 RTT = 3 × 80 ms = <strong>240 ms</strong></div></div>
-          <table>
-            <tr><th>HTTP approach</th><th>RTT calculation</th><th>Total RTTs</th><th>Total time</th><th>Relative performance</th></tr>
-            <tr><td>Non-persistent HTTP</td><td>7 × 2</td><td>14 RTT</td><td>1120 ms</td><td>slowest (baseline 1.0×)</td></tr>
-            <tr><td>Persistent HTTP, no pipelining</td><td>1 + 7</td><td>8 RTT</td><td>640 ms</td><td>better (1.75× faster)</td></tr>
-            <tr><td>Persistent HTTP + pipelining</td><td>1 + 1 + 1</td><td>3 RTT</td><td>240 ms</td><td>best (4.67× faster)</td></tr>
-          </table>
-          <p style="margin-bottom:0"><strong>Conclusion:</strong> pipelining wins decisively because it eliminates the "wait for response before sending next request" bottleneck — the client fires off every request it can as soon as it knows about the object, instead of taking turns one RTT at a time.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="http-messages">
-        <h2>HTTP Request &amp; Response Messages</h2>
-        <p>There are two types of HTTP messages: <strong>request</strong> and <strong>response</strong>. Both are ASCII (human-readable).</p>
-
-        <h3>HTTP request message</h3>
-        <pre><code>GET /index.html HTTP/1.1\r\n
-Host: www-net.cs.umass.edu\r\n
-User-Agent: Firefox/3.6.10\r\n
-Accept: text/html,application/xhtml+xml\r\n
-Accept-Language: en-us,en;q=0.5\r\n
-Accept-Encoding: gzip,deflate\r\n
-Accept-Charset: ISO-8859-1,utf-8;q=0.7\r\n
-Keep-Alive: 115\r\n
-Connection: keep-alive\r\n
-\r\n</code></pre>
-        <p>The first line is the <strong>request line</strong> (containing the method — GET, POST, HEAD — plus the URL and version). The lines that follow are <strong>header lines</strong>. A carriage-return/line-feed (<code>\r\n</code>) at the start of a line, on its own, indicates the end of the header lines.</p>
-
-        <h3>HTTP request message: general format</h3>
-        <div class="diagram">
-          <div class="flow"><div class="step">method sp URL sp version cr lf</div></div>
-          <p style="text-align:center;margin-top:6px;font-size:13px;color:var(--text-soft)">request line</p>
-          <div class="flow"><div class="step">header field name : value cr lf</div></div>
-          <p style="text-align:center;margin-top:6px;font-size:13px;color:var(--text-soft)">header lines (repeated), then a blank cr lf</p>
-          <div class="flow"><div class="step">entity body</div></div>
-        </div>
-        <p>HTTP specifications: RFC 1945, RFC 2616, RFC 7540.</p>
-
-        <h3>Other HTTP request methods</h3>
-        <div class="two-col">
-          <div>
-            <h4>POST method</h4>
-            <p>A web page often includes form input. User input is sent from the client to the server in the <strong>entity body</strong> of the HTTP POST request message.</p>
-          </div>
-          <div>
-            <h4>HEAD method</h4>
-            <p>Requests only the <strong>headers</strong> that would be returned if the specified URL were requested with an HTTP GET method — no body.</p>
-          </div>
-        </div>
-        <div class="two-col">
-          <div>
-            <h4>GET method (for sending data to server)</h4>
-            <p>Include user data in the URL field of the HTTP GET request message, following a <code>?</code>:</p>
-            <pre><code>www.somesite.com/animalsearch?monkeys&banana</code></pre>
-          </div>
-          <div>
-            <h4>PUT method</h4>
-            <p>Uploads a new file (object) to the server, completely replacing the file that exists at the specified URL with the content in the entity body.</p>
-          </div>
-        </div>
-
-        <h3>HTTP response message</h3>
-        <pre><code>HTTP/1.1 200 OK\r\n
-Date: Sun, 26 Sep 2010 20:09:20 GMT\r\n
-Server: Apache/2.0.52 (CentOS)\r\n
-Last-Modified: Tue, 30 Oct 2007 17:00:02 GMT\r\n
-ETag: "17dc6-a5c-bf716880"\r\n
-Accept-Ranges: bytes\r\n
-Content-Length: 2652\r\n
-Keep-Alive: timeout=10, max=100\r\n
-Connection: Keep-Alive\r\n
-Content-Type: text/html; charset=ISO-8859-1\r\n
-\r\n
-data data data data data ...</code></pre>
-        <p>The first line is the <strong>status line</strong> (protocol, status code, status phrase); it's followed by header lines, a blank line, and the data (e.g. the requested HTML file).</p>
-
-        <h3>HTTP response status codes</h3>
-        <p>The status code appears in the 1st line of a server-to-client response message. Some sample codes:</p>
-        <ul>
-          <li><strong>200 OK</strong> — request succeeded, the requested object appears later in this message</li>
-          <li><strong>301 Moved Permanently</strong> — requested object has moved; new location specified later in this message (in the <code>Location:</code> field)</li>
-          <li><strong>400 Bad Request</strong> — request message not understood by the server</li>
-          <li><strong>404 Not Found</strong> — requested document not found on this server</li>
-          <li><strong>505 HTTP Version Not Supported</strong></li>
-        </ul>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="cookies">
-        <h2>Cookies &amp; Maintaining User/Server State</h2>
-        <p>A website/HTTP/Internet <strong>cookie</strong> is a piece of data from a specific website, stored on a user's computer, that allows sites to keep track of users — e.g. remembering a language selection. You've likely seen the consent banners ("We value your privacy… Accept All / Reject All") that are the visible face of cookie usage.</p>
-
-        <h3>Recall: HTTP GET/response interaction is stateless</h3>
-        <p>There is no notion of multi-step exchanges of HTTP messages needed to complete a Web "transaction": there's no need for client/server to track the "state" of a multi-step exchange, all HTTP requests are independent of each other, and there's no need for client/server to "recover" from a partially-completed-but-never-completely-completed transaction.</p>
-        <div class="box"><span class="label">Contrast: a stateful protocol</span><p style="margin-bottom:0">In a stateful protocol, a client might lock a data record X, update it twice, then unlock it — expecting either both changes to X or none at all. <em>Question:</em> what happens if the network connection or the client crashes midway through such a sequence? Answering that requires the protocol to track state, which is exactly the complexity HTTP avoids by design.</p></div>
-
-        <h3>Cookies: how they work</h3>
-        <p>Web sites and client browsers use cookies to maintain some state between transactions, built from four components:</p>
-        <ol>
-          <li>a cookie header line of the HTTP <em>response</em> message</li>
-          <li>a cookie header line in the next HTTP <em>request</em> message</li>
-          <li>a cookie file kept on the user's host, managed by the user's browser</li>
-          <li>a back-end database at the web site</li>
-        </ol>
-        <p><strong>Example:</strong> Susan uses a browser on her laptop and visits a specific e-commerce site for the first time. When the initial HTTP request arrives at the site, the site creates a unique ID (the "cookie") and an entry in its backend database for that ID. Subsequent HTTP requests from Susan to this site will contain the cookie ID value, allowing the site to "identify" Susan.</p>
-        <figure class="diagram">
-          <div class="flow"><div class="step">client → usual HTTP request msg → server</div></div>
-          <div class="flow" style="margin-top:8px"><div class="step">server → usual HTTP response, set-cookie: 1678 → client (Amazon server creates ID 1678, creates entry in backend database)</div></div>
-          <div class="flow" style="margin-top:8px"><div class="step">client → usual HTTP request msg, cookie: 1678 → server (cookie-specific action, accesses backend database)</div></div>
-          <p style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-soft)">one week later: the same cookie: 1678 is sent again, triggering the same cookie-specific action</p>
-        </figure>
-
-        <h3>What cookies can be used for</h3>
-        <ul>
-          <li>track a user's browsing history</li>
-          <li>remembering login details (authorization)</li>
-          <li>track visitor count</li>
-          <li>shopping carts</li>
-          <li>recommendations</li>
-          <li>save coupon codes</li>
-        </ul>
-        <div class="box"><span class="label">Aside — cookies and privacy</span>
-          <p style="margin-bottom:4px">Cookies permit sites to learn a lot about you on their site. <strong>Third-party cookies</strong> (tracking cookies) allow a common identity (cookie value) to be tracked across multiple web sites; browsers now disable or restrict these by default.</p>
-          <p style="margin-bottom:0">Sites use <strong>first-party cookies</strong> to track user behavior on a given website, and <strong>third-party cookies</strong> to track user behavior <em>across</em> multiple websites — without the user ever choosing to visit the tracker site directly!</p>
-        </div>
-
-        <h3>Worked example: how third-party ad tracking actually happens</h3>
-        <p>Suppose loading a <code>nytimes.com</code> sports page triggers a request to an ad exchange, <code>AdX.com</code>, to fetch an ad. The base HTML from nytimes.com sets a <strong>first-party cookie</strong> (1634) since that's the site the user chose to visit. The embedded request to AdX.com — made because the page told the browser to fetch an ad from there — causes AdX to set its own <strong>third-party cookie</strong> (7493), even though the user never chose to visit AdX.com.</p>
-        <p>A day later, the user visits an unrelated site, <code>socks.com</code>, which also happens to embed an AdX.com ad slot. The browser's request to AdX.com carries the <em>same</em> third-party cookie (7493) from before — because it's the same cookie jar, scoped to AdX.com regardless of which "first-party" page embedded it. AdX now has two data points tied to cookie 7493: this user visited NY Times sports, and this user visited socks.com. AdX can now <strong>return a targeted ad for socks</strong> back on the NY Times page, since it recognizes the same visitor across both unrelated sites.</p>
-        <div class="box"><span class="label">The mechanism in one sentence</span><p style="margin-bottom:0">AdX tracks the user's web browsing over every site that happens to embed an AdX ad, and can return targeted ads based on that cross-site browsing history — all driven purely by the third-party cookie being resent on every request to the same ad-server domain.</p></div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="web-caching">
-        <h2>Web Caches (Proxy Servers) &amp; Conditional GET</h2>
-        <p><strong>Goal:</strong> satisfy a client's request without involving the origin server at all.</p>
-        <p>The user configures their browser to point to a web cache. The browser then sends <strong>all</strong> HTTP requests to the cache: if the requested object is in the cache, the cache returns the object directly to the client; else the cache requests the object from the origin server, caches the received object, and then returns it to the client.</p>
-        <p>A web cache acts as <strong>both client and server</strong>: it is a server to the original requesting client, and a client to the origin server. Typically the cache is installed by an ISP (university, company, or residential ISP). The origin server tells the cache about an object's allowable caching behaviour via response headers:</p>
-        <pre><code>Cache-Control: max-age=&lt;seconds&gt;
-Cache-Control: no-cache</code></pre>
-
-        <h3>Why web caching?</h3>
-        <ul>
-          <li><strong>reduces response time</strong> for the client's request (speed) — the cache is physically closer to the client</li>
-          <li><strong>reduces traffic</strong> on an institution's access link (saves bandwidth)</li>
-          <li>the internet is dense with caches, which enables "poor" content providers to more effectively deliver content</li>
-          <li><strong>privacy</strong> — surfing the internet somewhat more anonymously</li>
-          <li>activity logging</li>
-        </ul>
-
-        <div class="solved">
-          <h4><span class="qtag">Worked</span>Caching example — the access-link bottleneck</h4>
-          <p><strong>Scenario:</strong> access link rate = 1.54 Mbps; RTT from the institutional router to the origin servers = 2 sec; web object size = 100K bits; average request rate from browsers to origin servers = 15/sec (average data rate to browsers = 1.50 Mbps).</p>
-          <div class="formula"><span class="label">LAN utilization</span><div class="expr">(15 req/sec) × (100 Kbits/req) / (1 Gbps) = 0.0015</div></div>
-          <div class="formula"><span class="label">Access-link utilization</span><div class="expr">(15 req/sec) × (100 Kbits/req) / (1.54 Mbps) = 0.974 ≈ 0.97</div></div>
-          <p><strong>End-to-end delay</strong> = Internet delay + access-link delay + LAN delay = 2 sec + <em>minutes</em> + microseconds.</p>
-          <div class="box"><span class="label">Problem</span><p style="margin-bottom:0">Large delays occur at high utilization! An access link running near 97% utilization means queuing delay explodes (this follows the same intuition as M/M/1-style queuing: as utilization → 1, queuing delay → ∞).</p></div>
-          <p><strong>Option A — buy a faster access link:</strong> upgrade 1.54 Mbps → 154 Mbps. Access-link utilization drops from .97 to <strong>.0097</strong>, and end-to-end delay drops from "minutes" to milliseconds. <em>Cost:</em> a much faster access link is expensive.</p>
-          <p><strong>Option B — install a web cache (cheap!):</strong> suppose the cache hit rate is 0.4 (40% of requests are satisfied at the cache, 60% still go to the origin). Then only 60% of requests use the access link:</p>
-          <div class="formula"><span class="label">Data rate over access link</span><div class="expr">0.6 × 1.50 Mbps = 0.9 Mbps → utilization = 0.9 / 1.54 = 0.58</div></div>
-          <div class="formula"><span class="label">Average end-to-end delay</span><div class="expr">0.6 × (delay from origin servers) + 0.4 × (delay when satisfied at cache)<br>= 0.6 (2.01) + 0.4 (~msecs) ≈ 1.2 sec</div></div>
-          <p style="margin-bottom:0"><strong>Conclusion:</strong> installing a cache gives a <em>lower</em> average end-to-end delay than upgrading to a 154 Mbps link — and it's far cheaper.</p>
-        </div>
-
-        <h3>Conditional GET — browser caching</h3>
-        <p><strong>Goal:</strong> don't re-send an object if the cache already has an up-to-date cached version — this avoids the object transmission delay and lowers link utilization.</p>
-        <p>The <strong>cache</strong> specifies the date of its cached copy in the HTTP request:</p>
-        <pre><code>If-modified-since: &lt;date&gt;</code></pre>
-        <p>The <strong>server's</strong> response contains no object at all if the cached copy is already up-to-date:</p>
-        <pre><code>HTTP/1.0 304 Not Modified</code></pre>
-        <p>If the object <em>was</em> modified after that date, the server instead responds normally with <code>HTTP/1.0 200 OK</code> and the full <code>&lt;data&gt;</code>.</p>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="http2-http3">
-        <h2>HTTP/2 and HTTP/3</h2>
-        <p><strong>Key goal across both:</strong> decreased delay in multi-object HTTP requests.</p>
-
-        <h3>HTTP/1.1's approach and its limits</h3>
-        <p>HTTP/1.1 introduced multiple, pipelined GETs over a single TCP connection. The server responds <strong>in-order</strong> (FCFS: first-come-first-served scheduling) to GET requests. Two consequences follow:</p>
-        <ul>
-          <li>with FCFS, a <em>small</em> object may have to wait for transmission behind a <em>large</em> object — this is <strong>head-of-line (HOL) blocking</strong></li>
-          <li>loss recovery (retransmitting lost TCP segments) stalls the transmission of every object queued behind the lost segment</li>
-        </ul>
-
-        <h3>HTTP/2 [RFC 7540, 2015]</h3>
-        <p>HTTP/2 increases flexibility at the <strong>server</strong> in how it sends objects to the client:</p>
-        <ul>
-          <li>methods, status codes, and most header fields are unchanged from HTTP/1.1</li>
-          <li>transmission order of requested objects is based on <strong>client-specified object priority</strong> (not necessarily FCFS)</li>
-          <li>the server can <strong>push</strong> unrequested objects to the client</li>
-          <li>objects are divided into <strong>frames</strong>, and frames are scheduled to mitigate HOL blocking</li>
-        </ul>
-
-        <h3>From HTTP/2 to HTTP/3</h3>
-        <p>HTTP/2 still runs over a <strong>single TCP connection</strong>, which means:</p>
-        <ul>
-          <li>recovery from packet loss <strong>still stalls all object transmissions</strong> on that connection</li>
-          <li>as in HTTP/1.1, browsers have an incentive to open multiple parallel TCP connections to reduce stalling and increase overall throughput</li>
-          <li>there is <strong>no security</strong> built into the TCP connection itself</li>
-        </ul>
-        <div class="box"><span class="label">HTTP/3</span><p style="margin-bottom:0">HTTP/3 adds security and <strong>per-object</strong> error- and congestion-control (finer-grained pipelining) by running over <strong>UDP</strong> instead of TCP, via the QUIC transport protocol.</p></div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="https-tls">
-        <h2>HTTPS &amp; Transport Layer Security (TLS)</h2>
-        <p><strong>HTTPS is HTTP with encryption</strong> — all communication between browser and server is encrypted (bi-directionally). The "S" stands for "Secure," i.e. HTTP over a Secure Socket Layer. HTTPS uses TLS (formerly SSL) to encrypt ordinary HTTP requests and responses. Attackers monitoring the wire can't read the data crossing it, and the client can verify it is really talking to the server it thinks it's talking to.</p>
-        <p>Concretely: HTTP + TLS = HTTPS. HTTPS uses <strong>port 443</strong> for data communication (versus port 80 for plain HTTP).</p>
-        <figure class="diagram">
-          <div class="stack">
-            <div class="layer">HTTP</div>
-            <div class="layer accent">TLS</div>
-            <div class="layer">TCP</div>
-            <div class="layer">IP</div>
-          </div>
-          <figcaption>HTTP + TLS together form HTTPS, sitting above TCP</figcaption>
-        </figure>
-
-        <h3>Public/private-key cryptography</h3>
-        <p>HTTPS is based on public/private-key cryptography: the <strong>public key</strong> is used for encryption, while the secret <strong>private key</strong> is required for decryption. Any message encrypted with Bob's public key can be decrypted <em>only</em> with Bob's private key.</p>
-        <div class="two-col">
-          <div>
-            <h4>Asymmetric encryption</h4>
-            <p>Uses two <em>different</em> keys — a public key for encryption and a secret private key for decryption.</p>
-          </div>
-          <div>
-            <h4>Symmetric encryption</h4>
-            <p>Uses the <em>same</em> secret key for both encryption and decryption — much faster, and used for the bulk of TLS-protected traffic once a shared key has been agreed.</p>
-          </div>
-        </div>
-        <p>An <strong>SSL/TLS certificate</strong> is a web server's digital certificate, issued by a third-party Certificate Authority (CA). It creates an encrypted connection and establishes trust. A certificate (technically an <strong>X.509 certificate</strong>) contains: the domain name (e.g. <code>bank.com</code>), the server's public key, issuer information (CA details), an expiration date, and a CA digital signature (an encrypted hash created by a trusted CA's private key).</p>
-
-        <h3>Transport Layer Security (TLS) protocol</h3>
-        <p>TLS is a widely deployed security protocol above the transport layer, supported by almost all browsers and web servers via <code>https</code> (port 443). It provides three guarantees:</p>
-        <ul>
-          <li><strong>confidentiality</strong> — via symmetric encryption (encrypts data so eavesdroppers can't read it)</li>
-          <li><strong>integrity</strong> — via cryptographic hashing (ensures data isn't altered or corrupted in transit)</li>
-          <li><strong>authentication</strong> — via public-key cryptography (verifies the client is actually talking to the genuine server, not an impostor)</li>
-        </ul>
-
-        <h3>History: from SSL to TLS 1.3</h3>
-        <ul>
-          <li><strong>SSL (Secure Sockets Layer):</strong> created by Netscape in the mid-1990s</li>
-          <li><strong>SSL 1.0:</strong> never released publicly, due to major flaws</li>
-          <li><strong>SSL 2.0 &amp; 3.0:</strong> released in 1995 and 1996, but later broken by critical vulnerabilities</li>
-          <li><strong>TLS (Transport Layer Security):</strong> created by the IETF starting in 1999 as SSL's official standard successor</li>
-          <li><strong>TLS 1.0 &amp; 1.1:</strong> released in 1999 and 2006 — now deprecated</li>
-          <li><strong>TLS 1.2 &amp; 1.3:</strong> the only secure, actively used standards on the web today</li>
-        </ul>
-        <div class="box"><span class="label">"SSL certificate" is a naming fossil</span>
-          <p style="margin-bottom:0">A digital certificate (technically an X.509 certificate) does not care about protocol versions — it works identically whether the server ultimately speaks TLS 1.2, TLS 1.3, or legacy SSL. The term "SSL Certificate" persists purely because of roughly 30 years of marketing and consumer familiarity; modern security tools and browsers actually run on <strong>TLS</strong>, not SSL.</p>
-        </div>
-
-        <h3>What actually changed under the hood (SSL → modern TLS)</h3>
-        <h4>Handshake &amp; performance</h4>
-        <p><strong>SSL handshake:</strong> required multiple back-and-forth round trips (2-RTT). Connection setup was slow, creating noticeable lag for users. <strong>TLS handshake:</strong> streamlined the negotiation — TLS 1.3 cuts handshake latency in half by allowing key-exchange parameters to be sent in the very first message (<strong>1-RTT</strong>).</p>
-        <h4>Security &amp; cryptography</h4>
-        <p><strong>Weak cryptography excised:</strong> SSL allowed insecure encryption algorithms like RC4 stream ciphers, RSA key transport, and MD5 hashing, all of which attackers could break relatively easily. TLS removed these in favor of authenticated encryption (AEAD) such as AES-GCM and ChaCha20.</p>
-        <p><strong>Mandatory forward secrecy:</strong> under SSL, if an attacker recorded encrypted web traffic and later stole the server's private key — even years afterward — they could retroactively decrypt all that past traffic. Modern TLS forces the use of temporary session keys (Ephemeral Diffie-Hellman), so a stolen server key can't decrypt previously recorded sessions.</p>
-
-        <h3>How TLS authentication works</h3>
-        <ol>
-          <li><strong>Certificate presentation:</strong> the server sends its digital certificate, containing its public key and the CA's signature</li>
-          <li><strong>CA trust verification:</strong> the browser checks the digital signature against its built-in database of trusted Root Certificate Authorities (e.g. DigiCert, Let's Encrypt)</li>
-          <li><strong>Proof of ownership (CertificateVerify):</strong> to prove the server isn't an attacker replaying a stolen public certificate, the server signs a unique handshake message using its secret private key</li>
-          <li><strong>Public-key verification:</strong> the browser decrypts that signature using the public key from the certificate — if it decrypts successfully, the server is proven to hold the matching private key, confirming its identity</li>
-        </ol>
-
-        <h3>TLS 1.3 handshake: 1-RTT</h3>
-        <ol>
-          <li><strong>Client hello:</strong> the client guesses a key-agreement protocol and its parameters, and indicates which cipher suites it supports</li>
-          <li><strong>Server hello:</strong> the server chooses the key-agreement protocol/parameters, the cipher suite, and sends its server-signed certificate</li>
-          <li><strong>Client:</strong> checks the server certificate, generates the shared key, and can now make an application request (e.g. an HTTPS GET)</li>
-        </ol>
-        <div class="box"><span class="label">"Cipher suite"</span><p style="margin-bottom:0">A set of distinct cryptographic algorithms bundled together to secure a network connection — used for key generation, encryption, MAC (Message Authentication Code), and digital signatures.</p></div>
-        <p>In older versions (TLS 1.2 and SSL), the server sent its certificate out in <strong>plain text</strong> — anyone monitoring your Wi-Fi network could see exactly which website's certificate was being sent down to your computer. In <strong>TLS 1.3</strong>, the browser and server establish a temporary secret key <em>before</em> the certificate is sent, so the certificate itself is encrypted — an eavesdropper on public Wi-Fi can no longer read it as it travels across the wire.</p>
-
-        <h3>TLS 1.3 handshake: 0-RTT (session resumption)</h3>
-        <p>For returning visitors, TLS 1.3 introduces a <strong>0-RTT (Zero Round-Trip Time)</strong> mode: the initial hello message itself contains encrypted application data, "resuming" an earlier connection between client and server. That application data is encrypted using a <strong>"resumption master secret"</strong> saved from the earlier connection — uses a Pre-Shared Key (PSK), letting the browser send encrypted HTTP requests (like <code>GET /home</code>) in the very first packet, eliminating handshake latency entirely.</p>
-        <div class="box"><span class="label">Caution — replay attacks</span><p style="margin-bottom:0">0-RTT data is vulnerable to <strong>replay attacks</strong>, since an attacker who captures the first packet can resend it. It may be acceptable for idempotent requests like an HTTP GET, but is risky for client requests that modify server state (e.g. a payment).</p></div>
-
-        <h3>An HTTP view of TLS across HTTP/1–3</h3>
-        <table>
-          <tr><th>Stack</th><th>Application</th><th>Transport</th><th>Network</th></tr>
-          <tr><td>HTTP/2 over TCP</td><td>HTTP 1.0</td><td>TCP</td><td>IP</td></tr>
-          <tr><td>HTTP/2 over TCP (+TLS)</td><td>HTTP/2 + TLS</td><td>TCP</td><td>IP</td></tr>
-          <tr><td>HTTP/2 over QUIC (HTTP/3)</td><td>HTTP/2 (slimmed) + QUIC (incorporates TLS)</td><td>UDP</td><td>IP</td></tr>
-        </table>
-        <p style="margin-bottom:0"><em>Note: cryptographic algorithms themselves (AES, RSA, Diffie-Hellman, hashing) are covered in depth in courses such as Applied Cryptography.</em></p>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="delay-basics">
-        <h2>Delay &amp; Throughput: Solved Problems</h2>
-        <p>These worked problems apply the core delay and throughput formulas from the network-layer/transport toolbox to concrete numeric scenarios. Recall the four components of <strong>nodal delay</strong>:</p>
-        <div class="formula"><span class="label">Nodal delay</span><div class="expr">d<sub>nodal</sub> = d<sub>proc</sub> + d<sub>queue</sub> + d<sub>trans</sub> + d<sub>prop</sub></div>
-          <p class="note" style="margin-bottom:0">processing delay + queuing delay + transmission delay + propagation delay</p>
-        </div>
-        <div class="two-col">
-          <div>
-            <h4>Transmission delay</h4>
-            <div class="formula"><div class="expr">d<sub>trans</sub> = L / R</div><p class="note" style="margin-bottom:0">L = packet size (bits), R = transmission rate (bps) — the time to push all bits of the packet onto the link</p></div>
-          </div>
-          <div>
-            <h4>Propagation delay</h4>
-            <div class="formula"><div class="expr">d<sub>prop</sub> = m / s</div><p class="note" style="margin-bottom:0">m = distance (meters), s = propagation speed (m/s) — the time for a bit to physically travel down the link</p></div>
-          </div>
-        </div>
-        <p>Ignoring processing and queuing delays, the end-to-end (one-hop) delay is simply:</p>
-        <div class="formula"><span class="label">End-to-end delay</span><div class="expr">d<sub>end-to-end</sub> = L/R + m/s</div></div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="delay-q1-q5">
-        <h2>Delay Problems — Q1 to Q5</h2>
-
-        <div class="solved">
-          <h4><span class="qtag">Q1</span>Transmission delay of a packet</h4>
-          <p>Suppose the packet length is 4000 bits, and the link transmission rate along the link from the first router to the second is 10 MBps. What is the transmission delay?</p>
-          <p>L = 4000 bits; transmission rate R = 10 MBps = 10 × 8 × 10<sup>6</sup> bps = 80 Mbps.</p>
-          <div class="formula"><div class="expr">d<sub>trans</sub> = L/R = 4000 / (10 × 8 × 10<sup>6</sup>) = 0.00005 s = <strong>50 microseconds</strong></div></div>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q2</span>Network transfer vs courier delivery</h4>
-          <p>There are two ways to send 10 TB of data from Bengaluru to Chennai: a dedicated link transmitting at 100 Mbps, or a special courier option with delivery in one day. Which would you prefer?</p>
-          <p>Convert total data to bits: 10 TB = 10 × 10<sup>12</sup> × 8 bits = 8×10<sup>13</sup> bits.</p>
-          <div class="formula"><div class="expr">Transmission time = 10×10<sup>12</sup>×8 / (100×10<sup>6</sup>) = 800,000 s / 86,400 ≈ <strong>9.3 days</strong></div></div>
-          <p style="margin-bottom:0">With the special courier option, the data would arrive in a single day. Hence the <strong>courier option</strong> would be preferred for speedy delivery — this is the classic "never underestimate the bandwidth of a truck full of hard drives" scenario.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q3</span>Distance from propagation speed and delay</h4>
-          <p>An optical fiber cable transfers packets at 70% of the speed of light, arriving in 10 microseconds. What distance did the packet traverse?</p>
-          <p>Speed of propagation = 70% of 3×10<sup>8</sup> m/s = 0.7 × 3×10<sup>8</sup> = 2.1×10<sup>8</sup> m/s.</p>
-          <div class="formula"><div class="expr">Distance = speed × time = 2.1×10<sup>8</sup> × 10×10<sup>-6</sup> = <strong>2100 m = 2.1 km</strong></div></div>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q4</span>Solving for transmission delay given a delay ratio</h4>
-          <p>The time taken by a packet to travel across a link is 1000 times the time taken for the packet to be inserted into the link. Assuming no queuing/processing delay, what is the transmission delay if the link connects an end-to-end distance of 2 km, with a total delay of 3 microseconds?</p>
-          <p>Given: distance = 2 km, total delay = 3 µs; propagation delay = 1000 × transmission delay. End-to-end delay = transmission delay + propagation delay:</p>
-          <div class="formula"><div class="expr">3 µs = T<sub>D</sub> + 1000 T<sub>D</sub> = 1001 T<sub>D</sub></div></div>
-          <p style="margin-bottom:0">Solving: <strong>transmission delay ≈ 2.997 ns ≈ 3 ns</strong>.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q5</span>Solving for processing delay given the other three components</h4>
-          <p>Data traveling in Alice's network of 2 computers takes a one-hop transmission delay of 0.003 ms to go from one computer to the other. If the queuing delay is 1 microsecond and the distance between the two systems is 3 km, find the time taken by Alice's router for bit-level error checking and processing, given a total nodal delay of 0.04 ms.</p>
-          <div class="formula"><span class="label">Setup</span><div class="expr">d<sub>nodal</sub> = d<sub>proc</sub> + d<sub>queue</sub> + d<sub>trans</sub> + d<sub>prop</sub></div>
-            <div class="expr">0.04×10<sup>-3</sup> = d<sub>proc</sub> + 0.001×10<sup>-3</sup> + 0.003×10<sup>-3</sup> + 3000/(3×10<sup>8</sup>)</div>
-          </div>
-          <p style="margin-bottom:0">Solving: <strong>d<sub>proc</sub> = (0.04 − 0.01 − 0.001 − 0.003) × 10<sup>-3</sup> = 0.026 ms</strong>.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="throughput-q6-q8">
-        <h2>Throughput Problems — Q6 to Q8</h2>
-
-        <div class="solved">
-          <h4><span class="qtag">Q6</span>Actual throughput given network efficiency</h4>
-          <p>Hosts Alice and Bob are connected via a router. The bandwidth of each link between Alice and the router is 15 Mbps. If the efficiency of data transfer in the entire network is 80%, what is the actual throughput of the network?</p>
-          <p>Ideal throughput = min{15, 15} = 15 Mbps. Efficiency = (amount of data transferred per second) / (amount of data that could be transferred per second) = 80/100 × 15.</p>
-          <div class="formula"><div class="expr">Throughput = <strong>12 Mbps</strong></div></div>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q7</span>Maximum throughput under circuit switching</h4>
-          <p>Consider a 10 Mbps link being shared by 7 users. What is the maximum throughput per user if the network uses circuit switching?</p>
-          <p>In circuit switching, the link bandwidth is divided <strong>equally</strong> among all users:</p>
-          <div class="formula"><div class="expr">Throughput per user = 10/7 Mbps ≈ <strong>1.43 Mbps</strong></div></div>
-          <p style="margin-bottom:0">Note the throughput per user is nearly equal to a fixed, guaranteed slice — regardless of whether other users are actively sending data — which is the defining trade-off of circuit switching versus packet switching's statistical multiplexing.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q8</span>Time to push a packet onto the network</h4>
-          <p>Alice and Bob are connected via a router. The bandwidth of each link between the router and Bob is 20 Mbps. If the network allows the actual transmission of data at 20 Mbps, what is the time taken for a packet of size 1000 bits to enter the network?</p>
-          <div class="formula"><span class="label">Transmission delay</span><div class="expr">L/R = 1000 / (20×10<sup>6</sup>) = 5×10<sup>-5</sup> s = <strong>50 microseconds</strong></div></div>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q9</span>Full derivation — propagation vs transmission delay (multi-part)</h4>
-          <p>Two hosts A and B are connected by a single link of rate R bps, separated by m meters, with propagation speed s meters/sec. Host A sends a packet of size L bits to Host B.</p>
-          <p><strong>(a)</strong> Propagation delay: <span class="expr" style="display:inline">d<sub>prop</sub> = m/s</span>.</p>
-          <p><strong>(b)</strong> Transmission delay (time to push all L bits onto the link): <span class="expr" style="display:inline">d<sub>trans</sub> = L/R</span>.</p>
-          <p><strong>(c)</strong> Ignoring processing and queuing delays, the end-to-end delay:</p>
-          <div class="formula"><div class="expr">d<sub>end-to-end</sub> = L/R + m/s</div></div>
-          <p><strong>(d)</strong> If Host A begins transmitting at t = 0, at time t = d<sub>trans</sub> the sender has just finished transmitting the last bit — so the last bit is <strong>just leaving Host A</strong> (at the beginning of the link).</p>
-          <p><strong>(e)</strong> If d<sub>prop</sub> &gt; d<sub>trans</sub>: at t = d<sub>trans</sub>, the first bit is still <strong>in the link</strong> and has not yet reached Host B.</p>
-          <p><strong>(f)</strong> If d<sub>prop</sub> &lt; d<sub>trans</sub>: the first bit reached Host B <em>earlier</em> — at t = d<sub>trans</sub>, the first bit has <strong>already arrived</strong> at Host B.</p>
-          <p><strong>(g)</strong> Given s = 2.5×10<sup>8</sup> m/s, L = 1500 bytes, R = 10 Mbps, find the distance m so that d<sub>prop</sub> equals d<sub>trans</sub>.</p>
-          <p>L = 1500 bytes = 1500×8 = 12,000 bits; R = 10 Mbps = 10×10<sup>6</sup> bps.</p>
-          <div class="formula"><div class="expr">d<sub>trans</sub> = 12000 / (10×10<sup>6</sup>) = 1.2×10<sup>-3</sup> s = 0.0012 s</div>
-            <div class="expr">Set m/s = 0.0012 ⟹ m = s × 0.0012 = 2.5×10<sup>8</sup> × 0.0012</div>
-          </div>
-          <p style="margin-bottom:0"><strong>m = 3×10<sup>5</sup> meters = 300,000 meters = 300 km</strong>.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="delay-q9-q10">
-        <h2>Bandwidth-Delay Product — Q10</h2>
-        <div class="formula"><span class="label">Bandwidth-delay product</span><div class="expr">R × d<sub>prop</sub></div>
-          <p class="note" style="margin-bottom:0">Interpretation: the maximum number of bits that can be "in transit" (in the link) at any given time — the pipe's raw capacity, independent of how much data you actually have to send.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q10 (part 1)</span>Bandwidth-delay product with R = 5 Mbps</h4>
-          <p>Hosts A and B are 20,000 km apart, connected by a direct link of R = 5 Mbps, with propagation speed 2.5×10<sup>8</sup> m/s.</p>
-          <p><strong>Bandwidth-delay product:</strong> distance = 20,000 km = 2×10<sup>7</sup> m.</p>
-          <div class="formula"><div class="expr">d<sub>prop</sub> = m/s = 2×10<sup>7</sup> / 2.5×10<sup>8</sup> = 0.08 s</div>
-            <div class="expr">R × d<sub>prop</sub> = (5×10<sup>6</sup>)(0.08) = <strong>400,000 bits</strong></div>
-          </div>
-          <p><strong>Sending an 800,000-bit file continuously:</strong> since the file size (800,000 bits) is larger than the bandwidth-delay product (400,000 bits), the maximum number of bits "in flight" is capped at <strong>400,000 bits</strong> (the pipe's own capacity) — the rest of the file simply hasn't been sent yet at any given instant.</p>
-          <p><strong>Width of one bit in the link:</strong> time per bit = 1/R = 1/(5×10<sup>6</sup>) = 2×10<sup>-7</sup> s.</p>
-          <div class="formula"><div class="expr">Bit width = s × (1/R) = 2.5×10<sup>8</sup> × 2×10<sup>-7</sup> = <strong>50 meters</strong></div></div>
-          <p style="margin-bottom:0">A football field is about 100 meters, so a single bit here occupies about <strong>half a football field</strong> of physical fiber.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q10 (part 2)</span>Same scenario with R = 1 Gbps</h4>
-          <p><strong>(a) Bandwidth-delay product:</strong> d<sub>prop</sub> = m/s = 2×10<sup>7</sup> / 2.5×10<sup>8</sup> = 0.08 s (unchanged, since distance and propagation speed didn't change).</p>
-          <div class="formula"><div class="expr">R × d<sub>prop</sub> = (10<sup>9</sup>)(0.08) = 8×10<sup>7</sup> bits = <strong>80,000,000 bits (80 Mb)</strong></div></div>
-          <p><strong>(b) Sending an 800,000-bit file:</strong> since the bandwidth-delay product (80,000,000 bits) is now much <em>larger</em> than the file size (800,000 bits), the maximum bits in the link at any given time is capped by the <strong>file size itself</strong>: <strong>800,000 bits</strong> — the whole file fits in the pipe simultaneously with room to spare.</p>
-          <p><strong>(c) Width of one bit:</strong> width = s/R = 2.5×10<sup>8</sup> / 10<sup>9</sup> = <strong>0.25 meters (25 cm)</strong> — a much shorter bit than at 5 Mbps, since the faster link pushes bits out more quickly, compressing each one's physical footprint on the wire.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="delay-q11-q14">
-        <h2>Applied Scenarios — Q11 to Q14</h2>
-
-        <div class="solved">
-          <h4><span class="qtag">Q11</span>Can an ISP deliver on its latency promise?</h4>
-          <p>An ISP offers a 10 Mbps connection and promises less than 5 ms of end-to-end delay for online gaming, provided the other players are also customers no more than 10,000 km away. Assume an idle network, propagation speed 2.5×10<sup>8</sup> m/s, no processing/queuing delay, and 100 KB of data generated per second. Can the ISP deliver?</p>
-          <p>R = 10 Mbps = 10×10<sup>6</sup> bps; distance m = 10,000 km = 10<sup>7</sup> m; s = 2.5×10<sup>8</sup> m/s; data rate = 100 KB/s = 100,000 × 8 = 800,000 bits/sec.</p>
-          <div class="formula"><span class="label">Propagation delay</span><div class="expr">d<sub>prop</sub> = m/s = 10<sup>7</sup> / 2.5×10<sup>8</sup> = 0.04 s = 40 ms</div></div>
-          <div class="formula"><span class="label">Transmission delay (per second of data)</span><div class="expr">d<sub>trans</sub> = 800,000 / (10×10<sup>6</sup>) = 0.08 s = 80 ms</div></div>
-          <div class="formula"><span class="label">Total nodal delay</span><div class="expr">d<sub>total</sub> = d<sub>prop</sub> + d<sub>trans</sub> = 40 + 80 = <strong>120 ms</strong></div></div>
-          <p style="margin-bottom:0">Promised delay: &lt; 5 ms. Actual delay: ≈ 120 ms. <strong>The ISP cannot deliver on their promise</strong> — the sheer volume of data being generated (800 Kbps worth of gaming traffic pushed through a 10 Mbps pipe) dominates the delay budget, dwarfing the already-modest 40 ms propagation delay across 10,000 km.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q12</span>Finding the transmission speed that synchronizes two packets</h4>
-          <p>Two hosts are 5,000 km apart. Two 4 MB packets must be sent from one host to the other. Queuing delay at the host is 10 ms and the propagation speed is 2.5×10<sup>8</sup> m/s. Find the transmission speed at the source such that it finishes transmitting the second packet exactly when the first packet arrives at the destination.</p>
-          <p>Distance m = 5×10<sup>6</sup> m; packet size = 4 MB = 4×10<sup>6</sup> bytes = 32×10<sup>6</sup> bits (using 4×10<sup>6</sup>×8).</p>
-          <div class="formula"><span class="label">Propagation delay</span><div class="expr">d<sub>prop</sub> = 5×10<sup>6</sup> / 2.5×10<sup>8</sup> = 0.02 s = 20 ms</div></div>
-          <p><strong>When does the first packet arrive?</strong> It must (1) wait 10 ms in queue, (2) be transmitted for d<sub>trans</sub>, and (3) propagate for 20 ms:</p>
-          <div class="formula"><div class="expr">t<sub>arrive,1</sub> = 10 + d<sub>trans</sub> + 20 = 30 + d<sub>trans</sub> (ms)</div></div>
-          <p><strong>When does the second packet finish transmitting?</strong> It waits 10 ms in queue, then the first packet is transmitted (d<sub>trans</sub>), then the second is transmitted (another d<sub>trans</sub>):</p>
-          <div class="formula"><div class="expr">t<sub>finish,2</sub> = 10 + 2d<sub>trans</sub> (ms)</div></div>
-          <p>Setting these equal (finish transmitting packet 2 = arrival of packet 1):</p>
-          <div class="formula"><div class="expr">10 + 2d<sub>trans</sub> = 30 + d<sub>trans</sub> ⟹ d<sub>trans</sub> = <strong>20 ms</strong></div></div>
-          <p style="margin-bottom:0"><strong>Transmission rate:</strong> d<sub>trans</sub> = L/R ⟹ 0.02 = 32×10<sup>6</sup>/R ⟹ R = 32×10<sup>6</sup>/0.02 = 1.6×10<sup>9</sup> bps = <strong>1.6 Gbps</strong>.</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q13</span>Network transfer vs. driving — which dominates the delay?</h4>
-          <p>100 TB of data is to be transferred between Bengaluru (Host A) and Chennai (Host B), 350 km apart. Transmission speed at Host A = 1 Gbps; propagation speed of the dedicated link = 2×10<sup>8</sup> m/s. Compare transferring over the link versus driving to Chennai and back (one-way drive = 7 hours). Which delay component dominates?</p>
-          <p>Data size = 100 TB = 100×2<sup>?</sup>... using decimal TB: 100×10<sup>12</sup>×8 = 8×10<sup>14</sup> bits.</p>
-          <div class="formula"><span class="label">Transmission time</span><div class="expr">d<sub>trans</sub> = 8×10<sup>14</sup> / 10<sup>9</sup> = 8×10<sup>5</sup> s = 800,000 s ≈ 222 hours ≈ <strong>9.25 days</strong></div></div>
-          <div class="formula"><span class="label">Propagation delay</span><div class="expr">d<sub>prop</sub> = 350×10<sup>3</sup> / 2×10<sup>8</sup> = 0.00175 s = 1.75 ms</div>
-            <p class="note" style="margin-bottom:0">— negligible compared to days</p>
-          </div>
-          <p>Round-trip driving time = 7 + 7 = 14 hours, vastly faster than 9.25 days of network transfer.</p>
-          <div class="box"><span class="label">Verdict</span><p style="margin-bottom:0"><strong>Driving is much faster.</strong> The dominant component is the <strong>transmission delay</strong> — while propagation delay is a mere 1.75 ms, the time required to push 100 TB through a 1 Gbps "pipe" is so massive that it accounts for roughly 99.99% of the total time. This is the classic "sneakernet"/truck-full-of-hard-drives result: for very large bulk transfers, physical transport of storage media can beat even fast dedicated links.</p></div>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">Q14</span>Lossy high-bandwidth vs lossless lower-bandwidth channel</h4>
-          <p>There are two paths to transmit 100 packets, each 16 MB, from host A to host B: a <strong>lossy</strong> channel with 50% loss probability at 20 Gbps, and a <strong>lossless</strong> channel at 10 Gbps. Both channels have a propagation speed of 2×10<sup>8</sup> m/s and a queuing delay of 10 ms per packet at the host. Assume all lost packets are retransmitted with no additional overhead. Which path is better?</p>
-          <p>Packet size = 16 MB = 16×8×10<sup>6</sup> = 128 Mbits.</p>
-
-          <h4>Path 1 — lossless (10 Gbps)</h4>
-          <div class="formula"><span class="label">Transmission delay per packet</span><div class="expr">d<sub>trans</sub> = 128×10<sup>6</sup> / (10×10<sup>9</sup>) = 0.0128 s = 12.8 ms</div></div>
-          <p>Total delay per packet = 10 + 12.8 = 22.8 ms. For 100 packets:</p>
-          <div class="formula"><div class="expr">100 × 22.8 ms = 2280 ms = <strong>2.28 seconds</strong></div></div>
-
-          <h4>Path 2 — lossy (20 Gbps, 50% loss)</h4>
-          <p>Expected transmissions per packet under 50% loss (geometric retry): 1/(1 − 0.5) = 2. So the total number of transmissions needed: 100 × 2 = <strong>200</strong>.</p>
-          <div class="formula"><span class="label">Transmission delay per packet</span><div class="expr">128×10<sup>6</sup> / (20×10<sup>9</sup>) = 0.0064 s = 6.4 ms</div></div>
-          <p>Total per transmission attempt = 10 + 6.4 = 16.4 ms. For 200 transmission attempts:</p>
-          <div class="formula"><div class="expr">200 × 16.4 ms = 3280 ms = <strong>3.28 seconds</strong></div></div>
-          <p style="margin-bottom:0"><strong>Conclusion:</strong> even though the lossy link has double the bandwidth, the 50% retransmission rate doubles the number of transmissions needed and, combined with the per-attempt queuing delay, increases total delay significantly. <strong>The lossless channel is better</strong> for this workload — 2.28 s versus 3.28 s.</p>
-        </div>
-      </section>
-
-      <footer class="site-footer"><span>Compiled from Team Networks lecture slides · PES University</span><a href="index.html">Home</a></footer>
-    </div>
-  </main>
-</div>
-
-<div class="backtotop" id="backTop" title="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    <button id="themeToggle" aria-label="Toggle theme">
+      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="card">
+    <h1 class="title">Coming Soon</h1>
+    <p class="signature">-TYN</p>
+  </div>
+
+  <footer class="site-footer"><span>TYN Notes · Data Structures &amp; Algorithms</span><a href="index.html">Home</a></footer>
 </div>
 
 <script>
+// Theme Toggle with localStorage persistence
 const root = document.documentElement;
 const themeBtn = document.getElementById('themeToggle');
 const iconSun = document.getElementById('iconSun');
-function setTheme(dark){
+
+const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+
+function applyTheme(dark) {
   root.classList.toggle('dark', dark);
-  iconSun.innerHTML = dark
-    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
-    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  iconSun.innerHTML = dark ? moonIcon : sunIcon;
 }
-let isDark = document.documentElement.classList.contains('dark');
-setTheme(isDark);
+
+// Determine initial theme: saved preference or system preference
+const savedTheme = localStorage.getItem('theme');
+let isDark = savedTheme
+  ? savedTheme === 'dark'
+  : window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+applyTheme(isDark);
+
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
-  setTheme(isDark);
+  applyTheme(isDark);
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
-
-const sidebar = document.getElementById('sidebar');
-document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
-document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
-
-document.querySelectorAll('.toc-group-title').forEach(t => {
-  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
-});
-
-const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
-const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const id = '#' + entry.target.id;
-    const link = navLinks.find(a => a.getAttribute('href') === id);
-    if (!link) return;
-    if (entry.isIntersecting) {
-      navLinks.forEach(a => a.classList.remove('active'));
-      link.classList.add('active');
-    }
-  });
-}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
-sections.forEach(s => s && io.observe(s));
-
-const searchInput = document.getElementById('searchInput');
-const searchCount = document.getElementById('searchCount');
-let marks = [];
-
-function clearMarks(){
-  marks.forEach(m => {
-    const parent = m.parentNode;
-    parent.replaceChild(document.createTextNode(m.textContent), m);
-    parent.normalize();
-  });
-  marks = [];
-}
-
-function highlightInContent(term){
-  clearMarks();
-  if (!term) return 0;
-  const lower = term.toLowerCase();
-  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
-    acceptNode(node){
-      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
-      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }
-  });
-  const targets = [];
-  let n;
-  while (n = walker.nextNode()) targets.push(n);
-  let count = 0;
-  targets.forEach(node => {
-    const text = node.nodeValue;
-    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
-    if (!regex.test(text)) return;
-    const frag = document.createDocumentFragment();
-    let lastIndex = 0;
-    text.replace(regex, (match, p1, offset) => {
-      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
-      const mark = document.createElement('mark');
-      mark.textContent = match;
-      frag.appendChild(mark);
-      marks.push(mark);
-      count++;
-      lastIndex = offset + match.length;
-    });
-    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
-    node.parentNode.replaceChild(frag, node);
-  });
-  return count;
-}
-
-function filterNav(term){
-  const lower = term.toLowerCase();
-  let visible = 0;
-  document.querySelectorAll('.toc-group').forEach(group => {
-    let groupHas = false;
-    group.querySelectorAll('.toc-list li').forEach(li => {
-      const a = li.querySelector('a');
-      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
-      const match = !lower || hay.includes(lower);
-      li.classList.toggle('hidden', !match);
-      if (match){ groupHas = true; visible++; }
-    });
-    group.style.display = groupHas || !lower ? '' : 'none';
-    if (lower && groupHas) group.classList.remove('collapsed');
-  });
-  return visible;
-}
-
-let searchTimer;
-searchInput.addEventListener('input', (e) => {
-  clearTimeout(searchTimer);
-  const term = e.target.value.trim();
-  searchTimer = setTimeout(() => {
-    const navVisible = filterNav(term);
-    const contentMatches = highlightInContent(term);
-    if (!term) { searchCount.textContent = ''; return; }
-    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es') + ' in text';
-  }, 150);
-});
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && marks.length){
-    marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-});
-
-const progress = document.getElementById('progress');
-const backTop = document.getElementById('backTop');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement;
-  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
-  progress.style.width = scrolled + '%';
-  backTop.classList.toggle('show', h.scrollTop > 600);
-}, { passive: true });
-backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 <script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>

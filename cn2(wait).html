@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks — Transport &amp; Application Layer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f3f1;
+    --bg-panel:#eceae5;
+    --bg-hover:#e3e5df;
+    --text:#1C1B18;
+    --text-muted:#6B6A62;
+    --border:#dfe1dc;
+    --accent:#1E6F5C;
+    --accent-soft:#E4F0EB;
+    --formula-bg:#FBF0DF;
+    --formula-border:#B45309;
+    --formula-text:#7C3D0A;
+    --key-bg:#EAF1FB;
+    --key-border:#2F5FA8;
+    --code-bg:#F1EFE6;
+    --shadow:0 1px 2px rgba(0,0,0,0.04);
+    --radius:6px;
+  }
+  html.dark{
+    --bg:#14161B;
+    --bg-panel:#1A1D23;
+    --bg-hover:#20242C;
+    --text:#E8E7E2;
+    --text-muted:#93938C;
+    --border:#2A2E37;
+    --accent:#45B08C;
+    --accent-soft:#173029;
+    --formula-bg:#2A2114;
+    --formula-border:#C9863F;
+    --formula-text:#E7B679;
+    --key-bg:#141E2C;
+    --key-border:#3E6FB0;
+    --code-bg:#1E2129;
+    --shadow:0 1px 2px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    font-size:15.5px;
+    transition:background .2s ease, color .2s ease;
+  }
+  code, .mono{font-family:'IBM Plex Mono', monospace;}
+
+  .app{display:flex; min-height:100vh;}
+
+  .sidebar{
+    width:300px;
+    flex-shrink:0;
+    background:var(--bg-panel);
+    border-right:1px solid var(--border);
+    position:fixed;
+    top:0; left:0; bottom:0;
+    display:flex;
+    flex-direction:column;
+    z-index:10;
+    transition:transform .25s ease;
+    padding:22px 16px 60px;
+  }
+  .sidebar-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px;
+    padding:0 0 14px 0;
+    margin-bottom:18px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand{
+    font-weight:700;
+    font-size:14.5px;
+    letter-spacing:.2px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .brand small{
+    display:block;
+    font-weight:400;
+    color:var(--text-muted);
+    font-size:12px;
+    margin-top:4px;
+    font-family:'IBM Plex Sans', sans-serif;
+  }
+  .search-wrap{
+    margin-top:12px;
+    position:relative;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:8px 10px 8px 30px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--bg);
+    color:var(--text);
+    font-family:inherit;
+    font-size:13px;
+    outline:none;
+  }
+  .search-wrap input:focus{border-color:var(--accent);}
+  .search-wrap svg{
+    position:absolute; left:9px; top:50%; transform:translateY(-50%);
+    width:14px; height:14px; stroke:var(--text-muted);
+  }
+  .search-kbd{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    font-size:10px; color:var(--text-muted);
+    border:1px solid var(--border); border-radius:4px; padding:1px 5px;
+    pointer-events:none;
+  }
+
+  .toc{
+    flex:1;
+    overflow-y:auto;
+    padding:10px 0 20px 0;
+  }
+  .toc-group{margin-bottom:4px;}
+  .toc-group-title{
+    display:flex; align-items:center; gap:6px;
+    padding:8px 8px;
+    font-weight:600;
+    font-size:12.5px;
+    color:var(--text);
+    cursor:pointer;
+    border-radius:var(--radius);
+    user-select:none;
+  }
+  .toc-group-title:hover{background:var(--bg-hover);}
+  .toc-group-title .chev{
+    width:9px; height:9px;
+    border-right:1.5px solid var(--text-muted);
+    border-bottom:1.5px solid var(--text-muted);
+    transform:rotate(45deg);
+    transition:transform .15s ease;
+    flex-shrink:0;
+  }
+  .toc-group.collapsed .chev{transform:rotate(-45deg);}
+  .toc-group-num{
+    color:var(--accent);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+  }
+  .toc-links{
+    padding-left:19px;
+    display:flex; flex-direction:column;
+    max-height:1200px;
+    overflow:hidden;
+    transition:max-height .2s ease;
+  }
+  .toc-group.collapsed .toc-links{max-height:0;}
+  .toc-links a{
+    display:block;
+    padding:5px 8px;
+    font-size:13px;
+    color:var(--text-muted);
+    text-decoration:none;
+    border-radius:var(--radius);
+    border-left:2px solid transparent;
+  }
+  .toc-links a:hover{background:var(--bg-hover); color:var(--text);}
+  .toc-links a.active{
+    color:var(--accent);
+    border-left:2px solid var(--accent);
+    background:var(--accent-soft);
+    font-weight:500;
+  }
+  .toc-links a.hidden, .toc-group.hidden{display:none;}
+
+  .sidebar-foot{
+    border-top:1px solid var(--border);
+    padding-top:10px;
+    display:flex; justify-content:flex-end;
+  }
+  .theme-btn{
+    display:flex; align-items:center; justify-content:center;
+    width:34px; height:34px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--bg);
+    color:var(--text);
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .theme-btn:hover{background:var(--bg-hover);}
+  .theme-btn svg{width:14px; height:14px;}
+
+  .main-wrap{
+    margin-left:300px;
+    flex:1;
+    min-width:0;
+    display:flex;
+    justify-content:center;
+  }
+  main{
+    max-width:820px;
+    width:100%;
+    padding:40px 44px 120px 44px;
+  }
+  .progress{
+    position:fixed; top:0; left:300px; right:0; height:2.5px;
+    z-index:20; background:transparent;
+  }
+  .progress-bar{height:100%; width:0%; background:var(--accent); transition:width .1s linear;}
+
+  h1.doc-title{
+    font-size:29px;
+    margin:0 0 4px 0;
+    font-weight:700;
+    letter-spacing:-.2px;
+  }
+  .doc-sub{color:var(--text-muted); font-size:14.5px; margin-bottom:6px;}
+  .doc-meta{
+    display:flex; gap:14px; flex-wrap:wrap;
+    font-size:12.5px; color:var(--text-muted);
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  .doc-meta span{display:flex; align-items:center; gap:5px;}
+
+  section.topic{margin-top:64px; scroll-margin-top:24px;}
+  section.topic:first-of-type{margin-top:0;}
+  .topic-header{margin-bottom:8px;}
+  .topic-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+  }
+  h2.topic-title{
+    font-size:24px;
+    margin:2px 0 6px 0;
+    font-weight:700;
+  }
+  .topic-intro{color:var(--text-muted); font-size:14.5px; margin-bottom:8px;}
+
+  h3{
+    font-size:18px;
+    margin:36px 0 10px 0;
+    font-weight:600;
+    scroll-margin-top:20px;
+    padding-top:6px;
+    border-top:1px solid var(--border);
+  }
+  section.topic > h3:first-of-type{border-top:none; padding-top:0;}
+  h4{font-size:15px; margin:18px 0 6px 0; font-weight:600;}
+
+  p{margin:0 0 12px 0;}
+  ul, ol{margin:0 0 14px 0; padding-left:22px;}
+  li{margin-bottom:5px;}
+  li::marker{color:var(--accent);}
+
+  strong{font-weight:600;}
+  a{color:var(--accent);}
+
+  .keypoint{
+    background:var(--key-bg);
+    border-left:3px solid var(--key-border);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:12px 14px;
+    margin:14px 0;
+    font-size:14px;
+  }
+  .keypoint .kp-label{
+    font-weight:700; font-size:11px; letter-spacing:.4px;
+    color:var(--key-border);
+    display:block; margin-bottom:3px;
+  }
+
+  .formula{
+    background:var(--formula-bg);
+    border:1px solid var(--formula-border);
+    border-radius:var(--radius);
+    padding:12px 16px;
+    margin:14px 0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14.5px;
+    color:var(--formula-text);
+    overflow-x:auto;
+  }
+  .formula .flabel{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:600; font-size:11px; letter-spacing:.4px;
+    text-transform:uppercase;
+    color:var(--formula-border);
+    display:block; margin-bottom:6px;
+  }
+  .formula-line{margin:2px 0;}
+
+  .example{
+    border:1px dashed var(--border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    margin:14px 0;
+    background:var(--bg-panel);
+    font-size:14px;
+  }
+  .example .ex-label{
+    font-weight:600; font-size:11.5px;
+    color:var(--text-muted);
+    display:block; margin-bottom:6px;
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0;
+    font-size:13.5px;
+  }
+  th, td{
+    border:1px solid var(--border);
+    padding:7px 10px;
+    text-align:left;
+    vertical-align:top;
+  }
+  th{
+    background:var(--bg-panel);
+    font-weight:600;
+    font-size:12.5px;
+  }
+  td code{background:var(--code-bg); padding:1px 5px; border-radius:4px;}
+  tr:hover td{background:var(--bg-hover);}
+
+  code:not(pre code){
+    background:var(--code-bg);
+    padding:1px 6px;
+    border-radius:4px;
+    font-size:13.5px;
+  }
+  pre{
+    background:var(--code-bg);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    overflow-x:auto;
+    font-size:13px;
+  }
+
+  .diagram{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--bg-panel);
+    padding:16px;
+    margin:16px 0;
+    text-align:center;
+  }
+  .diagram svg{max-width:100%; height:auto;}
+  .diagram-cap{
+    font-size:12px;
+    color:var(--text-muted);
+    margin-top:8px;
+  }
+
+  .flow{
+    display:flex; align-items:stretch; gap:0;
+    margin:16px 0;
+    flex-wrap:wrap;
+  }
+  .flow-box{
+    border:1.5px solid var(--accent);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    background:var(--accent-soft);
+    font-size:13px;
+    text-align:center;
+    flex:1;
+    min-width:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .flow-box b{display:block; font-size:13.5px; margin-bottom:2px;}
+  .flow-box span{color:var(--text-muted); font-size:11.5px;}
+  .flow-arrow{
+    display:flex; align-items:center; justify-content:center;
+    padding:0 8px;
+    color:var(--text-muted);
+    font-size:18px;
+  }
+
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    margin:16px 0;
+  }
+  .compare-col{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px;
+    font-size:13.5px;
+  }
+  .compare-col h5{margin:0 0 8px 0; font-size:13.5px; color:var(--accent);}
+  .compare-col ul{margin:0; padding-left:18px;}
+  @media (max-width:680px){.compare{grid-template-columns:1fr;}}
+
+  .badge{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    padding:2px 7px;
+    border-radius:999px;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-weight:600;
+    margin-right:6px;
+  }
+
+  .quiz{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin:14px 0;
+    background:var(--bg-panel);
+  }
+  .quiz .qn{font-weight:600; margin-bottom:6px; font-size:14px;}
+  .quiz ol{margin:0 0 8px 0;}
+  .quiz .ans{
+    font-size:13px;
+    color:var(--accent);
+    font-weight:600;
+    margin-top:6px;
+    padding-top:8px;
+    border-top:1px dashed var(--border);
+  }
+  .quiz .exp{font-size:13px; color:var(--text-muted); font-weight:400; margin-top:2px;}
+
+  .back-to-top{
+    position:fixed; bottom:22px; right:18px;
+    width:38px; height:38px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease;
+    box-shadow:var(--shadow);
+    z-index:15;
+  }
+  .back-to-top.show{opacity:1; pointer-events:auto;}
+  .back-to-top svg{width:16px; height:16px; stroke:#fff;}
+
+  .no-results{
+    padding:14px 10px; font-size:12.5px; color:var(--text-muted);
+  }
+
+  .mobile-toggle{
+    display:none;
+    position:fixed; top:14px; left:14px; z-index:30;
+    width:36px; height:36px;
+    border-radius:var(--radius);
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .mobile-toggle svg{width:16px; height:16px;}
+
+  @media (max-width:900px){
+    .sidebar{transform:translateX(-100%); width:78vw; max-width:300px;}
+    .sidebar.open{transform:translateX(0);}
+    .main-wrap{margin-left:0;}
+    .progress{left:0;}
+    .mobile-toggle{display:flex;}
+    main{padding:70px 20px 100px 20px;}
+    .compare{grid-template-columns:1fr;}
+  }
+
+  .footer-note{
+    margin-top:60px;color:var(--text-muted);font-size:12.5px;text-align:center;
+    border-top:1px solid var(--border);padding-top:20px;
+  }
+
+  @media print{
+    .sidebar, .progress, .back-to-top, .mobile-toggle{display:none;}
+    .main-wrap{margin-left:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+</button>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">CN · Unit 2<small>Transport Layer · Application Layer</small></div>
+      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"></svg>
+      </button>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+      <span class="search-kbd">/</span>
+    </div>
+    <nav class="toc" id="toc">
+      <div class="toc-group" data-group="1">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">01</span>&nbsp; Transport Layer Services</div>
+        <div class="toc-links">
+          <a href="#tl-intro">What is the transport layer?</a>
+          <a href="#tl-vs-net">Transport vs network layer</a>
+          <a href="#tl-actions">Transport layer actions</a>
+          <a href="#tl-protocols">TCP &amp; UDP — the two protocols</a>
+          <a href="#tl-tcpudp">TCP vs UDP — which one, when?</a>
+          <a href="#tl-muxdemux">Multiplexing &amp; demultiplexing</a>
+          <a href="#tl-demux-conless">Connectionless demultiplexing (UDP)</a>
+          <a href="#tl-demux-conoriented">Connection-oriented demultiplexing (TCP)</a>
+          <a href="#tl-ports">Well-known ports — quick reference</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="2">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">02</span>&nbsp; Socket Programming</div>
+        <div class="toc-links">
+          <a href="#sp-intro">Sockets — the basics</a>
+          <a href="#sp-udp">Socket programming with UDP</a>
+          <a href="#sp-tcp">Socket programming with TCP</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="3">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">03</span>&nbsp; UDP In Depth</div>
+        <div class="toc-links">
+          <a href="#udp-why">Why does UDP exist?</a>
+          <a href="#udp-header">UDP segment header</a>
+          <a href="#udp-checksum">UDP checksum — 5 steps</a>
+          <a href="#udp-checksum-catch">What the checksum catches / misses</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="4">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">04</span>&nbsp; Reliable Data Transfer</div>
+        <div class="toc-links">
+          <a href="#rdt-why">Why reliable data transfer?</a>
+          <a href="#rdt-mechanisms">The six core mechanisms</a>
+          <a href="#rdt3">rdt3.0 — the alternating-bit protocol</a>
+          <a href="#rdt-perf">Performance of stop-and-wait</a>
+          <a href="#rdt-pipeline">Pipelining</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="5">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">05</span>&nbsp; Go-Back-N &amp; Selective Repeat</div>
+        <div class="toc-links">
+          <a href="#gbn-rules">Go-Back-N — sender &amp; receiver</a>
+          <a href="#gbn-action">Go-Back-N in action</a>
+          <a href="#sr-rules">Selective Repeat — sender &amp; receiver</a>
+          <a href="#sr-action">Selective Repeat in action</a>
+          <a href="#sr-dilemma">The SR window-size dilemma</a>
+          <a href="#gbn-sr-tcp">GBN vs SR vs real TCP</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="6">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">06</span>&nbsp; TCP In Depth</div>
+        <div class="toc-links">
+          <a href="#tcp-overview">TCP — overview</a>
+          <a href="#tcp-segment">TCP segment structure</a>
+          <a href="#tcp-seqack">Sequence numbers &amp; ACKs</a>
+          <a href="#tcp-rtt">RTT estimation &amp; timeout</a>
+          <a href="#tcp-senderreceiver">TCP sender / receiver actions</a>
+          <a href="#tcp-retrans">Retransmission scenarios</a>
+          <a href="#tcp-fastretrans">TCP fast retransmit</a>
+          <a href="#tcp-flow">TCP flow control</a>
+          <a href="#tcp-conn">Connection management</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="7">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">07</span>&nbsp; DNS — Domain Name System</div>
+        <div class="toc-links">
+          <a href="#dns-why">Why DNS? Services</a>
+          <a href="#dns-hierarchy">A distributed, hierarchical database</a>
+          <a href="#dns-zone">DNS zone vs domain</a>
+          <a href="#dns-servers">Root, TLD &amp; authoritative servers</a>
+          <a href="#dns-local">Local DNS servers</a>
+          <a href="#dns-query">Iterated vs recursive queries</a>
+          <a href="#dns-cache">Caching &amp; updating records (TTL)</a>
+          <a href="#dns-records">DNS resource records</a>
+          <a href="#dns-msg">DNS message format</a>
+          <a href="#dns-security">DNSSEC</a>
+          <a href="#dns-toolkit">DNS demo toolkit &amp; inserting records</a>
+        </div>
+      </div>
+      <div class="toc-group" data-group="8">
+        <div class="toc-group-title" onclick="toggleGroup(this)"><span class="chev"></span><span class="toc-group-num">08</span>&nbsp; P2P &amp; Other Protocols</div>
+        <div class="toc-links">
+          <a href="#p2p">Peer-to-peer architecture</a>
+          <a href="#other-ftp">FTP</a>
+          <a href="#other-smtp">SMTP</a>
+          <a href="#other-dhcp">DHCP</a>
+          <a href="#other-snmp">SNMP</a>
+          <a href="#other-telnet">Telnet &amp; SSH</a>
+          <a href="#unit-summary">Unit summary &amp; practice quiz</a>
+        </div>
+      </div>
+    </nav>
+    <div class="sidebar-foot"></div>
+  </aside>
+
+  <div class="main-wrap">
+    <main>
+
+      <h1 class="doc-title">Computer Networks — Unit 2</h1>
+      <p class="doc-sub">Transport Layer &amp; Application Layer — complete study notes</p>
+      <div class="doc-meta">
+        <span>📡 Transport Layer: services, mux/demux, sockets, UDP, RDT, GBN/SR, TCP</span>
+        <span>🌐 Application Layer: DNS, P2P, FTP/SMTP/DHCP/SNMP/Telnet-SSH</span>
+      </div>
+
+      <!-- ============================================================
+           GROUP 1 : TRANSPORT LAYER SERVICES
+      ============================================================= -->
+      <section class="topic" id="transport">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 01</h2></div>
+          <h2 class="topic-title">Transport Layer Services &amp; Multiplexing</h2>
+          <p class="topic-intro">Extending host-to-host delivery (done by the network layer) into process-to-process delivery — this is the whole job of the transport layer.</p>
+        </div>
+
+        <h3 id="tl-intro">What is the transport layer?</h3>
+        <p>The transport layer provides <strong>logical communication</strong> between application processes running on different hosts. "Logical" is the key word — the two end-hosts might be many router-hops apart, but from the transport layer's point of view they appear to be directly connected.</p>
+        <p>The transport-layer protocol runs only in the <strong>end systems</strong> (not in routers in the network core):</p>
+        <ul>
+          <li><strong>Sender side:</strong> breaks application messages into segments, and passes each segment to the network layer.</li>
+          <li><strong>Receiver side:</strong> reassembles segments back into messages, and passes them up to the application layer.</li>
+        </ul>
+        <p>Two transport protocols are available to Internet applications: <strong>TCP</strong> and <strong>UDP</strong>.</p>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Network layer provides logical communication between <em>hosts</em>. Transport layer provides logical communication between <em>processes</em> — it relies on, and enhances, network-layer services.
+        </div>
+
+        <h3 id="tl-vs-net">Transport vs. network layer — the household analogy</h3>
+        <p>Think of 12 kids in Ann's house sending letters to 12 kids in Bill's house:</p>
+        <ul>
+          <li><strong>Hosts</strong> = houses</li>
+          <li><strong>Processes</strong> = kids</li>
+          <li><strong>Application messages</strong> = letters in envelopes</li>
+        </ul>
+        <p>The postal service (network layer) only needs to get mail from house to house. Once inside the house, a family member — the transport layer — must sort each letter to the right kid.</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Network layer</h5>
+            <ul><li>Logical communication <strong>between hosts</strong></li></ul>
+          </div>
+          <div class="compare-col">
+            <h5>Transport layer</h5>
+            <ul><li>Logical communication <strong>between processes</strong></li><li>Relies on and enhances network-layer services</li></ul>
+          </div>
+        </div>
+
+        <h3 id="tl-actions">Transport layer actions</h3>
+        <p><strong>Sender:</strong> the transport layer is passed an application-layer message; it determines the segment's header field values, creates the segment, and passes it down to the network (IP) layer.</p>
+        <p><strong>Receiver:</strong> the transport layer receives a segment from IP, checks the header field values, extracts the application-layer message, and demultiplexes the message up to the right application via a socket.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 620 210" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+            <text x="10" y="20" font-size="12" font-weight="700" fill="var(--text)">SENDER</text>
+            <rect x="10" y="35" width="130" height="150" rx="6" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="75" y="55" text-anchor="middle" font-size="11" fill="var(--text-muted)">application</text>
+            <text x="75" y="95" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">transport</text>
+            <text x="75" y="135" text-anchor="middle" font-size="11" fill="var(--text-muted)">network (IP)</text>
+            <text x="75" y="175" text-anchor="middle" font-size="11" fill="var(--text-muted)">physical</text>
+            <line x1="75" y1="60" x2="75" y2="180" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+            <line x1="140" y1="100" x2="200" y2="100" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#a1)"/>
+            <text x="170" y="90" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">segment</text>
+            <rect x="200" y="35" width="220" height="150" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="310" y="60" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">Unreliable network</text>
+            <text x="310" y="80" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">1. determine header field values</text>
+            <text x="310" y="100" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">2. create segment</text>
+            <text x="310" y="120" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">3. pass segment to IP</text>
+            <text x="310" y="145" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">... routed across the Internet ...</text>
+            <line x1="420" y1="100" x2="480" y2="100" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#a1)"/>
+            <rect x="480" y="35" width="130" height="150" rx="6" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="10" y="205" font-size="12" font-weight="700" fill="var(--text)">RECEIVER</text>
+            <text x="545" y="55" text-anchor="middle" font-size="11" fill="var(--text-muted)">application</text>
+            <text x="545" y="95" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">transport</text>
+            <text x="545" y="135" text-anchor="middle" font-size="11" fill="var(--text-muted)">network (IP)</text>
+            <text x="545" y="175" text-anchor="middle" font-size="11" fill="var(--text-muted)">physical</text>
+            <line x1="545" y1="60" x2="545" y2="180" stroke="var(--border)" stroke-width="1" stroke-dasharray="2 2"/>
+          </svg>
+          <div class="diagram-cap">Fig. Sender-side transport actions create the segment; receiver-side actions check header values, extract the message and demultiplex it up to the correct socket.</div>
+        </div>
+
+        <h3 id="tl-protocols">Principal Internet transport-layer protocols</h3>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>TCP — Transmission Control Protocol</h5>
+            <ul>
+              <li>Reliable, in-order delivery</li>
+              <li>Congestion control</li>
+              <li>Flow control</li>
+              <li>Connection setup</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h5>UDP — User Datagram Protocol</h5>
+            <ul>
+              <li>Unreliable, unordered delivery</li>
+              <li>"No-frills" extension of best-effort IP</li>
+            </ul>
+          </div>
+        </div>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Services <strong>not</strong> available from either TCP or UDP: delay guarantees, bandwidth guarantees. Neither protocol can promise you a certain speed or a certain latency — that's simply not part of the Internet's best-effort transport model.
+        </div>
+
+        <h3 id="tl-tcpudp">TCP or UDP? — deciding case by case</h3>
+        <table>
+          <tr><th>Scenario</th><th>Pick</th><th>Why</th></tr>
+          <tr><td>Downloading a PDF from a course website</td><td>TCP</td><td>Every byte must arrive, order matters, no rush</td></tr>
+          <tr><td>A live video call on Skype/Zoom</td><td>UDP</td><td>A dropped frame is fine; waiting for a retransmit makes the call worse, not better</td></tr>
+          <tr><td>Sending an email</td><td>TCP</td><td>Reliability matters more than speed</td></tr>
+          <tr><td>An online multiplayer game's position updates</td><td>UDP</td><td>Stale data is useless anyway — better to get the next update fast</td></tr>
+          <tr><td>A DNS query</td><td>UDP (mostly)</td><td>Small, one-shot request/response, speed matters more than guaranteed delivery</td></tr>
+          <tr><td>Streaming Netflix/YouTube</td><td>TCP</td><td>Delivered as HTTP chunks (DASH/HLS) — reliability of each chunk matters more than raw speed, so it rides on TCP despite being "real-time-ish" media</td></tr>
+        </table>
+        <table>
+          <tr><th></th><th>TCP</th><th>UDP</th></tr>
+          <tr><td>Reliability</td><td>Guaranteed delivery, retransmits losses</td><td>No guarantee — lost is lost</td></tr>
+          <tr><td>Ordering</td><td>In-order delivery, always</td><td>No ordering guarantee</td></tr>
+          <tr><td>Setup cost</td><td>Connection setup (handshake) first</td><td>None — just send</td></tr>
+          <tr><td>Extra features</td><td>Congestion &amp; flow control</td><td>None — "no-frills" over IP</td></tr>
+          <tr><td>Use when...</td><td>Every byte matters more than speed</td><td>Speed / freshness matters more than a dropped piece</td></tr>
+          <tr><td>Real examples</td><td>Web pages, email, file downloads, Netflix/YouTube streaming (HTTP-based)</td><td>Live voice/video calls, online gaming, DNS queries</td></tr>
+        </table>
+
+        <h3 id="tl-muxdemux">Multiplexing &amp; demultiplexing</h3>
+        <p>Every host can run many application processes, but there is only <em>one</em> network-layer connection to that host, carrying data for all of them. Multiplexing/demultiplexing is how the transport layer shares that one connection among many sockets.</p>
+        <ul>
+          <li><strong>Multiplexing at the sender:</strong> handle data from multiple sockets, add a transport header (used later for demultiplexing).</li>
+          <li><strong>Demultiplexing at the receiver:</strong> use header information to deliver received segments to the correct socket.</li>
+        </ul>
+        <div class="diagram">
+          <svg viewBox="0 0 600 190" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+            <rect x="10" y="20" width="60" height="34" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="40" y="41" text-anchor="middle" font-size="11" fill="var(--text)">P1</text>
+            <rect x="10" y="70" width="60" height="34" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="40" y="91" text-anchor="middle" font-size="11" fill="var(--text)">P2</text>
+            <rect x="10" y="120" width="60" height="34" rx="4" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="40" y="141" text-anchor="middle" font-size="11" fill="var(--text)">P3</text>
+            <line x1="70" y1="37" x2="200" y2="90" stroke="var(--text-muted)" stroke-width="1.2"/>
+            <line x1="70" y1="87" x2="200" y2="90" stroke="var(--text-muted)" stroke-width="1.2"/>
+            <line x1="70" y1="137" x2="200" y2="90" stroke="var(--text-muted)" stroke-width="1.2"/>
+            <rect x="200" y="65" width="130" height="50" rx="6" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="265" y="86" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">Transport</text>
+            <text x="265" y="102" text-anchor="middle" font-size="10" fill="var(--text-muted)">(multiplex: add header)</text>
+            <line x1="330" y1="90" x2="460" y2="90" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#a2)"/>
+            <text x="395" y="80" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">segments over the network</text>
+            <rect x="460" y="65" width="130" height="50" rx="6" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="525" y="86" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="600">Transport</text>
+            <text x="525" y="102" text-anchor="middle" font-size="10" fill="var(--text-muted)">(demultiplex: read header)</text>
+          </svg>
+          <div class="diagram-cap">Fig. Multiplexing at the sender combines several sockets' data onto one wire; demultiplexing at the receiver splits it back out using header fields.</div>
+        </div>
+
+        <h3 id="tl-demux-conless">How demultiplexing works — the segment header</h3>
+        <p>Every host receives IP datagrams, each with a source and destination IP address, carrying exactly one transport-layer segment. Each segment has source and destination port numbers, which the host uses (together with the IP addresses) to direct the segment to the appropriate socket.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 460 90" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="220" height="30" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+            <line x1="120" y1="10" x2="120" y2="40" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="65" y="29" text-anchor="middle" font-size="11" fill="var(--text)">source port #</text>
+            <text x="175" y="29" text-anchor="middle" font-size="11" fill="var(--text)">dest port #</text>
+            <rect x="10" y="40" width="220" height="26" fill="none" stroke="var(--border)" stroke-width="1.2"/>
+            <text x="120" y="57" text-anchor="middle" font-size="10.5" fill="var(--text-muted)">other header fields</text>
+            <rect x="10" y="66" width="220" height="20" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+            <text x="120" y="80" text-anchor="middle" font-size="10.5" fill="var(--text)">application data (payload)</text>
+          </svg>
+          <div class="diagram-cap">Fig. TCP/UDP segment format — the first 32 bits always hold source and destination port numbers.</div>
+        </div>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Each port number ranges from 0 to 65535. Port numbers from 0–1023 are <strong>well-known ports</strong> (restricted/reserved).
+        </div>
+        <p><strong>Connectionless (UDP) demultiplexing:</strong> when creating a socket, the process must specify a host-local port number. When the receiving host gets a UDP segment, it checks the destination port # in the segment and directs it to the socket bound to that port. IP/UDP datagrams with the same destination port but <em>different</em> source IP addresses and/or source port numbers are all directed to the <strong>same socket</strong> at the receiving host.</p>
+
+        <h3 id="tl-demux-conoriented">Connection-oriented (TCP) demultiplexing</h3>
+        <p>A TCP socket is identified by a <strong>4-tuple</strong>: source IP address, source port number, destination IP address, destination port number. A server host may support many simultaneous TCP sockets, each identified by its own 4-tuple — so web servers keep a different socket for every connecting client (non-persistent HTTP even opens a fresh socket per request).</p>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          UDP demultiplexes using the destination port number <em>only</em>. TCP demultiplexes using the full <strong>4-tuple</strong>. Why the difference? UDP has no notion of an ongoing "connection" to distinguish — every datagram is independent. TCP tracks per-connection state, so it needs the full tuple to know which connection's state a segment belongs to.
+        </div>
+        <div class="example">
+          <span class="ex-label">Worked example</span>
+          Three segments all destined to IP address B, port 80, are demultiplexed to three <em>different</em> sockets because each carries a distinct 4-tuple — e.g. (A, 9157, B, 80) goes to one socket, while (C, 5775, B, 80) and (C, 9157, B, 80) — same client IP C, different source ports — land on two more, entirely separate sockets. This proves TCP looks at the whole 4-tuple, not just the source IP: one client machine can hold multiple independent connections to the same server.
+        </div>
+
+        <h3 id="tl-ports">Well-known port numbers — quick reference</h3>
+        <table>
+          <tr><th>Port</th><th>Service</th><th>Transport</th></tr>
+          <tr><td>20 / 21</td><td>FTP (data / control)</td><td>TCP</td></tr>
+          <tr><td>22</td><td>SSH</td><td>TCP</td></tr>
+          <tr><td>23</td><td>Telnet</td><td>TCP</td></tr>
+          <tr><td>25</td><td>SMTP (email)</td><td>TCP</td></tr>
+          <tr><td>53</td><td>DNS</td><td>TCP/UDP</td></tr>
+          <tr><td>67 / 68</td><td>DHCP (server / client)</td><td>UDP</td></tr>
+          <tr><td>80</td><td>HTTP</td><td>TCP</td></tr>
+          <tr><td>443</td><td>HTTPS</td><td>TCP</td></tr>
+        </table>
+        <table>
+          <tr><th>Layer</th><th>What sorts traffic here</th><th>Analogy</th></tr>
+          <tr><td>Transport</td><td>Port numbers (or the 4-tuple, for TCP)</td><td>Mailbox number inside a building</td></tr>
+          <tr><td>Network (IP)</td><td>Protocol field in the IP header — routes to TCP, UDP, or ICMP</td><td>Sorting mail vs. packages vs. flyers at the front desk</td></tr>
+          <tr><td>Link (Ethernet)</td><td>EtherType field — routes to IPv4, IPv6, ARP, etc.</td><td>The building's street address, handed to the right delivery service</td></tr>
+        </table>
+        <div class="quiz">
+          <div class="qn">Q. How many TCP connections can a server handle?</div>
+          <div class="ans">Answer<div class="exp">A server can handle a large number of TCP connections, usually limited by RAM, file descriptors, and CPU — not by a fixed port limit. Since a connection is identified by the 4-tuple (server IP, server port, client IP, client port), a server is not restricted to only 65535 total TCP connections.</div></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 2 : SOCKET PROGRAMMING
+      ============================================================= -->
+      <section class="topic" id="sockets">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 02</h2></div>
+          <h2 class="topic-title">Socket Programming with UDP &amp; TCP</h2>
+          <p class="topic-intro">Building client/server applications that communicate using sockets.</p>
+        </div>
+
+        <h3 id="sp-intro">Sockets — the basics</h3>
+        <p>A <strong>socket</strong> is the door between an application process and the end-to-end transport protocol. Everything above the socket (the application process) is controlled by the app developer; everything below it (transport, network, link, physical) is controlled by the operating system.</p>
+        <p>There are two socket types for the two transport services:</p>
+        <ul>
+          <li><strong>UDP:</strong> unreliable datagram</li>
+          <li><strong>TCP:</strong> reliable, byte-stream oriented</li>
+        </ul>
+        <div class="example">
+          <span class="ex-label">Running example used throughout</span>
+          1. Client reads a line of characters from its keyboard and sends the data to the server. 2. Server receives the data and converts characters to uppercase. 3. Server sends the modified data back to the client. 4. Client receives the modified data and displays it on screen.
+        </div>
+
+        <h3 id="sp-udp">Socket programming with UDP</h3>
+        <p>UDP has no "connection" between client and server: there's no handshaking before sending data. The sender explicitly attaches the destination IP address and port # to <em>each</em> packet, and the receiver extracts the sender's IP address and port # from the received packet. Data may be lost or arrive out of order. From the application's point of view, UDP provides unreliable transfer of "datagrams" between client and server.</p>
+        <table>
+          <tr><th>Server</th><th>Client</th></tr>
+          <tr><td>Create socket, port = x:<br><code>serverSocket = socket(AF_INET, SOCK_DGRAM)</code></td><td>Create socket:<br><code>clientSocket = socket(AF_INET, SOCK_DGRAM)</code></td></tr>
+          <tr><td>Read datagram from serverSocket</td><td>Create datagram with serverIP address and port = x; send via clientSocket</td></tr>
+          <tr><td>Write reply to serverSocket, specifying client address &amp; port number</td><td>Read datagram from clientSocket, then close clientSocket</td></tr>
+        </table>
+        <pre><code>Python UDPClient
+from socket import *
+serverName = 'hostname'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+message = input('Input lowercase sentence:')
+clientSocket.sendto(message.encode(), (serverName, serverPort))
+modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+print(modifiedMessage.decode())
+clientSocket.close()</code></pre>
+        <pre><code>Python UDPServer
+from socket import *
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_DGRAM)
+serverSocket.bind(('', serverPort))
+print('The server is ready to receive')
+while True:
+    message, clientAddress = serverSocket.recvfrom(2048)
+    modifiedMessage = message.decode().upper()
+    serverSocket.sendto(modifiedMessage.encode(), clientAddress)</code></pre>
+
+        <h3 id="sp-tcp">Socket programming with TCP</h3>
+        <p>The client must contact the server: the server process must already be running, and must have a created socket (a "door") that welcomes the client's contact. When contacted, TCP creates a <strong>new socket</strong> for the server process to talk to that particular client — this is what lets one server handle multiple clients simultaneously; the client's source port # and IP address are used to distinguish clients.</p>
+        <p>The client contacts the server by creating a TCP socket, specifying the server's IP address and port number. When the client creates its socket, the client's TCP establishes a connection to the server's TCP.</p>
+        <p><strong>Application viewpoint:</strong> TCP provides a reliable, in-order byte-stream transfer (a "pipe") between the client and server processes.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 620 260" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--text)"/></marker></defs>
+            <text x="150" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">SERVER</text>
+            <text x="470" y="18" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">CLIENT</text>
+            <text x="20" y="45" font-size="11" fill="var(--text-muted)">serverSocket = socket()</text>
+            <text x="20" y="70" font-size="11" fill="var(--text-muted)">wait for incoming connection...</text>
+            <line x1="150" y1="80" x2="470" y2="115" stroke="var(--text)" stroke-width="1.2" marker-end="url(#a3)"/>
+            <text x="470" y="45" font-size="11" fill="var(--text-muted)">clientSocket = socket()</text>
+            <text x="470" y="70" font-size="11" fill="var(--text-muted)">connect(hostid, port=x)</text>
+            <text x="20" y="130" font-size="11" fill="var(--text)" font-weight="600">connectionSocket = serverSocket.accept()</text>
+            <text x="20" y="155" font-size="11" fill="var(--text-muted)">read request from connectionSocket</text>
+            <line x1="470" y1="140" x2="150" y2="175" stroke="var(--text)" stroke-width="1.2" marker-end="url(#a3)"/>
+            <text x="470" y="140" font-size="11" fill="var(--text-muted)">send request using clientSocket</text>
+            <text x="20" y="190" font-size="11" fill="var(--text-muted)">write reply to connectionSocket</text>
+            <line x1="150" y1="200" x2="470" y2="225" stroke="var(--text)" stroke-width="1.2" marker-end="url(#a3)"/>
+            <text x="470" y="220" font-size="11" fill="var(--text-muted)">read reply from clientSocket</text>
+            <text x="20" y="245" font-size="11" fill="var(--text-muted)">close connectionSocket</text>
+            <text x="470" y="245" font-size="11" fill="var(--text-muted)">close clientSocket</text>
+          </svg>
+          <div class="diagram-cap">Fig. Client/server socket interaction over TCP — connection is established before any request/reply data flows.</div>
+        </div>
+        <pre><code>Python TCPClient
+from socket import *
+serverName = 'servername'
+serverPort = 12000
+clientSocket = socket(AF_INET, SOCK_STREAM)
+clientSocket.connect((serverName, serverPort))
+sentence = input('Input lowercase sentence:')
+clientSocket.send(sentence.encode())
+modifiedSentence = clientSocket.recv(1024)
+print('From Server:', modifiedSentence.decode())
+clientSocket.close()</code></pre>
+        <pre><code>Python TCPServer
+from socket import *
+serverPort = 12000
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind(('', serverPort))
+serverSocket.listen(1)
+print('The server is ready to receive')
+while True:
+    connectionSocket, addr = serverSocket.accept()
+    sentence = connectionSocket.recv(1024).decode()
+    capitalizedSentence = sentence.upper()
+    connectionSocket.send(capitalizedSentence.encode())
+    connectionSocket.close()</code></pre>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>The TCP server process has <strong>two</strong> sockets: the "welcoming" <code>serverSocket</code> that only ever listens for new connections, and a fresh <code>connectionSocket</code> created per client by <code>accept()</code> — this is exactly what lets the server talk to many clients at once.</div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 3 : UDP IN DEPTH
+      ============================================================= -->
+      <section class="topic" id="udp">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 03</h2></div>
+          <h2 class="topic-title">UDP — Connectionless Transport <span style="font-weight:400;color:var(--text-muted);font-size:15px;">[RFC 768]</span></h2>
+          <p class="topic-intro">The "no frills," "bare bones" Internet transport protocol.</p>
+        </div>
+
+        <h3 id="udp-why">Why does UDP exist?</h3>
+        <p>UDP offers "best effort" service — segments may be lost, or delivered out of order to the app. It's <strong>connectionless</strong>: there's no handshaking between sender and receiver, and each UDP segment is handled independently of the others.</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Why UDP is useful</h5>
+            <ul>
+              <li>No connection establishment (which can add RTT delay)</li>
+              <li>Simple — no connection state at sender or receiver</li>
+              <li>Small header size</li>
+              <li>No congestion control — UDP can blast away as fast as desired!</li>
+              <li>Can function in the face of congestion</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h5>Typical UDP use cases</h5>
+            <ul>
+              <li>Streaming multimedia apps (loss-tolerant, rate-sensitive)</li>
+              <li>DNS</li>
+              <li>SNMP</li>
+              <li>HTTP/3</li>
+            </ul>
+            <p style="margin:8px 0 0 0;">If reliable transfer is needed over UDP (e.g. HTTP/3), the needed reliability <em>and</em> congestion control are added at the <strong>application layer</strong> instead.</p>
+          </div>
+        </div>
+
+        <h3 id="udp-header">UDP segment header</h3>
+        <div class="diagram">
+          <svg viewBox="0 0 460 130" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="220" height="30" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+            <line x1="120" y1="10" x2="120" y2="40" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="65" y="29" text-anchor="middle" font-size="11" fill="var(--text)">source port #</text>
+            <text x="175" y="29" text-anchor="middle" font-size="11" fill="var(--text)">dest port #</text>
+            <rect x="10" y="40" width="220" height="30" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+            <line x1="120" y1="40" x2="120" y2="70" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="65" y="59" text-anchor="middle" font-size="11" fill="var(--text)">length</text>
+            <text x="175" y="59" text-anchor="middle" font-size="11" fill="var(--text)">checksum</text>
+            <rect x="10" y="70" width="220" height="40" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+            <text x="120" y="94" text-anchor="middle" font-size="10.5" fill="var(--text)">application data (payload)</text>
+            <text x="250" y="55" font-size="10" fill="var(--text-muted)">length, in bytes, of the</text>
+            <text x="250" y="68" font-size="10" fill="var(--text-muted)">UDP segment, including header</text>
+          </svg>
+          <div class="diagram-cap">Fig. UDP segment format — a fixed 8-byte header (four 16-bit fields) followed by the payload.</div>
+        </div>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>The UDP header is always exactly <strong>8 bytes</strong> — versus a minimum of 20 bytes for TCP. Even though the header is fixed-size, a length field is still needed because the payload is variable-length and UDP keeps no connection state anywhere — each datagram must be entirely self-describing. The length field counts the <em>whole</em> UDP segment (header included), not just the payload.</div>
+
+        <h3 id="udp-checksum">UDP checksum — computing it in 5 steps</h3>
+        <p><strong>Goal:</strong> detect "errors" (e.g. flipped bits) in a transmitted segment.</p>
+        <table>
+          <tr><th>#</th><th>Step</th><th>Detail</th></tr>
+          <tr><td>1</td><td>Split the segment into 16-bit words</td><td>Header fields and data, all treated as plain 16-bit integers</td></tr>
+          <tr><td>2</td><td>Add the words together</td><td>Ordinary binary addition, one word at a time</td></tr>
+          <tr><td>3</td><td>Handle the wraparound carry</td><td>Any carry out of the most significant bit is added back into the low end — this is the step everyone forgets</td></tr>
+          <tr><td>4</td><td>That result is the SUM</td><td>Keep going until every word has been added in</td></tr>
+          <tr><td>5</td><td>Flip every bit — that is the CHECKSUM</td><td>One's complement of the sum; this is what goes in the header field</td></tr>
+        </table>
+        <div class="example">
+          <span class="ex-label">Worked example — adding two 16-bit integers</span>
+          <pre class="mono" style="margin:0;">1110011001100110
+1101010101010101
+--------------------------- (wraparound carry added back in)
+1101110111011011
+sum:      1011101110111100
+checksum: 0100010001000011</pre>
+          <p style="margin:8px 0 0 0;">A carry-out from the most significant bit needs to be added back into the result — that's the "wraparound" step.</p>
+        </div>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>The receiver adds up everything, including the checksum field itself, and simply tests for <strong>all ones</strong> — instead of recomputing and comparing. That's exactly why the sender transmits the <em>complement</em> of the sum rather than the sum itself.</div>
+
+        <h3 id="udp-checksum-catch">What the checksum catches — and what it misses</h3>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Always caught</h5>
+            <ul>
+              <li>Any single bit flip, anywhere in the segment</li>
+              <li>ANY pattern of 1 to 15 bit flips confined to a single 16-bit word</li>
+              <li>Any burst error shorter than 16 bits</li>
+              <li>Most multi-word errors — they only cancel in very specific offsetting patterns</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h5>Can slip through</h5>
+            <ul>
+              <li>Two bits flipping in <strong>opposite</strong> directions in <strong>different</strong> words — the errors cancel in the sum ("weak protection")</li>
+              <li>Any set of errors across words whose net effect on the sum is zero</li>
+              <li>One degenerate case: flipping all 16 bits of a word that was all-zeros or all-ones</li>
+            </ul>
+          </div>
+        </div>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>The checksum is <strong>strong within a word</strong> and <strong>weak across words</strong>. Errors confined to one 16-bit word are essentially always caught — the vulnerability needs errors spread over two or more words in offsetting directions.</div>
+        <div class="quiz">
+          <div class="qn">Q. Name the four fields of the UDP header, in order, and its total size.</div>
+          <div class="ans">Answer<div class="exp">Source port #, destination port #, length, checksum — 8 bytes total (four 16-bit fields), versus a minimum of 20 bytes for TCP.</div></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 4 : RDT
+      ============================================================= -->
+      <section class="topic" id="rdt">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 04</h2></div>
+          <h2 class="topic-title">Principles of Reliable Data Transfer</h2>
+          <p class="topic-intro">How to deliver application data correctly on top of a network that can lose, corrupt, reorder, and duplicate packets.</p>
+        </div>
+
+        <h3 id="rdt-why">Why do we need reliable data transfer?</h3>
+        <p>The goal is to deliver application data correctly even when the network underneath is unreliable. Real networks present several distinct challenges:</p>
+        <ul>
+          <li><strong>Bit errors</strong> (packet corruption)</li>
+          <li><strong>Packet loss</strong></li>
+          <li><strong>ACK loss</strong></li>
+          <li><strong>Packet duplication</strong></li>
+          <li><strong>Unknown receiver state</strong> — the sender and receiver do not know each other's "state" unless it is communicated via a message (e.g. was a message actually received?)</li>
+        </ul>
+        <p>The complexity of any reliable-data-transfer protocol depends strongly on the characteristics of the underlying unreliable channel: does it lose data, corrupt data, or reorder it?</p>
+        <div class="diagram">
+          <svg viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+            <circle cx="60" cy="40" r="26" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="60" y="36" text-anchor="middle" font-size="9.5" fill="var(--text)">sending</text>
+            <text x="60" y="48" text-anchor="middle" font-size="9.5" fill="var(--text)">process</text>
+            <circle cx="500" cy="40" r="26" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="500" y="36" text-anchor="middle" font-size="9.5" fill="var(--text)">receiving</text>
+            <text x="500" y="48" text-anchor="middle" font-size="9.5" fill="var(--text)">process</text>
+            <line x1="10" y1="80" x2="550" y2="80" stroke="var(--border)" stroke-width="1"/>
+            <text x="15" y="95" font-size="10" fill="var(--text-muted)">application</text>
+            <text x="15" y="110" font-size="10" fill="var(--text-muted)">transport</text>
+            <rect x="180" y="95" width="200" height="24" rx="12" fill="var(--accent)" opacity="0.85"/>
+            <text x="280" y="111" text-anchor="middle" font-size="10.5" fill="#fff" font-weight="600">reliable channel</text>
+            <line x1="60" y1="66" x2="180" y2="107" stroke="var(--text-muted)" stroke-width="1.1" marker-end="url(#a4)"/>
+            <line x1="380" y1="107" x2="500" y2="66" stroke="var(--text-muted)" stroke-width="1.1" marker-end="url(#a4)"/>
+            <text x="280" y="135" text-anchor="middle" font-size="10.5" fill="var(--text-muted)" font-style="italic">reliable service abstraction</text>
+          </svg>
+          <div class="diagram-cap">Fig. The reliable-service abstraction: applications see a perfectly reliable channel; underneath, rdt protocols run over the actual unreliable network.</div>
+        </div>
+
+        <h3 id="rdt-mechanisms">The six core mechanisms of reliable data transfer</h3>
+        <table>
+          <tr><th>Mechanism</th><th>Purpose</th></tr>
+          <tr><td>Checksum</td><td>Detect bit errors</td></tr>
+          <tr><td>ACK</td><td>Positive acknowledgement</td></tr>
+          <tr><td>NAK</td><td>Negative acknowledgement</td></tr>
+          <tr><td>Sequence number</td><td>Detect duplicates</td></tr>
+          <tr><td>Timer &amp; timeout</td><td>Recover from lost packets</td></tr>
+          <tr><td>Retransmission</td><td>Resend missing packets</td></tr>
+        </table>
+        <p>Every rdt protocol — however sophisticated — is built by combining these six primitives in different ways.</p>
+
+        <h3 id="rdt3">rdt3.0 — the alternating-bit protocol</h3>
+        <p>Since the underlying channel can corrupt <em>and</em> lose packets (both data packets and ACKs), rdt3.0 adds a sequence number that <strong>alternates between 0 and 1</strong> — which is exactly why it is nicknamed the <strong>alternating-bit protocol</strong>. Only one packet is ever in flight at a time (stop-and-wait).</p>
+        <table>
+          <tr><th>Scenario</th><th>What happens</th></tr>
+          <tr><td>(a) No loss</td><td>Sender sends pkt0, receiver ACKs it (ack0); sender sends pkt1, receiver ACKs it (ack1); repeat, alternating 0/1</td></tr>
+          <tr><td>(b) Packet loss</td><td>Sender's timer expires with no ACK received → resend the same packet; receiver eventually gets it and ACKs normally</td></tr>
+          <tr><td>(c) ACK loss</td><td>Sender's timer expires (even though the receiver did get the packet and did send an ACK, which was lost) → sender resends; receiver detects the duplicate by sequence number, re-sends the ACK, but does not deliver the data twice</td></tr>
+          <tr><td>(d) Premature timeout / delayed ACK</td><td>The timeout fires before the ACK actually arrives → sender retransmits unnecessarily; the receiver, seeing a duplicate sequence number, discards the duplicate data but still re-ACKs it so the sender's window can move on</td></tr>
+        </table>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>Because packet sequence numbers alternate strictly between 0 and 1, protocol rdt3.0 is sometimes known as the <strong>alternating-bit protocol</strong>. Its key elements — checksums, sequence numbers, timers, and positive/negative acknowledgement packets — each play a crucial and necessary role in the operation of the protocol.</div>
+
+        <h3 id="rdt-perf">Performance of rdt3.0 (stop-and-wait)</h3>
+        <p><strong>U<sub>sender</sub></strong>: utilization — the fraction of time the sender is actually busy sending.</p>
+        <div class="example">
+          <span class="ex-label">Worked example — 1 Gbps link, 15 ms one-way propagation delay, 8000-bit packet</span>
+          <div class="formula-line mono">D_trans = L / R = 8000 bits / 10⁹ bits/sec = 8 microseconds</div>
+        </div>
+        <div class="formula">
+          <span class="flabel">Sender utilization</span>
+          <div class="formula-line">U_sender = (L/R) / (RTT + L/R)</div>
+          <div class="formula-line">= 0.008 / 30.008 = 0.00027</div>
+        </div>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>rdt3.0's stop-and-wait performance is terrible — the sender is busy only 0.027% of the time! The <em>protocol</em> is what limits the performance of the underlying infrastructure (channel), not the channel itself.</div>
+
+        <h3 id="rdt-pipeline">Pipelining — the fix</h3>
+        <p>The solution is simple: rather than operate stop-and-wait, allow the sender to send <strong>multiple packets</strong> without waiting for acknowledgements. Since many in-transit sender-to-receiver packets can be visualized as filling a pipeline, this technique is known as <strong>pipelining</strong>.</p>
+        <ul>
+          <li>The range of sequence numbers must be increased (each in-flight packet needs a unique sequence number, and there may be several unacknowledged at once).</li>
+          <li>Buffering is required at the sender and/or receiver.</li>
+        </ul>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>3-packet pipelining increases utilization by roughly a factor of 3 over stop-and-wait, for the same link and RTT.</div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 5 : GBN & SR
+      ============================================================= -->
+      <section class="topic" id="gbnsr">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 05</h2></div>
+          <h2 class="topic-title">Go-Back-N &amp; Selective Repeat</h2>
+          <p class="topic-intro">Two concrete pipelined protocols that put the "multiple packets in flight" idea into practice.</p>
+        </div>
+
+        <h3 id="gbn-rules">Go-Back-N — sender &amp; receiver rules</h3>
+        <p>The sender maintains a <strong>window</strong> of up to <em>N</em> consecutive transmitted-but-unACKed packets, using a k-bit sequence number in the packet header.</p>
+        <ul>
+          <li><strong>Cumulative ACK:</strong> ACK(n) acknowledges all packets up to and including sequence # n. On receiving ACK(n), the sender moves its window forward to begin at n+1.</li>
+          <li><strong>One timer</strong>, for the oldest in-flight packet. <code>timeout(n)</code>: retransmit packet n <em>and all higher</em> sequence-numbered packets currently in the window.</li>
+        </ul>
+        <p><strong>Receiver (ACK-only):</strong> always sends an ACK for the correctly received packet with the <strong>highest in-order</strong> sequence number so far — this may generate duplicate ACKs, and the receiver need only remember <code>rcv_base</code>.</p>
+        <ul>
+          <li>On receipt of an out-of-order packet: the receiver can either discard it (don't buffer) or buffer it — this is an implementation decision.</li>
+          <li>Either way, it re-ACKs the packet with the highest in-order sequence number.</li>
+        </ul>
+
+        <h3 id="gbn-action">Go-Back-N in action</h3>
+        <p>With window size N = 4, sender sends pkt0–pkt3; pkt3 is lost. The receiver gets pkt0 and pkt1 fine (sends ack0, ack1), but pkt3 arrives out of order and is discarded — the receiver keeps re-sending ack1. When pkt2 eventually times out, the sender goes back and resends pkt2, pkt3, pkt4, pkt5 (everything from the timed-out packet onward) — hence the name <strong>Go-Back-N</strong>.</p>
+        <div class="example">
+          <span class="ex-label">Worked example — every 5th transmission lost, 10 packets to send, window size 10</span>
+          <p><strong>Round 1</strong> — send packets 1–10 (transmissions 1–10): 1–4 delivered; <strong>5 LOST</strong>; 6–9 arrive but discarded (out of order); <strong>10 LOST</strong>. Receiver has 1–4. Sender times out and goes back to packet 5.</p>
+          <p><strong>Round 2</strong> — resend 5–10 (transmissions 11–16): 5–8 delivered; <strong>9 LOST</strong>; 10 arrives but discarded. Receiver now has 1–8. Go back to packet 9.</p>
+          <p><strong>Round 3</strong> — resend 9–10 (transmissions 17–18): neither 17 nor 18 is a multiple of 5, so both succeed. Done.</p>
+          <p><strong>Total transmissions = 18.</strong></p>
+        </div>
+
+        <h3 id="sr-rules">Selective Repeat — sender &amp; receiver rules</h3>
+        <p>Pipelining, but the receiver <strong>individually acknowledges</strong> every correctly-received packet, buffering out-of-order packets as needed for eventual in-order delivery to the upper layer.</p>
+        <table>
+          <tr><th>Sender</th><th>Receiver</th></tr>
+          <tr><td>Data from above: if the next available seq # is in the window, send the packet</td><td>Packet n in [rcvbase, rcvbase+N-1]: send ACK(n). If out-of-order, buffer it. If in-order, deliver it (plus any buffered in-order packets) and advance the window to the next not-yet-received packet</td></tr>
+          <tr><td>Timeout(n): resend <em>only</em> packet n, restart its timer</td><td>Packet n in [rcvbase-N, rcvbase-1]: just ACK(n) again (it was already delivered)</td></tr>
+          <tr><td>ACK(n) in [sendbase, sendbase+N]: mark packet n as received. If n is the smallest unACKed packet, advance the window base to the next unACKed sequence #</td><td>Otherwise: ignore</td></tr>
+        </table>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>The sender maintains a conceptual timer <strong>per unACKed packet</strong> — a timeout retransmits only that one packet, not the whole window (unlike GBN).</div>
+
+        <h3 id="sr-action">Selective Repeat in action</h3>
+        <p>With window size N = 4: pkt3 is lost, but pkt4 and pkt5 (which arrive fine) are individually buffered and ACKed (ack4, ack5) instead of being discarded. When pkt2 times out and is resent, the receiver can now deliver pkt2, pkt3, pkt4, and pkt5 all at once, and send ack2.</p>
+        <div class="example">
+          <span class="ex-label">What happens when ack2 finally arrives at the sender?</span>
+          The window lurches forward by <em>four</em> positions in one step: packet 2 is marked ACKed and its timer stops; the base then advances past every consecutively-ACKed packet (2 ✓, 3 ✓, 4 ✓, 5 ✓), moving from 2 → 6. The window becomes [6, 7, 8, 9], and the sender can immediately transmit pkt6–pkt9 — four new packets at once.
+        </div>
+        <div class="example">
+          <span class="ex-label">Worked example — every 5th transmission lost, 10 packets to send, window size 10 (Selective Repeat)</span>
+          Because only the individually-lost packet needs to be retransmitted (not the whole window), the total comes out to just <strong>12 transmissions</strong> — far fewer than Go-Back-N's 18 for the identical loss pattern.
+        </div>
+
+        <h3 id="sr-dilemma">The Selective-Repeat window-size dilemma</h3>
+        <p>Example: sequence numbers 0,1,2,3 (base-4 counting), window size = 3.</p>
+        <p><strong>(a) No problem:</strong> sender sends pkt0–pkt2, receiver ACKs each; when pkt0 is later retransmitted after a timeout, the receiver's window has already moved on and correctly treats it as old/duplicate.</p>
+        <p><strong>(b) Oops!</strong> If the window size is too large relative to the sequence-number space, a retransmitted <em>old</em> pkt0 can look indistinguishable from a <em>new</em> pkt0 to the receiver — the receiver's window and sequence numbers wrap around and the receiver ends up "willing to accept a packet with sequence number 0" that is actually stale data from a previous round.</p>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>To avoid this ambiguity, Selective Repeat requires: <strong>window size ≤ (sequence number space) / 2</strong>. This guarantees the receiver can always tell a genuinely new packet apart from a retransmitted old one.</div>
+
+        <h3 id="gbn-sr-tcp">Go-Back-N vs Selective Repeat vs real TCP</h3>
+        <table>
+          <tr><th></th><th>Go-Back-N</th><th>Selective Repeat</th><th>Real TCP</th></tr>
+          <tr><td>ACK style</td><td>Cumulative</td><td>Individual</td><td>Cumulative (+ SACK option)</td></tr>
+          <tr><td>Receiver buffers out-of-order?</td><td>No — discards</td><td>Yes</td><td>Yes, in practice</td></tr>
+          <tr><td>Timers</td><td>One</td><td>One per packet</td><td>One (for the oldest unACKed)</td></tr>
+          <tr><td>On timeout</td><td>Resend the whole window</td><td>Resend just that packet</td><td>Resend just the oldest</td></tr>
+          <tr><td>Extra recovery</td><td>—</td><td>—</td><td>Fast retransmit on 3 duplicate ACKs</td></tr>
+        </table>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>TCP is a <strong>hybrid</strong>, not a choice between the two. It takes GBN's cumulative ACKs and single timer, but retransmits selectively like SR. The <strong>SACK</strong> (TCP Selective Acknowledgment, RFC 2018) option lets the receiver report exactly which blocks arrived, pushing TCP further toward Selective-Repeat behaviour.</div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 6 : TCP IN DEPTH
+      ============================================================= -->
+      <section class="topic" id="tcp">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 06</h2></div>
+          <h2 class="topic-title">TCP In Depth</h2>
+          <p class="topic-intro">Segment structure, sequencing, timeouts, flow control and connection management. <span style="opacity:.7">RFCs: 793, 1122, 1323, 2018, 2581</span></p>
+        </div>
+
+        <h3 id="tcp-overview">TCP — overview</h3>
+        <ul>
+          <li><strong>Point-to-point:</strong> one sender, one receiver.</li>
+          <li><strong>Reliable, in-order byte stream:</strong> no "message boundaries."</li>
+          <li><strong>Full duplex data:</strong> bi-directional data flow in the same connection.</li>
+          <li><strong>MSS:</strong> maximum segment size.</li>
+          <li><strong>Cumulative ACKs</strong> with pipelining — TCP congestion and flow control set the window size.</li>
+          <li><strong>Connection-oriented:</strong> handshaking (exchange of control messages) initializes sender and receiver state before data exchange.</li>
+          <li><strong>Flow controlled:</strong> the sender will not overwhelm the receiver.</li>
+        </ul>
+
+        <h3 id="tcp-segment">TCP segment structure</h3>
+        <div class="diagram">
+          <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="230" height="26" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+            <line x1="125" y1="10" x2="125" y2="36" stroke="var(--accent)" stroke-width="1.1"/>
+            <text x="68" y="27" text-anchor="middle" font-size="10.5" fill="var(--text)">source port #</text>
+            <text x="182" y="27" text-anchor="middle" font-size="10.5" fill="var(--text)">dest port #</text>
+            <rect x="10" y="36" width="230" height="26" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="125" y="53" text-anchor="middle" font-size="10.5" fill="var(--text)">sequence number</text>
+            <rect x="10" y="62" width="230" height="26" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="125" y="79" text-anchor="middle" font-size="10.5" fill="var(--text)">acknowledgement number</text>
+            <rect x="10" y="88" width="230" height="26" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="60" y="105" text-anchor="middle" font-size="9" fill="var(--text)">hdr len / flags</text>
+            <text x="180" y="105" text-anchor="middle" font-size="9" fill="var(--text)">receive window</text>
+            <rect x="10" y="114" width="230" height="26" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+            <text x="68" y="131" text-anchor="middle" font-size="9.5" fill="var(--text)">Internet checksum</text>
+            <text x="182" y="131" text-anchor="middle" font-size="9.5" fill="var(--text)">urgent data pointer</text>
+            <rect x="10" y="140" width="230" height="22" fill="var(--code-bg)" stroke="var(--border)" stroke-width="1"/>
+            <text x="125" y="155" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">options (variable length)</text>
+            <rect x="10" y="162" width="230" height="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+            <text x="125" y="180" text-anchor="middle" font-size="9.5" fill="var(--text)">application data (variable length)</text>
+            <text x="260" y="20" font-size="9.5" fill="var(--text-muted)">segment seq #: counts bytes of</text>
+            <text x="260" y="32" font-size="9.5" fill="var(--text-muted)">data into the bytestream (not segments!)</text>
+            <text x="260" y="58" font-size="9.5" fill="var(--text-muted)">ACK: seq # of next expected byte</text>
+            <text x="260" y="96" font-size="9.5" fill="var(--text-muted)">flags: C E U A P R S F</text>
+            <text x="260" y="108" font-size="9.5" fill="var(--text-muted)">flow control: # bytes receiver</text>
+            <text x="260" y="120" font-size="9.5" fill="var(--text-muted)">is willing to accept</text>
+            <text x="260" y="152" font-size="9.5" fill="var(--text-muted)">C, E: congestion notification;</text>
+            <text x="260" y="164" font-size="9.5" fill="var(--text-muted)">RST, SYN, FIN: connection mgmt</text>
+          </svg>
+          <div class="diagram-cap">Fig. TCP segment structure — a minimum 20-byte header plus optional fields and payload.</div>
+        </div>
+
+        <h3 id="tcp-seqack">Sequence numbers &amp; ACKs</h3>
+        <ul>
+          <li><strong>Sequence numbers:</strong> the byte-stream "number" of the first byte in the segment's data.</li>
+          <li><strong>Acknowledgements:</strong> the sequence # of the next byte expected from the other side — a <strong>cumulative</strong> ACK.</li>
+        </ul>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>Q: How does the receiver handle out-of-order segments? A: The TCP spec doesn't say — it's left up to the implementor.</div>
+        <div class="example">
+          <span class="ex-label">Simple telnet scenario</span>
+          User types 'C' → Host A sends Seq=42, ACK=79, data='C'. Host B ACKs receipt of 'C' and echoes it back → Seq=79, ACK=43, data='C'. Host A ACKs receipt of the echoed 'C' → Seq=43, ACK=80.
+        </div>
+
+        <h3 id="tcp-rtt">RTT estimation &amp; timeout</h3>
+        <p><strong>Q: how to estimate RTT?</strong> <code>SampleRTT</code>: the measured time from segment transmission until ACK receipt (retransmissions are ignored when sampling). Since SampleRTT varies, we want a smoother <code>EstimatedRTT</code> — an average of several recent measurements rather than just the latest sample.</p>
+        <div class="formula">
+          <span class="flabel">Exponential Weighted Moving Average (EWMA)</span>
+          <div class="formula-line">EstimatedRTT = (1 − α)·EstimatedRTT + α·SampleRTT</div>
+          <div class="formula-line" style="color:var(--text-muted);font-size:12.5px;">typical value: α = 0.125 — the influence of past samples decreases exponentially fast</div>
+        </div>
+        <p><strong>Timeout interval</strong> = EstimatedRTT plus a "safety margin." A large variation in EstimatedRTT means we want a larger safety margin.</p>
+        <div class="formula">
+          <span class="flabel">Timeout interval</span>
+          <div class="formula-line">TimeoutInterval = EstimatedRTT + 4·DevRTT</div>
+          <div class="formula-line">DevRTT = (1 − β)·DevRTT + β·|SampleRTT − EstimatedRTT|</div>
+          <div class="formula-line" style="color:var(--text-muted);font-size:12.5px;">typically, β = 0.25</div>
+        </div>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Why not just set the timeout to the measured RTT? RTT varies constantly — too short causes needless retransmissions that add load to an already-struggling network; too long wastes time reacting to real loss. The 4×DevRTT margin is a safety cushion that widens automatically when the network gets erratic. Why 4 times the deviation, rather than 1 or 2? It's an engineering constant, tuned empirically for a conservative margin.
+        </div>
+
+        <h3 id="tcp-senderreceiver">TCP sender / receiver actions (simplified)</h3>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>TCP Sender</h5>
+            <ul>
+              <li><strong>Data received from application:</strong> create a segment with a seq # (the byte-stream number of the first data byte). Start the timer if it isn't already running (think of the timer as being for the oldest unACKed segment); expiration interval = <code>TimeOutInterval</code>.</li>
+              <li><strong>Timeout:</strong> retransmit the segment that caused the timeout; restart the timer.</li>
+              <li><strong>ACK received:</strong> if it acknowledges previously-unACKed segments, update what is known to be ACKed, and start the timer if unACKed segments remain.</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h5>TCP Receiver — ACK Generation</h5>
+            <table style="margin:0;font-size:12.5px;">
+              <tr><th>Event</th><th>Action</th></tr>
+              <tr><td>In-order segment, expected seq #, all prior data already ACKed</td><td>Delayed ACK — wait up to 500ms for next segment; if none arrives, send ACK</td></tr>
+              <tr><td>In-order segment, expected seq #, one other segment has an ACK pending</td><td>Immediately send a single cumulative ACK, ACKing both in-order segments</td></tr>
+              <tr><td>Out-of-order segment, higher than expected seq # — gap detected</td><td>Immediately send a duplicate ACK, indicating the seq # of the next expected byte</td></tr>
+              <tr><td>Segment that partially or completely fills a gap</td><td>Immediately send ACK, provided the segment starts at the lower end of the gap</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <h3 id="tcp-retrans">Retransmission scenarios</h3>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Lost ACK scenario</h5>
+            <p style="margin:0;">Host A sends Seq=92 (8 bytes). Host B receives it and replies ACK=100 — but that ACK is lost. Host A's timer expires, so it retransmits Seq=92. Host B, seeing the duplicate, resends ACK=100. Host A's SendBase then advances from 92 → 100.</p>
+          </div>
+          <div class="compare-col">
+            <h5>Premature timeout</h5>
+            <p style="margin:0;">Host A sends Seq=92, then Seq=100 (20 bytes). A's timer for the first segment fires before its ACK arrives (premature timeout), so A needlessly resends Seq=92. Host B's cumulative ACK for everything received so far (ACK=120) covers both segments, so A's SendBase jumps straight to 120.</p>
+          </div>
+        </div>
+        <div class="example">
+          <span class="ex-label">Cumulative ACK covering an earlier lost ACK</span>
+          Host A sends Seq=92 (8 bytes) then Seq=100 (20 bytes). Host B's ACK=100 for the first segment is lost, but when Host B later sends ACK=120 for the second segment, that single cumulative ACK covers <em>both</em> segments — so Host A never needs to retransmit anything.
+        </div>
+
+        <h3 id="tcp-fastretrans">TCP fast retransmit</h3>
+        <p>If the sender receives <strong>3 additional (duplicate) ACKs</strong> for the same data ("triple duplicate ACKs"), it resends the unACKed segment with the smallest sequence number — <em>without</em> waiting for the timeout. Receipt of three duplicate ACKs indicates that three segments were received <em>after</em> a missing one, so a lost segment is highly likely — hence: retransmit immediately.</p>
+        <div class="formula">
+          <span class="flabel">Fast retransmit trigger</span>
+          <div class="formula-line">3 duplicate ACKs (same ACK # repeated 4 times total) ⇒ retransmit immediately, don't wait for timeout</div>
+        </div>
+
+        <h3 id="tcp-flow">TCP flow control</h3>
+        <p><strong>Q:</strong> what happens if the network layer delivers data faster than the application layer removes it from the socket buffers? <strong>A:</strong> flow control — the receiver controls the sender, so the sender won't overflow the receiver's buffer by transmitting too much, too fast.</p>
+        <p>The TCP receiver "advertises" its free buffer space in the <code>rwnd</code> field of the TCP header. <code>RcvBuffer</code> size is set via socket options (typical default: 4096 bytes), though many operating systems auto-adjust it. The sender limits the amount of unACKed ("in-flight") data to the most recently received <code>rwnd</code> — this guarantees the receive buffer will not overflow.</p>
+        <div class="formula">
+          <span class="flabel">Receive-window bookkeeping</span>
+          <div class="formula-line">LastByteRcvd − LastByteRead ≤ RcvBuffer</div>
+          <div class="formula-line">rwnd = RcvBuffer − [LastByteRcvd − LastByteRead]</div>
+        </div>
+
+        <h3 id="tcp-conn">TCP connection management</h3>
+        <p>Before exchanging data, sender and receiver must "handshake": agree to establish a connection (each knowing the other is willing), and agree on connection parameters (e.g. starting sequence numbers).</p>
+        <div class="diagram">
+          <svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--text)"/></marker></defs>
+            <text x="90" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">CLIENT</text>
+            <text x="470" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">SERVER</text>
+            <text x="470" y="36" font-size="10.5" fill="var(--text-muted)">LISTEN</text>
+            <text x="20" y="55" font-size="10.5" fill="var(--text)">SYNSENT — choose init seq x, send SYN</text>
+            <line x1="150" y1="65" x2="440" y2="95" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a5)"/>
+            <text x="290" y="80" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">SYNbit=1, Seq=x</text>
+            <text x="440" y="112" font-size="10.5" fill="var(--text)">SYN RCVD — choose init seq y, send SYNACK</text>
+            <line x1="440" y1="122" x2="150" y2="152" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a5)"/>
+            <text x="290" y="140" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">SYNbit=1, Seq=y, ACKbit=1, ACKnum=x+1</text>
+            <text x="20" y="168" font-size="10.5" fill="var(--text)">ESTAB — received SYNACK, send ACK</text>
+            <line x1="150" y1="178" x2="440" y2="208" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a5)"/>
+            <text x="290" y="196" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">ACKbit=1, ACKnum=y+1 (may carry data)</text>
+            <text x="440" y="225" font-size="10.5" fill="var(--text)">ESTAB — received ACK, client is live</text>
+          </svg>
+          <div class="diagram-cap">Fig. The TCP 3-way handshake — SYN, SYN+ACK, ACK.</div>
+        </div>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>Both sides move to state <strong>ESTAB</strong> only after this exchange completes, and both sides now track connection variables: sequence numbers in each direction and receive-buffer sizes at server and client.</div>
+
+        <h4>Closing a TCP connection</h4>
+        <p>Client and server each close their own side of the connection by sending a TCP segment with <strong>FIN bit = 1</strong>. A received FIN is responded to with an ACK — and that ACK can be combined with the receiver's own FIN. Simultaneous FIN exchanges are also handled.</p>
+        <div class="diagram">
+          <svg viewBox="0 0 560 240" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a6" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--text)"/></marker></defs>
+            <text x="90" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">CLIENT</text>
+            <text x="470" y="16" text-anchor="middle" font-size="12" font-weight="700" fill="var(--text)">SERVER</text>
+            <text x="20" y="36" font-size="10.5" fill="var(--text)">FIN_WAIT_1 — clientSocket.close()</text>
+            <line x1="150" y1="46" x2="440" y2="76" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a6)"/>
+            <text x="290" y="62" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">FINbit=1, seq=x</text>
+            <text x="440" y="92" font-size="10.5" fill="var(--text)">CLOSE_WAIT — can still send data</text>
+            <line x1="440" y1="102" x2="150" y2="132" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a6)"/>
+            <text x="290" y="120" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">ACKbit=1, ACKnum=x+1</text>
+            <text x="20" y="148" font-size="10.5" fill="var(--text)">FIN_WAIT_2 — waits for server's close</text>
+            <line x1="440" y1="160" x2="150" y2="190" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a6)"/>
+            <text x="440" y="178" font-size="10.5" fill="var(--text)">LAST_ACK — sends FIN, seq=y</text>
+            <text x="290" y="178" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">FINbit=1, seq=y</text>
+            <text x="20" y="205" font-size="10.5" fill="var(--text)">TIMED_WAIT — timed wait, 2×max segment lifetime</text>
+            <line x1="150" y1="215" x2="440" y2="230" stroke="var(--text)" stroke-width="1.3" marker-end="url(#a6)"/>
+            <text x="290" y="228" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">ACKbit=1, ACKnum=y+1</text>
+            <text x="20" y="236" font-size="10.5" fill="var(--text)">CLOSED</text>
+            <text x="440" y="200" font-size="10.5" fill="var(--text)">CLOSED</text>
+          </svg>
+          <div class="diagram-cap">Fig. TCP connection teardown — each side sends its own FIN, and the client's TIMED_WAIT holds state for 2× the maximum segment lifetime before finally closing.</div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 7 : DNS
+      ============================================================= -->
+      <section class="topic" id="dns">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 07</h2></div>
+          <h2 class="topic-title">DNS — Domain Name System</h2>
+          <p class="topic-intro">The distributed database that translates human-readable names into IP addresses — a core Internet function, implemented as an application-layer protocol.</p>
+        </div>
+
+        <h3 id="dns-why">Why DNS? DNS services</h3>
+        <p>People have many identifiers (SSN, name, passport #). Internet hosts and routers have an <strong>IP address</strong> (32-bit, used for addressing datagrams) and a "name" (e.g. <code>cs.umass.edu</code>, used by humans). DNS maps between the two, in both directions.</p>
+        <p>DNS is a distributed database implemented in a hierarchy of many name servers, plus the application-layer protocol that lets hosts and name servers communicate to resolve names.</p>
+        <ul>
+          <li><strong>Hostname-to-IP-address translation</strong></li>
+          <li><strong>Host aliasing</strong> — canonical and alias names (e.g. <code>www.abc.example.com</code> → canonical host name, <code>www.example.com</code> → alias name)</li>
+          <li><strong>Mail-server aliasing</strong></li>
+          <li><strong>Load distribution</strong> — replicated web servers: many IP addresses correspond to one name</li>
+        </ul>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Q: Why not centralize DNS? A: it doesn't scale — a single point of failure, unmanageable traffic volume, a distant centralized database (slow lookups from far away), and impossible maintenance. Comcast's DNS servers alone handle ~600 billion queries per day; Akamai's, ~2.2 trillion.
+        </div>
+
+        <h3 id="dns-hierarchy">A distributed, hierarchical database</h3>
+        <div class="diagram">
+          <svg viewBox="0 0 620 190" xmlns="http://www.w3.org/2000/svg">
+            <defs><marker id="a7" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--text-muted)"/></marker></defs>
+            <rect x="255" y="10" width="110" height="34" rx="5" fill="var(--accent)" opacity="0.9"/>
+            <text x="310" y="31" text-anchor="middle" font-size="11" fill="#fff" font-weight="700">Root DNS Servers</text>
+            <rect x="60" y="80" width="110" height="34" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="115" y="101" text-anchor="middle" font-size="10.5" fill="var(--text)">.com servers</text>
+            <rect x="255" y="80" width="110" height="34" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="310" y="101" text-anchor="middle" font-size="10.5" fill="var(--text)">.org servers</text>
+            <rect x="450" y="80" width="110" height="34" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.2"/>
+            <text x="505" y="101" text-anchor="middle" font-size="10.5" fill="var(--text)">.edu servers</text>
+            <line x1="310" y1="44" x2="115" y2="80" stroke="var(--text-muted)" stroke-width="1.1"/>
+            <line x1="310" y1="44" x2="310" y2="80" stroke="var(--text-muted)" stroke-width="1.1"/>
+            <line x1="310" y1="44" x2="505" y2="80" stroke="var(--text-muted)" stroke-width="1.1"/>
+            <rect x="20" y="150" width="95" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.1"/>
+            <text x="67" y="169" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">yahoo.com DNS</text>
+            <rect x="130" y="150" width="95" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.1"/>
+            <text x="177" y="169" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">amazon.com DNS</text>
+            <rect x="255" y="150" width="95" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.1"/>
+            <text x="302" y="169" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">pbs.org DNS</text>
+            <rect x="450" y="150" width="95" height="30" rx="4" fill="none" stroke="var(--border)" stroke-width="1.1"/>
+            <text x="497" y="169" text-anchor="middle" font-size="9.5" fill="var(--text-muted)">nyu.edu DNS</text>
+            <line x1="115" y1="114" x2="67" y2="150" stroke="var(--text-muted)" stroke-width="1"/>
+            <line x1="115" y1="114" x2="177" y2="150" stroke="var(--text-muted)" stroke-width="1"/>
+            <line x1="310" y1="114" x2="302" y2="150" stroke="var(--text-muted)" stroke-width="1"/>
+            <line x1="505" y1="114" x2="497" y2="150" stroke="var(--text-muted)" stroke-width="1"/>
+            <text x="600" y="27" font-size="10" fill="var(--text-muted)" text-anchor="end">Root</text>
+            <text x="600" y="97" font-size="10" fill="var(--text-muted)" text-anchor="end">Top-Level Domain</text>
+            <text x="600" y="167" font-size="10" fill="var(--text-muted)" text-anchor="end">Authoritative</text>
+          </svg>
+          <div class="diagram-cap">Fig. DNS is organized as a hierarchy: Root → Top-Level Domain (TLD) → Authoritative servers.</div>
+        </div>
+        <p><strong>Example:</strong> a client wants the IP address for <code>www.amazon.com</code>. First approximation: the client queries the root server to find the <code>.com</code> DNS server; queries the <code>.com</code> DNS server to get the <code>amazon.com</code> DNS server; queries the <code>amazon.com</code> DNS server to finally get the IP address.</p>
+
+        <h3 id="dns-zone">DNS zone vs domain</h3>
+        <p>DNS is organized according to <strong>zones</strong>. A zone groups contiguous domains and subdomains on the domain tree, and assigns management authority to a single entity. There can be multiple DNS zones — one per country, for instance — and each zone keeps records of who the authority is for each of its subdomains. The zone for <code>example.com</code> contains only the DNS records for hostnames that don't belong to any subdomain (like <code>mail.example.com</code>, which would be its own zone if delegated).</p>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          A <strong>domain</strong> is the naming subtree (e.g. everything under <code>example.com</code>); a <strong>zone</strong> is an administrative boundary — who actually manages and maintains the records for a piece of that tree. One domain can be split into many independently-managed zones — e.g. a CSE department can manage its own <code>cse.pes.edu</code> records without needing central IT to make every change, and a mistake in one zone doesn't take down the others.
+        </div>
+
+        <h3 id="dns-servers">Root, TLD, and authoritative servers</h3>
+        <p><strong>Root name servers:</strong> the official contact-of-last-resort for name servers that can't resolve a name — an incredibly important Internet function (the Internet couldn't function without it!). There are 13 logical root name "servers" worldwide, each replicated many times (~200 servers in the US alone). <strong>ICANN</strong> (Internet Corporation for Assigned Names and Numbers) manages the root DNS domain.</p>
+        <p><strong>TLD (Top-Level Domain) servers:</strong> responsible for <code>.com</code>, <code>.org</code>, <code>.net</code>, <code>.edu</code>, <code>.aero</code>, <code>.jobs</code>, <code>.museums</code>, and country-code domains (<code>.cn</code>, <code>.uk</code>, <code>.fr</code>, <code>.ca</code>, <code>.jp</code>). Network Solutions is the authoritative registry for <code>.com</code>/<code>.net</code>; Educause is the <code>.edu</code> TLD authority.</p>
+        <p><strong>Authoritative DNS servers:</strong> an organization's own DNS server(s), providing authoritative hostname-to-IP mappings for that organization's named hosts — can be maintained by the organization itself, or by a service provider.</p>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>Order: <strong>Root → TLD → Authoritative.</strong> Root points to the right TLD; TLD points to the right organization's authoritative server; the authoritative server has the actual answer.</div>
+
+        <h3 id="dns-local">Local DNS name servers</h3>
+        <p>A local DNS server does not strictly belong to the hierarchy. Each ISP (residential ISP, company, university) has its own local DNS server — also called the "default name server." (Check yours: macOS — <code>scutil --dns</code>; Windows — <code>ipconfig /all</code>.)</p>
+        <p>When a host makes a DNS query, the query is sent to its local DNS server, which returns a reply either from its local cache of recent name-to-address translation pairs (which may be out of date!) or by acting as a proxy that forwards the query into the hierarchy.</p>
+
+        <h3 id="dns-query">Iterated vs recursive queries</h3>
+        <p><strong>Example:</strong> a host at <code>engineering.nyu.edu</code> wants the IP address for <code>gaia.cs.umass.edu</code>.</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Iterated query</h5>
+            <p style="margin:0;">Each contacted server replies with the name of the next server to contact ("I don't know this name, but ask this server"). The requesting host / local DNS server does all the walking itself — the load is distributed, since every hop only answers what it knows.</p>
+          </div>
+          <div class="compare-col">
+            <h5>Recursive query</h5>
+            <p style="margin:0;">Puts the burden of full name resolution on the contacted name server ("...let me ask for you"). Each contacted server does the extra work on the client's behalf — but this concentrates heavy load at the upper levels of the hierarchy.</p>
+          </div>
+        </div>
+        <table>
+          <tr><th></th><th>Iterated Query</th><th>Recursive Query</th></tr>
+          <tr><td>Who does the walking?</td><td>The requesting client / local DNS server itself</td><td>Each contacted server, on the client's behalf</td></tr>
+          <tr><td>Where does the load land?</td><td>Distributed — every hop answers only what it knows</td><td>Concentrated — pushed onto upper-hierarchy servers</td></tr>
+          <tr><td>"I don't know this name…"</td><td>"...but ask this server" (referral)</td><td>"...let me ask for you" (relay)</td></tr>
+          <tr><td>Typically used</td><td>Local resolver ↔ root / TLD / authoritative</td><td>Client ↔ local DNS resolver</td></tr>
+        </table>
+        <div class="quiz">
+          <div class="qn">Q. Which DNS flag in a response tells you whether a server is willing to do recursive resolution for you?</div>
+          <div class="ans">Answer<div class="exp">The RA (Recursion Available) flag. Root and TLD servers never set it — by design, they only operate iteratively.</div></div>
+        </div>
+
+        <h3 id="dns-cache">Caching &amp; updating DNS records (TTL)</h3>
+        <p>Suppose <code>apricot.nyu.edu</code> queries <code>dns.nyu.edu</code> for the IP address of <code>cnn.com</code>. An hour later, another NYU host, <code>kiwi.nyu.edu</code>, queries the same. Once <em>any</em> name server learns a mapping, it caches it and immediately returns the cached mapping for future queries — improving response time. Cache entries time out (disappear) after some time, the <strong>TTL</strong> (time-to-live); TLD servers are typically cached in local name servers, so root name servers are not often visited.</p>
+        <div class="keypoint">
+          <span class="kp-label">KEY POINT</span>
+          Cached entries may be out of date — DNS is best-effort. If a host changes its IP address, that change may not be known Internet-wide until <strong>all</strong> TTLs expire. An update/notify mechanism was proposed as an IETF standard (RFC 2136). The standard operational fix for minimizing disruption during a planned IP change: lower the TTL well in advance, wait for the old (long) TTL to fully drain everywhere, make the change, then raise the TTL back — this bounds the worst-case staleness window rather than eliminating it.
+        </div>
+
+        <h3 id="dns-records">DNS resource records</h3>
+        <p>DNS is a distributed database storing <strong>resource records (RR)</strong>: <code>(name, value, type, ttl)</code>.</p>
+        <table>
+          <tr><th>Type</th><th>Purpose</th><th>Example (name → value)</th></tr>
+          <tr><td>A</td><td>Hostname → IPv4 address</td><td>relay1.bar.foo.com → 145.37.93.126</td></tr>
+          <tr><td>AAAA</td><td>Hostname → IPv6 address</td><td>www.example.com → 2606:2800:220:1:248:...</td></tr>
+          <tr><td>NS</td><td>Domain → authoritative name server for that domain</td><td>foo.com → dns.foo.com</td></tr>
+          <tr><td>CNAME</td><td>Alias name → canonical (real) name</td><td>www.ibm.com → servereast.backup2.ibm.com</td></tr>
+          <tr><td>MX</td><td>Domain → mail server, with priority</td><td>example.com → mail.example.com</td></tr>
+          <tr><td>TXT</td><td>Free-text data — domain verification, SPF/DKIM anti-spam records</td><td>example.com → "v=spf1 include:_spf..."</td></tr>
+          <tr><td>SOA</td><td>Start of Authority — zone's primary server, admin contact, TTL defaults</td><td>example.com → ns1.example.com, admin...</td></tr>
+        </table>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span><strong>CNAME</strong> points one hostname at another hostname (host aliasing). <strong>MX</strong> specifically tells you where a domain's email should be delivered, and — unlike CNAME — supports priority/fallback servers (mail-server aliasing).</div>
+
+        <h3 id="dns-msg">DNS message format</h3>
+        <p>DNS query and reply messages share the same format. The 12-byte header contains: a 16-bit <strong>identification</strong> field (the reply to a query reuses the same number), and 16 bits of <strong>flags</strong> — query(0)/reply(1), recursion desired, recursion available, whether the reply is authoritative.</p>
+        <table>
+          <tr><th>Header count field</th><th>Meaning</th></tr>
+          <tr><td># questions</td><td>Number of questions in the "questions" section</td></tr>
+          <tr><td># answer RRs</td><td>Number of resource records in the "answers" section</td></tr>
+          <tr><td># authority RRs</td><td>Number of records for authoritative servers</td></tr>
+          <tr><td># additional RRs</td><td>Number of additional "helpful" records</td></tr>
+        </table>
+        <ul>
+          <li><strong>Questions</strong> (variable #): name and type fields for a query.</li>
+          <li><strong>Answers</strong> (variable # of RRs): RRs in response to the query — type (e.g. A, NS, CNAME, MX), value, and TTL.</li>
+          <li><strong>Authority</strong> (variable # of RRs): records for authoritative servers.</li>
+          <li><strong>Additional info</strong> (variable # of RRs): extra helpful information that may be used.</li>
+        </ul>
+
+        <h3 id="dns-security">DNSSEC — why it matters</h3>
+        <p>Plain DNS has <strong>no authentication</strong> — a response claiming to be from an authoritative server could be forged (cache poisoning / spoofing). DNSSEC adds digital signatures (<strong>RRSIG</strong> records) to DNS responses, so a resolver can verify a record actually came from the zone's authoritative server. Trust is chained: Root → TLD → Authoritative — each level signs the key of the level below it.</p>
+        <div class="keypoint"><span class="kp-label">KEY POINT</span>DNSSEC provides <strong>authentication and integrity</strong>, not confidentiality — DNS queries are still visible in plaintext. It solves a different problem than TTL/caching does: it says nothing about the staleness of a legitimately-changed record (that's still governed by TTL) — it only prevents a forged/poisoned answer from being trusted.</div>
+
+        <h3 id="dns-toolkit">DNS demo toolkit &amp; inserting new records</h3>
+        <table>
+          <tr><th>Command</th><th>What it does</th><th>Use it for</th></tr>
+          <tr><td><code>dig @server name</code></td><td>Sends the query directly to one named server</td><td>Emulating a single hop of resolution</td></tr>
+          <tr><td><code>dig +trace name</code></td><td>Automatically walks root → TLD → authoritative</td><td>Showing the full iterated path in one shot</td></tr>
+          <tr><td><code>dig name</code></td><td>Standard lookup via your local resolver</td><td>Baseline lookup before diving into hops</td></tr>
+          <tr><td><code>nslookup name</code></td><td>Cross-platform basic lookup</td><td>Quick check on machines without dig</td></tr>
+          <tr><td><code>host name</code></td><td>Minimal, one-line lookup</td><td>Fast sanity check mid-demo</td></tr>
+        </table>
+        <div class="example">
+          <span class="ex-label">Registering a new domain — "Network Utopia"</span>
+          <ol>
+            <li>Register the name <code>networkutopia.com</code> at a DNS registrar (e.g. Network Solutions), providing names and IP addresses of authoritative name servers (primary and secondary).</li>
+            <li>The registrar inserts NS and A records into the <code>.com</code> TLD server: <code>(networkutopia.com, dns1.networkutopia.com, NS)</code> and <code>(dns1.networkutopia.com, 212.212.212.1, A)</code>.</li>
+            <li>Create the authoritative server locally at IP 212.212.212.1: add a type-A record for <code>www.networkutopia.com</code>, and a type-MX record for <code>networkutopia.com</code>.</li>
+          </ol>
+        </div>
+        <div class="quiz">
+          <div class="qn">Q. What's a practical reason an organization would split its domain into multiple zones?</div>
+          <div class="ans">Answer<div class="exp">To delegate control — e.g. a CSE department managing its own cse.pes.edu records without needing central IT to make every change, and so a mistake in one zone doesn't take down the others.</div></div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           GROUP 8 : P2P & OTHER APPLICATION PROTOCOLS
+      ============================================================= -->
+      <section class="topic" id="p2pother">
+        <div class="topic-header">
+          <div class="topic-eyebrow"><h2>PART 08</h2></div>
+          <h2 class="topic-title">P2P Architecture &amp; Other Application-Layer Protocols</h2>
+          <p class="topic-intro">Rounding out the application layer: peer-to-peer systems, and the everyday protocols behind file transfer, email, address assignment, network management, and remote access.</p>
+        </div>
+
+        <h3 id="p2p">Peer-to-peer (P2P) architecture</h3>
+        <p>No centralized server — arbitrary end systems directly communicate. Peers request service from other peers, and provide service in return to other peers.</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Advantages</h5>
+            <ul>
+              <li><strong>Self scalability</strong> — new peers bring new service capacity, and new service demands</li>
+              <li>Efficient resource sharing</li>
+              <li>Cost-effective, high availability</li>
+              <li>Load is distributed among peers</li>
+            </ul>
+          </div>
+          <div class="compare-col">
+            <h5>Challenges</h5>
+            <ul>
+              <li>Peers are intermittently connected and change IP addresses</li>
+              <li>Complex management</li>
+            </ul>
+          </div>
+        </div>
+        <p><strong>Examples:</strong> P2P file sharing (BitTorrent), media streaming (Spotify), VoIP (Skype), blockchain and cryptocurrencies, video and content distribution.</p>
+
+        <h3 id="other-ftp">FTP — File Transfer Protocol</h3>
+        <ul>
+          <li>Used to exchange large files on the Internet.</li>
+          <li>Runs over TCP.</li>
+          <li>Invoked from the command prompt or a GUI.</li>
+          <li>Allows updating (delete, rename, move, copy) files at a server.</li>
+          <li><strong>Two connections:</strong> a data connection (port 20) and a separate control connection (port 21).</li>
+        </ul>
+
+        <h3 id="other-smtp">SMTP — Simple Mail Transfer Protocol</h3>
+        <ul>
+          <li>An Internet standard for e-mail transmission.</li>
+          <li>Connections are secured with SSL (Secure Socket Layer).</li>
+          <li>Messages are stored and then forwarded to the destination (relay).</li>
+          <li>Uses TCP port <strong>25</strong>.</li>
+        </ul>
+
+        <h3 id="other-dhcp">DHCP — Dynamic Host Configuration Protocol</h3>
+        <ul>
+          <li>Assigns IP addresses to computers in a network dynamically.</li>
+          <li>IP addresses may change even while a computer remains in the network (DHCP <strong>leases</strong>).</li>
+          <li>Uses UDP; server port <strong>67</strong>, client port <strong>68</strong>.</li>
+          <li>Client-server model, based on a four-step exchange: <strong>Discovery, Offer, Request, ACK</strong> ("DORA").</li>
+          <li>Also delivers subnet mask, DNS server address, and default gateway to the client.</li>
+        </ul>
+
+        <h3 id="other-snmp">SNMP — Simple Network Management Protocol</h3>
+        <p>Exchanges management information between network devices. Basic components and functionalities:</p>
+        <ul>
+          <li><strong>SNMP Manager</strong></li>
+          <li><strong>Managed Devices</strong></li>
+          <li><strong>SNMP Agents</strong></li>
+          <li><strong>MIB</strong> (Management Information Base)</li>
+        </ul>
+
+        <h3 id="other-telnet">Telnet &amp; SSH</h3>
+        <p>Both allow a user to communicate with a remote device, used mostly by network admins to remotely access and manage devices.</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Telnet</h5>
+            <ul><li>Telnet client and server installed</li><li>Uses TCP port <strong>23</strong></li><li>Traffic is unencrypted</li></ul>
+          </div>
+          <div class="compare-col">
+            <h5>SSH</h5>
+            <ul><li>Uses public-key encryption</li><li>Uses TCP port <strong>22</strong> by default</li></ul>
+          </div>
+        </div>
+
+        <h3 id="unit-summary">Unit summary &amp; practice quiz</h3>
+        <p>Our study of the network application layer is now complete!</p>
+        <div class="compare">
+          <div class="compare-col">
+            <h5>Application architectures</h5>
+            <ul><li>Client-server</li><li>P2P</li></ul>
+            <h5 style="margin-top:12px;">Application service requirements</h5>
+            <ul><li>Reliability, bandwidth, delay</li></ul>
+            <h5 style="margin-top:12px;">Internet transport service model</h5>
+            <ul><li>Connection-oriented, reliable: TCP</li><li>Unreliable, datagrams: UDP</li></ul>
+          </div>
+          <div class="compare-col">
+            <h5>Specific protocols</h5>
+            <ul><li>HTTP</li><li>DNS</li><li>P2P: BitTorrent</li></ul>
+            <h5 style="margin-top:12px;">Socket programming</h5>
+            <ul><li>TCP, UDP sockets</li></ul>
+          </div>
+        </div>
+        <p><strong>Most importantly:</strong> we learned about protocols in general — a typical request/reply message exchange (client requests info or a service; server responds with data and a status code), and message formats (headers giving info about data; the data/payload itself being communicated).</p>
+        <p><strong>Important recurring themes:</strong> centralized vs. decentralized; stateless vs. stateful; scalability; reliable vs. unreliable message transfer; "complexity at the network edge."</p>
+
+        <div class="quiz">
+          <div class="qn">Q1. Why does TCP need a connection "setup" step before any data flows, while UDP just sends?</div>
+          <div class="ans">Answer<div class="exp">TCP has to establish shared state between sender and receiver first (for reliability, ordering, flow/congestion control to work) — UDP has no such state to set up, which is exactly why it's called a "no-frills" extension of IP.</div></div>
+        </div>
+        <div class="quiz">
+          <div class="qn">Q2. A segment header's first 32 bits hold two fields. What are they, and how wide is each?</div>
+          <div class="ans">Answer<div class="exp">Source port # and destination port #, 16 bits each.</div></div>
+        </div>
+        <div class="quiz">
+          <div class="qn">Q3. Why is a DNS query typically sent over UDP rather than TCP?</div>
+          <div class="ans">Answer<div class="exp">It's a small, one-shot request/response — the overhead of a TCP connection setup isn't worth it for a single quick exchange, so UDP's speed wins out.</div></div>
+        </div>
+        <div class="quiz">
+          <div class="qn">Q4. GBN and SR represent two different design choices. Which one did TCP pick?</div>
+          <div class="ans">Answer<div class="exp">Neither — it's a hybrid. Cumulative ACKs like GBN, but a single retransmission on timeout and (with the SACK option) selective recovery like SR.</div></div>
+        </div>
+        <div class="quiz">
+          <div class="qn">Q5. What problem does DNSSEC solve that TTL/caching does not?</div>
+          <div class="ans">Answer<div class="exp">Authenticity and integrity — DNSSEC lets a resolver verify a response actually came from the real authoritative server (via signed records, chained root → TLD → authoritative), preventing forged/poisoned answers. It says nothing about the staleness of a legitimately-changed record — that's still governed by TTL.</div></div>
+        </div>
+      </section>
+
+      <p class="footer-note">Compiled study notes · Computer Networks · Unit 2 — Transport Layer &amp; Application Layer</p>
+
+    </main>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  // ---------- Theme toggle ----------
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) root.classList.add('dark');
+  })();
+  const themeBtn = document.getElementById('themeBtn');
+  const themeIcon = document.getElementById('themeIcon');
+  const moonPath = 'M12 3a6 6 0 109 9 9 9 0 11-9-9z';
+  const sunPath = 'M12 3v2m0 14v2m9-9h-2M5 12H3m15.4-6.4l-1.4 1.4M6.4 17.6l-1.4 1.4m12.6 0l-1.4-1.4M6.4 6.4L5 5m7 3a4 4 0 100 8 4 4 0 000-8z';
+  const isInitiallyDark = document.documentElement.classList.contains('dark');
+  themeIcon.innerHTML = '<path d="' + (isInitiallyDark ? sunPath : moonPath) + '"/>';
+  themeBtn.addEventListener('click', () => {
+    try{
+      const isDark = document.documentElement.classList.toggle('dark');
+      themeIcon.innerHTML = '<path d="' + (isDark ? sunPath : moonPath) + '"/>';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }catch(e){}
+  });
+
+  // ---------- Sidebar group collapse ----------
+  function toggleGroup(el){
+    el.parentElement.classList.toggle('collapsed');
+  }
+
+  // ---------- Mobile sidebar ----------
+  const sidebar = document.getElementById('sidebar');
+  document.getElementById('mobileToggle').addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+  document.querySelectorAll('.toc-links a').forEach(a => {
+    a.addEventListener('click', () => sidebar.classList.remove('open'));
+  });
+
+  // ---------- Search filter ----------
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('keydown', e => { if(e.key === 'Escape'){ searchInput.value=''; filterToc(); searchInput.blur(); }});
+  document.addEventListener('keydown', e => {
+    if(e.key === '/' && document.activeElement !== searchInput){
+      e.preventDefault(); searchInput.focus();
+    }
+  });
+  function filterToc(){
+    const q = searchInput.value.trim().toLowerCase();
+    document.querySelectorAll('.toc-group').forEach(group => {
+      let anyVisible = false;
+      group.querySelectorAll('.toc-links a').forEach(a => {
+        const match = a.textContent.toLowerCase().includes(q);
+        a.classList.toggle('hidden', !match);
+        if(match) anyVisible = true;
+      });
+      group.classList.toggle('hidden', !anyVisible);
+      if(q.length > 0 && anyVisible){ group.classList.remove('collapsed'); }
+    });
+  }
+  searchInput.addEventListener('input', filterToc);
+
+  // ---------- Scrollspy ----------
+  const links = Array.from(document.querySelectorAll('.toc-links a'));
+  const targets = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = '#' + entry.target.id;
+      const link = links.find(a => a.getAttribute('href') === id);
+      if(!link) return;
+      if(entry.isIntersecting){
+        links.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+  targets.forEach(t => io.observe(t));
+
+  // ---------- Progress bar + back to top ----------
+  const progressBar = document.getElementById('progressBar');
+  const backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    progressBar.style.width = scrolled + '%';
+    backToTop.classList.toggle('show', h.scrollTop > 500);
+  });
+  backToTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+</body>
+</html>

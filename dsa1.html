@@ -3,118 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Data Structures — Unit 1 Notes</title>
+<script>
+  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/speed-insights/script.js"></script>
+<script>
+  // Apply saved theme instantly (no flash)
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved
+      ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) root.classList.add('dark');
+  })();
+</script>
+<title>Coming Soon</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 <style>
 :root{
   --bg:#f3f3f1;
-  --bg-elev:#f8f8f6;
-  --ink:#1c1f1d;
-  --ink-soft:#565f5a;
-  --ink-faint:#8a9089;
+  --surface:#f8f8f6;
+  --surface-2:#eceae5;
+  --text:#1c1f1d;
+  --text-soft:#565f5a;
+  --text-faint:#8a9089;
   --border:#dfe1dc;
-  --sidebar-bg:#eceae5;
-  --code-bg:#101b2d;
-  --code-ink:#eaf3ff;
   --accent:#2c5f52;
   --accent-soft:#dfe9e4;
-  --accent-2:#2c5f52;
-  --accent-2-soft:#dfe9e4;
-  --link:#2c5f52;
-  --shadow:none;
+  --accent-text:#1f4238;
   --radius: 3px;
+  color-scheme: light;
 }
-:root:not([data-theme="light"]){
-  @media (prefers-color-scheme: dark){
-    --bg:#070b14;
-    --bg-elev:#0d1524;
-    --ink:#eaf3ff;
-    --ink-soft:#a9bbd8;
-    --ink-faint:#7d8eaf;
-    --border:#1d2d47;
-    --sidebar-bg:#101d33;
-    --code-bg:#101b2d;
-    --code-ink:#eaf3ff;
-    --accent:#60a5fa;
-    --accent-soft:#10213d;
-    --accent-2:#60a5fa;
-    --accent-2-soft:#10213d;
-    --shadow:none;
-  }
-}
-:root[data-theme="dark"]{
+html.dark{
   --bg:#070b14;
-  --bg-elev:#0d1524;
-  --ink:#eaf3ff;
-  --ink-soft:#a9bbd8;
-  --ink-faint:#7d8eaf;
+  --surface:#0d1524;
+  --surface-2:#101d33;
+  --text:#eaf3ff;
+  --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf;
   --border:#1d2d47;
-  --sidebar-bg:#101d33;
-  --code-bg:#101b2d;
-  --code-ink:#eaf3ff;
   --accent:#60a5fa;
   --accent-soft:#10213d;
-  --accent-2:#60a5fa;
-  --accent-2-soft:#10213d;
-  --shadow:none;
+  --accent-text:#dceeff;
+  --formula-bg:#101a2d;
+  --formula-border:#8ab4ff;
+  --code-bg:#101b2d;
+  --mark-bg:#3b5d9c;
+  color-scheme: dark;
 }
-
 *{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
 body{
   margin:0;
   background:var(--bg);
-  color:var(--ink);
-  font-family:'IBM Plex Sans', system-ui, sans-serif;
-  font-size:16px;
-  line-height:1.65;
-}
-::selection{ background:var(--accent-soft); }
-
-/* ---------- Layout ---------- */
-.app{
-  display:flex;
+  color:var(--text);
+  font-family:'IBM Plex Sans', sans-serif;
+  line-height:1.45;
+  transition:background .25s ease, color .25s ease;
   min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 30px 16px;
 }
-.sidebar{
-  width:300px;
-  flex-shrink:0;
-  background:var(--sidebar-bg);
-  border-right:1px solid var(--border);
-  position:sticky;
-  top:0;
-  height:100vh;
-  overflow-y:auto;
-  padding:20px 16px 40px;
+
+.container{
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
 }
-.sidebar-head{
+
+header{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:8px;
-  margin-bottom:14px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
 .brand{
   font-family:'IBM Plex Mono', monospace;
-  font-weight:600;
-  font-size:13px;
-  letter-spacing:0.02em;
-  color:var(--ink);
-}
-.brand small{
-  display:block;
-  font-weight:400;
-  color:var(--ink-faint);
   font-size:11px;
-  margin-top:2px;
+  letter-spacing:.04em;
+  color:var(--text-faint);
+  text-transform: uppercase;
 }
-.theme-btn{
+.brand strong{
+  display:block;
+  font-family:'Newsreader', serif;
+  font-size:22px;
+  color:var(--text);
+  font-weight:500;
+  text-transform: none;
+  margin-top:2px;
+  line-height: 1.1;
+}
+
+#themeToggle{
   border:1px solid var(--border);
-  background:var(--bg-elev);
-  color:var(--ink);
+  background:var(--surface);
+  color:var(--text);
   width:32px;
   height:32px;
   border-radius:var(--radius);
@@ -123,1987 +113,133 @@ body{
   align-items:center;
   justify-content:center;
   flex-shrink:0;
-  transition:background .15s ease;
+  transition: background .15s ease;
 }
-.theme-btn:hover{ background:var(--accent-soft); }
-.theme-btn svg{ width:16px; height:16px; }
+#themeToggle:hover{ background:var(--accent-soft); }
+#themeToggle svg{ width:15px; height:15px; }
 
-.search-wrap{
-  position:relative;
-  margin-bottom:16px;
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease;
 }
-#searchInput{
-  width:100%;
-  padding:8px 10px 8px 30px;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  background:var(--bg-elev);
-  color:var(--ink);
-  font-family:inherit;
-  font-size:13px;
-}
-#searchInput:focus{ outline:2px solid var(--accent); outline-offset:1px; }
-.search-icon{
-  position:absolute;
-  left:9px;
-  top:50%;
-  transform:translateY(-50%);
-  width:14px;
-  height:14px;
-  color:var(--ink-faint);
-  pointer-events:none;
-}
-#searchCount{
-  font-size:11px;
-  color:var(--ink-faint);
-  margin:-10px 0 12px 2px;
-  min-height:14px;
+.card:hover{
+  border-color: var(--accent);
 }
 
-nav.toc{ font-size:13.5px; }
-.toc-group{ margin-bottom:4px; }
-.toc-group-title{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:0.06em;
-  color:var(--ink-faint);
-  padding:10px 6px 4px;
-  cursor:pointer;
-  user-select:none;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.toc-group-title .chevron{
-  width:9px; height:9px;
-  border-right:1.5px solid var(--ink-faint);
-  border-bottom:1.5px solid var(--ink-faint);
-  transform:rotate(45deg);
-  transition:transform .15s ease;
-  flex-shrink:0;
-}
-.toc-group.collapsed .chevron{ transform:rotate(-45deg); }
-.toc-group.collapsed .toc-list{ display:none; }
-.toc-list{ list-style:none; margin:0; padding:0 0 6px 4px; }
-.toc-list li a{
-  display:block;
-  padding:5px 8px 5px 14px;
-  border-left:2px solid transparent;
-  color:var(--ink-soft);
-  text-decoration:none;
-  border-radius:0 var(--radius) var(--radius) 0;
-}
-.toc-list li a:hover{ background:var(--accent-soft); color:var(--ink); }
-.toc-list li a.active{
-  border-left-color:var(--accent);
-  color:var(--accent);
-  background:var(--accent-soft);
-  font-weight:500;
-}
-.toc-hidden{ display:none !important; }
-
-main{
-  flex:1;
-  min-width:0;
-  max-width:880px;
-  margin:0 auto;
-  padding:48px 56px 120px;
-}
-@media (max-width: 900px){
-  main{ padding:32px 20px 100px; }
-}
-@media (max-width: 760px){
-  .sidebar{ position:fixed; z-index:50; transform:translateX(-100%); transition:transform .2s ease; box-shadow:2px 0 10px rgba(0,0,0,.2);}
-  .sidebar.open{ transform:translateX(0); }
-  .menu-toggle{ display:flex !important; }
+.title{
+  font-family: 'Newsreader', serif;
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0 0 12px 0;
+  color: var(--text);
 }
 
-.menu-toggle{
-  display:flex;
-  position:fixed;
-  top:14px;
-  left:14px;
-  z-index:60;
-  width:36px; height:36px;
-  border-radius:var(--radius);
-  background:var(--bg-elev);
-  border:1px solid var(--border);
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-}
-.menu-toggle svg{ width:18px;height:18px; color:var(--ink); }
-@media (min-width:761px){
-  .sidebar{transition:width .2s ease, padding .2s ease, border-color .2s ease;}
-  .sidebar.closed{width:0;padding-left:0;padding-right:0;border-right-color:transparent;}
-  .sidebar.closed > *{visibility:hidden;}
+.signature{
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+  margin: 0;
 }
 
-/* ---------- Typography ---------- */
-.doc-title{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:2rem;
-  font-weight:700;
-  margin:0 0 6px;
-  letter-spacing:-0.01em;
-}
-.doc-sub{
-  color:var(--ink-soft);
-  font-size:15px;
-  margin:0 0 40px;
-  padding-bottom:24px;
-  border-bottom:1px solid var(--border);
-}
-h2.chapter{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:1.5rem;
-  font-weight:700;
-  margin:64px 0 4px;
-  padding-top:8px;
-  color:var(--ink);
-  scroll-margin-top:24px;
-}
-h2.chapter .num{ color:var(--accent); margin-right:10px; }
-.chapter-intro{
-  color:var(--ink-soft);
-  font-size:15px;
-  margin:0 0 28px;
-  max-width:66ch;
-}
-h3{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:1.08rem;
-  font-weight:600;
-  margin:36px 0 10px;
-  scroll-margin-top:24px;
-  color:var(--ink);
-}
-h4{
-  font-size:0.95rem;
-  font-weight:600;
-  margin:22px 0 8px;
-  color:var(--ink);
-}
-p{ margin:0 0 14px; max-width:72ch; color:var(--ink); }
-ul,ol{ margin:0 0 16px; padding-left:22px; max-width:70ch; }
-li{ margin-bottom:6px; }
-strong{ font-weight:600; }
-a{ color:var(--link); }
-
-.lead{ font-size:16.5px; color:var(--ink-soft); }
-
-/* ---------- Callouts ---------- */
-.note, .warn, .tip{
-  border-left:3px solid var(--border);
-  background:var(--bg-elev);
-  padding:12px 16px;
-  border-radius:0 var(--radius) var(--radius) 0;
-  margin:0 0 18px;
-  font-size:14.5px;
-  max-width:70ch;
-}
-.note{ border-left-color:var(--accent); }
-.warn{ border-left-color:var(--accent-2); }
-.note .label, .warn .label{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:0.05em;
-  font-weight:600;
-  display:block;
-  margin-bottom:4px;
-}
-.note .label{ color:var(--accent); }
-.warn .label{ color:var(--accent-2); }
-
-/* ---------- Formula highlight ---------- */
-.formula{
-  background:var(--accent-soft);
-  border:1px solid var(--accent);
-  border-radius:var(--radius);
-  padding:14px 18px;
-  margin:16px 0 20px;
-  font-family:'IBM Plex Mono', monospace;
-  font-size:14.5px;
-  color:var(--ink);
-  max-width:74ch;
-  overflow-x:auto;
-}
-.formula .flabel{
-  font-family:'IBM Plex Sans', sans-serif;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:0.05em;
-  font-weight:600;
-  color:var(--accent);
-  display:block;
-  margin-bottom:6px;
-}
-code.inline{
-  font-family:'IBM Plex Mono', monospace;
-  background:var(--accent-soft);
-  color:var(--ink);
-  padding:1px 5px;
-  border-radius:2px;
-  font-size:0.88em;
+.footer{
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-faint);
 }
 
-/* ---------- Code blocks ---------- */
-pre{
-  background:var(--code-bg);
-  color:var(--code-ink);
-  padding:16px 18px;
-  border-radius:var(--radius);
-  overflow-x:auto;
-  margin:0 0 20px;
-  font-size:13.5px;
-  line-height:1.6;
-  max-width:100%;
-  border:1px solid var(--border);
+.footer a{
+  color: var(--accent-text);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--border);
 }
-pre code{
-  font-family:'IBM Plex Mono', monospace;
-  white-space:pre;
-}
-.kw{ color:#7FB4E0; }
-.ty{ color:#5FBFA6; }
-.str{ color:#E0985A; }
-.cm{ color:#767C6F; font-style:italic; }
-.fn{ color:#D8B25F; }
-
-.code-cap{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:11.5px;
-  color:var(--ink-faint);
-  margin:-14px 0 20px;
-}
-
-/* ---------- Tables ---------- */
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin:0 0 22px;
-  font-size:14px;
-  max-width:78ch;
-}
-th,td{
-  border:1px solid var(--border);
-  padding:8px 12px;
-  text-align:left;
-  vertical-align:top;
-}
-th{
-  background:var(--bg-elev);
-  font-family:'IBM Plex Mono', monospace;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:0.03em;
-  color:var(--ink-soft);
-}
-tr:nth-child(even) td{ background:var(--bg-elev); }
-
-/* ---------- Diagrams ---------- */
-.diagram{
-  background:var(--bg-elev);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:20px;
-  margin:8px 0 22px;
-  overflow-x:auto;
-}
-.diagram svg{ display:block; margin:0 auto; max-width:100%; height:auto; }
-.diagram-cap{
-  font-size:12.5px;
-  color:var(--ink-faint);
-  text-align:center;
-  margin-top:10px;
-  font-style:italic;
-}
-.svg-label{ font-family:'IBM Plex Mono', monospace; font-size:12px; fill:var(--ink); }
-.svg-label-sm{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; fill:var(--ink-soft); }
-
-/* ---------- Misc ---------- */
-.divider{ border:none; border-top:1px solid var(--border); margin:40px 0; }
-.chips{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 20px; }
-.chip{
-  font-family:'IBM Plex Mono', monospace;
-  font-size:12px;
-  padding:4px 10px;
-  border:1px solid var(--border);
-  border-radius:20px;
-  color:var(--ink-soft);
-  background:var(--bg-elev);
-}
-.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-@media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
-
-.home-link{
-  position:fixed;
-  right:18px;
-  bottom:18px;
-  z-index:700;
-  padding:8px 12px;
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  background:var(--bg-elev);
-  color:var(--ink);
-  font:500 12px 'IBM Plex Mono',monospace;
-  text-decoration:none;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-.home-link:hover{ background:var(--accent-soft); color:var(--ink); }
-
-#backTop{
-  position:fixed;
-  bottom:66px;
-  right:18px;
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:var(--bg-elev);
-  border:1px solid var(--border);
-  color:var(--ink-soft);
-  cursor:pointer;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  z-index:40;
-}
-#backTop svg{ width:18px; height:18px; }
-#backTop.show{ display:flex; }
-@media (max-width:600px){
-  .home-link{ right:12px; bottom:12px; padding:7px 10px; }
-  #backTop{ right:12px; bottom:64px; }
-}
-
-mark.hl{
-  background:var(--accent-2-soft);
-  color:var(--ink);
-  padding:0 2px;
-  border-radius:2px;
-}
-
-footer{
-  margin-top:70px;
-  padding-top:22px;
-  border-top:1px solid var(--border);
-  color:var(--ink-faint);
-  font-size:12.5px;
+.footer a:hover{
+  border-bottom-color: var(--accent);
 }
 </style>
 <style>
-#themeBtn{position:fixed;top:18px;right:88px;z-index:700;}
+:root{--bg:#f3f3f1;--surface:#f8f8f6;--surface-2:#eceae5;--text:#1c1f1d;--text-soft:#565f5a;--text-faint:#8a9089;--border:#dfe1dc;--accent:#2c5f52;--accent-soft:#dfe9e4;--accent-text:#1f4238;}
+html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--text-soft:#a9bbd8;--text-faint:#7d8eaf;--border:#1d2d47;--accent:#60a5fa;--accent-soft:#10213d;--accent-text:#dceeff;}
+.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
+@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
+</style>
+<style>
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:24px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
+.site-footer a{color:var(--accent-text);text-decoration:none;}
+.site-footer a:hover{color:var(--accent);}
+@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
+.site-header{border-color:var(--border);color:var(--text);}
+.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
+.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
+.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
+</style>
+<style>
+#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
 .home-link{top:18px;bottom:auto;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeBtn{top:12px;right:76px;}}
-</style>
-<style>
-.dsa-playground{position:fixed;top:0;right:0;z-index:800;width:var(--playground-width,50vw);height:100vh;margin:0;border-radius:0;transform:translateX(100%);transition:transform .24s ease;display:flex;flex-direction:column;border-left:1px solid var(--border);box-shadow:-8px 0 30px rgba(0,0,0,.22);background:var(--bg-elev);overflow:hidden;}
-body.playground-open .dsa-playground{transform:translateX(0);}
-body.playground-open main{flex:0 0 calc(100vw - var(--playground-width,50vw));width:calc(100vw - var(--playground-width,50vw));max-width:none;margin:0;overflow-x:hidden;}
-.dsa-playground-resize{position:absolute;left:-3px;top:0;bottom:0;width:6px;cursor:col-resize;z-index:20;}
-.dsa-playground-resize:hover,.dsa-playground-resize.active{background:var(--accent);}
-.dsa-playground-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
-.dsa-playground-title{font:600 13px 'IBM Plex Mono',monospace;color:var(--ink);}
-.dsa-playground-meta{font-size:12px;color:var(--ink-faint);}
-.dsa-playground-close{border:1px solid var(--border);border-radius:var(--radius);padding:5px 9px;background:var(--bg);color:var(--ink);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;}
-.dsa-playground-close:hover{background:var(--accent-soft);}
-
-/* Resizable Split */
-.dsa-split{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden;}
-.dsa-split-editor{flex:4 1 0;min-height:120px;display:flex;min-width:0;position:relative;}
-.dsa-split-terminal{flex:1 1 0;min-height:90px;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
-
-/* Editor */
-.dsa-playground-editor{flex:1 1 auto;width:100%;min-height:0;resize:none;overflow:auto;box-sizing:border-box;padding:14px;border:0;outline:none;background:var(--code-bg);color:var(--code-ink);font:13px/1.6 'IBM Plex Mono',monospace;tab-size:4;}
-.dsa-playground-editor:focus{box-shadow:inset 0 0 0 2px var(--accent);}
-
-/* Controls Toolbar */
-.dsa-playground-controls{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg-elev);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-.dsa-playground-controls button{border:1px solid var(--border);border-radius:var(--radius);padding:5px 10px;background:var(--bg);color:var(--ink);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;}
-.dsa-playground-controls button:hover{background:var(--accent-soft);}
-.dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
-.dsa-playground-controls .run:hover{filter:brightness(1.08);}
-
-/* Drag Handle */
-.dsa-split-handle{flex:0 0 auto;height:12px;cursor:row-resize;position:relative;touch-action:none;background:var(--bg-elev);z-index:5;}
-.dsa-split-handle::before{content:"";position:absolute;inset:50% 16px auto 16px;height:2px;transform:translateY(-50%);background:var(--border);border-radius:2px;transition:background .15s,opacity .15s;}
-.dsa-split-handle:hover::before,.dsa-split-handle:focus-visible::before{background:var(--accent);}
-.dsa-split-handle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
-
-/* Global cursor & selection during drag */
-body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:none !important;}
-
-/* Terminal inside split */
-.dsa-split-terminal .dsa-terminal{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;height:100%;border-top:0;background:var(--code-bg);}
-.dsa-split-terminal .dsa-terminal-head{flex:0 0 auto;display:flex;justify-content:space-between;padding:6px 12px;color:var(--ink-faint);font:10px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.06);}
-.dsa-split-terminal .dsa-terminal-screen{flex:1 1 auto;min-height:0;padding:8px 10px;background:#080d17;overflow:hidden;}
-.dsa-split-terminal .dsa-terminal-screen .xterm{height:100%;padding:4px;}
-.dsa-split-terminal .dsa-terminal-screen .xterm-viewport{overflow-y:auto !important;}
-
-.dsa-playground-launch{margin:0 0 24px;border:1px solid var(--accent);border-radius:var(--radius);padding:9px 13px;background:var(--accent);color:var(--bg);font:600 12px 'IBM Plex Mono',monospace;cursor:pointer;}
-.dsa-playground-launch:hover{filter:brightness(1.08);}
-
-@media (max-width:640px){.dsa-playground-head{align-items:flex-start;flex-direction:column;gap:4px;}.dsa-playground-controls{align-items:stretch;flex-wrap:wrap;}}
-@media (max-width:480px){.dsa-playground{width:100vw;}body.playground-open main{flex:1 1 auto;width:auto;max-width:880px;}.dsa-playground-resize{display:none;}.dsa-playground-launch{margin-bottom:24px;}}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 
-<button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
-
-<div class="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head">
-      <div class="brand">DS &amp; APPLICATIONS<small>Unit 1 · Study Notes</small></div>
-      <button class="theme-btn" id="themeBtn" aria-label="Toggle theme">
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
+<div class="container">
+  <header class="site-header">
+    <div class="brand">
+      Reference Portal
+      <strong>Coming Soon</strong>
     </div>
-
-    <div class="search-wrap">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
-    </div>
-    <div id="searchCount"></div>
-
-    <nav class="toc" id="tocNav">
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>1 · Functions</div>
-        <ul class="toc-list">
-          <li><a href="#func-intro" data-kw="function definition divide conquer sharing maintenance reliability reuse pure function">Why functions</a></li>
-          <li><a href="#func-anatomy" data-kw="return type parameter list identifier activation record stack frame">Anatomy of a function</a></li>
-          <li><a href="#func-call" data-kw="function call arguments evaluation order copy control transfer">The function call, step by step</a></li>
-          <li><a href="#func-decl-def" data-kw="declaration definition prototype signature interface implementation">Declaration vs. definition</a></li>
-          <li><a href="#param-passing" data-kw="call by value pointer parameter passing mechanism dereference lvalue">Parameter passing &amp; pointers</a></li>
-          <li><a href="#return-mech" data-kw="return mechanism temporary dangling pointer local variable stack frame">Return mechanism &amp; dangling pointers</a></li>
-          <li><a href="#interface-impl" data-kw="interface implementation header file client server separate compilation">Interface vs. implementation</a></li>
-          <li><a href="#makefile" data-kw="makefile make tool target sources dependency multiple files">Multiple files &amp; the make tool</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>2 · Recursion</div>
-        <ul class="toc-list">
-          <li><a href="#recursion-intro" data-kw="recursion base case escape hatch recursive function definition">What is recursion</a></li>
-          <li><a href="#recursion-ex1" data-kw="count set bits binary representation recursive trace">Example — counting set bits</a></li>
-          <li><a href="#recursion-ex2" data-kw="fast exponentiation power function recursive a to the n">Example — fast exponentiation</a></li>
-          <li><a href="#recursion-alias" data-kw="gcd aliasing pointer same variable pass by reference surprising">Aliasing surprise — GCD by pointers</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>3 · Arrays</div>
-        <ul class="toc-list">
-          <li><a href="#array-basics" data-kw="array homogeneous zero based index random access degenerates pointer">Array — characteristics</a></li>
-          <li><a href="#array-init" data-kw="array initialization declaration partial initialization">Declaration &amp; initialization</a></li>
-          <li><a href="#array-traversal" data-kw="array traversal pointer arithmetic indexing versions">Traversal — four ways</a></li>
-          <li><a href="#array-params" data-kw="array parameter passing sentinel pointer decay function argument">Passing arrays to functions</a></li>
-          <li><a href="#md-array" data-kw="multidimensional array two dimensional matrix row major memory layout">Multidimensional arrays</a></li>
-          <li><a href="#md-array-address" data-kw="address formula row major base address offset formula">Address formula (row-major)</a></li>
-          <li><a href="#md-array-params" data-kw="passing 2d array function parameter variable length array vla">Passing 2D arrays to functions</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>4 · Structures</div>
-        <ul class="toc-list">
-          <li><a href="#struct-basics" data-kw="structure heterogeneous named collection fields members">Structures — the basics</a></li>
-          <li><a href="#struct-layout" data-kw="structure layout size padding alignment pragma pack">Layout, padding &amp; alignment</a></li>
-          <li><a href="#struct-init" data-kw="structure initialization designated initializer partial">Initializing structures</a></li>
-          <li><a href="#struct-copy" data-kw="structure copy assignment memberwise copy compare structures">Copying &amp; comparing structures</a></li>
-          <li><a href="#struct-params" data-kw="structure parameter passing pass by value pointer to structure const">Passing &amp; returning structures</a></li>
-          <li><a href="#struct-typedef" data-kw="typedef alias type name interface">typedef — naming a type</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>5 · Dynamic Memory</div>
-        <ul class="toc-list">
-          <li><a href="#dmm-intro" data-kw="heap dynamic memory management pointer to pointer double pointer">Why dynamic memory</a></li>
-          <li><a href="#malloc-free" data-kw="malloc free heap bookkeeping housekeeping allocate size">malloc &amp; free</a></li>
-          <li><a href="#garbage-leak" data-kw="garbage memory leak dangling pointer undefined behaviour double free">Garbage, leaks &amp; dangling pointers</a></li>
-          <li><a href="#calloc-realloc" data-kw="calloc realloc reallocate initialize zero grow shrink">calloc &amp; realloc</a></li>
-          <li><a href="#self-ref" data-kw="self referential structure struct pointer to itself infinite recursion">Self-referential structures</a></li>
-          <li><a href="#struct-heap" data-kw="structure containing pointer heap aliasing case study">Structures holding heap pointers</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>6 · Types &amp; ADTs</div>
-        <ul class="toc-list">
-          <li><a href="#type-concept" data-kw="type concept classification set legal values operations">The concept of a type</a></li>
-          <li><a href="#adt-concept" data-kw="abstract data type adt interface implementation inversion of dependency">Abstract Data Types</a></li>
-          <li><a href="#list-adt" data-kw="list data structure sequential access ordinal position interface">List — as an ADT</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>7 · Linked Lists</div>
-        <ul class="toc-list">
-          <li><a href="#ll-basics" data-kw="linked list node self referential struct create nodes">Building a linked list</a></li>
-          <li><a href="#ll-traverse" data-kw="traverse display free list q next key statement">Traversing &amp; freeing a list</a></li>
-          <li><a href="#ll-ordered" data-kw="ordered list insert sorted four cases empty middle end beginning">Ordered insertion — the four cases</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>8 · Stacks</div>
-        <ul class="toc-list">
-          <li><a href="#stack-adt" data-kw="stack lifo push pop peek is_empty is_full interface">Stack — interface (LIFO)</a></li>
-          <li><a href="#stack-array" data-kw="stack array implementation top index maxsize">Array implementation</a></li>
-          <li><a href="#stack-list" data-kw="stack linked list implementation node top pointer">Linked-list implementation</a></li>
-          <li><a href="#stack-parens" data-kw="well formed parentheses balanced brackets algorithm stack">App — well-formed parentheses</a></li>
-          <li><a href="#stack-brackets" data-kw="multiple bracket types curly square matching algorithm">App — mixed bracket types</a></li>
-          <li><a href="#postfix-eval" data-kw="postfix expression evaluation algorithm reverse polish notation">App — evaluating postfix expressions</a></li>
-          <li><a href="#infix-postfix" data-kw="infix to postfix conversion precedence associativity algorithm">App — infix → postfix conversion</a></li>
-          <li><a href="#stack-more" data-kw="dfs backtracking branch and bound recursion simulation applications">More applications of stacks</a></li>
-        </ul>
-      </div>
-
-      <div class="toc-group">
-        <div class="toc-group-title"><span class="chevron"></span>9 · Multilists &amp; Skiplists</div>
-        <ul class="toc-list">
-          <li><a href="#skiplist" data-kw="skiplist express lane levels search algorithm faster than list">Skip lists</a></li>
-          <li><a href="#multilist" data-kw="multilist sparse matrix row list column list multiple views">Multilists</a></li>
-        </ul>
-      </div>
-    </nav>
-  </aside>
-
-  <main>
-    <h1 class="doc-title">Data Structures &amp; Applications</h1>
-    <p class="doc-sub">Unit 1 — Study Notes</p>
-    <button class="dsa-playground-launch" id="dsaOpen" type="button">Open C playground</button>
-    <section class="dsa-playground" id="dsaPlayground" aria-labelledby="playground-title">
-      <div class="dsa-playground-resize" id="dsaResize" role="separator" aria-label="Resize playground"></div>
-      <div class="dsa-playground-head">
-        <span class="dsa-playground-title" id="playground-title">C playground · local GCC</span>
-        <button class="dsa-playground-close" id="dsaClose" type="button">Close</button>
-      </div>
-
-      <!-- ===== resizable region ===== -->
-      <div class="dsa-split" id="dsaSplit">
-
-        <!-- editor -->
-        <div class="dsa-split-pane dsa-split-editor">
-          <textarea class="dsa-playground-editor" id="dsaCode" spellcheck="false">#include &lt;stdio.h&gt;
-
-int main(void) {
-  int queue[5], rear = -1, front = -1, count = 0, value, choice;
-  while (1) {
-    printf("\n1. Enqueue\n2. Dequeue\n3. Display\n4. Exit\nEnter your choice: "); fflush(stdout);
-    scanf("%d", &amp;choice);
-    if (choice == 1) { printf("Enter value: "); fflush(stdout); scanf("%d", &amp;value); if (count &lt; 5) { if (front == -1) front = 0; rear = (rear + 1) % 5; queue[rear] = value; count++; } }
-    else if (choice == 2) { if (count == 0) printf("Queue is empty\n"); else { printf("Dequeued value: %d\n", queue[front]); front = (front + 1) % 5; count--; } }
-    else if (choice == 3) { for (int i = 0; i &lt; count; i++) printf("%d ", queue[(front + i) % 5]); printf("\n"); }
-    else break;
-  }
-  return 0;
-}</textarea>
-        </div>
-
-        <!-- toolbar -->
-        <div class="dsa-playground-controls">
-          <button class="run" id="dsaRun" type="button">Run</button>
-          <button id="dsaStop" type="button">Stop</button>
-          <button id="dsaReset" type="button">Reset</button>
-          <span id="dsaStatus" class="dsa-playground-meta"></span>
-        </div>
-
-        <!-- drag handle -->
-        <div class="dsa-split-handle" id="dsaSplitHandle"
-             role="separator"
-             aria-orientation="horizontal"
-             aria-label="Resize code editor and terminal"
-             title="Drag to resize · double-click to reset to 4:1"
-             tabindex="0"></div>
-
-        <!-- terminal -->
-        <div class="dsa-split-pane dsa-split-terminal">
-          <div class="dsa-terminal">
-            <div class="dsa-terminal-head">
-              <span>Terminal · PTY</span><span>type directly below</span>
-            </div>
-            <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="C terminal"></div>
-          </div>
-        </div>
-
-      </div><!-- /.dsa-split -->
-    </section>
-    <!-- ================= CHAPTER 1: FUNCTIONS ================= -->
-    <h2 class="chapter" id="ch1"><span class="num">01</span>Functions</h2>
-    <p class="chapter-intro">A function packages a sequence of code so it can be invoked repeatedly with different inputs. Before we can talk about data structures, we need to be completely comfortable with how functions work in C — especially how arguments are passed, because almost every trick used later (linked lists, stacks) depends on pointers moving data in and out of functions correctly.</p>
-
-    <h3 id="func-intro">Why do we use functions?</h3>
-    <p>Mathematically, a function is a special kind of relation: it associates a sequence of <strong>arguments</strong> with a single <strong>result</strong>. In mathematics, applying the same function to the same arguments always gives the same result — this is called a <strong>pure function</strong>. It doesn't depend on the day, the mood of the caller, or anything else external.</p>
-    <p>In programming, a function is a named block of code. When it is <em>called</em> (or <em>invoked</em>) with arguments, that code executes and hands a result back to the <strong>caller</strong> — the code that made the call — from the <strong>callee</strong> — the function that was called.</p>
-    <p>We use functions for five main reasons:</p>
-    <ul>
-      <li><strong>Divide and conquer</strong> — break a complex problem into smaller, manageable parts and solve each separately.</li>
-      <li><strong>Sharing</strong> — commonly needed solutions can be grouped into a library, so nobody reinvents the wheel.</li>
-      <li><strong>Maintenance</strong> — logic used in many places lives in one function; a fix or update happens in exactly one place.</li>
-      <li><strong>Reliability</strong> — library functions are usually well-tested, flexible and efficient; we trust them more than ad-hoc code we just wrote.</li>
-      <li><strong>Reuse</strong> — a function can be called again and again without rewriting its body.</li>
-    </ul>
-
-    <h3 id="func-anatomy">Anatomy of a function definition</h3>
-    <pre><code><span class="ty">returntype</span> <span class="fn">fnname</span>(<span class="cm">&lt;list of parameters with type&gt;</span>)
-{
-    <span class="cm">&lt;statements&gt;</span>
-    <span class="kw">return</span> <span class="cm">&lt;expr&gt;</span>;
-}</code></pre>
-    <p>Every function has a <strong>return type</strong>. Even if nothing meaningful is returned, the type must be stated explicitly as <code class="inline">void</code> — the compiler needs to know, ahead of time, how much temporary space to reserve for the result, and whether it needs to cast the return expression to match.</p>
-    <p>The <strong>parameter list</strong> is a comma-separated list of typed variables. Function names follow ordinary identifier rules. Even a function that takes no parameters at all must still have parentheses — <code class="inline">void f4()</code> is a function with zero parameters, not an error.</p>
-    <div class="note"><span class="label">Key idea</span>Parameters are ordinary variables that exist only for the duration of one call. When the function is invoked, an <strong>activation record</strong> (also called a <strong>stack frame</strong>) is created to hold the parameters, local variables, temporaries, the return address, and space for the return value. When the function returns, this entire frame is popped and destroyed — there is no concept of a Python-style closure here.</div>
-
-    <pre><code><span class="ty">int</span> <span class="fn">f1</span>(<span class="ty">int</span> x) { <span class="kw">return</span> x * x; }
-<span class="ty">int</span> <span class="fn">f2</span>(<span class="ty">int</span> x, <span class="ty">int</span> y) { <span class="kw">return</span> x + y; }
-<span class="ty">double</span> <span class="fn">f3</span>(<span class="ty">int</span> x) { <span class="kw">return</span> sqrt(x); }
-<span class="ty">void</span> <span class="fn">f4</span>() { printf(<span class="str">"f4 says hello\n"</span>); }
-
-<span class="ty">int</span> <span class="fn">main</span>()
-{
-    <span class="ty">int</span> a = 25, b = 10, res;
-    res = f1(a);           <span class="cm">// square of a</span>
-    res = f1(11);          <span class="cm">// square of a literal</span>
-    res = f1(11 + a);      <span class="cm">// square of an expression</span>
-    res = f2(a, b);        <span class="cm">// a + b</span>
-    printf(<span class="str">"sqrt : %lf\n"</span>, f3(25.0));
-    f4();
-}</code></pre>
-
-    <h3 id="func-call">The function call, step by step</h3>
-    <p>A call looks like <code class="inline">fnname(arguments…)</code>. Arguments are always expressions. When a call is made, this sequence of events happens:</p>
-    <ol>
-      <li>An activation record is created (return address, parameters, locals, temporaries, return-value slot).</li>
-      <li>The arguments are evaluated — <strong>the order in which multiple arguments are evaluated is undefined</strong> in C. So <code class="inline">a = 10; f(a++, a);</code> could legally produce either <code class="inline">f(10, 10)</code> or <code class="inline">f(10, 11)</code>. Never write code that depends on argument evaluation order.</li>
-      <li>Arguments are copied into the corresponding parameters.</li>
-      <li>Control transfers to the callee.</li>
-      <li>The function body runs.</li>
-      <li>On a <code class="inline">return</code> statement (or falling off the end), control returns to the caller.</li>
-      <li>If there was a <code class="inline">return expr;</code>, the expression's value is computed and copied into the temporary return slot. If the function is <code class="inline">void</code>, this step and the next are simply skipped.</li>
-      <li>The caller picks up that value — a function call is itself an expression.</li>
-    </ol>
-
-    <h3 id="func-decl-def">Declaration vs. definition</h3>
-    <p>Can we call a function before it's defined, or one defined in a different file? Only if the compiler has already been told the number, types and order of the arguments, and the return type. By default the compiler assumes a missing return type is <code class="inline">int</code> — but it cannot check anything about the call unless it already knows the function's shape.</p>
-    <p>We supply that shape with a <strong>declaration</strong> (also called a <strong>prototype</strong> or <strong>signature</strong> — a term that entered C from C++):</p>
-    <pre><code><span class="ty">int</span> f2(<span class="ty">int</span> x, <span class="ty">int</span> y);  <span class="cm">// declaration — no body</span></code></pre>
-    <div class="note"><span class="label">Interface vs. implementation</span>The declaration <em>is</em> the interface: it tells a caller what the function expects, but nothing about how it works internally. Because of this separation, the person implementing the function can rewrite its body freely — the caller is never affected, as long as the interface itself doesn't change.</div>
-
-    <h3 id="param-passing">Parameter passing &amp; pointers</h3>
-    <p>C passes arguments <strong>by value</strong>: the argument is copied into the parameter, and there is no copying back. Changing the parameter can never change the corresponding argument — this is guaranteed and is not something you can work around by "trying harder."</p>
-    <pre><code><span class="ty">void</span> foo(<span class="ty">int</span> x);
-<span class="ty">int</span> a = 10;
-foo(a);
-printf(<span class="str">"a : %d\n"</span>, a); <span class="cm">// still 10 — foo cannot touch a</span></code></pre>
-    <p>If the argument's type doesn't exactly match the parameter's type, it is converted (e.g. a <code class="inline">double</code> silently truncated to <code class="inline">int</code>) — but again, this conversion never changes the original variable.</p>
-    <p><strong>So how do we let a function change a caller's variable?</strong> We pass a <em>pointer</em> to it instead. The parameter becomes a pointer; dereferencing that pointer gives us an l-value referring to the original variable, so assigning through it does change the caller's data. This is exactly why <code class="inline">scanf</code> needs <code class="inline">&amp;variable</code>.</p>
-    <pre><code><span class="ty">void</span> what(<span class="ty">int</span>* q) { <span class="ty">int</span> temp = 100; *q = temp; }
-
-<span class="ty">int</span> a = 10;
-<span class="ty">int</span> *p = &amp;a;
-what(p);
-printf(<span class="str">"a : %d\n"</span>, a); <span class="cm">// 100 — changed via the pointer</span></code></pre>
-    <div class="warn"><span class="label">Common trap</span>Passing a pointer lets you change <em>what it points to</em> — it does <strong>not</strong> let you change the pointer variable itself in the caller.
-<pre style="margin-top:8px"><code><span class="ty">void</span> bar(<span class="ty">int</span>* q) { <span class="ty">int</span> temp = 100; q = &amp;temp; } <span class="cm">// only changes the local copy q</span>
-
-<span class="ty">int</span> a = 10;
-<span class="ty">int</span> *p = &amp;a;
-bar(p);   <span class="cm">// a and p in the caller are unaffected</span></code></pre>
-To change a pointer itself from inside a function, you must pass a <strong>pointer to a pointer</strong> (<code class="inline">int**</code>).</div>
-
-    <h3 id="return-mech">Return mechanism &amp; dangling pointers</h3>
-    <p>A return always goes through a temporary: the return expression is evaluated, cast to the function's declared return type if needed, and copied into a temporary slot that the caller then reads. A C function returns exactly one value — but that value can be a pointer.</p>
-    <pre><code><span class="ty">int</span>* one(<span class="ty">int</span>* x) { <span class="kw">return</span> x; }
-<span class="ty">int</span> c = 1000;
-<span class="ty">int</span> *p = one(&amp;c);
-printf(<span class="str">"%d\n"</span>, *p); <span class="cm">// 1000 — perfectly fine, c still exists</span></code></pre>
-    <div class="warn"><span class="label">Danger — dangling pointer</span>
-<pre style="margin-top:8px"><code><span class="ty">int</span>* two() { <span class="ty">int</span> x = 111; <span class="kw">return</span> &amp;x; } <span class="cm">// x is LOCAL!</span>
-p = two();
-printf(<span class="str">"%d\n"</span>, *p); <span class="cm">// undefined behaviour</span></code></pre>
-<code class="inline">x</code> lives in <code class="inline">two()</code>'s stack frame, which is destroyed the instant the function returns. The returned pointer <code class="inline">p</code> now points to memory that no longer logically exists — a <strong>dangling pointer</strong>: the pointer still "works" as a value, but the location it refers to is gone. Dereferencing it is undefined behaviour — it might crash, might silently return garbage, or might appear to work by pure luck. Never return the address of a local variable.</div>
-
-    <h3 id="interface-impl">Interface vs. implementation — a worked example</h3>
-    <p>Suppose we need to check whether a number is a palindrome. We only need to know the signature:</p>
-    <pre><code><span class="ty">int</span> is_palindrome(<span class="ty">int</span> n);</code></pre>
-    <p>Client code can use it immediately without knowing (or caring) how it's implemented:</p>
-    <pre><code><span class="ty">int</span> n; scanf(<span class="str">"%d"</span>, &amp;n);
-<span class="kw">if</span>(is_palindrome(n))
-    printf(<span class="str">"%d is a palindrome\n"</span>, n);
-<span class="kw">else</span>
-    printf(<span class="str">"%d is not a palindrome\n"</span>, n);</code></pre>
-    <p>The implementor is free to write the reversal logic inline or delegate to a helper <code class="inline">rev()</code> function — the client is never affected either way. This split is formalised in C using <strong>header files</strong>: declarations (the interface) live in a <code class="inline">.h</code> file shared by both client and server code; definitions (the implementation) live in a <code class="inline">.c</code> file the client never needs to see.</p>
-
-    <h3 id="makefile">Multiple files and the <code class="inline">make</code> tool</h3>
-    <p>A typical modular project has a server file (implementation), a client file (usage) and a header (interface) — e.g. <code class="inline">server.c</code>, <code class="inline">client.c</code>, <code class="inline">server.h</code>. Each <code class="inline">.c</code> file is compiled separately and then linked into a single executable. Every time you edit a file, you must remember to recompile — which gets tedious and error-prone as a project grows.</p>
-    <p>The <code class="inline">make</code> tool automates exactly two ideas: (1) which files a target depends on, and (2) which command(s) to run when those dependencies change.</p>
-    <pre><code>a.out : client.o server.o
-    gcc client.o server.o
-
-client.o : client.c server.h
-    gcc -c client.c
-
-server.o : server.c server.h
-    gcc -c server.c</code></pre>
-    <p class="code-cap">Run with <code class="inline">make -f mymakefile.mk</code>. Each block has a <strong>target</strong> on the left of <code class="inline">:</code>, its <strong>source dependencies</strong> on the right, and an indented (tab-prefixed) command below that runs only if a dependency is newer than the target.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 2: RECURSION ================= -->
-    <h2 class="chapter" id="ch2"><span class="num">02</span>Recursion</h2>
-    <p class="chapter-intro">Recursion expresses the solution to a problem in terms of a smaller instance of the same problem, plus one or more simple "escape hatch" cases that stop the recursion.</p>
-
-    <h3 id="recursion-intro">What is recursion?</h3>
-    <p>A function that calls itself — directly, or indirectly through another function — is <strong>recursive</strong>. We can use recursion as an alternative to a loop. Every correct recursive function needs:</p>
-    <ul>
-      <li>A <strong>base case</strong> (also called the <strong>escape hatch</strong>) — a simple case solved directly, without further recursion.</li>
-      <li>A <strong>recursive case</strong> — the problem expressed in terms of a smaller version of itself, guaranteed to progress toward the base case.</li>
-    </ul>
-    <div class="note"><span class="label">Tracing tip</span>When a function makes recursive calls at more than one place in its body, mark each call site with a number so you always know exactly where execution should resume once a nested call returns.</div>
-
-    <h3 id="recursion-ex1">Example — counting set bits</h3>
-    <p>This function counts the number of 1s in the binary representation of a number. If <code class="inline">n</code> is odd, its last bit is 1, so we count it and recurse on <code class="inline">n / 2</code>. If it's even, the last bit is 0, so we just recurse on <code class="inline">n / 2</code>. If <code class="inline">n</code> is 0, there's nothing left to count.</p>
-    <pre><code><span class="ty">int</span> what(<span class="ty">int</span> n)
-{
-    <span class="kw">if</span>(n == 0)          <span class="kw">return</span> 0;                     <span class="cm">// base case</span>
-    <span class="kw">else if</span>(n % 2)     <span class="kw">return</span> 1 + what(n / 2);       <span class="cm">// odd: count this bit</span>
-    <span class="kw">else</span>              <span class="kw">return</span> what(n / 2);           <span class="cm">// even: skip this bit</span>
-}</code></pre>
-    <p>Tracing <code class="inline">what(25)</code>: 25 is <code class="inline">11001</code> in binary, i.e. three 1-bits. The calls unfold as <code class="inline">what(25) → 1+what(12) → 1+what(6) → 1+what(3) → 1+what(1) → 1+what(0)</code>, which returns <code class="inline">0</code>, then unwinds back up adding 1 three times, giving <strong>3</strong>.</p>
-
-    <h3 id="recursion-ex2">Example — fast exponentiation</h3>
-    <p>What does this function compute?</p>
-    <pre><code><span class="ty">int</span> what(<span class="ty">int</span> a, <span class="ty">int</span> n)
-{
-    <span class="kw">if</span>(n == 0)      <span class="kw">return</span> 1;
-    <span class="kw">else if</span>(n % 2) <span class="kw">return</span> a * what(a * a, n / 2);
-    <span class="kw">else</span>          <span class="kw">return</span> what(a * a, n / 2);
-}</code></pre>
-    <p>It computes <strong>a<sup>n</sup></strong> using the classic "fast power" idea: if <code class="inline">n</code> is even, square the base and halve the exponent (<code class="inline">a<sup>n</sup> = (a²)<sup>n/2</sup></code>); if <code class="inline">n</code> is odd, do the same but multiply one extra factor of <code class="inline">a</code> back in. This runs in <strong>O(log n)</strong> multiplications instead of the naive O(n).</p>
-
-    <h3 id="recursion-alias">Aliasing surprise — GCD via pointers</h3>
-    <p>This function computes the greatest common divisor of the two values pointed to by <code class="inline">p</code> and <code class="inline">q</code>, and then divides each argument by that GCD in place:</p>
-    <pre><code><span class="ty">void</span> what(<span class="ty">int</span> *p, <span class="ty">int</span> *q)
-{
-    <span class="ty">int</span> m = *p, n = *q;
-    <span class="kw">while</span>(m != n) { <span class="kw">if</span>(m &gt; n) m -= n; <span class="kw">else</span> n -= m; }
-    *p /= m; *q /= n;
-}
-
-<span class="ty">int</span> a = 25, b = 15;
-what(&amp;a, &amp;b);           <span class="cm">// a becomes 5, b becomes 3 — as expected</span>
-what(&amp;a, &amp;a);           <span class="cm">// !! surprising !!</span>
-printf(<span class="str">"%d\n"</span>, a);</code></pre>
-    <p>The second call passes the address of <code class="inline">a</code> for <strong>both</strong> parameters — <code class="inline">p</code> and <code class="inline">q</code> now point to the exact same memory. This is called <strong>aliasing</strong>. Since <code class="inline">a</code> already equals itself, <code class="inline">m == n</code> immediately (both become the current value of <code class="inline">a</code>, say 5), so the loop body never runs. Then <code class="inline">*p /= m</code> divides <code class="inline">a</code> by 5, making <code class="inline">a</code> become 1. But then <code class="inline">*q /= n</code> runs — and <code class="inline">q</code> is <em>also</em> <code class="inline">a</code>, which is now 1, while <code class="inline">n</code> is still the old value 5 — so <code class="inline">a</code> becomes <code class="inline">1 / 5 = 0</code>. <strong>Aliasing silently corrupted the result.</strong> This is a powerful lesson: when two pointer parameters can refer to the same object, code that looks correct for distinct variables can misbehave.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 3: ARRAYS ================= -->
-    <h2 class="chapter" id="ch3"><span class="num">03</span>Arrays</h2>
-    <p class="chapter-intro">An array is a fixed-size, homogeneous, contiguous block of storage accessed by an integer index. It resembles a Python list, but with important restrictions that come from C's low-level, no-safety-net philosophy.</p>
-
-    <h3 id="array-basics">Array — characteristics</h3>
-    <ul>
-      <li>Has a fixed number of elements, all of the <strong>same type</strong> (homogeneous).</li>
-      <li>Size is fixed at creation — either a compile-time constant, or (in C99) a runtime value via a <strong>Variable Length Array (VLA)</strong>.</li>
-      <li>An array can never grow or shrink.</li>
-      <li>Elements are selected by a zero-based integer <strong>index</strong> (or subscript).</li>
-      <li>Supports <strong>random access</strong>: the time to access any element is the same, regardless of its position.</li>
-      <li>At compile time, the compiler knows everything about the array (its size, its type). At <strong>runtime</strong>, the array "degenerates" into a plain pointer — the size information is simply not stored anywhere.</li>
-      <li><strong>Out-of-bounds access is never checked.</strong> Checking would need extra memory (to store the size at runtime) and extra time on every access — a cost C refuses to impose on every program just to protect careless code. C's philosophy: <em>the programmer gets what he deserves.</em></li>
-      <li>Because an array degenerates to a <em>constant</em> pointer, arrays cannot be assigned to one another — they are not assignment-compatible.</li>
-    </ul>
-    <div class="warn"><span class="label">Undefined behaviour</span><code class="inline">int a[5]; a[5] = 1;</code> compiles without warning but writes past the array's end. Nothing stops it, nothing guarantees a crash — the program may run "fine" for a while and fail unpredictably later.</div>
-
-    <h3 id="array-init">Declaration &amp; initialization</h3>
-    <pre><code><span class="ty">int</span> a[] = {10, 20, 30, 40, 50};  <span class="cm">// compiler counts 5 elements</span>
-<span class="ty">int</span> b[5];                       <span class="cm">// 5 uninitialized elements (local scope)</span>
-<span class="ty">int</span> c[5] = {11, 22};             <span class="cm">// remaining 3 elements become 0</span></code></pre>
-    <p>When an initializer list is shorter than the declared size, C fills the rest with zero — but it will never silently make the array bigger than declared.</p>
-
-    <h3 id="array-traversal">Traversal — four equivalent styles</h3>
-    <p>Given <code class="inline">int a[] = {10,20,30,40,50}; int n = 5;</code>, here are increasingly pointer-flavoured ways to walk it — all produce identical output.</p>
-    <div class="two-col">
-      <div>
-        <h4>a) Plain indexing</h4>
-        <pre><code><span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i)
-    printf(<span class="str">"%d "</span>, a[i]);</code></pre>
-      </div>
-      <div>
-        <h4>b) Pointer standing in for the array</h4>
-        <pre><code><span class="ty">int</span> *p = a;
-<span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i)
-    printf(<span class="str">"%d "</span>, p[i]);</code></pre>
-      </div>
-      <div>
-        <h4>c) Pointer arithmetic</h4>
-        <pre><code><span class="ty">int</span> *p = a;
-<span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i)
-    printf(<span class="str">"%d "</span>, *(p + i));</code></pre>
-      </div>
-      <div>
-        <h4>d) Incrementing the pointer</h4>
-        <pre><code><span class="ty">int</span> *p = a;
-<span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i)
-    printf(<span class="str">"%d "</span>, *p++);</code></pre>
-      </div>
-    </div>
-    <p>Only three pointer operations are legal in C: adding an integer to a pointer, subtracting an integer from a pointer, and subtracting two pointers into the same array. Nothing else — a pointer must never be treated as if it were an ordinary integer.</p>
-    <div class="warn"><span class="label">Why version (d) can't use the array name</span><code class="inline">*a++</code> would try to increment <code class="inline">a</code> itself — but an array name is a <em>constant</em> pointer, so <code class="inline">a++</code> is a compile error. Only a genuine pointer variable like <code class="inline">p</code> can be incremented. Also note the difference between <code class="inline">(*p)++</code> (increments the value <em>at</em> p, yielding the old value there) and <code class="inline">*p++</code> (increments <code class="inline">p</code> itself, dereferencing the old address).</div>
-
-    <h3 id="array-params">Passing arrays to functions</h3>
-    <p>When an array is passed as an argument, the parameter always becomes a <strong>pointer</strong> — it is never actually an array, and there is no way to recover the number of elements from just the pointer. <code class="inline">int x[]</code> and <code class="inline">int *x</code> as a parameter mean exactly the same thing.</p>
-    <p>Because the size is lost, we must communicate it separately, using one of three conventions:</p>
-    <ol>
-      <li>Pass the array <strong>and</strong> its size explicitly.</li>
-      <li>Pass a pointer to the beginning and a pointer to the end.</li>
-      <li>Use a <strong>sentinel</strong> — a special logical value marking the end (like C strings using <code class="inline">'\0'</code>).</li>
-    </ol>
-    <pre><code><span class="ty">void</span> read_array(<span class="ty">int</span> x[], <span class="ty">int</span> n)
-{
-    <span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i) scanf(<span class="str">"%d"</span>, x++);  <span class="cm">// &amp;x[i], x+i, x++ all equivalent</span>
-}
-<span class="ty">void</span> disp_array(<span class="ty">int</span> *x, <span class="ty">int</span> n)
-{
-    <span class="kw">for</span>(<span class="ty">int</span> i=0; i&lt;n; ++i) printf(<span class="str">"%d "</span>, *x++);
-}</code></pre>
-
-    <h3 id="md-array">Multidimensional arrays</h3>
-    <p>Since arrays are homogeneous and elements can themselves be arrays, we get <strong>multidimensional arrays</strong>. A matrix is naturally an array of arrays — a two-dimensional array.</p>
-    <pre><code><span class="ty">int</span> a[5][4]; <span class="cm">// conceptually 5 rows, 4 columns</span></code></pre>
-    <p>Conceptually this looks like a grid, but the compiler lays it out as one long, linear, contiguous strip of memory in <strong>row-major order</strong> — row 0's four elements, then row 1's four elements, and so on. At runtime, the array degenerates to a pointer to its first row.</p>
-
-    <div class="diagram">
-      <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
-        <text x="10" y="20" class="svg-label" style="font-weight:600">int a[2][3] = {{66,90,86},{23,44,11}};  —  logical view</text>
-        <g transform="translate(10,35)">
-          <rect x="0" y="0" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="60" y="0" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="120" y="0" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="0" y="34" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="60" y="34" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="120" y="34" width="60" height="34" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
-          <text x="30" y="22" text-anchor="middle" class="svg-label">66</text>
-          <text x="90" y="22" text-anchor="middle" class="svg-label">90</text>
-          <text x="150" y="22" text-anchor="middle" class="svg-label">86</text>
-          <text x="30" y="56" text-anchor="middle" class="svg-label">23</text>
-          <text x="90" y="56" text-anchor="middle" class="svg-label">44</text>
-          <text x="150" y="56" text-anchor="middle" class="svg-label">11</text>
-        </g>
-        <text x="10" y="115" class="svg-label" style="font-weight:600">Physical layout in memory (row-major, base = 2000, int = 4 bytes)</text>
-        <g transform="translate(10,130)">
-          <rect x="0" y="0" width="86" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="86" y="0" width="86" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="172" y="0" width="86" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="258" y="0" width="86" height="34" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.5"/>
-          <rect x="344" y="0" width="86" height="34" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.5"/>
-          <rect x="430" y="0" width="86" height="34" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.5"/>
-          <text x="43" y="22" text-anchor="middle" class="svg-label">66</text>
-          <text x="129" y="22" text-anchor="middle" class="svg-label">90</text>
-          <text x="215" y="22" text-anchor="middle" class="svg-label">86</text>
-          <text x="301" y="22" text-anchor="middle" class="svg-label">23</text>
-          <text x="387" y="22" text-anchor="middle" class="svg-label">44</text>
-          <text x="473" y="22" text-anchor="middle" class="svg-label">11</text>
-          <text x="43" y="52" text-anchor="middle" class="svg-label-sm">2000</text>
-          <text x="129" y="52" text-anchor="middle" class="svg-label-sm">2004</text>
-          <text x="215" y="52" text-anchor="middle" class="svg-label-sm">2008</text>
-          <text x="301" y="52" text-anchor="middle" class="svg-label-sm">2012</text>
-          <text x="387" y="52" text-anchor="middle" class="svg-label-sm">2016</text>
-          <text x="473" y="52" text-anchor="middle" class="svg-label-sm">2020</text>
-        </g>
-        <text x="10" y="205" class="svg-label-sm">Row 0 (blue) is laid down first, then Row 1 (orange) — a[1][2] (value 11) lands at address 2020.</text>
+    <button id="themeToggle" aria-label="Toggle theme">
+      <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
       </svg>
-      <p class="diagram-cap">A 2×3 array is really one flat run of 6 integers; the "rows and columns" are just a way of computing offsets into it.</p>
-    </div>
+    </button>
+  </header>
 
-    <h3 id="md-array-address">The row-major address formula</h3>
-    <p>Without knowing the number of columns per row, it is <strong>impossible</strong> to locate an element inside a linear block. This is exactly why the row count is required in a 2D array's type.</p>
-    <div class="formula">
-      <span class="flabel">Row-major address formula</span>
-      Address(A[i][j]) = Base_Address + ( (i × columns_per_row) + j ) × size_of_element
-    </div>
-    <p><strong>Worked example:</strong> <code class="inline">int a[2][3] = {{66,90,86},{23,44,11}};</code> with base address 2000 and <code class="inline">sizeof(int) = 4</code>:</p>
-    <pre><code>address(a[1][2]) = 2000 + ((1 * 3) + 2) * 4 = 2000 + 20 = 2020</code></pre>
-    <p>Which matches the value <strong>11</strong> in the diagram above.</p>
-    <p>Two-dimensional arrays can also be initialized row by row, partially (missing elements default to 0), or as one flat, comma-separated sequence — <code class="inline">int c[3][2] = {11,22,33,44,55,66};</code> is identical to <code class="inline">{{11,22},{33,44},{55,66}}</code>. A 2D array is always rectangular: <code class="inline">int a[][3] = {{11,22,100},{33,44}};</code> gives 2 rows (counted from the outer braces) of 3 columns each — 6 integers total, with the missing trailing values zero-filled.</p>
-    <p>Because the array name is a pointer to its first <em>row</em>, indexing decomposes as pointer arithmetic: <code class="inline">a[3][2]</code> is exactly the same value as <code class="inline">*(*(a + 3) + 2)</code>. We can also declare a "pointer to an array of 4 ints" directly: <code class="inline">int (*p)[4] = a; p[3][2]</code> works identically.</p>
+  <div class="card">
+    <h1 class="title">Coming Soon</h1>
+    <p class="signature">-TYN</p>
+  </div>
 
-    <h3 id="md-array-params">Passing 2D arrays to functions</h3>
-    <p>The parameter becomes a pointer to a row, and the number of columns must be known to compute row offsets — so it cannot be omitted:</p>
-    <pre><code><span class="ty">void</span> foo(<span class="ty">int</span> x[][4]);      <span class="cm">// OK — column count required</span>
-<span class="ty">void</span> foo(<span class="ty">int</span> (*x)[4]);     <span class="cm">// OK — same thing, explicit pointer form</span>
-<span class="ty">void</span> foo(<span class="ty">int</span> x[5][4]);     <span class="cm">// OK — first dimension is ignored anyway</span>
-
-<span class="ty">void</span> foo(<span class="ty">int</span> x[][]);       <span class="cm">// ✗ illegal — column count missing</span>
-<span class="ty">void</span> foo(<span class="ty">int</span> x[5][]);      <span class="cm">// ✗ illegal — same problem</span></code></pre>
-    <p>To make a routine work for <em>any</em> matrix size (not just a hard-coded number of columns), C99 lets you forward-declare the size parameters before the array parameter, separated by <code class="inline">;</code>:</p>
-    <pre><code><span class="ty">void</span> disp_matrix(<span class="ty">int</span> rowsize; <span class="ty">int</span> colsize; <span class="ty">int</span> x[rowsize][colsize], <span class="ty">int</span> rowsize, <span class="ty">int</span> colsize);</code></pre>
-    <p>Whatever comes after the rightmost <code class="inline">;</code> is the real parameter list; what precedes it just tells the compiler that <code class="inline">rowsize</code> and <code class="inline">colsize</code> will appear later. Note that <code class="inline">colsize</code> must match the array's actual physical layout, not just whatever logical portion of it your program chooses to use.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 4: STRUCTURES ================= -->
-    <h2 class="chapter" id="ch4"><span class="num">04</span>Structures</h2>
-    <p class="chapter-intro">Think of a backpack: laptop, books, pens, a water bottle — all different types of things, but easier to carry (and refer to) together under one name. A structure does exactly this for related, possibly non-homogeneous, data.</p>
-
-    <h3 id="struct-basics">Structures — the basics</h3>
-    <pre><code><span class="kw">struct</span> student
-{
-    <span class="ty">int</span> rnum;
-    <span class="ty">char</span> name[20];
-    <span class="ty">int</span> marks;
-};</code></pre>
-    <p>This declares a type — <code class="inline">struct student</code> — with three named <strong>fields</strong> (or <strong>members</strong>): <code class="inline">rnum</code>, <code class="inline">name</code>, and <code class="inline">marks</code>. The declaration fixes the binary layout — field order and total size — but creates <strong>no variable</strong>, and therefore uses no memory by itself. Note the required trailing <code class="inline">;</code> — it signals that no variables were declared right after the closing brace (though they legally could have been).</p>
-    <pre><code><span class="kw">struct</span> student s1;
-strcpy(s1.name, <span class="str">"abc"</span>);
-s1.marks = 78;
-s1.rnum = 56;
-
-<span class="kw">struct</span> student *p = &amp;s1;
-p-&gt;marks;      <span class="cm">// preferred: p is already "dereferenced" conceptually</span>
-(*p).marks;    <span class="cm">// equivalent — parentheses needed because of operator precedence</span></code></pre>
-    <p>Characteristics of a structure:</p>
-    <ul>
-      <li>One or more components, generally <strong>heterogeneous</strong>, each with a <strong>name</strong> (unlike an array, whose components are found by computed index).</li>
-      <li>Every field's offset is fixed at compile time — a structure, like an array, supports <strong>random access</strong>: reaching any field costs the same regardless of its position.</li>
-      <li>Total size depends on the implementation, but is <em>at least</em> the sum of its members' sizes (see padding, next section).</li>
-      <li>A structure variable stands for the <em>whole</em> structure — it does <strong>not</strong> degenerate to a pointer the way an array does.</li>
-      <li>Structures <strong>are</strong> assignment-compatible: <code class="inline">t2 = t1;</code> triggers a memberwise copy, and this works even if a member is itself an array.</li>
-    </ul>
-
-    <h3 id="struct-layout">Layout, padding &amp; alignment</h3>
-    <pre><code><span class="kw">struct</span> test1 { <span class="ty">char</span> j; <span class="ty">int</span> i; };</code></pre>
-    <p>If <code class="inline">char</code> is 1 byte and <code class="inline">int</code> is 4 bytes, is <code class="inline">sizeof(struct test1)</code> exactly 5? <strong>Not necessarily — it depends on the implementation.</strong> Every type has an <strong>alignment</strong> requirement (a byte boundary, word boundary, etc.) that lets the CPU access it efficiently. To keep <code class="inline">i</code> aligned, the compiler may insert unused filler bytes — called <strong>padding</strong> — between <code class="inline">j</code> and <code class="inline">i</code>. So this structure might report size 8 (time-efficient, word-aligned) or size 5 (space-efficient, no padding).</p>
-    <div class="note"><span class="label">Analogy</span>It's like note-taking: starting a new topic on a fresh page (padding) makes it easier to find later but wastes paper; cramming it onto the same page (no padding) saves paper but makes scanning slower. Neither choice is "wrong" — it's a trade-off.</div>
-    <p>The compiler directive <code class="inline">#pragma pack(1)</code> forces byte-boundary alignment (no padding at all). Pragmas are compiler directives and are <strong>not portable</strong> — not every compiler supports them the same way.</p>
-
-    <h3 id="struct-init">Initializing structures</h3>
-    <pre><code><span class="kw">struct</span> student s1;                       <span class="cm">// uninitialized — fields hold junk</span>
-<span class="kw">struct</span> student s2 = {23, <span class="str">"pes"</span>, 99};       <span class="cm">// order must match field order</span>
-<span class="kw">struct</span> student s3 = {23, <span class="str">"pes"</span>};            <span class="cm">// partial — remaining field(s) become 0</span>
-<span class="kw">struct</span> student s5 = {.name=<span class="str">"pes"</span>, .marks=45}; <span class="cm">// designated initialization, by field name</span></code></pre>
-
-    <h3 id="struct-copy">Copying &amp; comparing structures</h3>
-    <pre><code><span class="kw">struct</span> test1 { <span class="ty">int</span> i; <span class="ty">char</span> ch; };
-<span class="kw">struct</span> test1 t1 = {23, <span class="str">'w'</span>};
-<span class="kw">struct</span> test1 t2 = t1;   <span class="cm">// memberwise copy: t2.i=23, t2.ch='w'</span>
-t1.i = 189;         <span class="cm">// t2.i is completely unaffected</span></code></pre>
-    <p>C provides <strong>no operator</strong> to compare two structures directly (no <code class="inline">t1 == t2</code>). You must compare field by field: <code class="inline">if(t1.i==t2.i && t1.ch==t2.ch)</code>.</p>
-    <div class="warn"><span class="label">Watch out</span>If a field is itself a pointer, a memberwise copy only copies the <em>pointer value</em> — both copies now point to the <em>same</em> target, creating aliasing. See "Structures holding heap pointers" below.</div>
-
-    <h3 id="struct-params">Passing &amp; returning structures</h3>
-    <p>A structure argument is passed <strong>by value</strong> — a full copy is made, so changes made inside the function never reach the caller's original:</p>
-    <pre><code><span class="ty">void</span> f1(<span class="kw">struct</span> test t) { strcpy(t.a, <span class="str">"pqrstuv"</span>); } <span class="cm">// t.a change is local only</span></code></pre>
-    <p>To let a function modify the caller's structure, pass a pointer:</p>
-    <pre><code><span class="ty">void</span> f2(<span class="kw">struct</span> test* p) { strcpy(p-&gt;a, <span class="str">"pqr"</span>); }
-f2(&amp;t1); <span class="cm">// t1.a is now "pqr"</span></code></pre>
-    <p>When you want to pass a structure efficiently but guarantee it <em>won't</em> be modified, pass a pointer to a <strong>constant</strong> structure:</p>
-    <pre><code><span class="ty">void</span> f3(<span class="kw">const</span> <span class="kw">struct</span> test* p) { printf(<span class="str">"%s\n"</span>, p-&gt;a); } <span class="cm">// writes through p are compile errors</span></code></pre>
-    <div class="warn"><span class="label">Best practice</span>Passing a structure by value is generally considered bad practice: it costs more memory, more copy time, and causes subtle problems if any member is a pointer. Prefer pointers — <code class="inline">const</code>-qualified when you don't intend to modify.</div>
-    <p>A function can also <strong>return</strong> a structure by value (copied into a temporary, then assigned to a variable in the caller) or a pointer to one — but if returning a pointer, it must point to something that <em>outlives</em> the function call (never a local variable — same dangling-pointer trap as before).</p>
-
-    <h3 id="struct-typedef"><code class="inline">typedef</code> — naming a type</h3>
-    <p>When a client writes <code class="inline">int a;</code>, they don't need to know how an <code class="inline">int</code> is stored — just what operations are legal on it. We'd like the same for structures: give the type one clean name, and by convention, discourage the user from poking at its internals directly (so the implementation can later change — say to an array, or a structure of structures — without breaking client code).</p>
-    <pre><code><span class="kw">typedef</span> <span class="kw">struct</span> student student_t;  <span class="cm">// creates a type NAME</span>
-student_t s1;                    <span class="cm">// creates a VARIABLE of that type</span></code></pre>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 5: DYNAMIC MEMORY ================= -->
-    <h2 class="chapter" id="ch5"><span class="num">05</span>Dynamic Memory Management</h2>
-    <p class="chapter-intro">So far, every variable has been created on entering a block and destroyed on leaving it — we had no control over the timing. Dynamic memory lets a program request memory whenever it needs it, and release it whenever it's done, independent of any function's block structure.</p>
-
-    <h3 id="dmm-intro">Before we begin: pointer refresher</h3>
-    <p>A variable in a block is created (given an address) as soon as the block is entered, but is <strong>not</strong> initialized by default. If the variable is a pointer, dereferencing it before assigning it a valid address is undefined behaviour — the program may not crash, but reading through garbage as if it were an address is dangerous.</p>
-    <pre><code><span class="ty">int</span> *p; <span class="ty">int</span> a = 10; p = &amp;a;
-<span class="ty">int</span> **pp = &amp;p;
-
-printf(<span class="str">"%p\n"</span>, &amp;pp);  <span class="cm">// address of a variable whose type is int**</span>
-printf(<span class="str">"%p\n"</span>, pp);   <span class="cm">// value of pp — an address, of type int*</span>
-printf(<span class="str">"%p\n"</span>, *pp);  <span class="cm">// value of p — an address, of type int</span>
-printf(<span class="str">"%d\n"</span>, **pp); <span class="cm">// value of a</span></code></pre>
-    <p>The memory region managed dynamically is called the <strong>heap</strong>.</p>
-
-    <h3 id="malloc-free">malloc &amp; free</h3>
-    <table>
-      <tr><th>Function</th><th>What it does</th></tr>
-      <tr><td><code class="inline">malloc(size)</code></td><td>Allocates <code class="inline">size</code> bytes on the heap; returns a generic <code class="inline">void*</code> (cast to the type you need); returns <code class="inline">NULL</code> on failure.</td></tr>
-      <tr><td><code class="inline">free(ptr)</code></td><td>Returns previously-allocated memory back to the heap manager.</td></tr>
-      <tr><td><code class="inline">calloc(n, size)</code></td><td>Allocates memory for <code class="inline">n</code> elements of <code class="inline">size</code> bytes each, and zero-initializes every byte.</td></tr>
-      <tr><td><code class="inline">realloc(ptr, size)</code></td><td>Resizes a previously allocated block, copying old values into the new location if it moves.</td></tr>
-    </table>
-    <pre><code><span class="ty">int</span> *p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>));  <span class="cm">// don't hard-code "4 bytes" — use sizeof</span>
-*p = 20;
-free(p);</code></pre>
-    <div class="note"><span class="label">Bookkeeping</span>You never tell <code class="inline">free</code> how many bytes to release — so how does it know? When <code class="inline">malloc</code> allocates memory, it secretly stores the block's size somewhere alongside it — this hidden accounting is called <strong>bookkeeping</strong> (or <strong>housekeeping</strong>). <code class="inline">free</code> looks this up using the pointer <em>value</em> you give it, regardless of which variable name holds that value.</div>
-    <pre><code><span class="ty">int</span> *p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>) * 4); <span class="cm">// "array on the heap"</span>
-p[0] = 11; *(p + 1) = 22;
-free(p);         <span class="cm">// releases the whole 4-int block at once</span>
-free(p + 1);     <span class="cm">// ✗ TERRIBLE — p+1 was never returned by malloc; no bookkeeping there</span></code></pre>
-    <p>Calling <code class="inline">free</code> on a pointer not pointing to a heap block returned by <code class="inline">malloc</code>/<code class="inline">calloc</code>/<code class="inline">realloc</code>, or freeing the same pointer twice, are both <strong>undefined behaviour</strong>.</p>
-    <pre><code><span class="ty">int</span> *p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>));
-*p = 20;
-<span class="ty">int</span> *q = p;   <span class="cm">// q is an alias of p</span>
-free(q);      <span class="cm">// perfectly valid — free cares about the pointer VALUE, not the variable name</span></code></pre>
-
-    <h3 id="garbage-leak">Garbage, leaks &amp; dangling pointers</h3>
-    <p>These two failure modes are opposites, and it's important to keep them distinct:</p>
-    <table>
-      <tr><th>Term</th><th>Definition</th></tr>
-      <tr><td><strong>Garbage / Memory leak</strong></td><td>A location <em>exists</em> on the heap, but you have <strong>no access</strong> to it any more (every pointer that referenced it has been overwritten or gone out of scope).</td></tr>
-      <tr><td><strong>Dangling pointer</strong></td><td>You still have <strong>access</strong> (a pointer variable with a value) but the location it points to <strong>no longer exists</strong> (it was freed, or was a local variable whose stack frame is gone).</td></tr>
-    </table>
-    <pre><code><span class="cm">// Garbage / memory leak</span>
-p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>)); *p = 30;
-p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>));  <span class="cm">// the first block is now unreachable — leaked!</span></code></pre>
-    <pre><code><span class="cm">// Dangling pointer</span>
-<span class="ty">int</span> *p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>)); *p = 30;
-<span class="ty">int</span> *q = p;
-free(q);
-printf(<span class="str">"%d\n"</span>, *p); <span class="cm">// p is now dangling — dereferencing is undefined behaviour</span></code></pre>
-    <div class="note"><span class="label">Important distinction</span>A dangling pointer, <em>by itself</em>, is not dangerous — the pointer variable is just holding an address, which is harmless. <strong>Dereferencing</strong> it is what's dangerous. Also: dangling pointers can happen anywhere (heap or stack), but a memory <strong>leak</strong> can only happen on the heap — a leaked stack variable is automatically reclaimed when its block exits.</div>
-    <p>Unlike Python (which uses reference-count based garbage collection), <strong>C has no garbage collector</strong> — automatic reclamation costs time and space that C's design philosophy refuses to spend by default. Keeping memory clean is entirely the programmer's responsibility.</p>
-
-    <h3 id="calloc-realloc">calloc &amp; realloc</h3>
-    <pre><code><span class="ty">int</span> *p = (<span class="ty">int</span>*)calloc(4, <span class="kw">sizeof</span>(<span class="ty">int</span>)); <span class="cm">// 4 ints, all zeroed — calloc gives no choice of initial value besides 0</span>
-<span class="ty">int</span> *q = (<span class="ty">int</span>*)realloc(p, 10000); <span class="cm">// resize the block p points to</span></code></pre>
-    <ul>
-      <li>Size can be increased or decreased.</li>
-      <li>The pointer returned by <code class="inline">realloc</code> may differ from the original — the block may physically move.</li>
-      <li>On growth, existing values are copied forward; new locations are left uninitialized.</li>
-      <li>On shrinkage, only values that fit in the new, smaller size are kept — the rest are lost.</li>
-    </ul>
-
-    <h3 id="self-ref">Self-referential structures</h3>
-    <pre><code><span class="kw">struct</span> A { <span class="ty">int</span> c; <span class="kw">struct</span> A *p; }; <span class="cm">// perfectly legal</span>
-
-<span class="kw">struct</span> Z { <span class="ty">int</span> c; <span class="kw">struct</span> Z z; };  <span class="cm">// ✗ compile error — infinite size!</span></code></pre>
-    <p>A structure directly <em>containing</em> a field of its own type (<code class="inline">struct Z</code>) is a compile-time error — the compiler can never finish computing its size, since that size depends on itself. But a structure containing a <strong>pointer</strong> to its own type is perfectly fine, because every pointer has a fixed, known size regardless of what it points to. This is called a <strong>self-referential structure</strong>, and it is the foundation of every linked structure we build next (linked lists, stacks, trees).</p>
-    <pre><code><span class="kw">struct</span> A one;
-one.c = 10;
-one.p = &amp;one;  <span class="cm">// points to itself!</span>
-printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&gt;c); <span class="cm">// 10 10 10 — one.p and one.p.p are the same object</span></code></pre>
-
-    <h3 id="struct-heap">Structures holding heap pointers</h3>
-    <p>When a structure contains a pointer field and gets copied (by assignment or passing), the pointer field is copied <em>as a value</em> — both structures end up pointing at the <strong>same</strong> heap block. This creates several classic scenarios:</p>
-    <table>
-      <tr><th>Case</th><th>What happens</th></tr>
-      <tr><td><strong>1. Pointer to a local variable</strong></td><td><code class="inline">x.p = &amp;z; y = x;</code> — both <code class="inline">x.p</code> and <code class="inline">y.p</code> alias <code class="inline">z</code>. Changing <code class="inline">z</code> through either pointer affects both.</td></tr>
-      <tr><td><strong>2. Both point to the same heap block, then one is freed</strong></td><td><code class="inline">y = x;</code> (both point to the same <code class="inline">malloc</code>'d int); freeing through <em>either</em> makes <strong>both</strong> dangling.</td></tr>
-      <tr><td><strong>3. After copy, reassign y's pointer to a fresh block</strong></td><td>The aliasing is broken — <code class="inline">x.p</code> and <code class="inline">y.p</code> now point to two independent locations. Safe.</td></tr>
-      <tr><td><strong>4. After copy, reassign x's pointer instead</strong></td><td>Same outcome as case 3 — aliasing broken, both safe.</td></tr>
-      <tr><td><strong>5. Pointer set to NULL after use</strong></td><td>The heap block becomes unreachable — garbage, hence a memory leak (the pointer itself is fine — it's just <code class="inline">NULL</code> now — but the block it used to hold is lost).</td></tr>
-    </table>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 6: TYPES & ADTs ================= -->
-    <h2 class="chapter" id="ch6"><span class="num">06</span>The Concept of Type &amp; Abstract Data Types</h2>
-    <p class="chapter-intro">Before building actual data structures, it helps to be precise about what a "type" even is, and why we want to invent our own.</p>
-
-    <h3 id="type-concept">The concept of a type</h3>
-    <p>We naturally classify things around us — "sportsman", "musician" — grouping items that share behaviour. This idea traces back to Mathematics' concept of a <strong>set</strong>: natural numbers, extended to integers, then rationals, then reals, then complex numbers — each extension driven by an operation that wasn't "closed" in the smaller set.</p>
-    <p>A <strong>type</strong> in a programming language captures this same idea:</p>
-    <ul>
-      <li>It specifies what values are legal.</li>
-      <li>It specifies what operations we can perform on those values.</li>
-      <li>It does <strong>not</strong> say <em>how</em> those operations are carried out internally.</li>
-      <li>It lets us treat every value of that type uniformly (adding two integers works the same regardless of their specific values).</li>
-    </ul>
-    <p>In C, a variable's type is fixed at declaration and can never change; type-checking happens at compile time. Python is the opposite: type is attached to the <em>value</em>, not the variable, and can change dynamically.</p>
-
-    <h3 id="adt-concept">Abstract Data Types (ADTs)</h3>
-    <p>Can a language support every possible real-world "type"? No — the set of possible things is unbounded. Instead, a good language gives us a way to <strong>define our own types</strong>. This is exactly what an <strong>Abstract Data Type (ADT)</strong> is:</p>
-    <ul>
-      <li>Like a built-in type, it exposes a small set of operations.</li>
-      <li>It specifies <em>what</em> those operations do, never <em>how</em>.</li>
-      <li>The <strong>interface</strong> is fixed ("sacred") once decided; the <strong>implementation</strong> underneath can be freely changed.</li>
-      <li>Both the user and the implementor depend only on the interface — never on each other's code. This is called <strong>inversion of dependency</strong>: if A depends on B directly, any change to B forces a change to A; but if both A and B depend only on something stable (the interface), changing one never breaks the other.</li>
-    </ul>
-    <div class="note"><span class="label">Car analogy</span>You can drive almost any car once you've learned to drive one — the interface (steering wheel, pedals) never changes, even though the implementation underneath (mechanical vs. hydraulic brakes, manual vs. power steering) varies wildly. Imagine if pressing the brake sometimes accelerated the car instead — an interface, once agreed upon, simply cannot change.</div>
-    <p>A <strong>Data Structure</strong>, in this course's terms, is:</p>
-    <ul>
-      <li>An interface.</li>
-      <li>With a number of elements arranged in a particular way to support a few operations <strong>efficiently</strong>.</li>
-      <li>Constrained by time and space trade-offs — there's rarely a single "correct" arrangement, only ones better suited to a particular use (like tumblers or books arranged for either compact storage or easy access — neither is objectively "wrong").</li>
-    </ul>
-
-    <h3 id="list-adt">List — as an ADT</h3>
-    <p>A <strong>list</strong> is a data structure with:</p>
-    <ul>
-      <li>Zero or more components.</li>
-      <li>Each element has an <strong>ordinal position</strong> (unlike a Python <em>set</em>, which has no notion of position).</li>
-      <li><strong>No random access</strong> — only <strong>sequential access</strong>, one element after another.</li>
-      <li>Insertion/deletion at a known position needs only a handful of pointer operations — no shifting, unlike an array.</li>
-    </ul>
-    <p>Interface: <code class="inline">create</code>, <code class="inline">destroy</code>, <code class="inline">insert</code>, <code class="inline">delete</code>, … Implementation choices: an <strong>array</strong>, or a <strong>linked list</strong>.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 7: LINKED LISTS ================= -->
-    <h2 class="chapter" id="ch7"><span class="num">07</span>Linked Lists</h2>
-    <p class="chapter-intro">A linked list is the classic implementation of the List ADT, built directly on top of self-referential structures and dynamic memory.</p>
-
-    <h3 id="ll-basics">Building a linked list</h3>
-    <pre><code><span class="kw">struct</span> node { <span class="ty">int</span> key_; <span class="kw">struct</span> node *next_; };
-<span class="kw">typedef</span> <span class="kw">struct</span> node node_t;</code></pre>
-    <p><code class="inline">next_</code> is a pointer to the same type of structure — a self-referential structure, exactly as introduced earlier. We build a three-node list one <code class="inline">malloc</code> call at a time:</p>
-    <pre><code>node_t *p;
-p = (node_t*)malloc(<span class="kw">sizeof</span>(node_t));
-p-&gt;key_ = 20;
-
-p-&gt;next_ = (node_t*)malloc(<span class="kw">sizeof</span>(node_t));
-p-&gt;next_-&gt;key_ = 40;
-
-p-&gt;next_-&gt;next_ = (node_t*)malloc(<span class="kw">sizeof</span>(node_t));
-p-&gt;next_-&gt;next_-&gt;key_ = 60;
-p-&gt;next_-&gt;next_-&gt;next_ = NULL;  <span class="cm">// terminator — marks the end of the list</span></code></pre>
-
-    <div class="diagram">
-      <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(20,30)">
-          <rect x="0" y="0" width="80" height="46" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <line x1="40" y1="0" x2="40" y2="46" stroke="var(--accent)" stroke-width="1.2"/>
-          <text x="20" y="28" text-anchor="middle" class="svg-label">20</text>
-          <text x="60" y="28" text-anchor="middle" class="svg-label-sm">•</text>
-          <path d="M80 23 h60" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-          <rect x="160" y="0" width="80" height="46" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <line x1="200" y1="0" x2="200" y2="46" stroke="var(--accent)" stroke-width="1.2"/>
-          <text x="180" y="28" text-anchor="middle" class="svg-label">40</text>
-          <text x="220" y="28" text-anchor="middle" class="svg-label-sm">•</text>
-          <path d="M240 23 h60" stroke="var(--ink-soft)" stroke-width="1.5" marker-end="url(#arrow)"/>
-
-          <rect x="320" y="0" width="80" height="46" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <line x1="360" y1="0" x2="360" y2="46" stroke="var(--accent)" stroke-width="1.2"/>
-          <text x="340" y="28" text-anchor="middle" class="svg-label">60</text>
-          <text x="380" y="28" text-anchor="middle" class="svg-label-sm">∅</text>
-
-          <text x="0" y="-8" class="svg-label-sm">p (head)</text>
-        </g>
-        <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-soft)"/></marker></defs>
-      </svg>
-      <p class="diagram-cap">Each node holds a key and a pointer to the next node; the final node's pointer is NULL, marking the list's end.</p>
-    </div>
-
-    <h3 id="ll-traverse">Traversing &amp; freeing a list</h3>
-    <pre><code><span class="ty">void</span> disp(node_t* q)
-{
-    <span class="kw">while</span>(q != NULL) { printf(<span class="str">"%d "</span>, q-&gt;key_); q = q-&gt;next_; }
-}</code></pre>
-    <div class="formula">
-      <span class="flabel">The single most important statement in data structures</span>
-      q = q -&gt; next_;
-    </div>
-    <p>We can't do <code class="inline">q++</code> to move along the list — nodes are scattered wherever <code class="inline">malloc</code> happened to place them, not laid out contiguously like an array. Instead we follow the explicit link stored inside the current node.</p>
-    <pre><code><span class="ty">void</span> freelist(node_t* q)
-{
-    node_t* r;
-    <span class="kw">while</span>(q != NULL) { r = q-&gt;next_; free(q); q = r; }
-}</code></pre>
-    <div class="warn"><span class="label">Order matters</span>You must save <code class="inline">q-&gt;next_</code> into <code class="inline">r</code> <em>before</em> calling <code class="inline">free(q)</code> — once a node is freed, reading its <code class="inline">next_</code> field is undefined behaviour. This "save the link before you cut it" pattern recurs throughout data structures. Also note: never write plain <code class="inline">free(p)</code> where <code class="inline">p</code> is the head — that would free only the first node and strand the rest of the list as unreachable garbage.</div>
-
-    <h3 id="ll-ordered">Ordered insertion — the four cases</h3>
-    <p>An <strong>ordered list</strong> keeps nodes sorted (non-decreasing key order, say). Insertion has to consider four distinct situations:</p>
-    <ol>
-      <li><strong>Empty list</strong> — the new node simply becomes the head.</li>
-      <li><strong>Insert in the middle</strong> — the new node's key falls between two existing nodes.</li>
-      <li><strong>Insert at the end</strong> — the new key is larger than everything currently in the list.</li>
-      <li><strong>Insert at the beginning</strong> — the new key is smaller than the current head's key.</li>
-    </ol>
-    <pre><code><span class="kw">if</span>(ptr_list-&gt;head == NULL)
-{
-    ptr_list-&gt;head = temp;
-    temp-&gt;next_ = NULL;    <span class="cm">// case 1: empty list</span>
-}</code></pre>
-    <p>For a non-empty list, we need <strong>two</strong> pointers walking together — a lagging <code class="inline">prev</code> and a leading <code class="inline">pres</code> — because a singly-linked list only lets us move forward. If we only tracked <code class="inline">pres</code> and moved past the correct insertion point, there would be no way to "go back":</p>
-    <pre><code>node_t* prev = NULL;
-node_t* pres = ptr_list-&gt;head;
-<span class="kw">while</span>(pres != NULL &amp;&amp; pres-&gt;key_ &lt; temp-&gt;key_)
-{
-    prev = pres;
-    pres = pres-&gt;next_;
-}
-<span class="cm">// after the loop: temp is inserted between prev and pres</span></code></pre>
-    <p>Once the loop ends, <code class="inline">prev</code> and <code class="inline">pres</code> straddle the correct insertion point (either could be <code class="inline">NULL</code>, covering the beginning/end cases naturally), and the new node's links are rewired around them.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 8: STACKS ================= -->
-    <h2 class="chapter" id="ch8"><span class="num">08</span>Stacks</h2>
-    <p class="chapter-intro">A stack is a data structure where every operation happens at exactly one end — the "top". Like a spring-loaded stack of plates in a cafeteria: you can only add or remove from the top.</p>
-
-    <h3 id="stack-adt">Stack — interface (LIFO)</h3>
-    <p>The stack ADT is <strong>Last-In, First-Out (LIFO)</strong>. Its interface, independent of implementation, is:</p>
-    <table>
-      <tr><th>Function</th><th>Purpose</th></tr>
-      <tr><td><code class="inline">void init_stack(stack_t*)</code></td><td>Initialize an empty stack.</td></tr>
-      <tr><td><code class="inline">void deinit_stack(stack_t*)</code></td><td>Remove all elements, returning the stack to empty.</td></tr>
-      <tr><td><code class="inline">void push(stack_t*, T val)</code></td><td>Add an element at the top.</td></tr>
-      <tr><td><code class="inline">T pop(stack_t*)</code></td><td>Remove and return the top element.</td></tr>
-      <tr><td><code class="inline">int is_empty(stack_t*)</code></td><td>True if there is nothing to pop.</td></tr>
-      <tr><td><code class="inline">int is_full(stack_t*)</code></td><td>True if there is no room left to push (array version only, in practice).</td></tr>
-    </table>
-    <p>Crucially, <strong>using</strong> a stack never requires knowing how it's implemented — exactly the interface/implementation split from Chapter 6.</p>
-
-    <div class="diagram">
-      <svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg">
-        <text x="60" y="20" class="svg-label" style="font-weight:600">push('a'); push('b'); push('c');</text>
-        <g transform="translate(60,35)">
-          <rect x="0" y="80" width="90" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="0" y="46" width="90" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="0" y="12" width="90" height="34" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.5"/>
-          <text x="45" y="34" text-anchor="middle" class="svg-label">c ← top</text>
-          <text x="45" y="68" text-anchor="middle" class="svg-label">b</text>
-          <text x="45" y="102" text-anchor="middle" class="svg-label">a</text>
-        </g>
-        <text x="270" y="20" class="svg-label" style="font-weight:600">pop() → 'c'</text>
-        <g transform="translate(270,35)">
-          <rect x="0" y="80" width="90" height="34" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-          <rect x="0" y="46" width="90" height="34" fill="var(--accent-2-soft)" stroke="var(--accent-2)" stroke-width="1.5"/>
-          <text x="45" y="34" text-anchor="middle" class="svg-label-sm">(removed)</text>
-          <text x="45" y="68" text-anchor="middle" class="svg-label">b ← top</text>
-          <text x="45" y="102" text-anchor="middle" class="svg-label">a</text>
-        </g>
-      </svg>
-      <p class="diagram-cap">Last-In, First-Out: the most recently pushed element is always the first one popped.</p>
-    </div>
-
-    <h3 id="stack-array">Array implementation</h3>
-    <pre><code>#define MAXSIZE 5
-<span class="kw">struct</span> stack { <span class="ty">char</span> key_[MAXSIZE]; <span class="ty">int</span> top_; };
-<span class="kw">typedef</span> <span class="kw">struct</span> stack stack_t;</code></pre>
-    <p>The design decision: <code class="inline">top_</code> tracks the <strong>index of the last element added</strong> (not the next free slot). This single decision shapes every function:</p>
-    <ul>
-      <li><code class="inline">init_stack</code> sets <code class="inline">top_ = -1</code> — a deliberately invalid array index, meaning "empty."</li>
-      <li><code class="inline">is_empty</code> just checks <code class="inline">top_ == -1</code>.</li>
-      <li><code class="inline">is_full</code> checks whether <code class="inline">top_</code> has reached <code class="inline">MAXSIZE - 1</code>.</li>
-      <li><code class="inline">push</code> increments <code class="inline">top_</code> first, checks for fullness, then stores the value.</li>
-      <li><code class="inline">pop</code> checks for emptiness first, then reads the value at <code class="inline">top_</code> and decrements it.</li>
-    </ul>
-
-    <h3 id="stack-list">Linked-list implementation</h3>
-    <pre><code><span class="kw">struct</span> node { <span class="ty">char</span> key_; <span class="kw">struct</span> node* next_; };
-<span class="kw">typedef</span> <span class="kw">struct</span> node node_t;
-<span class="kw">struct</span> stack { node_t* top_; };
-<span class="kw">typedef</span> <span class="kw">struct</span> stack stack_t;</code></pre>
-    <p>The interface (the six function signatures) is <strong>identical</strong> to the array version — clients don't need to change a single line of their own code, at most a recompile.</p>
-    <ul>
-      <li><code class="inline">init_stack</code> sets <code class="inline">top_ = NULL</code>.</li>
-      <li><code class="inline">push</code> creates a new node, links its <code class="inline">next_</code> to the current top, then moves <code class="inline">top_</code> to point at the new node — <strong>in that order</strong>.</li>
-      <li><code class="inline">pop</code>: (1) save the key, (2) save the top node's address, (3) advance <code class="inline">top_</code> to the next node, (4) free the saved old node, (5) return the saved key.</li>
-      <li><code class="inline">is_empty</code> checks <code class="inline">top_ == NULL</code>.</li>
-      <li><code class="inline">is_full</code> is trickier — there's no fixed capacity, so we try a trial <code class="inline">malloc</code>: if it fails, the stack is (heap-)full; either way, we must immediately <code class="inline">free</code> that trial allocation to avoid a leak.</li>
-    </ul>
-    <div class="note"><span class="label">The power of an ADT</span>The client code that uses <code class="inline">push</code>/<code class="inline">pop</code> is <strong>completely unaware</strong> whether the stack underneath is an array or a linked list. That is the entire point of separating interface from implementation.</div>
-
-    <h3 id="stack-parens">Application — well-formed parentheses</h3>
-    <p>Is <code class="inline">((5 + 6) * (7 + 8))</code> well-formed? Ignoring everything except the brackets: <code class="inline">(())</code> — matched. But <code class="inline">)(</code> or <code class="inline">())())</code> are not — matching counts of <code class="inline">(</code> and <code class="inline">)</code> is <strong>necessary but not sufficient</strong>; order matters too (a closing bracket must never appear before its matching opener).</p>
-    <div class="formula"><span class="flabel">Algorithm</span>
-For each character: '(' → push a placeholder. ')' → if the stack is empty, invalid; otherwise pop. At the end, the string is valid only if the stack is empty <em>and</em> we never hit an empty-stack pop.
-    </div>
-    <pre><code><span class="ty">int</span> is_valid = 1; <span class="ty">char</span> ch, *s = str;
-<span class="kw">while</span>(is_valid &amp;&amp; (ch = *s++) != <span class="str">'\0'</span>)
-{
-    <span class="kw">if</span>(ch == <span class="str">'('</span>)      push(&amp;mystack, <span class="str">'x'</span>);
-    <span class="kw">else if</span>(ch == <span class="str">')'</span>)
-    {
-        <span class="kw">if</span>(!is_empty(&amp;mystack)) pop(&amp;mystack);
-        <span class="kw">else</span> is_valid = 0;
-    }
-}
-<span class="kw">if</span>(is_valid &amp;&amp; is_empty(&amp;mystack)) printf(<span class="str">"Well formed expression\n"</span>);
-<span class="kw">else</span> printf(<span class="str">"not well formed expression\n"</span>);</code></pre>
-
-    <h3 id="stack-brackets">Application — mixed bracket types</h3>
-    <p>What about <code class="inline">(){}[]</code>, <code class="inline">([{}])</code>? A single placeholder is no longer enough — <code class="inline">([)]</code> must be rejected even though brackets are individually balanced. The trick: <strong>push the matching closing bracket</strong> for whatever opener you see, so that when a closer arrives you can directly compare it against what's on top of the stack.</p>
-    <pre><code><span class="kw">if</span>(ch == <span class="str">'('</span>)      push(&amp;mystack, <span class="str">')'</span>);
-<span class="kw">else if</span>(ch == <span class="str">'['</span>) push(&amp;mystack, <span class="str">']'</span>);
-<span class="kw">else if</span>(ch == <span class="str">'{'</span>) push(&amp;mystack, <span class="str">'}'</span>);
-<span class="kw">else if</span>(ch==<span class="str">')'</span>||ch==<span class="str">']'</span>||ch==<span class="str">'}'</span>)
-{
-    <span class="kw">if</span>(!is_empty(&amp;mystack)) { <span class="kw">if</span>(ch != pop(&amp;mystack)) is_valid = 0; }
-    <span class="kw">else</span> is_valid = 0;
-}</code></pre>
-
-    <h3 id="postfix-eval">Application — evaluating postfix expressions</h3>
-    <p>Ordinary arithmetic uses <strong>infix</strong> notation — the operator sits between its operands (<code class="inline">4 * 5 + 6</code>) — which forces us to deal with precedence, associativity, and nested parentheses (BODMAS). A <strong>postfix</strong> expression puts the operator <em>after</em> its operands (<code class="inline">4 5 * 6 +</code>), so every operator can be evaluated the instant it's seen — no precedence rules, no parentheses, and every operator is uniformly left-associative.</p>
-    <table>
-      <tr><th>Infix</th><th>Postfix</th></tr>
-      <tr><td>3 + 4</td><td>3 4 +</td></tr>
-      <tr><td>4 * 5 + 6</td><td>4 5 * 6 +</td></tr>
-      <tr><td>4 + 5 * 6</td><td>4 5 6 * +</td></tr>
-      <tr><td>5 * 6 + 7 * 8</td><td>5 6 * 7 8 * +</td></tr>
-    </table>
-    <div class="diagram">
-      <svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg">
-        <text x="10" y="18" class="svg-label" style="font-weight:600">Evaluating "5 6 * 7 8 * +" with a stack of operands</text>
-        <g font-family="IBM Plex Mono, monospace" font-size="11">
-          <text x="10" y="48" class="svg-label-sm">token:</text><text x="80" y="48" class="svg-label">5</text><text x="130" y="48" class="svg-label">6</text><text x="180" y="48" class="svg-label">*</text><text x="230" y="48" class="svg-label">7</text><text x="280" y="48" class="svg-label">8</text><text x="330" y="48" class="svg-label">*</text><text x="380" y="48" class="svg-label">+</text>
-          <text x="10" y="72" class="svg-label-sm">stack:</text>
-          <text x="70" y="72" class="svg-label">[5]</text>
-          <text x="120" y="72" class="svg-label">[5,6]</text>
-          <text x="180" y="72" class="svg-label">[30]</text>
-          <text x="220" y="72" class="svg-label">[30,7]</text>
-          <text x="270" y="72" class="svg-label">[30,7,8]</text>
-          <text x="330" y="72" class="svg-label">[30,56]</text>
-          <text x="385" y="72" class="svg-label">[86]</text>
-        </g>
-        <text x="10" y="100" class="svg-label-sm">On '*': pop 6 and 5 → push 5×6=30.   On second '*': pop 8 and 7 → push 7×8=56.   On '+': pop 56 and 30 → push 86.</text>
-        <text x="10" y="130" class="svg-label" style="font-weight:600">result = 86</text>
-      </svg>
-      <p class="diagram-cap">Each operator pops exactly as many operands as it needs, computes, and pushes the result back — the final value left on the stack is the answer.</p>
-    </div>
-    <div class="formula"><span class="flabel">Algorithm — evaluate postfix (assumes whitespace-separated tokens)</span>
-Scan left to right. Digit → accumulate a multi-digit number. Operator → pop two operands (<code>val1</code> = top, <code>val2</code> = next), apply <code>val2 OP val1</code> (note the order!), push the result. At the end, exactly one value remains on the stack — the answer.
-    </div>
-    <pre><code><span class="kw">while</span>((ch = *s++) != <span class="str">'\0'</span>)
-{
-    <span class="kw">if</span>(ch==<span class="str">'+'</span>||ch==<span class="str">'-'</span>||ch==<span class="str">'*'</span>||ch==<span class="str">'/'</span>)
-    {
-        val1 = pop(&amp;mystack);
-        val2 = pop(&amp;mystack);
-        <span class="kw">switch</span>(ch)
-        {
-            <span class="kw">case</span> <span class="str">'+'</span>: push(&amp;mystack, val2 + val1); <span class="kw">break</span>;
-            <span class="kw">case</span> <span class="str">'-'</span>: push(&amp;mystack, val2 - val1); <span class="kw">break</span>;
-            <span class="kw">case</span> <span class="str">'*'</span>: push(&amp;mystack, val2 * val1); <span class="kw">break</span>;
-            <span class="kw">case</span> <span class="str">'/'</span>: push(&amp;mystack, val2 / val1); <span class="kw">break</span>;
-        }
-    }
-    <span class="kw">else if</span>(ch &gt;= <span class="str">'0'</span> &amp;&amp; ch &lt;= <span class="str">'9'</span>) { is_num = 1; val = val*10 + ch - <span class="str">'0'</span>; }
-    <span class="kw">else if</span>(ch == <span class="str">' '</span> &amp;&amp; is_num) { push(&amp;mystack, val); val = 0; is_num = 0; }
-}
-printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre>
-    <div class="warn"><span class="label">Order matters for non-commutative operators</span>Because <code class="inline">val1</code> is popped <em>first</em> (it was pushed last, i.e. it's the right operand), subtraction and division must compute <code class="inline">val2 OP val1</code>, not <code class="inline">val1 OP val2</code> — reversing this silently breaks any expression using <code class="inline">-</code> or <code class="inline">/</code>.</div>
-
-    <h3 id="infix-postfix">Application — infix → postfix conversion</h3>
-    <p>To convert, we use a stack of <strong>operators</strong> (not operands). The core rule: output operands immediately; hold operators on the stack until something of lower-or-equal precedence forces them out.</p>
-    <p><strong>Example — <code class="inline">4 * 5 + 6</code>:</strong> output 4; push *; output 5; see + (lower precedence than the * on the stack) → pop * to output, push +; output 6; drain stack → pop +. Result: <code class="inline">4 5 * 6 +</code>.</p>
-    <p><strong>Example — <code class="inline">4 + 5 * 6</code>:</strong> output 4; push +; output 5; see * (<em>higher</em> precedence than + on the stack) → just push * (don't pop +); output 6; drain stack, popping in LIFO order: * then +. Result: <code class="inline">4 5 6 * +</code>.</p>
-    <p><strong>Handling parentheses — <code class="inline">3 * (4 + 5) * 6</code>:</strong> a <code class="inline">(</code> is given an artificially <strong>very high</strong> precedence while it's still in the input string (so it always gets pushed and never gets popped by an ordinary operator), but once it's <em>sitting on the stack</em> it's treated as having very <strong>low</strong> precedence (so it never blocks anything else from being pushed on top of it). On seeing <code class="inline">)</code>, pop and output everything down to (and including) the matching <code class="inline">(</code>, which is then discarded (not output).</p>
-    <div class="formula"><span class="flabel">Algorithm — infix to postfix</span>
-'(' → push. ')' → pop to output until '(' is popped and discarded. Operand → output directly. Operator → if stack empty, push; else pop-and-output while the stack's top has ≥ precedence (for equal precedence, this correctly enforces left-associativity), then push. At the end, drain the whole stack to output.
-    </div>
-    <pre><code><span class="kw">while</span>((ch = *s++) != <span class="str">'\0'</span>)
-{
-    <span class="kw">if</span>(ch == <span class="str">')'</span>)
-    {
-        <span class="kw">while</span>((ch1 = pop(&amp;mystack)) != <span class="str">'('</span>) { *p++ = <span class="str">' '</span>; *p++ = ch1; }
-    }
-    <span class="kw">else if</span>(ch==<span class="str">'('</span>||ch==<span class="str">'+'</span>||ch==<span class="str">'-'</span>||ch==<span class="str">'*'</span>||ch==<span class="str">'/'</span>)
-    {
-        <span class="kw">if</span>(is_empty(&amp;mystack)) push(&amp;mystack, ch);
-        <span class="kw">else</span>
-        {
-            <span class="kw">while</span>(!is_empty(&amp;mystack) &amp;&amp; prec_in_str(ch) &lt; prec_in_stack(peek(&amp;mystack)))
-            { *p++ = <span class="str">' '</span>; *p++ = pop(&amp;mystack); }
-            push(&amp;mystack, ch);
-        }
-    }
-    <span class="kw">else</span> { *p++ = ch; }  <span class="cm">// operand — straight to output</span>
-}
-<span class="kw">while</span>(!is_empty(&amp;mystack)) { *p++ = <span class="str">' '</span>; *p++ = pop(&amp;mystack); }
-*p = <span class="str">'\0'</span>;</code></pre>
-
-    <h3 id="stack-more">More applications of stacks</h3>
-    <p>Beyond bracket-matching and expression evaluation, stacks appear throughout computing whenever "undo the most recent step" or "remember where to come back to" is needed:</p>
-    <ul>
-      <li><strong>Depth-first search</strong> of a graph.</li>
-      <li><strong>Backtracking</strong> algorithms.</li>
-      <li><strong>Branch and bound</strong> search.</li>
-      <li><strong>Simulating recursive function calls</strong> — which is fitting, since a function's own call stack is, quite literally, a stack.</li>
-    </ul>
-    <p>More formally: the languages that can be recognized using a stack (in addition to a simple state machine) are called <strong>context-free languages</strong>, recognized by a <strong>push-down automaton</strong> — and essentially every programming language's grammar (nested blocks, nested expressions) falls into this category. You'll study this formally later in your curriculum.</p>
-
-    <hr class="divider">
-
-    <!-- ================= CHAPTER 9: MULTILISTS & SKIPLISTS ================= -->
-    <h2 class="chapter" id="ch9"><span class="num">09</span>Multilists &amp; Skiplists</h2>
-    <p class="chapter-intro">Two extensions to the plain linked list, aimed at two different goals: skip lists trade a little extra memory for much faster search; multilists let a single physical node participate in more than one logical relationship at once.</p>
-
-    <h3 id="skiplist">Skip lists</h3>
-    <p><strong>Motivation:</strong> imagine traveling from Bangalore to a small village between Srirangapatna and Mysore. A shuttle bus stopping at every village takes forever. Better: take an express bus straight to Mysore (or Srirangapatna), then a short local hop to the village. A <strong>skip list</strong> applies exactly this idea to a sorted linked list.</p>
-    <p>In an ordinary sorted list, searching for a value near the end still requires walking past almost every node — in the worst case, the number of comparisons is proportional to the list's length.</p>
-    <div class="diagram">
-      <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
-        <text x="10" y="18" class="svg-label" style="font-weight:600">Searching for 90 in a skip list</text>
-        <g font-family="IBM Plex Mono, monospace" font-size="12">
-          <text x="0" y="48" class="svg-label-sm">L2</text>
-          <text x="30" y="48" class="svg-label" fill="var(--accent)">10</text>
-          <path d="M50 44 L160 44" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrow2)"/>
-          <text x="165" y="48" class="svg-label" fill="var(--accent)">40</text>
-          <path d="M185 44 L300 44" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrow2)"/>
-          <text x="305" y="48" class="svg-label" fill="var(--accent)">70</text>
-          <path d="M330 44 L470 44" stroke-dasharray="3,3" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#arrow3)"/>
-          <text x="475" y="48" class="svg-label-sm">100 (too big — drop down)</text>
-
-          <text x="0" y="98" class="svg-label-sm">L1</text>
-          <text x="30" y="98" class="svg-label-sm">10</text>
-          <text x="80" y="98" class="svg-label-sm">20</text>
-          <text x="165" y="98" class="svg-label-sm">40</text>
-          <text x="220" y="98" class="svg-label-sm">50</text>
-          <text x="305" y="98" class="svg-label-sm">70</text>
-          <text x="475" y="98" class="svg-label-sm">100</text>
-          <path d="M320 70 L320 90" stroke="var(--ink-faint)" stroke-width="1" stroke-dasharray="2,2"/>
-
-          <text x="0" y="148" class="svg-label-sm">L0</text>
-          <text x="30" y="148" class="svg-label-sm">10</text>
-          <text x="80" y="148" class="svg-label-sm">20</text>
-          <text x="120" y="148" class="svg-label-sm">30</text>
-          <text x="165" y="148" class="svg-label-sm">40</text>
-          <text x="220" y="148" class="svg-label-sm">50</text>
-          <text x="265" y="148" class="svg-label-sm">60</text>
-          <text x="305" y="148" class="svg-label" fill="var(--accent-2)">70</text>
-          <path d="M320 145 L350 145" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#arrow3)"/>
-          <text x="355" y="148" class="svg-label-sm">80</text>
-          <path d="M375 145 L400 145" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#arrow3)"/>
-          <text x="405" y="148" class="svg-label" fill="var(--accent-2)" style="font-weight:600">90 ✓</text>
-          <text x="475" y="148" class="svg-label-sm">100</text>
-          <path d="M310 108 L310 138" stroke="var(--ink-faint)" stroke-width="1" stroke-dasharray="2,2"/>
-        </g>
-        <defs>
-          <marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker>
-          <marker id="arrow3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-2)"/></marker>
-        </defs>
-      </svg>
-      <p class="diagram-cap">Jump 10→40→70 on the express level; 100 overshoots, so drop to level 0 at 70 and walk 70→80→90. Only a handful of steps instead of nine.</p>
-    </div>
-    <p>Structure: a skip list layers multiple linked lists on top of one another. Level 0 contains <em>every</em> element; each level above contains progressively fewer (conventionally, roughly half as many as the level below), acting as an "express lane" over the level beneath it.</p>
-    <p><strong>Searching:</strong> start at the top level. Move forward while the next node's key is still less than the target. When the next node would overshoot the target, drop down one level at the <em>current</em> node and continue. Repeat until you reach level 0, where the element is either found or confirmed absent.</p>
-    <p>Each node stores forward pointers only for the levels it actually participates in — a level-0-only node has just one pointer; a node present in every level needs one pointer per level. Insertion and deletion follow the same top-down, level-by-level logic used for searching.</p>
-    <div class="note"><span class="label">Applications</span>In-memory ordered data needing fast insert/search/delete; concurrent data structures (operations at different levels can proceed with less contention than a balanced tree); priority-ordered event queues. Skip lists are often used as a simpler alternative to balanced binary search trees.</div>
-    <p class="lead" style="font-size:14px;color:var(--ink-faint)">Note: implementing a skip list is explicitly stated as outside this course's syllabus — understanding the concept and the search trace is what matters here.</p>
-
-    <h3 id="multilist">Multilists</h3>
-    <p>A <strong>multilist</strong> is literally a "list of lists" — the same physical node can be part of more than one logical list simultaneously, letting one piece of data serve multiple relationships without duplication.</p>
-    <p><strong>Motivating example — sparse matrices.</strong> A 10,000 × 10,000 matrix (common in image processing, finite-element/finite-difference methods, large electrical networks) would need 100 million storage cells if stored naively — yet the vast majority of entries are typically zero. Storing only the <em>non-zero</em> values (each tagged with its row and column) saves huge amounts of memory, but then how do you efficiently walk an entire row, or an entire column, for operations like matrix addition or multiplication?</p>
-    <p><strong>Solution:</strong> give every non-zero element two link fields — one threading it into its row's list, and another threading it into its column's list. Each non-zero value therefore lives in <strong>two</strong> lists simultaneously, using only <em>one</em> physical node.</p>
-    <div class="diagram">
-      <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg">
-        <text x="10" y="18" class="svg-label" style="font-weight:600">Sparse matrix as a multilist (row lists + column lists)</text>
-        <g font-family="IBM Plex Mono, monospace" font-size="11">
-          <text x="10" y="50" class="svg-label-sm">Row0 →</text>
-          <rect x="70" y="34" width="70" height="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
-          <text x="105" y="53" text-anchor="middle" class="svg-label-sm">r0,c2,5</text>
-          <path d="M140 49 h50" stroke="var(--ink-soft)" marker-end="url(#arrow4)"/>
-          <rect x="195" y="34" width="70" height="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
-          <text x="230" y="53" text-anchor="middle" class="svg-label-sm">r0,c5,2</text>
-
-          <text x="10" y="110" class="svg-label-sm">Row1 →</text>
-          <rect x="150" y="94" width="70" height="30" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"/>
-          <text x="185" y="113" text-anchor="middle" class="svg-label-sm">r1,c2,8</text>
-
-          <text x="10" y="170" class="svg-label-sm">Col2 ↓</text>
-          <path d="M105 64 L105 94 L185 94" stroke="var(--accent-2)" stroke-width="1.3" fill="none" stroke-dasharray="4,3" marker-end="url(#arrow5)"/>
-          <text x="290" y="170" class="svg-label-sm">Column links (orange, dashed) connect the same nodes vertically —</text>
-          <text x="290" y="188" class="svg-label-sm">one physical node, two logical lists.</text>
-        </g>
-        <defs>
-          <marker id="arrow4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--ink-soft)"/></marker>
-          <marker id="arrow5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--accent-2)"/></marker>
-        </defs>
-      </svg>
-      <p class="diagram-cap">Each non-zero cell (row, col, value) is one node reachable from both its row's list and its column's list.</p>
-    </div>
-    <p><strong>Another example — one physical node, multiple logical views.</strong> Consider students and the courses they take. We could maintain two separate structures — "courses per student" and "students per course" — but that duplicates data, doubles memory use, and risks the two copies going out of sync if only one is updated. A multilist instead stores each (student, course) relationship as a <em>single</em> node, reachable by traversing either "student-wise" or "course-wise," so there is exactly one place to update and no risk of the two views disagreeing.</p>
-    <div class="note"><span class="label">Applications of multilists</span>Sparse matrices · graph representations · social network relationships · systems needing multiple simultaneous "views" over the same underlying data (such as different indexes into the same files).</div>
-    <table>
-      <tr><th>Salient point</th><th>Why it matters</th></tr>
-      <tr><td>Represents multiple relations with one node</td><td>Avoids storing the same logical data twice.</td></tr>
-      <tr><td>Avoids duplication</td><td>No wasted memory for redundant copies.</td></tr>
-      <tr><td>Avoids multiple updates</td><td>One update keeps every "view" consistent — no synchronization bugs.</td></tr>
-      <tr><td>Costs complexity</td><td>Pointer management, and insertion/deletion logic, become noticeably more intricate than a single plain list.</td></tr>
-    </table>
-
-    <footer>
-      Notes compiled from the "Data Structures and Applications" course materials (Unit 1) with added explanations, worked traces, and diagrams for study purposes. Use the search box or the chapter list on the left to jump straight to any topic.
-    </footer>
-  </main>
+  <footer class="site-footer"><span>TYN Notes · Data Structures &amp; Algorithms</span><a href="index.html">Home</a></footer>
 </div>
 
-<button id="backTop" aria-label="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-</button>
-
 <script>
-(function(){
-  // ---------- Theme toggle ----------
-  var root = document.documentElement;
-  var themeBtn = document.getElementById('themeBtn');
-  var themeIcon = document.getElementById('themeIcon');
-  var moonPath = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-  var sunPath = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+// Theme Toggle with localStorage persistence
+const root = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+const iconSun = document.getElementById('iconSun');
 
-  function applyTheme(t){
-    if(t === 'dark'){ root.setAttribute('data-theme','dark'); themeIcon.innerHTML = moonPath; }
-    else { root.setAttribute('data-theme','light'); themeIcon.innerHTML = sunPath; }
-  }
-  var saved = null;
-  try { saved = localStorage.getItem('ds-notes-theme'); } catch(e){}
-  if(saved){ applyTheme(saved); }
-  else {
-    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
-  }
-  themeBtn.addEventListener('click', function(){
-    var current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    var next = current === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    try { localStorage.setItem('ds-notes-theme', next); } catch(e){}
-  });
+const sunIcon = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+const moonIcon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
 
-  // ---------- Sidebar collapse (mobile) ----------
-  var sidebar = document.getElementById('sidebar');
-  var menuToggle = document.getElementById('menuToggle');
-  document.querySelectorAll('.toc-list a').forEach(function(a){
-    a.addEventListener('click', function(){ sidebar.classList.remove('open'); });
-  });
+function applyTheme(dark) {
+  root.classList.toggle('dark', dark);
+  iconSun.innerHTML = dark ? moonIcon : sunIcon;
+}
 
-  // ---------- Accordion groups ----------
-  document.querySelectorAll('.toc-group-title').forEach(function(title){
-    title.addEventListener('click', function(){
-      title.parentElement.classList.toggle('collapsed');
-    });
-  });
+// Determine initial theme: saved preference or system preference
+const savedTheme = localStorage.getItem('theme');
+let isDark = savedTheme
+  ? savedTheme === 'dark'
+  : window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  // ---------- Search filter ----------
-  var searchInput = document.getElementById('searchInput');
-  var searchCount = document.getElementById('searchCount');
-  var allLinks = Array.prototype.slice.call(document.querySelectorAll('.toc-list a'));
+applyTheme(isDark);
 
-  searchInput.addEventListener('input', function(){
-    var q = searchInput.value.trim().toLowerCase();
-    var visible = 0;
-    document.querySelectorAll('.toc-group').forEach(function(group){
-      var groupHasMatch = false;
-      group.querySelectorAll('.toc-list li').forEach(function(li){
-        var a = li.querySelector('a');
-        var haystack = (a.textContent + ' ' + (a.getAttribute('data-kw')||'')).toLowerCase();
-        var match = q === '' || haystack.indexOf(q) !== -1;
-        li.classList.toggle('toc-hidden', !match);
-        if(match){ groupHasMatch = true; visible++; }
-      });
-      group.style.display = (q === '' || groupHasMatch) ? '' : 'none';
-      if(q !== '' && groupHasMatch){ group.classList.remove('collapsed'); }
-    });
-    searchCount.textContent = q === '' ? '' : (visible + ' topic' + (visible===1?'':'s') + ' found');
-  });
-
-  // ---------- Active section highlighting on scroll ----------
-  var sections = allLinks.map(function(a){
-    var id = a.getAttribute('href').slice(1);
-    return { link: a, el: document.getElementById(id) };
-  }).filter(function(s){ return s.el; });
-
-  function onScroll(){
-    var scrollPos = window.scrollY + 120;
-    var current = null;
-    sections.forEach(function(s){
-      if(s.el.offsetTop <= scrollPos){ current = s; }
-    });
-    allLinks.forEach(function(a){ a.classList.remove('active'); });
-    if(current){ current.link.classList.add('active'); }
-
-    var backTop = document.getElementById('backTop');
-    if(window.scrollY > 500){ backTop.classList.add('show'); } else { backTop.classList.remove('show'); }
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  document.getElementById('backTop').addEventListener('click', function(){
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-})();
+themeBtn.addEventListener('click', () => {
+  isDark = !isDark;
+  applyTheme(isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
 </script>
-<script>
-(function(){
-  return;
-  var editor = document.getElementById('dsaCode');
-  var runButton = document.getElementById('dsaRun');
-  var sendButton = document.getElementById('dsaSend');
-  var resetButton = document.getElementById('dsaReset');
-  var stdin = document.getElementById('dsaStdin');
-  var output = document.getElementById('dsaOutput');
-  var openButton = document.getElementById('dsaOpen');
-  var closeButton = document.getElementById('dsaClose');
-  var resizeHandle = document.getElementById('dsaResize');
-  var initialCode = editor.value;
-  var running = false;
-  var pendingInput = null;
-  var inputQueue = [];
-
-  var sidebar = document.getElementById('sidebar');
-  var menuToggle = document.getElementById('menuToggle');
-  openButton.addEventListener('click', function(){
-    document.body.classList.add('playground-open');
-    sidebar.classList.remove('open');
-    sidebar.classList.add('closed');
-  });
-  closeButton.addEventListener('click', function(){ stopProgram(); document.body.classList.remove('playground-open'); });
-  document.addEventListener('keydown', function(event){
-    if(event.key === 'Escape'){ stopProgram(); document.body.classList.remove('playground-open'); }
-  });
-
-  menuToggle.addEventListener('click', function(){
-    if(window.matchMedia('(max-width:760px)').matches){
-      sidebar.classList.toggle('open');
-    } else {
-      sidebar.classList.toggle('closed');
-    }
-  });
-
-  resizeHandle.addEventListener('pointerdown', function(event){
-    if(window.matchMedia('(max-width:480px)').matches) return;
-    event.preventDefault();
-    resizeHandle.classList.add('active');
-    resizeHandle.setPointerCapture(event.pointerId);
-    function resize(moveEvent){
-      var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
-      document.body.style.setProperty('--playground-width', width + 'px');
-    }
-    function stop(){
-      resizeHandle.classList.remove('active');
-      resizeHandle.removeEventListener('pointermove', resize);
-      resizeHandle.removeEventListener('pointerup', stop);
-      resizeHandle.removeEventListener('pointercancel', stop);
-    }
-    resizeHandle.addEventListener('pointermove', resize);
-    resizeHandle.addEventListener('pointerup', stop);
-    resizeHandle.addEventListener('pointercancel', stop);
-  });
-
-  function show(text, isError){
-    output.textContent = text;
-    output.classList.toggle('error', isError);
-  }
-
-  function print(text){
-    output.textContent += String(text) + '\n';
-    output.scrollTop = output.scrollHeight;
-  }
-
-  function input(prompt){
-    print(prompt);
-    if(inputQueue.length){
-      var queued = inputQueue.shift();
-      print(queued);
-      return Promise.resolve(queued);
-    }
-    sendButton.disabled = false;
-    return new Promise(function(resolve, reject){ pendingInput = {resolve:resolve, reject:reject}; });
-  }
-
-  function stopProgram(){
-    running = false;
-    sendButton.disabled = true;
-    inputQueue = [];
-    if(pendingInput){
-      pendingInput.reject(new Error('Program stopped.'));
-      pendingInput = null;
-    }
-    runButton.disabled = false;
-    runButton.textContent = 'Run';
-  }
-
-  runButton.addEventListener('click', function(){
-    if(running){ stopProgram(); return; }
-    running = true;
-    runButton.textContent = 'Stop';
-    sendButton.disabled = false;
-    inputQueue = [];
-    show('', false);
-    try {
-      if(/#include\s*</.test(editor.value) || /\bscanf\s*\(/.test(editor.value)){
-        throw new Error('This playground runs JavaScript. Convert C scanf/printf code to await input() and print().');
-      }
-      var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-      Promise.resolve(new AsyncFunction('input', 'print', editor.value)(input, print))
-        .catch(function(error){ print(error.message); output.classList.add('error'); })
-        .finally(function(){
-          running = false;
-          sendButton.disabled = true;
-          runButton.textContent = 'Run';
-        });
-    } catch(error){
-      running = false;
-      show(error.message, true);
-      runButton.textContent = 'Run';
-    }
-  });
-
-  sendButton.addEventListener('click', function(){
-    if(!running || !stdin.value) return;
-    var value = stdin.value;
-    stdin.value = '';
-    if(pendingInput){
-      print(value);
-      var resolve = pendingInput.resolve;
-      pendingInput = null;
-      resolve(value);
-    } else {
-      inputQueue.push(value);
-    }
-    sendButton.disabled = !running;
-  });
-
-  stdin.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){
-      event.preventDefault();
-      sendButton.click();
-    }
-  });
-
-  resetButton.addEventListener('click', function(){
-    stopProgram();
-    editor.value = initialCode;
-    stdin.value = '';
-    show('Output will appear here.', false);
-  });
-
-  editor.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter') runButton.click();
-    if(event.key === 'Tab'){
-      event.preventDefault();
-      var start = editor.selectionStart;
-      editor.setRangeText('    ', start, editor.selectionEnd, 'end');
-    }
-  });
-})();
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js"></script>
-<script>
-(function(){
-  var editor = document.getElementById('dsaCode');
-  var runButton = document.getElementById('dsaRun');
-  var stopButton = document.getElementById('dsaStop');
-  var resetButton = document.getElementById('dsaReset');
-  var statusEl = document.getElementById('dsaStatus');
-  var openButton = document.getElementById('dsaOpen');
-  var closeButton = document.getElementById('dsaClose');
-  var resizeHandle = document.getElementById('dsaResize');
-  var sidebar = document.getElementById('sidebar');
-  var menuToggle = document.getElementById('menuToggle');
-  var terminal = new Terminal({cursorBlink:true, convertEol:true, fontFamily:'IBM Plex Mono, monospace', fontSize:13, theme:{background:'#080d17', foreground:'#eaf3ff', cursor:'#60a5fa'}});
-  terminal.open(document.getElementById('dsaTerminal'));
-  var remoteBackend = window.TYN_BACKEND_HOST || localStorage.getItem('tyn_backend_host') || '';
-  var wsHost = '';
-  var wsProto = 'ws://';
-
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    wsHost = location.host;
-    wsProto = location.protocol === 'https:' ? 'wss://' : 'ws://';
-  } else if (location.protocol === 'file:') {
-    wsHost = '127.0.0.1:3002';
-    wsProto = 'ws://';
-  } else if (remoteBackend) {
-    wsHost = remoteBackend.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '').replace(/\/+$/, '');
-    wsProto = 'wss://';
-  }
-
-  var socket = null;
-  if(wsHost){
-    try {
-      socket = new WebSocket(wsProto + wsHost);
-    } catch(e) {}
-  }
-  var running = false;
-
-  openButton.addEventListener('click', function(){
-    document.body.classList.add('playground-open');
-    sidebar.classList.remove('open');
-    if(window.matchMedia('(min-width:761px)').matches) sidebar.classList.add('closed');
-    terminal.focus();
-  });
-  closeButton.addEventListener('click', function(){ document.body.classList.remove('playground-open'); });
-  document.addEventListener('keydown', function(event){ if(event.key === 'Escape') document.body.classList.remove('playground-open'); });
-  menuToggle.addEventListener('click', function(){
-    if(window.matchMedia('(max-width:760px)').matches) sidebar.classList.toggle('open');
-    else sidebar.classList.toggle('closed');
-  });
-  resizeHandle.addEventListener('pointerdown', function(event){
-    if(window.matchMedia('(max-width:480px)').matches) return;
-    event.preventDefault();
-    resizeHandle.classList.add('active');
-    resizeHandle.setPointerCapture(event.pointerId);
-    function resize(moveEvent){
-      var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
-      document.body.style.setProperty('--playground-width', width + 'px');
-      terminal.fit && terminal.fit();
-    }
-    function stop(){
-      resizeHandle.classList.remove('active');
-      resizeHandle.removeEventListener('pointermove', resize);
-      resizeHandle.removeEventListener('pointerup', stop);
-      resizeHandle.removeEventListener('pointercancel', stop);
-    }
-    resizeHandle.addEventListener('pointermove', resize);
-    resizeHandle.addEventListener('pointerup', stop);
-    resizeHandle.addEventListener('pointercancel', stop);
-  });
-
-  function status(text){ statusEl.textContent = text || ''; }
-  function send(message){ if(socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message)); }
-
-  if(socket){
-    socket.addEventListener('open', function(){ status('connected'); });
-    socket.addEventListener('error', function(){ status('server unavailable'); terminal.writeln('\r\n[Start with: npm install, then npm start]'); });
-    socket.addEventListener('close', function(){
-      if(running){ running = false; runButton.textContent = 'Run'; status('disconnected'); }
-    });
-    socket.addEventListener('message', function(event){
-      var message = JSON.parse(event.data);
-      if(message.type === 'output') terminal.write(message.data);
-      if(message.type === 'compile-error') { terminal.writeln('\r\n[compile error]'); terminal.write(message.data.replace(/\n/g, '\r\n')); running = false; status('compile failed'); }
-      if(message.type === 'error') { terminal.writeln('\r\n[error] ' + message.data); running = false; status('failed'); }
-      if(message.type === 'exit') { terminal.writeln('\r\n[process exited with code ' + message.data.code + ']'); running = false; status('finished'); }
-      runButton.textContent = running ? 'Running' : 'Run';
-    });
-  } else {
-    status('server offline');
-    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.protocol !== 'file:') {
-      terminal.writeln('C compiler backend not connected.\r\nDeploy your backend (e.g. Railway/Render) and set: localStorage.setItem("tyn_backend_host", "your-backend.up.railway.app")\r\n');
-    } else {
-      terminal.writeln('C Playground ready. Start the backend with: npm start\r\n');
-    }
-  }
-
-  terminal.onData(function(data){ if(running) send({type:'input', data:data}); });
-
-  runButton.addEventListener('click', function(){
-    /* Reset stale running flag if socket dropped mid-run */
-    if(running && (!socket || socket.readyState > WebSocket.OPEN)){
-      running = false; runButton.textContent = 'Run';
-    }
-    if(running) return;
-
-    /* If socket is null or definitively closed, warn and bail */
-    if(!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING){
-      status('not connected');
-      terminal.writeln('\r\n[Server offline — open http://127.0.0.1:3002/dsa1.html or run: npm start]\r\n');
-      return;
-    }
-
-    /* Socket is OPEN or still CONNECTING — proceed (send is guarded by readyState check) */
-    terminal.clear();
-    terminal.write('\x1b[90mStarting GCC...\x1b[0m\r\n');
-    running = true;
-    runButton.textContent = 'Running';
-    status('compiling');
-
-    if(socket.readyState === WebSocket.OPEN){
-      send({type:'start', code:editor.value});
-    } else {
-      /* CONNECTING: queue send for when it opens */
-      socket.addEventListener('open', function onceOpen(){
-        socket.removeEventListener('open', onceOpen);
-        send({type:'start', code:editor.value});
-      });
-    }
-    terminal.focus();
-  });
-
-  stopButton.addEventListener('click', function(){ if(running) send({type:'input', data:'\u0003'}); });
-  resetButton.addEventListener('click', function(){ editor.value = editor.defaultValue; terminal.clear(); terminal.write('Press Run to compile and start the C program.\r\n'); status(''); });
-  editor.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
-    if(event.key === 'Tab'){ event.preventDefault(); editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end'); }
-  });
-  /* --- Resizable Split Controller (4:1 initial ratio) --- */
-  var split = document.getElementById('dsaSplit');
-  if(split){
-    var handle = document.getElementById('dsaSplitHandle');
-    var editorPane = split.querySelector('.dsa-split-editor');
-    var termPane = split.querySelector('.dsa-split-terminal');
-
-    var MIN_EDITOR = 120;
-    var MIN_TERM = 90;
-    var DEFAULT_EDITOR_SHARE = 0.8; // 4:1 ratio (80% / 20%)
-
-    function setEditorHeight(px, total){
-      if(total <= 0) return;
-      var maxEditor = Math.max(MIN_EDITOR, total - MIN_TERM);
-      var h = Math.min(Math.max(px, MIN_EDITOR), maxEditor);
-      var ratio = h / total;
-      editorPane.style.flexGrow = String(ratio);
-      termPane.style.flexGrow = String(1 - ratio);
-      terminal.fit && terminal.fit();
-    }
-
-    function measure(){
-      return {
-        editor: editorPane.getBoundingClientRect().height,
-        term: termPane.getBoundingClientRect().height
-      };
-    }
-
-    function totalSpace(){
-      var m = measure();
-      return m.editor + m.term;
-    }
-
-    function resetRatio(){
-      var total = totalSpace();
-      setEditorHeight(total * DEFAULT_EDITOR_SHARE, total);
-    }
-
-    var drag = null;
-    handle.addEventListener('pointerdown', function(e){
-      if(e.pointerType === 'mouse' && e.button !== 0) return;
-      var m = measure();
-      drag = {
-        id: e.pointerId,
-        startY: e.clientY,
-        startEditor: m.editor,
-        total: m.editor + m.term
-      };
-      handle.setPointerCapture(e.pointerId);
-      document.body.classList.add('dsa-resizing');
-      e.preventDefault();
-    });
-
-    handle.addEventListener('pointermove', function(e){
-      if(!drag || e.pointerId !== drag.id) return;
-      var delta = e.clientY - drag.startY;
-      setEditorHeight(drag.startEditor + delta, drag.total);
-    });
-
-    function endDrag(e){
-      if(!drag || (e && e.pointerId !== drag.id)) return;
-      if(handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
-      drag = null;
-      document.body.classList.remove('dsa-resizing');
-    }
-
-    handle.addEventListener('pointerup', endDrag);
-    handle.addEventListener('pointercancel', endDrag);
-    handle.addEventListener('lostpointercapture', endDrag);
-
-    handle.addEventListener('keydown', function(e){
-      var m = measure();
-      var total = m.editor + m.term;
-      var step = (e.shiftKey ? 0.05 : 0.02) * total;
-      var next = null;
-      if(e.key === 'ArrowUp') next = m.editor - step;
-      else if(e.key === 'ArrowDown') next = m.editor + step;
-      else if(e.key === 'Home') next = total * DEFAULT_EDITOR_SHARE;
-      else if(e.key === 'End') next = total;
-      if(next === null) return;
-      e.preventDefault();
-      setEditorHeight(next, total);
-    });
-
-    handle.addEventListener('dblclick', resetRatio);
-  }
-})();
-</script>
-<script>document.body.appendChild(document.getElementById('themeBtn'));</script>
+<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
 </body>
 </html>
