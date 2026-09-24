@@ -423,20 +423,20 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
           <li><a href="#tcp-connection" data-title="TCP Connection Management Three Way Handshake Teardown FIN SYN">3-way handshake &amp; connection teardown</a></li>
         </ul>
       </div>
-      <div class="toc-group">
+      <!-- <div class="toc-group">
         <div class="toc-group-title"><span>IPv4 / IPv6 Addressing</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
           <li><a href="#ipv4-subnetting" data-title="IPv4 Addressing Subnetting Numerical Example Subnet Mask Network Broadcast Address">IPv4 subnetting — worked problems</a></li>
           <li><a href="#ipv4-more" data-title="More IPv4 Problems Fixed Length Subnets Variable Length Subblocks">More subnetting: fixed &amp; variable-length subblocks</a></li>
           <li><a href="#ipv6-tunneling" data-title="IPv6 Addressing Example Tunneling Encapsulation IPv4 IPv6 Interactive Exercise">IPv6-in-IPv4 tunneling — worked exercise</a></li>
         </ul>
-      </div>
-      <div class="toc-group">
+      </div> -->
+      <!-- <div class="toc-group">
         <div class="toc-group-title"><span>Reference</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
           <li><a href="#formulas" data-title="Formulas Quick Reference DNS TCP UDP RDT Checksum Subnetting RTT Timeout">Formulas &amp; quick reference</a></li>
         </ul>
-      </div>
+      </div> -->
     </nav>
   </aside>
 
@@ -1172,129 +1172,6 @@ Checksum (flip every bit of the final sum):
         </table>
       </section>
 
-      <!-- ============================================================ -->
-      <section class="topic" id="ipv4-subnetting">
-        <h2>IPv4 Addressing &amp; Subnetting — Worked Problems</h2>
-        <p><strong>Find the range of addresses in the following blocks:</strong> <code>123.56.77.32/29</code>, <code>180.34.64.64/30</code>, <code>200.17.21.128/27</code>.</p>
-
-        <div class="solved">
-          <h4><span class="qtag">1</span>123.56.77.32/29</h4>
-          <p>Subnet mask = 255.255.255.248 (/29). Since it's /29, we consider the last octet: <code>NNNNNHHH</code> → <code>00100***</code>.</p>
-          <div class="formula"><div class="expr">No. of subnets = 2<sup>5</sup> = 32 · No. of hosts = 2<sup>3</sup> = 8 · Valid hosts = 2<sup>3</sup> − 2 = 6</div></div>
-          <p>Subnetting the host part: <code>000</code> = .32, <code>111</code> = .39.</p>
-          <p style="margin-bottom:0"><strong>Range:</strong> 123.56.77.32 – 123.56.77.39/29 · <strong>Valid host range:</strong> 123.56.77.33 – 123.56.77.38 · <strong>Network address:</strong> 123.56.77.32 · <strong>Broadcast address:</strong> 123.56.77.39</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">2</span>180.34.64.64/30</h4>
-          <p>Subnet mask = 255.255.255.252 (/30). Last octet: <code>NNNNNNHH</code> → <code>010000**</code>.</p>
-          <div class="formula"><div class="expr">No. of subnets = 2<sup>6</sup> = 64 · Valid hosts = 2<sup>2</sup> − 2 = 2</div></div>
-          <p style="margin-bottom:0"><strong>Network address:</strong> 180.34.64.64 · <strong>Broadcast address:</strong> 180.34.64.67 · <strong>Valid host range:</strong> 180.34.64.65 – 180.34.64.66 · <strong>Range:</strong> 180.34.64.64 – 180.34.64.67/30</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">3</span>200.17.21.128/27</h4>
-          <p>Subnet mask = 255.255.255.224 (/27). Last octet: <code>NNNHHHHH</code> → <code>100*****</code>.</p>
-          <div class="formula"><div class="expr">No. of subnets = 2<sup>3</sup> = 8 · Valid hosts = 2<sup>5</sup> − 2 = 30</div></div>
-          <p style="margin-bottom:0"><strong>Network address:</strong> 200.17.21.128 · <strong>Broadcast address:</strong> 200.17.21.159 · <strong>Range:</strong> 200.17.21.128 – 200.17.21.159/27 · <strong>Valid host range:</strong> 200.17.21.129 – 200.17.21.158</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="ipv4-more">
-        <h2>More Subnetting: Fixed &amp; Variable-Length Subblocks</h2>
-        <div class="solved">
-          <h4><span class="qtag">4</span>Fixed-length subnetting: 4 equal subnets from a /16</h4>
-          <p>Given network address <code>175.200.0.0/16</code>, you need <strong>4 subnets</strong>. What's the minimum number of host bits to borrow into the network portion? Write the 4 subnet addresses and the subnet mask.</p>
-          <p>4 subnets = 2<sup>2</sup>, so borrow <strong>2 subnet bits</strong> from the 2nd octet: <code>NNHHHHHH</code>.</p>
-          <div class="formula"><div class="expr">Subnet mask = 255.255.192.0 = /18 · Valid hosts per subnet = 2<sup>14</sup> − 2 = 16,380</div></div>
-          <p style="margin-bottom:0"><strong>The 4 subnets:</strong> <code>00</code> → 175.200.0.0/18 · <code>01</code> → 175.200.64.0/18 · <code>10</code> → 175.200.128.0/18 · <code>11</code> → 175.200.192.0/18</p>
-        </div>
-
-        <div class="solved">
-          <h4><span class="qtag">5</span>Network &amp; broadcast address from a host address</h4>
-          <p>Given a host address <code>25.34.12.56/16</code>, find the first (network) and last (limited broadcast) address of the block.</p>
-          <p>Subnet mask = 255.255.0.0 (/16) → 2<sup>16</sup> = 65,536 possible /16 subnets in the space.</p>
-          <pre><code>00011001.00100010.00001100.00111000   (25.34.12.56)
-11111111.11111111.00000000.00000000   (255.255.0.0 subnet mask)
---------- bitwise AND ---------------
-00011001.00100010.00000000.00000000   (last two octets forced to 0)</code></pre>
-          <p style="margin-bottom:0"><strong>Network address:</strong> 25.34.0.0 · <strong>Broadcast address:</strong> 25.34.255.255 (last two octets forced to 1) · <strong>Valid host range:</strong> 25.34.0.1 – 25.34.255.254</p>
-        </div>
-
-        <div class="box"><span class="label">Two further practice problems from the interactive exercise set</span>
-          <p style="margin-bottom:4px"><strong>(a)</strong> A block <code>16.0.0.0/8</code> must be split into 500 fixed-length subnets: find the subnet mask, the number of addresses per subnet, and the first/last address of both the first and the 500th subnet.</p>
-          <p style="margin-bottom:4px"><strong>(b)</strong> Find the network address and directed broadcast address of the Class-B address <code>172.25.171.182</code> under subnet mask <code>255.255.224.0</code>.</p>
-          <p style="margin-bottom:0"><strong>(c)</strong> A block beginning at <code>14.24.74.0/24</code> must be split into three <strong>variable-length</strong> subblocks of 10, 60, and 120 addresses respectively — design the subblocks (largest block first, to avoid fragmentation). More problems of this kind: <code>http://gaia.cs.umass.edu/kurose_ross/interactive/subnet_addressing.php</code>.</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="ipv6-tunneling">
-        <h2>IPv6-in-IPv4 Tunneling — Worked Exercise</h2>
-        <p><strong>Scenario:</strong> a host on subnet D wants to send an IPv6 datagram to a host on subnet B. The path taken is D → E → d → b → c → B, where the route crosses IPv4-only routers (d, b, c) sandwiched between IPv6-speaking routers (E and B) — the classic <strong>6-to-4 tunneling</strong> setup.</p>
-        <table>
-          <tr><th>Hop</th><th>Outer datagram type</th><th>Encapsulating another datagram?</th></tr>
-          <tr><td>D → E</td><td>IPv6</td><td>No</td></tr>
-          <tr><td>E → d</td><td>IPv4</td><td>Yes — encapsulates the original IPv6 datagram</td></tr>
-          <tr><td>d → b</td><td>IPv4</td><td>Yes — same encapsulated IPv6 datagram carried through</td></tr>
-          <tr><td>b → c</td><td>IPv4</td><td>Yes — same encapsulated IPv6 datagram carried through</td></tr>
-          <tr><td>c → B</td><td>IPv4</td><td>Yes — decapsulated at B to recover the IPv6 datagram</td></tr>
-        </table>
-        <div class="box"><span class="label">Addresses used throughout the tunnel</span>
-          <p style="margin-bottom:4px">Original (encapsulated) <strong>IPv6</strong> source/destination — carried unchanged inside every IPv4-wrapped hop: source <code>6CED:EE97:997A:35F2:8EF9:5F8E:DDAF:7DD8</code>, destination <code>7361:4A69:9553:D483:D2B6:97FC:E945:33CC</code>.</p>
-          <p style="margin-bottom:0">Outer <strong>IPv4</strong> tunnel source/destination, used for the E → d → b → c → B hops: source <code>94.100.4.145</code>, destination <code>130.73.216.43</code>.</p>
-        </div>
-        <div class="box"><span class="label">Tunnel endpoints</span>
-          <p style="margin-bottom:4px"><strong>Tunnel entrance:</strong> router E (where the IPv6 datagram gets wrapped inside an IPv4 datagram).</p>
-          <p style="margin-bottom:0"><strong>Tunnel exit:</strong> router B (where the IPv4 wrapper is stripped off and the original IPv6 datagram is recovered).</p>
-        </div>
-        <div class="formula"><span class="label">Which protocol encapsulates which?</span><div class="expr">IPv4 encapsulates IPv6</div>
-          <p class="note" style="margin-bottom:0">to preserve compatibility with existing IPv4-only infrastructure, IPv6 datagrams are carried as the payload of an IPv4 datagram until they reach a router that supports IPv6, where the IPv6 datagram is decapsulated and forwarded natively</p>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <section class="topic" id="formulas">
-        <h2>Formulas &amp; Quick Reference</h2>
-
-        <h3>DNS</h3>
-        <div class="formula"><span class="label">Resource record format</span><div class="expr">(name, value, type, ttl)</div></div>
-        <div class="formula"><span class="label">DNS message header size</span><div class="expr">12 bytes = identification (2B) + flags (2B) + #questions (2B) + #answer RRs (2B) + #authority RRs (2B) + #additional RRs (2B)</div></div>
-        <div class="formula"><span class="label">Resolution order</span><div class="expr">Root → TLD → Authoritative</div></div>
-
-        <h3>Multiplexing / demultiplexing</h3>
-        <div class="formula"><span class="label">TCP socket identity (demux key)</span><div class="expr">(source IP, source port, dest IP, dest port)</div></div>
-        <div class="formula"><span class="label">Port number range</span><div class="expr">0 – 65535, with 0 – 1023 reserved as "well-known"</div></div>
-
-        <h3>UDP</h3>
-        <div class="formula"><span class="label">UDP checksum</span><div class="expr">checksum = one's complement of (one's complement sum of all 16-bit words, with end-around carry)</div></div>
-
-        <h3>Reliable data transfer &amp; TCP timing</h3>
-        <div class="formula"><span class="label">Stop-and-wait sender utilization</span><div class="expr">U<sub>sender</sub> = (L/R) / (RTT + L/R)</div></div>
-        <div class="formula"><span class="label">RTT &amp; timeout (EWMA)</span><div class="expr">EstimatedRTT = (1−α)·EstimatedRTT + α·SampleRTT      (α = 0.125)</div>
-          <div class="expr">DevRTT = (1−β)·DevRTT + β·|SampleRTT − EstimatedRTT|      (β = 0.25)</div>
-          <div class="expr">TimeoutInterval = EstimatedRTT + 4·DevRTT</div>
-        </div>
-        <div class="formula"><span class="label">TCP receive window (flow control)</span><div class="expr">rwnd = RcvBuffer − (LastByteRcvd − LastByteRead)</div></div>
-        <div class="formula"><span class="label">Selective Repeat sequence-space requirement</span><div class="expr">sequence space ≥ 2 × window size</div></div>
-
-        <h3>GBN vs. SR retransmission cost (worked-example pattern)</h3>
-        <table>
-          <tr><th>Protocol</th><th>On loss of every 5th packet, sending 10 total</th></tr>
-          <tr><td>Go-Back-N</td><td>18 total transmissions — retransmits the whole window</td></tr>
-          <tr><td>Selective Repeat</td><td>12 total transmissions — retransmits only the lost packet</td></tr>
-        </table>
-
-        <h3>IPv4 subnetting cheat sheet</h3>
-        <div class="formula"><span class="label">Subnets &amp; hosts from borrowed/host bits</span><div class="expr">No. of subnets = 2<sup>(borrowed bits)</sup>        No. of usable hosts = 2<sup>(host bits)</sup> − 2</div></div>
-        <div class="formula"><span class="label">Network / broadcast address</span><div class="expr">Network address = IP AND subnet mask        Broadcast address = network address with all host bits set to 1</div></div>
-
-        <h3>Key port numbers (transport protocol in parentheses)</h3>
-        <div class="formula"><div class="expr">FTP: 20/21 (TCP) · SSH: 22 (TCP) · Telnet: 23 (TCP) · SMTP: 25 (TCP) · DNS: 53 (TCP/UDP) · DHCP: 67/68 (UDP) · HTTP: 80 (TCP) · NTP: 123 (UDP) · SNMP: 161/162 (TCP/UDP) · LDAP: 389 (TCP/UDP) · HTTPS: 443 (TCP/UDP)</div></div>
-
-        <div class="box"><span class="label">Scope note</span><p style="margin-bottom:0">This page runs through the very last page of the source notes — ending at the IPv6-in-IPv4 tunneling exercise. TCP congestion control (windowed AIMD, slow start, etc.) is the next topic on the course roadmap but sits beyond what's covered in the source material collected here.</p></div>
-      </section>
 
       <footer class="site-footer"><span>Compiled from Team Networks lecture notes &amp; slides · PES University · UE25CS243A</span><a href="index.html">Home</a></footer>
     </div>
