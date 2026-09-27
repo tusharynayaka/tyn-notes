@@ -569,8 +569,8 @@ body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:n
 @media (max-width:480px){.dsa-playground{width:100vw;}body.playground-open main{flex:1 1 auto;width:auto;max-width:880px;}.dsa-playground-resize{display:none;}.dsa-playground-launch{margin-bottom:24px;}}
 </style>
 <style>
-body:has(.playground-panel.open) .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; }
-body:has(.playground-panel.open) .app main, body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
+body.playground-open .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; flex-shrink:0 !important; }
+body.playground-open .app main, body.playground-open main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
 </style>
 </head>
 <body>
@@ -2348,6 +2348,7 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
         window.addEventListener('message', function(e){
           if(e.data && e.data.type === 'close-playground'){
             panel.classList.remove('open');
+            document.body.classList.remove('playground-open');
             setTimeout(function(){ panel.remove(); document.body.style.removeProperty('--notes-width'); }, 300);
           }
         });
@@ -2356,6 +2357,8 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
         if(iframe) iframe.src = iframe.src;
       }
       panel.classList.add('open');
+      document.body.classList.add('playground-open');
+      document.body.style.setProperty('--notes-width', '50vw');
     };
     toolbar.appendChild(copyBtn);
     toolbar.appendChild(playgroundBtn);

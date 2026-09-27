@@ -96,8 +96,8 @@ th { background: var(--surface); color: var(--text); }
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
 <style>
-body:has(.playground-panel.open) .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; }
-body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
+body.playground-open .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; flex-shrink:0 !important; }
+body.playground-open main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
 </style>
 </head>
 <body>
@@ -365,6 +365,7 @@ body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.
         window.addEventListener('message', function(e){
           if(e.data && e.data.type === 'close-playground'){
             panel.classList.remove('open');
+            document.body.classList.remove('playground-open');
             setTimeout(function(){ panel.remove(); document.body.style.removeProperty('--notes-width'); }, 300);
           }
         });
@@ -373,6 +374,8 @@ body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.
         if(iframe) iframe.src = iframe.src;
       }
       panel.classList.add('open');
+      document.body.classList.add('playground-open');
+      document.body.style.setProperty('--notes-width', '50vw');
     };
     toolbar.appendChild(copyBtn);
     toolbar.appendChild(playgroundBtn);
