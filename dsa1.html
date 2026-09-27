@@ -20,8 +20,8 @@
 <title>Data Structures — Unit 1 Notes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css" crossorigin="anonymous">
 <style>
 :root{
   --bg:#f3f3f1;
@@ -546,6 +546,12 @@ body.playground-open main{flex:0 0 calc(100vw - var(--playground-width,50vw));wi
 .dsa-playground-controls button:hover{background:var(--accent-soft);}
 .dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
+/* Stdin (fallback mode) */
+.dsa-playground-stdin-wrap{flex:0 0 auto;padding:8px 12px 0;border-top:1px solid var(--border);background:var(--bg-elev);}
+.dsa-playground-stdin-label{display:block;margin:0 0 4px;font:500 11px 'IBM Plex Mono',monospace;color:var(--ink-faint);letter-spacing:.04em;text-transform:uppercase;}
+.dsa-playground-stdin{width:100%;min-height:56px;max-height:120px;resize:vertical;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--code-bg);color:var(--code-ink);font:12px/1.5 'IBM Plex Mono',monospace;tab-size:4;}
+.dsa-playground-stdin:focus{outline:none;box-shadow:0 0 0 2px var(--accent-soft);}
+
 /* Drag Handle */
 .dsa-split-handle{flex:0 0 auto;height:12px;cursor:row-resize;position:relative;touch-action:none;background:var(--bg-elev);z-index:5;}
 .dsa-split-handle::before{content:"";position:absolute;inset:50% 16px auto 16px;height:2px;transform:translateY(-50%);background:var(--border);border-radius:2px;transition:background .15s,opacity .15s;}
@@ -736,6 +742,12 @@ int main() {
           <span id="dsaStatus" class="dsa-playground-meta"></span>
         </div>
 
+        <!-- stdin (fallback mode) -->
+        <div class="dsa-playground-stdin-wrap" id="dsaStdinWrap">
+          <label class="dsa-playground-stdin-label" for="dsaStdin">Program input (stdin)</label>
+          <textarea class="dsa-playground-stdin" id="dsaStdin" spellcheck="false" placeholder="Enter scanf input here — one value per line. Queue demo: 1, 5, 3, 4"></textarea>
+        </div>
+
         <!-- drag handle -->
         <div class="dsa-split-handle" id="dsaSplitHandle"
              role="separator"
@@ -748,9 +760,9 @@ int main() {
         <div class="dsa-split-pane dsa-split-terminal">
           <div class="dsa-terminal">
             <div class="dsa-terminal-head">
-              <span>Output</span><span>GCC 13 · Judge0 CE</span>
+              <span>Interactive Terminal</span><span>C · In-Browser WebAssembly</span>
             </div>
-            <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="C terminal"></div>
+            <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="Interactive C terminal"></div>
           </div>
         </div>
 
@@ -1751,8 +1763,8 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   });
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js" crossorigin="anonymous"></script>
 <script>
 (function(){
   var JUDGE0_URL = 'https://ce.judge0.com/submissions?base64_encoded=false&wait=true';
@@ -1763,16 +1775,20 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   var stopButton = document.getElementById('dsaStop');
   var resetButton = document.getElementById('dsaReset');
   var statusEl = document.getElementById('dsaStatus');
+  var stdinEl = document.getElementById('dsaStdin');
+  var stdinWrap = document.getElementById('dsaStdinWrap');
   var openButton = document.getElementById('dsaOpen');
   var closeButton = document.getElementById('dsaClose');
   var resizeHandle = document.getElementById('dsaResize');
   var sidebar = document.getElementById('sidebar');
   var menuToggle = document.getElementById('menuToggle');
 
+  var interactive = typeof SharedArrayBuffer !== 'undefined';
+
   var terminal = new Terminal({
     cursorBlink: true,
     convertEol: true,
-    disableStdin: true,
+    disableStdin: !interactive,
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: 13,
     theme: {
@@ -1800,15 +1816,22 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
     if(statusEl) statusEl.textContent = text || '';
   }
 
-  terminal.writeln('C Playground ready. Press Run to compile & execute your code.\r\n');
+  if(interactive){
+    terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
+    terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
+  } else {
+    terminal.writeln('C Playground ready. Enter stdin input below (one value per line), then press Run.\r\n');
+  }
   fitTerminal();
 
   openButton.addEventListener('click', function(){
     document.body.classList.add('playground-open');
     sidebar.classList.remove('open');
     if(window.matchMedia('(min-width:761px)').matches) sidebar.classList.add('closed');
-    requestAnimationFrame(fitTerminal);
-    terminal.focus();
+    requestAnimationFrame(function(){
+      fitTerminal();
+      terminal.focus();
+    });
   });
   closeButton.addEventListener('click', function(){ document.body.classList.remove('playground-open'); });
   document.addEventListener('keydown', function(event){ if(event.key === 'Escape') document.body.classList.remove('playground-open'); });
@@ -1839,59 +1862,398 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   });
   window.addEventListener('resize', fitTerminal);
 
-  runButton.addEventListener('click', async function(){
-    terminal.clear();
-    terminal.writeln('\x1b[90mCompiling & running...\x1b[0m\r\n');
-    status('running');
-    runButton.disabled = true;
-    runButton.textContent = 'Running';
+  /* ================= Interactive mode (SharedArrayBuffer) ================= */
+  var isRunning = false;
+  var activeWorker = null;
+  var lineInputBuffer = '';
+  var sharedSab = null;
+  var sharedControl = null;
+  var sharedData = null;
 
+  function initSharedMemory(){
     try {
-      var response = await fetch(JUDGE0_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          language_id: C_LANGUAGE_ID,
-          source_code: editor.value,
-          stdin: ''
-        })
-      });
+      sharedSab = new SharedArrayBuffer(4096);
+      sharedControl = new Int32Array(sharedSab, 0, 4);
+      sharedData = new Uint8Array(sharedSab, 16, 4000);
+    } catch(e){}
+  }
 
-      var result = await response.json();
+  function buildWorkerBlobUrl(){
+    var workerCode = `
+      self.importScripts(
+        'https://cdn.jsdelivr.net/npm/traceur@0.0.111/bin/traceur-runtime.js',
+        'https://cdn.jsdelivr.net/npm/JSCPP@latest/dist/JSCPP.es5.min.js'
+      );
 
-      if(result.status && result.status.description){
-        terminal.writeln('\x1b[90m[' + result.status.description + ']\x1b[0m');
+      var sharedControl = null;
+      var sharedData = null;
+      var stdinBuffer = '';
+
+      self.onmessage = function(e){
+        var msg = e.data;
+        if(msg.type === 'init_sab'){
+          sharedControl = new Int32Array(msg.sab, 0, 4);
+          sharedData = new Uint8Array(msg.sab, 16, 4000);
+        } else if(msg.type === 'run'){
+          runCode(msg.code);
+        } else if(msg.type === 'stdin_data'){
+          stdinBuffer += msg.data;
+        }
+      };
+
+      function readStdinSync(){
+        if(sharedControl){
+          while(stdinBuffer.trim().length === 0){
+            self.postMessage({ type: 'stdin_request' });
+            Atomics.wait(sharedControl, 0, 0);
+            while(true){
+              var len = sharedControl[1];
+              Atomics.store(sharedControl, 0, 0);
+              var bytes = sharedData.slice(0, len);
+              stdinBuffer += new TextDecoder().decode(bytes);
+              if(Atomics.load(sharedControl, 0) === 0) break;
+            }
+          }
+        }
       }
 
-      if(result.stdout){
-        writeLines(result.stdout);
+      function runCode(code){
+        try {
+          var custom_stdio = {
+            load: function(rt){
+              var char_pointer = rt.normalPointerType(rt.charTypeLiteral);
+
+              var _printf = function(rt, _this, formatVar){
+                var params = Array.prototype.slice.call(arguments, 3);
+                var formatStr = rt.getStringFromCharArray(formatVar);
+                var paramIdx = 0;
+                var out = '';
+                for(var i = 0; i < formatStr.length; i++){
+                  if(formatStr[i] === '%' && i + 1 < formatStr.length){
+                    var spec = formatStr[i + 1];
+                    if(spec === '%'){ out += '%'; i++; continue; }
+                    var p = params[paramIdx++];
+                    if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
+                      out += String(p && p.v != null ? p.v : 0);
+                    } else if(spec === 'f'){
+                      out += String(p && p.v != null ? p.v : 0);
+                    } else if(spec === 's'){
+                      out += p ? (rt.isStringType(p.t) || rt.isArrayType(p.t) || rt.isNormalPointerType(p.t) ? rt.getStringFromCharArray(p) : String(p.v)) : '';
+                    } else if(spec === 'c'){
+                      out += p ? (typeof p.v === 'number' ? String.fromCharCode(p.v) : String(p.v)) : '';
+                    } else if(spec === 'p'){
+                      out += '0x' + (p && p.v != null ? p.v.toString(16) : '0');
+                    } else {
+                      out += '%' + spec;
+                    }
+                    i++;
+                  } else {
+                    out += formatStr[i];
+                  }
+                }
+                self.postMessage({ type: 'stdout', data: out });
+                return rt.val(rt.intTypeLiteral, out.length);
+              };
+
+              var _scanf = function(rt, _this, formatVar){
+                var args = Array.prototype.slice.call(arguments, 3);
+                var formatStr = rt.getStringFromCharArray(formatVar);
+                var re = /%([dicsfuxX])/g;
+                var match;
+                var argIdx = 0;
+                var matchedCount = 0;
+
+                while((match = re.exec(formatStr)) !== null && argIdx < args.length){
+                  readStdinSync();
+                  var trimmed = stdinBuffer.trimStart();
+                  var spec = match[1];
+                  var targetPtr = args[argIdx++];
+
+                  if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
+                    var numMatch = trimmed.match(/^([-+]?[0-9]+)/);
+                    if(numMatch){
+                      var num = parseInt(numMatch[1], 10);
+                      stdinBuffer = trimmed.slice(numMatch[1].length);
+                      if(targetPtr && targetPtr.v && targetPtr.v.target){
+                        targetPtr.v.target.v = num;
+                      }
+                      matchedCount++;
+                    } else { break; }
+                  } else if(spec === 'f'){
+                    var floatMatch = trimmed.match(/^([-+]?[0-9]*\\.?[0-9]+)/);
+                    if(floatMatch){
+                      var fnum = parseFloat(floatMatch[1]);
+                      stdinBuffer = trimmed.slice(floatMatch[1].length);
+                      if(targetPtr && targetPtr.v && targetPtr.v.target){
+                        targetPtr.v.target.v = fnum;
+                      }
+                      matchedCount++;
+                    } else { break; }
+                  } else if(spec === 's'){
+                    var strMatch = trimmed.match(/^(\\S+)/);
+                    if(strMatch){
+                      var strVal = strMatch[1];
+                      stdinBuffer = trimmed.slice(strVal.length);
+                      if(targetPtr && targetPtr.v && targetPtr.v.target){
+                        var arr = rt.makeCharArrayFromString(strVal);
+                        for(var j = 0; j < arr.v.target.length; j++){
+                          targetPtr.v.target[j] = arr.v.target[j];
+                        }
+                      }
+                      matchedCount++;
+                    } else { break; }
+                  } else if(spec === 'c'){
+                    if(stdinBuffer.length > 0){
+                      var ch = stdinBuffer[0];
+                      stdinBuffer = stdinBuffer.slice(1);
+                      if(targetPtr && targetPtr.v && targetPtr.v.target){
+                        targetPtr.v.target.v = ch.charCodeAt(0);
+                      }
+                      matchedCount++;
+                    }
+                  }
+                }
+                return rt.val(rt.intTypeLiteral, matchedCount);
+              };
+
+              var _getchar = function(rt){
+                while(stdinBuffer.length === 0){ readStdinSync(); }
+                var code = stdinBuffer.charCodeAt(0);
+                stdinBuffer = stdinBuffer.slice(1);
+                return rt.val(rt.intTypeLiteral, code);
+              };
+
+              var _putchar = function(rt, _this, ch){
+                var s = String.fromCharCode(ch.v);
+                self.postMessage({ type: 'stdout', data: s });
+                return ch;
+              };
+
+              var _puts = function(rt, _this, strVar){
+                var s = rt.getStringFromCharArray(strVar);
+                self.postMessage({ type: 'stdout', data: s + '\\n' });
+                return rt.val(rt.intTypeLiteral, s.length + 1);
+              };
+
+              var _fflush = function(rt){
+                return rt.val(rt.intTypeLiteral, 0);
+              };
+
+              rt.regFunc(_printf, 'global', 'printf', [char_pointer, '?'], rt.intTypeLiteral);
+              rt.regFunc(_scanf, 'global', 'scanf', [char_pointer, '?'], rt.intTypeLiteral);
+              rt.regFunc(_getchar, 'global', 'getchar', [], rt.intTypeLiteral);
+              rt.regFunc(_putchar, 'global', 'putchar', [rt.intTypeLiteral], rt.intTypeLiteral);
+              rt.regFunc(_puts, 'global', 'puts', [char_pointer], rt.intTypeLiteral);
+              rt.regFunc(_fflush, 'global', 'fflush', ['?'], rt.intTypeLiteral);
+            }
+          };
+
+          var myDebugger = JSCPP.run(code, '', {
+            debug: true,
+            includes: {
+              'stdio.h': custom_stdio,
+              'cstdio': custom_stdio
+            },
+            stdio: {
+              write: function(s){
+                self.postMessage({ type: 'stdout', data: s });
+              }
+            }
+          });
+
+          var done = false;
+          while(!done){
+            done = myDebugger.next() || myDebugger.done;
+          }
+
+          self.postMessage({ type: 'exit', code: 0 });
+        } catch(err){
+          self.postMessage({ type: 'error', message: err.message || String(err) });
+        }
       }
-      if(result.stderr){
-        terminal.write('\x1b[91m' + result.stderr.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
-      }
-      if(result.compile_output){
-        terminal.write('\x1b[93m' + result.compile_output.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
-      }
-    } catch(err){
-      terminal.writeln('\x1b[91m[Error]: ' + err.message + '\x1b[0m');
+    `;
+
+    var blob = new Blob([workerCode], { type: 'application/javascript' });
+    return URL.createObjectURL(blob);
+  }
+
+  function terminateExecution(reason){
+    if(activeWorker){
+      try { activeWorker.terminate(); } catch(e){}
+      activeWorker = null;
     }
-
-    status('finished');
+    isRunning = false;
     runButton.disabled = false;
     runButton.textContent = 'Run';
-  });
+    if(reason) status(reason);
+  }
 
-  stopButton.addEventListener('click', function(){
-    status('stopped');
-  });
+  if(interactive){
+    initSharedMemory();
 
-  resetButton.addEventListener('click', function(){
-    editor.value = editor.defaultValue;
-    terminal.clear();
-    terminal.writeln('C Playground ready. Press Run to compile & execute your code.\r\n');
-    status('');
-    fitTerminal();
-  });
+    terminal.onData(function(data){
+      if(!isRunning) return;
+
+      if(data === '\x03'){
+        terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
+        terminateExecution('stopped');
+        return;
+      }
+
+      if(data === '\r'){
+        terminal.write('\r\n');
+        var fullLine = lineInputBuffer + '\n';
+        lineInputBuffer = '';
+
+        if(sharedControl && sharedData){
+          var encoder = new TextEncoder();
+          var bytes = encoder.encode(fullLine);
+          sharedData.set(bytes, 0);
+          sharedControl[1] = bytes.length;
+          Atomics.store(sharedControl, 0, 1);
+          Atomics.notify(sharedControl, 0);
+        }
+        return;
+      }
+
+      if(data === '\x7f' || data === '\b'){
+        if(lineInputBuffer.length > 0){
+          lineInputBuffer = lineInputBuffer.slice(0, -1);
+          terminal.write('\b \b');
+        }
+        return;
+      }
+
+      if(data.charCodeAt(0) === 27) return;
+
+      lineInputBuffer += data;
+      terminal.write(data);
+    });
+
+    runButton.addEventListener('click', function(){
+      if(isRunning) return;
+
+      terminal.clear();
+      terminal.write('\x1b[90mCompiling & running in WebAssembly (type inputs directly in terminal)...\x1b[0m\r\n\r\n');
+      status('running');
+      isRunning = true;
+      runButton.disabled = true;
+      runButton.textContent = 'Running';
+      lineInputBuffer = '';
+
+      try {
+        var blobUrl = buildWorkerBlobUrl();
+        activeWorker = new Worker(blobUrl);
+
+        if(sharedSab){
+          activeWorker.postMessage({ type: 'init_sab', sab: sharedSab });
+        }
+
+        activeWorker.onmessage = function(event){
+          var msg = event.data;
+          if(msg.type === 'stdout'){
+            writeLines(msg.data);
+          } else if(msg.type === 'stdin_request'){
+            status('waiting for input');
+            terminal.focus();
+          } else if(msg.type === 'exit'){
+            terminal.write('\r\n\x1b[92m[Program finished successfully (exit code ' + msg.code + ')]\x1b[0m\r\n');
+            terminateExecution('finished');
+          } else if(msg.type === 'error'){
+            terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
+            terminateExecution('error');
+          }
+        };
+
+        activeWorker.onerror = function(err){
+          terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
+          terminateExecution('error');
+        };
+
+        activeWorker.postMessage({ type: 'run', code: editor.value });
+        terminal.focus();
+      } catch(err){
+        terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
+        terminateExecution('failed');
+      }
+    });
+
+    stopButton.addEventListener('click', function(){
+      if(isRunning){
+        terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
+        terminateExecution('stopped');
+      }
+    });
+
+    resetButton.addEventListener('click', function(){
+      terminateExecution();
+      editor.value = editor.defaultValue;
+      lineInputBuffer = '';
+      terminal.clear();
+      terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
+      terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
+      status('');
+      fitTerminal();
+    });
+  } else {
+    /* ================= Fallback mode (Judge0 API) ================= */
+    if(stdinWrap) stdinWrap.style.display = '';
+
+    runButton.addEventListener('click', async function(){
+      terminal.clear();
+      terminal.writeln('\x1b[90mCompiling & running...\x1b[0m\r\n');
+      status('running');
+      runButton.disabled = true;
+      runButton.textContent = 'Running';
+
+      try {
+        var response = await fetch(JUDGE0_URL, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            language_id: C_LANGUAGE_ID,
+            source_code: editor.value,
+            stdin: stdinEl ? stdinEl.value : ''
+          })
+        });
+
+        var result = await response.json();
+
+        if(result.status && result.status.description){
+          terminal.writeln('\x1b[90m[' + result.status.description + ']\x1b[0m');
+        }
+
+        if(result.stdout){
+          writeLines(result.stdout);
+        }
+        if(result.stderr){
+          terminal.write('\x1b[91m' + result.stderr.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
+        }
+        if(result.compile_output){
+          terminal.write('\x1b[93m' + result.compile_output.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
+        }
+      } catch(err){
+        terminal.writeln('\x1b[91m[Error]: ' + err.message + '\x1b[0m');
+      }
+
+      status('finished');
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+    });
+
+    stopButton.addEventListener('click', function(){
+      status('stopped');
+    });
+
+    resetButton.addEventListener('click', function(){
+      editor.value = editor.defaultValue;
+      if(stdinEl) stdinEl.value = '';
+      terminal.clear();
+      terminal.writeln('C Playground ready. Enter stdin input below (one value per line), then press Run.\r\n');
+      status('');
+      fitTerminal();
+    });
+  }
 
   editor.addEventListener('keydown', function(event){
     if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
