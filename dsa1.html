@@ -3444,6 +3444,57 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
       }
     })();
   </script>
+<style>
+.playground-panel{position:fixed;top:0;right:0;z-index:900;width:50vw;height:100vh;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .25s ease;}
+.playground-panel.open{transform:translateX(0);}
+.playground-panel iframe{flex:1;border:0;width:100%;height:100%;}
+.playground-fab{position:fixed;bottom:24px;right:24px;z-index:950;width:52px;height:52px;border-radius:50%;border:1px solid var(--border);background:var(--accent);color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:all .2s ease;}
+.playground-fab:hover{filter:brightness(1.1);box-shadow:0 6px 20px rgba(0,0,0,.35);transform:translateY(-2px);}
+.playground-fab svg{width:22px;height:22px;}
+body.playground-open .app{transition:width .1s ease;}
+body.playground-open .sidebar{width:25%!important;flex-shrink:0!important;}
+body.playground-open .app main,body.playground-open main{flex:1!important;width:auto!important;max-width:none!important;overflow:hidden!important;}
+</style>
+<script>
+(function(){
+  var fab = document.createElement('button');
+  fab.className = 'playground-fab';
+  fab.setAttribute('aria-label','Open C Playground');
+  fab.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+  fab.onclick = function(){
+    var panel = document.querySelector('.playground-panel');
+    if(panel && panel.classList.contains('open')){
+      panel.classList.remove('open');
+      document.body.classList.remove('playground-open');
+      var app = document.querySelector('.app');
+      if(app) app.style.width = '';
+      fab.style.display = '';
+    } else {
+      if(!panel){
+        panel = document.createElement('div');
+        panel.className = 'playground-panel';
+        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
+        document.body.appendChild(panel);
+        window.addEventListener('message', function(e){
+          if(e.data && e.data.type === 'close-playground'){
+            panel.classList.remove('open');
+            document.body.classList.remove('playground-open');
+            var app = document.querySelector('.app');
+            if(app) app.style.width = '';
+            fab.style.display = '';
+            setTimeout(function(){ panel.remove(); }, 300);
+          }
+        });
+      }
+      panel.classList.add('open');
+      document.body.classList.add('playground-open');
+      var app = document.querySelector('.app');
+      if(app) app.style.width = '50vw';
+      fab.style.display = 'none';
+    }
+  };
+  document.body.appendChild(fab);
+})();
+</script>
 </body>
-
 </html>
