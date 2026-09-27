@@ -1,412 +1,657 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  (function() {
-    const root = document.documentElement;
-    const saved = localStorage.getItem('theme');
-    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      root.classList.add('dark');
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
-    }
-  })();
-</script>
-<title>Unit 1 - Rapid Revision Sheet</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#f3f3f1;
-  --surface:#f8f8f6;
-  --surface-2:#eceae5;
-  --text:#1c1f1d;
-  --text-soft:#565f5a;
-  --text-faint:#8a9089;
-  --border:#dfe1dc;
-  --accent:#2c5f52;
-  --accent-soft:#dfe9e4;
-  --accent-text:#1f4238;
-  --formula-bg:#f3ecdc;
-  --formula-border:#c9a95c;
-  --radius:3px;
-  color-scheme:light;
-}
-html.dark{
-  --bg:#070b14;
-  --surface:#0d1524;
-  --surface-2:#101d33;
-  --text:#eaf3ff;
-  --text-soft:#a9bbd8;
-  --text-faint:#7d8eaf;
-  --border:#1d2d47;
-  --accent:#60a5fa;
-  --accent-soft:#10213d;
-  --accent-text:#dceeff;
-  --formula-bg:#101a2d;
-  --formula-border:#8ab4ff;
-  color-scheme:dark;
-}
-*{box-sizing:border-box;}
-body {
-  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 30px 20px 60px;
-  color: var(--text);
-  background: var(--bg);
-  font-size: 14px;
-  line-height: 1.45;
-  transition: background .25s ease, color .25s ease;
-}
-h1 { font-family: 'Newsreader', serif; font-size: 26px; font-weight: 600; margin: 0 0 6px; }
-p.intro { color: var(--text-soft); margin: 0 0 24px; font-size: 13.5px; }
-.sheet { column-count: 2; column-gap: 20px; }
-@media (max-width: 700px) { .sheet { column-count: 1; } }
-.block { break-inside: avoid; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius); margin-bottom: 14px; padding: 12px 14px; }
-.block h2 { font-size: 14.5px; margin: 0 0 8px; border-bottom: 1px solid var(--border); padding-bottom: 5px; color: var(--text); }
-.block ul { margin: 0; padding-left: 18px; color: var(--text-soft); }
-.block li { margin-bottom: 5px; }
-.formula {
-  font-family: "IBM Plex Mono", monospace;
-  background: var(--formula-bg);
-  border: 1px solid var(--formula-border);
-  color: var(--text);
-  padding: 6px 9px;
-  margin: 6px 0;
-  display: block;
-  font-size: 13px;
-  border-radius: var(--radius);
-}
-.formula sup { font-size: 10px; }
-.formula sub { font-size: 10px; }
-table { border-collapse: collapse; width: 100%; font-size: 12.5px; margin: 6px 0; background: var(--surface-2); border-radius: var(--radius); }
-td, th { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
-th { background: var(--surface); color: var(--text); }
-.home-link{position:fixed;top:18px;right:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);transition:background .15s ease,color .15s ease,border-color .15s ease;display:inline-flex;align-items:center;gap:4px;}
-.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
-#themeToggle{position:fixed;top:18px;right:88px;z-index:700;border:1px solid var(--border);background:var(--surface);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
-#themeToggle:hover{background:var(--accent-soft);}
-#themeToggle svg{width:16px;height:16px;}
-@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
-</style>
-<style>
-body.playground-open .app { transition:width .1s ease; }
-body.playground-open .sidebar { width:25% !important; flex-shrink:0 !important; }
-body.playground-open main { flex:1 !important; width:auto !important; max-width:none !important; overflow:hidden !important; }
-</style>
-</head>
-<body>
-<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
-<button id="themeToggle" aria-label="Toggle theme">
-  <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    <circle cx="12" cy="12" r="4"/>
-    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-  </svg>
-</button>
-
-<h1>Unit 1 - Rapid Revision Sheet</h1>
-<p class="intro">Systems of equations, elimination, factorization and vector spaces - each idea explained in one plain line. For a quick last-minute recap.</p>
-
-<div class="sheet">
-
-<div class="block">
-<h2>1. Linear Equations &amp; Systems</h2>
-<span class="formula">a<sub>1</sub>x<sub>1</sub> + a<sub>2</sub>x<sub>2</sub> + ... + a<sub>n</sub>x<sub>n</sub> = b</span>
-<ul>
-<li>Homogeneous: all b's are zero (always has the trivial solution x = 0).</li>
-<li>Non-homogeneous: at least one b is non-zero.</li>
-<li>Superposition: A(c<sub>1</sub>x<sub>1</sub> + c<sub>2</sub>x<sub>2</sub>) = c<sub>1</sub>(Ax<sub>1</sub>) + c<sub>2</sub>(Ax<sub>2</sub>) - holds only for linear systems.</li>
-<li>Use when: writing any system in matrix form Ax = b.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>2. Row and Column Pictures</h2>
-<span class="formula">A x = b</span>
-<ul>
-<li>Row way: each equation is a line/plane, answer is where all lines cross.</li>
-<li>Column way: mix the columns of A (scaled by x, y, ...) to hit target vector b.</li>
-<li>Intersecting lines &rarr; unique solution; parallel &rarr; no solution; overlapping &rarr; infinite solutions.</li>
-<li>Use when: visualising why a system has 0, 1, or infinitely many answers.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>3. Elementary Row Operations &amp; Echelon Form</h2>
-<span class="formula">R<sub>i</sub> &rarr; kR<sub>i</sub> &nbsp; R<sub>i</sub> &rarr; R<sub>i</sub> + kR<sub>j</sub> &nbsp; R<sub>i</sub> &harr; R<sub>j</sub></span>
-<ul>
-<li>Echelon form: pivots step to the right going down, zeros below every pivot.</li>
-<li>RREF: every pivot scaled to 1, zeros above and below each pivot too.</li>
-<li>Elementary matrix E<sub>ij</sub> = identity matrix after one row operation.</li>
-<li>Use when: reducing a matrix by hand or tracking operations as matrix multiplication.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>4. Rank of a Matrix</h2>
-<span class="formula">rank(A) = number of non-zero rows in echelon form</span>
-<ul>
-<li>Also = max number of linearly independent rows or columns of A.</li>
-<li>Found via minors: largest order of a non-vanishing minor.</li>
-<li>Use when: predicting how many "useful" independent equations a system has.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>5. Rank, Consistency &amp; Solutions</h2>
-<table>
-<tr><th>rank(A) vs rank[A:b]</th><th>Result</th></tr>
-<tr><td>equal, = n</td><td>unique solution</td></tr>
-<tr><td>equal, &lt; n</td><td>infinite solutions</td></tr>
-<tr><td>not equal</td><td>no solution (inconsistent)</td></tr>
-</table>
-<ul>
-<li>n = number of unknowns; consistent means at least one solution exists.</li>
-<li>Use when: deciding solvability before actually solving.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>6. Gaussian Elimination</h2>
-<span class="formula">[A : b] &rarr; [U : c] by row ops, then back-substitute</span>
-<ul>
-<li>No row exchange &rarr; retain first row; first non-zero entry of each row is the pivot.</li>
-<li>Singular system (det A = 0): no solution or infinitely many solutions.</li>
-<li>Zero in pivot spot, curable by row exchange &rarr; non-singular, full set of pivots recovered.</li>
-<li>Zero in pivot spot, permanent breakdown &rarr; singular, incurable.</li>
-<li>Use when: solving Ax = b for actual numbers while checking consistency.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>7. Elementary Matrices &amp; LU Factorization</h2>
-<span class="formula">E<sub>k</sub> ... E<sub>2</sub>E<sub>1</sub> A = U &nbsp;&nbsp; A = LU</span>
-<ul>
-<li>L = record of the multipliers used (1's on the diagonal), U = resulting upper triangular matrix.</li>
-<li>Undo elimination: reverse the sign of the row operation to go back from U to A.</li>
-<li>Use when: solving the same A for many different b's without repeating elimination each time.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>8. LDU Factorization &amp; Permutation Matrices</h2>
-<span class="formula">A = LDU &nbsp;&nbsp; PA = LU</span>
-<ul>
-<li>D pulls the pivots onto the diagonal so both L and U end with 1's on their diagonal.</li>
-<li>If A is symmetric, then U = L<sup>T</sup>, so A = LDL<sup>T</sup>.</li>
-<li>Permutation matrix P = identity matrix with rows reordered; needed when a zero sits in the pivot spot and rows must be swapped.</li>
-<li>Use when: elimination needs a row swap, or a symmetric factorization is wanted.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>9. Inverse of a Matrix (Gauss-Jordan)</h2>
-<span class="formula">[A | I] &rarr; [I | A<sup>-1</sup>]</span>
-<ul>
-<li>Inverse exists (A non-singular) iff elimination produces n pivots, with or without row exchange.</li>
-<li>(ABCD)<sup>-1</sup> = D<sup>-1</sup>C<sup>-1</sup>B<sup>-1</sup>A<sup>-1</sup> &nbsp;&nbsp; (A<sup>T</sup>)<sup>-1</sup> = (A<sup>-1</sup>)<sup>T</sup></li>
-<li>Use when: you need the inverse itself, not just one solve (otherwise elimination alone is faster).</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>10. Vector Spaces &amp; Subspaces</h2>
-<span class="formula">0 &isin; W &nbsp; u+v &isin; W &nbsp; cu &isin; W</span>
-<ul>
-<li>Vector space needs both closure conditions plus 8 axioms (commutative, associative, zero vector, inverses, distributive laws).</li>
-<li>A subspace defined by a homogeneous linear equation is automatically a subspace ("0" always satisfies both addition and scaling).</li>
-<li>Use when: checking if a given set counts as a (sub)space.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>11. Four Fundamental Subspaces &amp; Rank-Nullity</h2>
-<table>
-<tr><th>Space</th><th>Lives in</th><th>Dimension</th></tr>
-<tr><td>column space C(A)</td><td>R<sup>m</sup></td><td>r</td></tr>
-<tr><td>row space C(A<sup>T</sup>)</td><td>R<sup>n</sup></td><td>r</td></tr>
-<tr><td>null space N(A)</td><td>R<sup>n</sup></td><td>n - r</td></tr>
-<tr><td>left null space N(A<sup>T</sup>)</td><td>R<sup>m</sup></td><td>m - r</td></tr>
-</table>
-<ul>
-<li>r = rank(A); n = number of columns; m = number of rows. Rank-Nullity: r + (n - r) = n.</li>
-<li>Row space and null space are orthogonal complements in R<sup>n</sup> (similarly for the other pair in R<sup>m</sup>).</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>12. Independence, Basis, Dimension</h2>
-<span class="formula">c<sub>1</sub>v<sub>1</sub> + c<sub>2</sub>v<sub>2</sub> + ... = 0 &rArr; all c<sub>i</sub> = 0 (independent)</span>
-<ul>
-<li>Basis = independent set that also spans the space; dimension = number of vectors in that basis.</li>
-<li>A free column (no pivot) in echelon form signals dependence among the vectors.</li>
-<li>Use when: checking for redundant vectors, or finding a basis for a subspace.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>13. Linear Transformations</h2>
-<span class="formula">T(cx + dy) = cT(x) + dT(y)</span>
-<ul>
-<li>Linear transformations always send the origin to the origin: T(0) = 0 (converse not guaranteed).</li>
-<li>Matrix columns = T applied to each standard basis vector.</li>
-<li>Use when: turning a rule (rotate, project, reflect, stretch) into a matrix.</li>
-</ul>
-</div>
-
-<div class="block">
-<h2>14. Special Transformation Matrices (R<sup>2</sup>)</h2>
-<span class="formula">stretch: (x,y) &rarr; (cx,cy) &nbsp;|&nbsp; rotate 90&deg;: (x,y) &rarr; (-y,x)</span>
-<span class="formula">reflect on y=x: (x,y) &rarr; (y,x) &nbsp;|&nbsp; project on x-axis: (x,y) &rarr; (x,0)</span>
-<ul>
-<li>Stretching/scaling matrices expand or contract the whole space by factor c.</li>
-<li>Rotation and reflection matrices are invertible; projection matrices are not (they collapse a dimension).</li>
-<li>Use when: recognising or building the matrix behind a geometric operation.</li>
-</ul>
-</div>
-
-</div>
-
-<script>
-  (function() {
-    const root = document.documentElement;
-    const btn = document.getElementById('themeToggle');
-    const icon = document.getElementById('iconSun');
-    const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
-    const moon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
-    
-    function updateIcon(dark) {
-      if (icon) icon.innerHTML = dark ? moon : sun;
-    }
-    
-    const saved = localStorage.getItem('theme');
-    let isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    updateIcon(isDark);
-    
-    if (btn) {
-      btn.addEventListener('click', () => {
-        isDark = !root.classList.contains('dark');
-        root.classList.toggle('dark', isDark);
-        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        updateIcon(isDark);
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      });
-    }
-  })();
-</script>
-<style>
-.code-block-wrapper{position:relative;margin:0 0 20px;}
-.code-block-wrapper pre{margin:0;border-radius:var(--radius) var(--radius) 0 0;}
-.code-block-toolbar{display:flex;gap:6px;padding:6px 10px;background:var(--bg-elev);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;}
-.code-block-toolbar button{border:1px solid var(--border);border-radius:var(--radius);padding:3px 10px;background:var(--bg);color:var(--ink-soft);font:500 11px 'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s ease;}
-.code-block-toolbar button:hover{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);}
-.code-block-toolbar button.copied{background:var(--accent);color:var(--bg);border-color:var(--accent);}
-
-/* Playground side panel */
-.playground-panel{position:fixed;top:0;right:0;z-index:900;width:50vw;height:100vh;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .25s ease;}
-.playground-panel.open{transform:translateX(0);}
-.playground-panel iframe{flex:1;border:0;width:100%;height:100%;}
-/* Floating playground button */
-.playground-fab{position:fixed;bottom:24px;right:24px;z-index:950;display:flex;align-items:center;gap:6px;padding:10px 16px;border:1px solid var(--border);border-radius:50px;background:var(--accent);color:var(--bg);font:600 13px 'IBM Plex Mono',monospace;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:all .2s ease;}
-.playground-fab:hover{filter:brightness(1.1);box-shadow:0 6px 20px rgba(0,0,0,.3);transform:translateY(-2px);}
-</style>
-<script>
-(function(){
-  document.querySelectorAll('pre > code').forEach(function(code){
-    var pre = code.parentElement;
-    if(pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
-    var wrapper = document.createElement('div');
-    wrapper.className = 'code-block-wrapper';
-    var toolbar = document.createElement('div');
-    toolbar.className = 'code-block-toolbar';
-    var copyBtn = document.createElement('button');
-    copyBtn.textContent = 'Copy';
-    copyBtn.onclick = function(){
-      navigator.clipboard.writeText(code.textContent).then(function(){
-        copyBtn.textContent = 'Copied!';
-        copyBtn.classList.add('copied');
-        setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
-      });
-    };
-    var playgroundBtn = document.createElement('button');
-    playgroundBtn.textContent = 'Open in Playground';
-    playgroundBtn.onclick = function(){
-      sessionStorage.setItem('playground-code', code.textContent);
-      var panel = document.querySelector('.playground-panel');
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
-        });
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('theme');
+      const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        root.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
       } else {
-        var iframe = panel.querySelector('iframe');
-        if(iframe) iframe.src = iframe.src;
+        root.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
       }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      var fab = document.querySelector('.playground-fab');
-      if(fab) fab.style.display = 'none';
-    };
-    toolbar.appendChild(copyBtn);
-    toolbar.appendChild(playgroundBtn);
-    pre.parentNode.insertBefore(wrapper, pre);
-    wrapper.appendChild(toolbar);
-    wrapper.appendChild(pre);
-  });
+    })();
+  </script>
+  <title>Unit 1 - Rapid Revision Sheet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f3f1;
+      --surface: #f8f8f6;
+      --surface-2: #eceae5;
+      --text: #1c1f1d;
+      --text-soft: #565f5a;
+      --text-faint: #8a9089;
+      --border: #dfe1dc;
+      --accent: #2c5f52;
+      --accent-soft: #dfe9e4;
+      --accent-text: #1f4238;
+      --formula-bg: #f3ecdc;
+      --formula-border: #c9a95c;
+      --radius: 3px;
+      color-scheme: light;
+    }
 
-  // Create floating action button
-  var fab = document.createElement('button');
-  fab.className = 'playground-fab';
-  fab.innerHTML = '&#9679; C Playground';
-  fab.onclick = function(){
-    var panel = document.querySelector('.playground-panel');
-    if(panel && panel.classList.contains('open')){
-      panel.classList.remove('open');
-      document.body.classList.remove('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '';
-      fab.style.display = '';
-    } else {
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            var app = document.querySelector('.app');
-            if(app) app.style.width = '';
-            fab.style.display = '';
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
+    html.dark {
+      --bg: #070b14;
+      --surface: #0d1524;
+      --surface-2: #101d33;
+      --text: #eaf3ff;
+      --text-soft: #a9bbd8;
+      --text-faint: #7d8eaf;
+      --border: #1d2d47;
+      --accent: #60a5fa;
+      --accent-soft: #10213d;
+      --accent-text: #dceeff;
+      --formula-bg: #101a2d;
+      --formula-border: #8ab4ff;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+      color: var(--text);
+      background: var(--bg);
+      font-size: 14px;
+      line-height: 1.45;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    h1 {
+      font-family: 'Newsreader', serif;
+      font-size: 26px;
+      font-weight: 600;
+      margin: 0 0 6px;
+    }
+
+    p.intro {
+      color: var(--text-soft);
+      margin: 0 0 24px;
+      font-size: 13.5px;
+    }
+
+    .sheet {
+      column-count: 2;
+      column-gap: 20px;
+    }
+
+    @media (max-width: 700px) {
+      .sheet {
+        column-count: 1;
+      }
+    }
+
+    .block {
+      break-inside: avoid;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      margin-bottom: 14px;
+      padding: 12px 14px;
+    }
+
+    .block h2 {
+      font-size: 14.5px;
+      margin: 0 0 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 5px;
+      color: var(--text);
+    }
+
+    .block ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--text-soft);
+    }
+
+    .block li {
+      margin-bottom: 5px;
+    }
+
+    .formula {
+      font-family: "IBM Plex Mono", monospace;
+      background: var(--formula-bg);
+      border: 1px solid var(--formula-border);
+      color: var(--text);
+      padding: 6px 9px;
+      margin: 6px 0;
+      display: block;
+      font-size: 13px;
+      border-radius: var(--radius);
+    }
+
+    .formula sup {
+      font-size: 10px;
+    }
+
+    .formula sub {
+      font-size: 10px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 12.5px;
+      margin: 6px 0;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+    }
+
+    td,
+    th {
+      border: 1px solid var(--border);
+      padding: 5px 8px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .home-link {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 700;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font: 500 12px 'IBM Plex Mono', monospace;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .home-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 18px;
+      right: 88px;
+      z-index: 700;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s ease;
+    }
+
+    #themeToggle:hover {
+      background: var(--accent-soft);
+    }
+
+    #themeToggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (max-width:600px) {
+      .home-link {
+        top: 12px;
+        right: 12px;
+        padding: 7px 10px;
+      }
+
+      #themeToggle {
+        top: 12px;
+        right: 76px;
+      }
+    }
+  </style>
+  <style>
+    body.playground-open .app {
+      transition: width .1s ease;
+    }
+
+    body.playground-open .sidebar {
+      width: 25% !important;
+      flex-shrink: 0 !important;
+    }
+
+    body.playground-open main {
+      flex: 1 !important;
+      width: auto !important;
+      max-width: none !important;
+      overflow: hidden !important;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
+  <button id="themeToggle" aria-label="Toggle theme">
+    <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </svg>
+  </button>
+
+  <h1>Unit 1 - Rapid Revision Sheet</h1>
+  <p class="intro">Systems of equations, elimination, factorization and vector spaces - each idea explained in one plain
+    line. For a quick last-minute recap.</p>
+
+  <div class="sheet">
+
+    <div class="block">
+      <h2>1. Linear Equations &amp; Systems</h2>
+      <span class="formula">a<sub>1</sub>x<sub>1</sub> + a<sub>2</sub>x<sub>2</sub> + ... + a<sub>n</sub>x<sub>n</sub> =
+        b</span>
+      <ul>
+        <li>Homogeneous: all b's are zero (always has the trivial solution x = 0).</li>
+        <li>Non-homogeneous: at least one b is non-zero.</li>
+        <li>Superposition: A(c<sub>1</sub>x<sub>1</sub> + c<sub>2</sub>x<sub>2</sub>) = c<sub>1</sub>(Ax<sub>1</sub>) +
+          c<sub>2</sub>(Ax<sub>2</sub>) - holds only for linear systems.</li>
+        <li>Use when: writing any system in matrix form Ax = b.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>2. Row and Column Pictures</h2>
+      <span class="formula">A x = b</span>
+      <ul>
+        <li>Row way: each equation is a line/plane, answer is where all lines cross.</li>
+        <li>Column way: mix the columns of A (scaled by x, y, ...) to hit target vector b.</li>
+        <li>Intersecting lines &rarr; unique solution; parallel &rarr; no solution; overlapping &rarr; infinite
+          solutions.</li>
+        <li>Use when: visualising why a system has 0, 1, or infinitely many answers.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>3. Elementary Row Operations &amp; Echelon Form</h2>
+      <span class="formula">R<sub>i</sub> &rarr; kR<sub>i</sub> &nbsp; R<sub>i</sub> &rarr; R<sub>i</sub> +
+        kR<sub>j</sub> &nbsp; R<sub>i</sub> &harr; R<sub>j</sub></span>
+      <ul>
+        <li>Echelon form: pivots step to the right going down, zeros below every pivot.</li>
+        <li>RREF: every pivot scaled to 1, zeros above and below each pivot too.</li>
+        <li>Elementary matrix E<sub>ij</sub> = identity matrix after one row operation.</li>
+        <li>Use when: reducing a matrix by hand or tracking operations as matrix multiplication.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>4. Rank of a Matrix</h2>
+      <span class="formula">rank(A) = number of non-zero rows in echelon form</span>
+      <ul>
+        <li>Also = max number of linearly independent rows or columns of A.</li>
+        <li>Found via minors: largest order of a non-vanishing minor.</li>
+        <li>Use when: predicting how many "useful" independent equations a system has.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>5. Rank, Consistency &amp; Solutions</h2>
+      <table>
+        <tr>
+          <th>rank(A) vs rank[A:b]</th>
+          <th>Result</th>
+        </tr>
+        <tr>
+          <td>equal, = n</td>
+          <td>unique solution</td>
+        </tr>
+        <tr>
+          <td>equal, &lt; n</td>
+          <td>infinite solutions</td>
+        </tr>
+        <tr>
+          <td>not equal</td>
+          <td>no solution (inconsistent)</td>
+        </tr>
+      </table>
+      <ul>
+        <li>n = number of unknowns; consistent means at least one solution exists.</li>
+        <li>Use when: deciding solvability before actually solving.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>6. Gaussian Elimination</h2>
+      <span class="formula">[A : b] &rarr; [U : c] by row ops, then back-substitute</span>
+      <ul>
+        <li>No row exchange &rarr; retain first row; first non-zero entry of each row is the pivot.</li>
+        <li>Singular system (det A = 0): no solution or infinitely many solutions.</li>
+        <li>Zero in pivot spot, curable by row exchange &rarr; non-singular, full set of pivots recovered.</li>
+        <li>Zero in pivot spot, permanent breakdown &rarr; singular, incurable.</li>
+        <li>Use when: solving Ax = b for actual numbers while checking consistency.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>7. Elementary Matrices &amp; LU Factorization</h2>
+      <span class="formula">E<sub>k</sub> ... E<sub>2</sub>E<sub>1</sub> A = U &nbsp;&nbsp; A = LU</span>
+      <ul>
+        <li>L = record of the multipliers used (1's on the diagonal), U = resulting upper triangular matrix.</li>
+        <li>Undo elimination: reverse the sign of the row operation to go back from U to A.</li>
+        <li>Use when: solving the same A for many different b's without repeating elimination each time.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>8. LDU Factorization &amp; Permutation Matrices</h2>
+      <span class="formula">A = LDU &nbsp;&nbsp; PA = LU</span>
+      <ul>
+        <li>D pulls the pivots onto the diagonal so both L and U end with 1's on their diagonal.</li>
+        <li>If A is symmetric, then U = L<sup>T</sup>, so A = LDL<sup>T</sup>.</li>
+        <li>Permutation matrix P = identity matrix with rows reordered; needed when a zero sits in the pivot spot and
+          rows must be swapped.</li>
+        <li>Use when: elimination needs a row swap, or a symmetric factorization is wanted.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>9. Inverse of a Matrix (Gauss-Jordan)</h2>
+      <span class="formula">[A | I] &rarr; [I | A<sup>-1</sup>]</span>
+      <ul>
+        <li>Inverse exists (A non-singular) iff elimination produces n pivots, with or without row exchange.</li>
+        <li>(ABCD)<sup>-1</sup> = D<sup>-1</sup>C<sup>-1</sup>B<sup>-1</sup>A<sup>-1</sup> &nbsp;&nbsp;
+          (A<sup>T</sup>)<sup>-1</sup> = (A<sup>-1</sup>)<sup>T</sup></li>
+        <li>Use when: you need the inverse itself, not just one solve (otherwise elimination alone is faster).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>10. Vector Spaces &amp; Subspaces</h2>
+      <span class="formula">0 &isin; W &nbsp; u+v &isin; W &nbsp; cu &isin; W</span>
+      <ul>
+        <li>Vector space needs both closure conditions plus 8 axioms (commutative, associative, zero vector, inverses,
+          distributive laws).</li>
+        <li>A subspace defined by a homogeneous linear equation is automatically a subspace ("0" always satisfies both
+          addition and scaling).</li>
+        <li>Use when: checking if a given set counts as a (sub)space.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>11. Four Fundamental Subspaces &amp; Rank-Nullity</h2>
+      <table>
+        <tr>
+          <th>Space</th>
+          <th>Lives in</th>
+          <th>Dimension</th>
+        </tr>
+        <tr>
+          <td>column space C(A)</td>
+          <td>R<sup>m</sup></td>
+          <td>r</td>
+        </tr>
+        <tr>
+          <td>row space C(A<sup>T</sup>)</td>
+          <td>R<sup>n</sup></td>
+          <td>r</td>
+        </tr>
+        <tr>
+          <td>null space N(A)</td>
+          <td>R<sup>n</sup></td>
+          <td>n - r</td>
+        </tr>
+        <tr>
+          <td>left null space N(A<sup>T</sup>)</td>
+          <td>R<sup>m</sup></td>
+          <td>m - r</td>
+        </tr>
+      </table>
+      <ul>
+        <li>r = rank(A); n = number of columns; m = number of rows. Rank-Nullity: r + (n - r) = n.</li>
+        <li>Row space and null space are orthogonal complements in R<sup>n</sup> (similarly for the other pair in
+          R<sup>m</sup>).</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>12. Independence, Basis, Dimension</h2>
+      <span class="formula">c<sub>1</sub>v<sub>1</sub> + c<sub>2</sub>v<sub>2</sub> + ... = 0 &rArr; all c<sub>i</sub> =
+        0 (independent)</span>
+      <ul>
+        <li>Basis = independent set that also spans the space; dimension = number of vectors in that basis.</li>
+        <li>A free column (no pivot) in echelon form signals dependence among the vectors.</li>
+        <li>Use when: checking for redundant vectors, or finding a basis for a subspace.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>13. Linear Transformations</h2>
+      <span class="formula">T(cx + dy) = cT(x) + dT(y)</span>
+      <ul>
+        <li>Linear transformations always send the origin to the origin: T(0) = 0 (converse not guaranteed).</li>
+        <li>Matrix columns = T applied to each standard basis vector.</li>
+        <li>Use when: turning a rule (rotate, project, reflect, stretch) into a matrix.</li>
+      </ul>
+    </div>
+
+    <div class="block">
+      <h2>14. Special Transformation Matrices (R<sup>2</sup>)</h2>
+      <span class="formula">stretch: (x,y) &rarr; (cx,cy) &nbsp;|&nbsp; rotate 90&deg;: (x,y) &rarr; (-y,x)</span>
+      <span class="formula">reflect on y=x: (x,y) &rarr; (y,x) &nbsp;|&nbsp; project on x-axis: (x,y) &rarr;
+        (x,0)</span>
+      <ul>
+        <li>Stretching/scaling matrices expand or contract the whole space by factor c.</li>
+        <li>Rotation and reflection matrices are invertible; projection matrices are not (they collapse a dimension).
+        </li>
+        <li>Use when: recognising or building the matrix behind a geometric operation.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const icon = document.getElementById('iconSun');
+      const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+      const moon = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+
+      function updateIcon(dark) {
+        if (icon) icon.innerHTML = dark ? moon : sun;
+      }
+
+      const saved = localStorage.getItem('theme');
+      let isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      updateIcon(isDark);
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          isDark = !root.classList.contains('dark');
+          root.classList.toggle('dark', isDark);
+          root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+          updateIcon(isDark);
+          localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
       }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      fab.style.display = 'none';
+    })();
+  </script>
+  <style>
+    .code-block-wrapper {
+      position: relative;
+      margin: 0 0 20px;
     }
-  };
-  document.body.appendChild(fab);
-})();
-</script>
+
+    .code-block-wrapper pre {
+      margin: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar button {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      background: var(--bg);
+      color: var(--ink-soft);
+      font: 500 11px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .code-block-toolbar button:hover {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .code-block-toolbar button.copied {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    /* Playground side panel */
+    .playground-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 900;
+      width: 50vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, .25);
+      transform: translateX(100%);
+      transition: transform .25s ease;
+    }
+
+    .playground-panel.open {
+      transform: translateX(0);
+    }
+
+    .playground-panel iframe {
+      flex: 1;
+      border: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Floating playground button */
+    .playground-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 950;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background: var(--accent);
+      color: var(--bg);
+      font: 600 13px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+      transition: all .2s ease;
+    }
+
+    .playground-fab:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
+      transform: translateY(-2px);
+    }
+  </style>
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach(function (code) {
+        var pre = code.parentElement;
+        if (pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        var toolbar = document.createElement('div');
+        toolbar.className = 'code-block-toolbar';
+        var copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = function () {
+          navigator.clipboard.writeText(code.textContent).then(function () {
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
+          });
+        };
+        toolbar.appendChild(copyBtn);
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(toolbar);
+        wrapper.appendChild(pre);
+      });
+
+      // Create floating action button
+      var fab = document.createElement('button');
+      fab.className = 'playground-fab';
+      fab.innerHTML = '&#9679; C Playground';
+      fab.onclick = function () {
+        var panel = document.querySelector('.playground-panel');
+        if (panel && panel.classList.contains('open')) {
+          panel.classList.remove('open');
+          document.body.classList.remove('playground-open');
+          var app = document.querySelector('.app');
+          if (app) app.style.width = '';
+          fab.style.display = '';
+        } else {
+          if (!panel) {
+            panel = document.createElement('div');
+            panel.className = 'playground-panel';
+            panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
+            document.body.appendChild(panel);
+            window.addEventListener('message', function (e) {
+              if (e.data && e.data.type === 'close-playground') {
+                panel.classList.remove('open');
+                document.body.classList.remove('playground-open');
+                var app = document.querySelector('.app');
+                if (app) app.style.width = '';
+                fab.style.display = '';
+                setTimeout(function () { panel.remove(); }, 300);
+              }
+            });
+          }
+          panel.classList.add('open');
+          document.body.classList.add('playground-open');
+          var app = document.querySelector('.app');
+          if (app) app.style.width = '50vw';
+          fab.style.display = 'none';
+        }
+      };
+      document.body.appendChild(fab);
+    })();
+  </script>
 </body>
+
 </html>

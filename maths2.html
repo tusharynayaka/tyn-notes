@@ -668,11 +668,23 @@
       }
     }
   </style>
-<style>
-body.playground-open .app { transition:width .1s ease; }
-body.playground-open .sidebar { width:25% !important; flex-shrink:0 !important; }
-body.playground-open main { flex:1 !important; width:auto !important; max-width:none !important; overflow:hidden !important; }
-</style>
+  <style>
+    body.playground-open .app {
+      transition: width .1s ease;
+    }
+
+    body.playground-open .sidebar {
+      width: 25% !important;
+      flex-shrink: 0 !important;
+    }
+
+    body.playground-open main {
+      flex: 1 !important;
+      width: auto !important;
+      max-width: none !important;
+      overflow: hidden !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -780,7 +792,8 @@ body.playground-open main { flex:1 !important; width:auto !important; max-width:
           <p>The <strong>length</strong> ‖x‖ of a vector generalises the Pythagorean hypotenuse to n dimensions, and the
             <strong>inner product</strong> (dot product) xᵀy = x₁y₁+…+xₙyₙ is the single number that carries both length
             and angle information. Setting y = x recovers the length: xᵀx = ‖x‖². Two vectors are
-            <strong>orthogonal</strong> exactly when xᵀy = 0.</p>
+            <strong>orthogonal</strong> exactly when xᵀy = 0.
+          </p>
           <div class="use">
             <span class="label">When to use it</span>
             <ul>
@@ -1012,7 +1025,8 @@ body.playground-open main { flex:1 !important; width:auto !important; max-width:
           <p>Instead of Ax=b, we now ask <code>Ax = λx</code>: for which special directions x does multiplying by A only
             stretch or shrink the vector, never turn it aside? λ is the <strong>eigenvalue</strong>, x the
             <strong>eigenvector</strong>. This underlies solutions of du/dt=Au (pure exponential solutions eλtx) and
-            every method that "finds structure" in data.</p>
+            every method that "finds structure" in data.
+          </p>
           <div class="use">
             <span class="label">When to use it</span>
             <ul>
@@ -1345,7 +1359,8 @@ body.playground-open main { flex:1 !important; width:auto !important; max-width:
           <p>PCA is an orthogonal transformation that converts correlated features into uncorrelated <strong>principal
               components</strong>, found greedily: the first component is the direction of maximum variance, the second
             is the max-variance direction orthogonal to the first, and so on. It is exactly the SVD of the
-            <em>centred</em> data matrix — no separate machinery is needed.</p>
+            <em>centred</em> data matrix — no separate machinery is needed.
+          </p>
           <div class="use">
             <span class="label">When to use it</span>
             <ul>
@@ -1611,113 +1626,127 @@ body.playground-open main { flex:1 !important; width:auto !important; max-width:
     }, { passive: true });
     backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   </script>
-<style>
-.code-block-wrapper{position:relative;margin:0 0 20px;}
-.code-block-wrapper pre{margin:0;border-radius:var(--radius) var(--radius) 0 0;}
-.code-block-toolbar{display:flex;gap:6px;padding:6px 10px;background:var(--bg-elev);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;}
-.code-block-toolbar button{border:1px solid var(--border);border-radius:var(--radius);padding:3px 10px;background:var(--bg);color:var(--ink-soft);font:500 11px 'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s ease;}
-.code-block-toolbar button:hover{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);}
-.code-block-toolbar button.copied{background:var(--accent);color:var(--bg);border-color:var(--accent);}
-
-/* Playground side panel */
-.playground-panel{position:fixed;top:0;right:0;z-index:900;width:50vw;height:100vh;display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .25s ease;}
-.playground-panel.open{transform:translateX(0);}
-.playground-panel iframe{flex:1;border:0;width:100%;height:100%;}
-/* Floating playground button */
-.playground-fab{position:fixed;bottom:24px;right:24px;z-index:950;display:flex;align-items:center;gap:6px;padding:10px 16px;border:1px solid var(--border);border-radius:50px;background:var(--accent);color:var(--bg);font:600 13px 'IBM Plex Mono',monospace;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2);transition:all .2s ease;}
-.playground-fab:hover{filter:brightness(1.1);box-shadow:0 6px 20px rgba(0,0,0,.3);transform:translateY(-2px);}
-</style>
-<script>
-(function(){
-  document.querySelectorAll('pre > code').forEach(function(code){
-    var pre = code.parentElement;
-    if(pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
-    var wrapper = document.createElement('div');
-    wrapper.className = 'code-block-wrapper';
-    var toolbar = document.createElement('div');
-    toolbar.className = 'code-block-toolbar';
-    var copyBtn = document.createElement('button');
-    copyBtn.textContent = 'Copy';
-    copyBtn.onclick = function(){
-      navigator.clipboard.writeText(code.textContent).then(function(){
-        copyBtn.textContent = 'Copied!';
-        copyBtn.classList.add('copied');
-        setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
-      });
-    };
-    var playgroundBtn = document.createElement('button');
-    playgroundBtn.textContent = 'Open in Playground';
-    playgroundBtn.onclick = function(){
-      sessionStorage.setItem('playground-code', code.textContent);
-      var panel = document.querySelector('.playground-panel');
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
-        });
-      } else {
-        var iframe = panel.querySelector('iframe');
-        if(iframe) iframe.src = iframe.src;
-      }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      var fab = document.querySelector('.playground-fab');
-      if(fab) fab.style.display = 'none';
-    };
-    toolbar.appendChild(copyBtn);
-    toolbar.appendChild(playgroundBtn);
-    pre.parentNode.insertBefore(wrapper, pre);
-    wrapper.appendChild(toolbar);
-    wrapper.appendChild(pre);
-  });
-
-  // Create floating action button
-  var fab = document.createElement('button');
-  fab.className = 'playground-fab';
-  fab.innerHTML = '&#9679; C Playground';
-  fab.onclick = function(){
-    var panel = document.querySelector('.playground-panel');
-    if(panel && panel.classList.contains('open')){
-      panel.classList.remove('open');
-      document.body.classList.remove('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '';
-      fab.style.display = '';
-    } else {
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            var app = document.querySelector('.app');
-            if(app) app.style.width = '';
-            fab.style.display = '';
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
-        });
-      }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      fab.style.display = 'none';
+  <style>
+    .code-block-wrapper {
+      position: relative;
+      margin: 0 0 20px;
     }
-  };
-  document.body.appendChild(fab);
-})();
-</script>
+
+    .code-block-wrapper pre {
+      margin: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar button {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      background: var(--bg);
+      color: var(--ink-soft);
+      font: 500 11px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .code-block-toolbar button:hover {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .code-block-toolbar button.copied {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    /* Playground side panel */
+    .playground-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 900;
+      width: 50vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -8px 0 30px rgba(0, 0, 0, .25);
+      transform: translateX(100%);
+      transition: transform .25s ease;
+    }
+
+    .playground-panel.open {
+      transform: translateX(0);
+    }
+
+    .playground-panel iframe {
+      flex: 1;
+      border: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Floating playground button */
+    .playground-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 950;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      background: var(--accent);
+      color: var(--bg);
+      font: 600 13px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .2);
+      transition: all .2s ease;
+    }
+
+    .playground-fab:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
+      transform: translateY(-2px);
+    }
+  </style>
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach(function (code) {
+        var pre = code.parentElement;
+        if (pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        var toolbar = document.createElement('div');
+        toolbar.className = 'code-block-toolbar';
+        var copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = function () {
+          navigator.clipboard.writeText(code.textContent).then(function () {
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
+          });
+        };
+        toolbar.appendChild(copyBtn);
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(toolbar);
+        wrapper.appendChild(pre);
+      });
+    })();
+  </script>
 </body>
+
 </html>

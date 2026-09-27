@@ -706,78 +706,11 @@ backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smo
         setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
       });
     };
-    var playgroundBtn = document.createElement('button');
-    playgroundBtn.textContent = 'Open in Playground';
-    playgroundBtn.onclick = function(){
-      sessionStorage.setItem('playground-code', code.textContent);
-      var panel = document.querySelector('.playground-panel');
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
-        });
-      } else {
-        var iframe = panel.querySelector('iframe');
-        if(iframe) iframe.src = iframe.src;
-      }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      var fab = document.querySelector('.playground-fab');
-      if(fab) fab.style.display = 'none';
-    };
     toolbar.appendChild(copyBtn);
-    toolbar.appendChild(playgroundBtn);
     pre.parentNode.insertBefore(wrapper, pre);
     wrapper.appendChild(toolbar);
     wrapper.appendChild(pre);
   });
-
-  // Create floating action button
-  var fab = document.createElement('button');
-  fab.className = 'playground-fab';
-  fab.innerHTML = '&#9679; C Playground';
-  fab.onclick = function(){
-    var panel = document.querySelector('.playground-panel');
-    if(panel && panel.classList.contains('open')){
-      panel.classList.remove('open');
-      document.body.classList.remove('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '';
-      fab.style.display = '';
-    } else {
-      if(!panel){
-        panel = document.createElement('div');
-        panel.className = 'playground-panel';
-        panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-        document.body.appendChild(panel);
-        window.addEventListener('message', function(e){
-          if(e.data && e.data.type === 'close-playground'){
-            panel.classList.remove('open');
-            document.body.classList.remove('playground-open');
-            var app = document.querySelector('.app');
-            if(app) app.style.width = '';
-            fab.style.display = '';
-            setTimeout(function(){ panel.remove(); }, 300);
-          }
-        });
-      }
-      panel.classList.add('open');
-      document.body.classList.add('playground-open');
-      var app = document.querySelector('.app');
-      if(app) app.style.width = '50vw';
-      fab.style.display = 'none';
-    }
-  };
-  document.body.appendChild(fab);
 })();
 </script>
 </body>

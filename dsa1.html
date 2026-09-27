@@ -1382,7 +1382,8 @@ int main() {
       <p>Mathematically, a function is a special kind of relation: it associates a sequence of
         <strong>arguments</strong> with a single <strong>result</strong>. In mathematics, applying the same function to
         the same arguments always gives the same result — this is called a <strong>pure function</strong>. It doesn't
-        depend on the day, the mood of the caller, or anything else external.</p>
+        depend on the day, the mood of the caller, or anything else external.
+      </p>
       <p>In programming, a function is a named block of code. When it is <em>called</em> (or <em>invoked</em>) with
         arguments, that code executes and hands a result back to the <strong>caller</strong> — the code that made the
         call — from the <strong>callee</strong> — the function that was called.</p>
@@ -1415,7 +1416,8 @@ int main() {
         duration of one call. When the function is invoked, an <strong>activation record</strong> (also called a
         <strong>stack frame</strong>) is created to hold the parameters, local variables, temporaries, the return
         address, and space for the return value. When the function returns, this entire frame is popped and destroyed —
-        there is no concept of a Python-style closure here.</div>
+        there is no concept of a Python-style closure here.
+      </div>
 
       <pre><code><span class="ty">int</span> <span class="fn">f1</span>(<span class="ty">int</span> x) { <span class="kw">return</span> x * x; }
 <span class="ty">int</span> <span class="fn">f2</span>(<span class="ty">int</span> x, <span class="ty">int</span> y) { <span class="kw">return</span> x + y; }
@@ -1441,7 +1443,8 @@ int main() {
         <li>The arguments are evaluated — <strong>the order in which multiple arguments are evaluated is
             undefined</strong> in C. So <code class="inline">a = 10; f(a++, a);</code> could legally produce either
           <code class="inline">f(10, 10)</code> or <code class="inline">f(10, 11)</code>. Never write code that depends
-          on argument evaluation order.</li>
+          on argument evaluation order.
+        </li>
         <li>Arguments are copied into the corresponding parameters.</li>
         <li>Control transfers to the callee.</li>
         <li>The function body runs.</li>
@@ -1459,7 +1462,8 @@ int main() {
         assumes a missing return type is <code class="inline">int</code> — but it cannot check anything about the call
         unless it already knows the function's shape.</p>
       <p>We supply that shape with a <strong>declaration</strong> (also called a <strong>prototype</strong> or
-        <strong>signature</strong> — a term that entered C from C++):</p>
+        <strong>signature</strong> — a term that entered C from C++):
+      </p>
       <pre><code><span class="ty">int</span> f2(<span class="ty">int</span> x, <span class="ty">int</span> y);  <span class="cm">// declaration — no body</span></code></pre>
       <div class="note"><span class="label">Interface vs. implementation</span>The declaration <em>is</em> the
         interface: it tells a caller what the function expects, but nothing about how it works internally. Because of
@@ -1551,7 +1555,8 @@ server.o : server.c server.h
       <p class="code-cap">Run with <code class="inline">make -f mymakefile.mk</code>. Each block has a
         <strong>target</strong> on the left of <code class="inline">:</code>, its <strong>source dependencies</strong>
         on the right, and an indented (tab-prefixed) command below that runs only if a dependency is newer than the
-        target.</p>
+        target.
+      </p>
 
       <hr class="divider">
 
@@ -1563,7 +1568,8 @@ server.o : server.c server.h
       <h3 id="recursion-intro">What is recursion?</h3>
       <p>A function that calls itself — directly, or indirectly through another function — is
         <strong>recursive</strong>. We can use recursion as an alternative to a loop. Every correct recursive function
-        needs:</p>
+        needs:
+      </p>
       <ul>
         <li>A <strong>base case</strong> (also called the <strong>escape hatch</strong>) — a simple case solved
           directly, without further recursion.</li>
@@ -1588,7 +1594,8 @@ server.o : server.c server.h
       <p>Tracing <code class="inline">what(25)</code>: 25 is <code class="inline">11001</code> in binary, i.e. three
         1-bits. The calls unfold as <code
           class="inline">what(25) → 1+what(12) → 1+what(6) → 1+what(3) → 1+what(1) → 1+what(0)</code>, which returns
-        <code class="inline">0</code>, then unwinds back up adding 1 three times, giving <strong>3</strong>.</p>
+        <code class="inline">0</code>, then unwinds back up adding 1 three times, giving <strong>3</strong>.
+      </p>
 
       <h3 id="recursion-ex2">Example — fast exponentiation</h3>
       <p>What does this function compute?</p>
@@ -1629,7 +1636,8 @@ printf(<span class="str">"%d\n"</span>, a);</code></pre>
           class="inline">n</code> is still the old value 5 — so <code class="inline">a</code> becomes <code
           class="inline">1 / 5 = 0</code>. <strong>Aliasing silently corrupted the result.</strong> This is a powerful
         lesson: when two pointer parameters can refer to the same object, code that looks correct for distinct variables
-        can misbehave.</p>
+        can misbehave.
+      </p>
 
       <hr class="divider">
 
@@ -1643,14 +1651,16 @@ printf(<span class="str">"%d\n"</span>, a);</code></pre>
       <ul>
         <li>Has a fixed number of elements, all of the <strong>same type</strong> (homogeneous).</li>
         <li>Size is fixed at creation — either a compile-time constant, or (in C99) a runtime value via a
-          <strong>Variable Length Array (VLA)</strong>.</li>
+          <strong>Variable Length Array (VLA)</strong>.
+        </li>
         <li>An array can never grow or shrink.</li>
         <li>Elements are selected by a zero-based integer <strong>index</strong> (or subscript).</li>
         <li>Supports <strong>random access</strong>: the time to access any element is the same, regardless of its
           position.</li>
         <li>At compile time, the compiler knows everything about the array (its size, its type). At
           <strong>runtime</strong>, the array "degenerates" into a plain pointer — the size information is simply not
-          stored anywhere.</li>
+          stored anywhere.
+        </li>
         <li><strong>Out-of-bounds access is never checked.</strong> Checking would need extra memory (to store the size
           at runtime) and extra time on every access — a cost C refuses to impose on every program just to protect
           careless code. C's philosophy: <em>the programmer gets what he deserves.</em></li>
@@ -1804,7 +1814,8 @@ printf(<span class="str">"%d\n"</span>, a);</code></pre>
         flat, comma-separated sequence — <code class="inline">int c[3][2] = {11,22,33,44,55,66};</code> is identical to
         <code class="inline">{{11,22},{33,44},{55,66}}</code>. A 2D array is always rectangular: <code
           class="inline">int a[][3] = {{11,22,100},{33,44}};</code> gives 2 rows (counted from the outer braces) of 3
-        columns each — 6 integers total, with the missing trailing values zero-filled.</p>
+        columns each — 6 integers total, with the missing trailing values zero-filled.
+      </p>
       <p>Because the array name is a pointer to its first <em>row</em>, indexing decomposes as pointer arithmetic: <code
           class="inline">a[3][2]</code> is exactly the same value as <code class="inline">*(*(a + 3) + 2)</code>. We can
         also declare a "pointer to an array of 4 ints" directly: <code class="inline">int (*p)[4] = a; p[3][2]</code>
@@ -1912,14 +1923,16 @@ t1.i = 189;         <span class="cm">// t2.i is completely unaffected</span></co
       <pre><code><span class="ty">void</span> f2(<span class="kw">struct</span> test* p) { strcpy(p-&gt;a, <span class="str">"pqr"</span>); }
 f2(&amp;t1); <span class="cm">// t1.a is now "pqr"</span></code></pre>
       <p>When you want to pass a structure efficiently but guarantee it <em>won't</em> be modified, pass a pointer to a
-        <strong>constant</strong> structure:</p>
+        <strong>constant</strong> structure:
+      </p>
       <pre><code><span class="ty">void</span> f3(<span class="kw">const</span> <span class="kw">struct</span> test* p) { printf(<span class="str">"%s\n"</span>, p-&gt;a); } <span class="cm">// writes through p are compile errors</span></code></pre>
       <div class="warn"><span class="label">Best practice</span>Passing a structure by value is generally considered bad
         practice: it costs more memory, more copy time, and causes subtle problems if any member is a pointer. Prefer
         pointers — <code class="inline">const</code>-qualified when you don't intend to modify.</div>
       <p>A function can also <strong>return</strong> a structure by value (copied into a temporary, then assigned to a
         variable in the caller) or a pointer to one — but if returning a pointer, it must point to something that
-        <em>outlives</em> the function call (never a local variable — same dangling-pointer trap as before).</p>
+        <em>outlives</em> the function call (never a local variable — same dangling-pointer trap as before).
+      </p>
 
       <h3 id="struct-typedef"><code class="inline">typedef</code> — naming a type</h3>
       <p>When a client writes <code class="inline">int a;</code>, they don't need to know how an <code
@@ -1942,7 +1955,8 @@ student_t s1;                    <span class="cm">// creates a VARIABLE of that 
       <p>A variable in a block is created (given an address) as soon as the block is entered, but is
         <strong>not</strong> initialized by default. If the variable is a pointer, dereferencing it before assigning it
         a valid address is undefined behaviour — the program may not crash, but reading through garbage as if it were an
-        address is dangerous.</p>
+        address is dangerous.
+      </p>
       <pre><code><span class="ty">int</span> *p; <span class="ty">int</span> a = 10; p = &amp;a;
 <span class="ty">int</span> **pp = &amp;p;
 
@@ -1985,7 +1999,8 @@ free(p);</code></pre>
         bytes to release — so how does it know? When <code class="inline">malloc</code> allocates memory, it secretly
         stores the block's size somewhere alongside it — this hidden accounting is called <strong>bookkeeping</strong>
         (or <strong>housekeeping</strong>). <code class="inline">free</code> looks this up using the pointer
-        <em>value</em> you give it, regardless of which variable name holds that value.</div>
+        <em>value</em> you give it, regardless of which variable name holds that value.
+      </div>
       <pre><code><span class="ty">int</span> *p = (<span class="ty">int</span>*)malloc(<span class="kw">sizeof</span>(<span class="ty">int</span>) * 4); <span class="cm">// "array on the heap"</span>
 p[0] = 11; *(p + 1) = 22;
 free(p);         <span class="cm">// releases the whole 4-int block at once</span>
@@ -2013,7 +2028,8 @@ free(q);      <span class="cm">// perfectly valid — free cares about the point
         <tr>
           <td><strong>Dangling pointer</strong></td>
           <td>You still have <strong>access</strong> (a pointer variable with a value) but the location it points to
-            <strong>no longer exists</strong> (it was freed, or was a local variable whose stack frame is gone).</td>
+            <strong>no longer exists</strong> (it was freed, or was a local variable whose stack frame is gone).
+          </td>
         </tr>
       </table>
       <pre><code><span class="cm">// Garbage / memory leak</span>
@@ -2028,7 +2044,8 @@ printf(<span class="str">"%d\n"</span>, *p); <span class="cm">// p is now dangli
         dangerous — the pointer variable is just holding an address, which is harmless. <strong>Dereferencing</strong>
         it is what's dangerous. Also: dangling pointers can happen anywhere (heap or stack), but a memory
         <strong>leak</strong> can only happen on the heap — a leaked stack variable is automatically reclaimed when its
-        block exits.</div>
+        block exits.
+      </div>
       <p>Unlike Python (which uses reference-count based garbage collection), <strong>C has no garbage
           collector</strong> — automatic reclamation costs time and space that C's design philosophy refuses to spend by
         default. Keeping memory clean is entirely the programmer's responsibility.</p>
@@ -2090,7 +2107,8 @@ printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&g
         <tr>
           <td><strong>5. Pointer set to NULL after use</strong></td>
           <td>The heap block becomes unreachable — garbage, hence a memory leak (the pointer itself is fine — it's just
-            <code class="inline">NULL</code> now — but the block it used to hold is lost).</td>
+            <code class="inline">NULL</code> now — but the block it used to hold is lost).
+          </td>
         </tr>
       </table>
 
@@ -2121,7 +2139,8 @@ printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&g
       <h3 id="adt-concept">Abstract Data Types (ADTs)</h3>
       <p>Can a language support every possible real-world "type"? No — the set of possible things is unbounded. Instead,
         a good language gives us a way to <strong>define our own types</strong>. This is exactly what an
-        <strong>Abstract Data Type (ADT)</strong> is:</p>
+        <strong>Abstract Data Type (ADT)</strong> is:
+      </p>
       <ul>
         <li>Like a built-in type, it exposes a small set of operations.</li>
         <li>It specifies <em>what</em> those operations do, never <em>how</em>.</li>
@@ -2129,7 +2148,8 @@ printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&g
           underneath can be freely changed.</li>
         <li>Both the user and the implementor depend only on the interface — never on each other's code. This is called
           <strong>inversion of dependency</strong>: if A depends on B directly, any change to B forces a change to A;
-          but if both A and B depend only on something stable (the interface), changing one never breaks the other.</li>
+          but if both A and B depend only on something stable (the interface), changing one never breaks the other.
+        </li>
       </ul>
       <div class="note"><span class="label">Car analogy</span>You can drive almost any car once you've learned to drive
         one — the interface (steering wheel, pedals) never changes, even though the implementation underneath
@@ -2139,7 +2159,8 @@ printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&g
       <ul>
         <li>An interface.</li>
         <li>With a number of elements arranged in a particular way to support a few operations
-          <strong>efficiently</strong>.</li>
+          <strong>efficiently</strong>.
+        </li>
         <li>Constrained by time and space trade-offs — there's rarely a single "correct" arrangement, only ones better
           suited to a particular use (like tumblers or books arranged for either compact storage or easy access —
           neither is objectively "wrong").</li>
@@ -2157,7 +2178,8 @@ printf(<span class="str">"%d %d %d\n"</span>, one.c, one.p-&gt;c, one.p-&gt;p-&g
       </ul>
       <p>Interface: <code class="inline">create</code>, <code class="inline">destroy</code>, <code
           class="inline">insert</code>, <code class="inline">delete</code>, … Implementation choices: an
-        <strong>array</strong>, or a <strong>linked list</strong>.</p>
+        <strong>array</strong>, or a <strong>linked list</strong>.
+      </p>
 
       <hr class="divider">
 
@@ -2390,7 +2412,8 @@ node_t* pres = ptr_list-&gt;head;
           class="inline">(())</code> — matched. But <code class="inline">)(</code> or <code class="inline">())())</code>
         are not — matching counts of <code class="inline">(</code> and <code class="inline">)</code> is
         <strong>necessary but not sufficient</strong>; order matters too (a closing bracket must never appear before its
-        matching opener).</p>
+        matching opener).
+      </p>
       <div class="formula"><span class="flabel">Algorithm</span>
         For each character: '(' → push a placeholder. ')' → if the stack is empty, invalid; otherwise pop. At the end,
         the string is valid only if the stack is empty <em>and</em> we never hit an empty-stack pop.

@@ -1,171 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-  (function() {
-    var root = document.documentElement;
-    var saved = localStorage.getItem('theme');
-    var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (isDark) {
-      root.classList.add('dark');
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var saved = localStorage.getItem('theme');
+      var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        root.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <title>C Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css" crossorigin="anonymous">
+  <style>
+    :root {
+      --bg: #f3f3f1;
+      --bg-elev: #f8f8f6;
+      --ink: #1c1f1d;
+      --ink-soft: #565f5a;
+      --ink-faint: #8a9089;
+      --border: #dfe1dc;
+      --code-bg: #101b2d;
+      --code-ink: #eaf3ff;
+      --accent: #2c5f52;
+      --accent-soft: #dfe9e4;
+      --radius: 3px;
     }
-  })();
-</script>
-<title>C Playground</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/css/xterm.css" crossorigin="anonymous">
-<style>
-:root{
-  --bg:#f3f3f1;
-  --bg-elev:#f8f8f6;
-  --ink:#1c1f1d;
-  --ink-soft:#565f5a;
-  --ink-faint:#8a9089;
-  --border:#dfe1dc;
-  --code-bg:#101b2d;
-  --code-ink:#eaf3ff;
-  --accent:#2c5f52;
-  --accent-soft:#dfe9e4;
-  --radius:3px;
-}
-:root[data-theme="dark"]{
-  --bg:#070b14;
-  --bg-elev:#0d1524;
-  --ink:#eaf3ff;
-  --ink-soft:#a9bbd8;
-  --ink-faint:#7d8eaf;
-  --border:#1d2d47;
-  --code-bg:#101b2d;
-  --code-ink:#eaf3ff;
-  --accent:#60a5fa;
-  --accent-soft:#10213d;
-}
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;height:100%;overflow:hidden;}
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:'IBM Plex Sans', system-ui, sans-serif;
-  font-size:16px;
-  line-height:1.65;
-}
-.dsa-playground{
-  width:100%;
-  height:100vh;
-  margin:0;
-  display:flex;
-  flex-direction:column;
-  background:var(--bg-elev);
-  overflow:hidden;
-}
-.dsa-playground-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 14px;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.dsa-playground-title{font:600 13px 'IBM Plex Mono',monospace;color:var(--ink);}
-.dsa-playground-meta{font-size:12px;color:var(--ink-faint);}
-.dsa-playground-close{
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:5px 9px;
-  background:var(--bg);
-  color:var(--ink);
-  font:500 12px 'IBM Plex Mono',monospace;
-  cursor:pointer;
-}
-.dsa-playground-close:hover{background:var(--accent-soft);}
 
-/* Resizable Split */
-.dsa-split{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden;}
-.dsa-split-editor{flex:4 1 0;min-height:120px;display:flex;min-width:0;position:relative;}
-.dsa-split-terminal{flex:1 1 0;min-height:90px;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+    :root[data-theme="dark"] {
+      --bg: #070b14;
+      --bg-elev: #0d1524;
+      --ink: #eaf3ff;
+      --ink-soft: #a9bbd8;
+      --ink-faint: #7d8eaf;
+      --border: #1d2d47;
+      --code-bg: #101b2d;
+      --code-ink: #eaf3ff;
+      --accent: #60a5fa;
+      --accent-soft: #10213d;
+    }
 
-/* Editor */
-.dsa-playground-editor{
-  flex:1 1 auto;width:100%;min-height:0;resize:none;overflow:auto;
-  box-sizing:border-box;padding:14px;border:0;outline:none;
-  background:var(--code-bg);color:var(--code-ink);
-  font:13px/1.6 'IBM Plex Mono',monospace;tab-size:4;
-}
-.dsa-playground-editor:focus{box-shadow:inset 0 0 0 2px var(--accent);}
+    * {
+      box-sizing: border-box;
+    }
 
-/* Controls Toolbar */
-.dsa-playground-controls{
-  flex:0 0 auto;display:flex;align-items:center;gap:8px;
-  padding:8px 12px;background:var(--bg-elev);
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-}
-.dsa-playground-controls button{
-  border:1px solid var(--border);border-radius:var(--radius);
-  padding:5px 10px;background:var(--bg);color:var(--ink);
-  font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;
-}
-.dsa-playground-controls button:hover{background:var(--accent-soft);}
-.dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
 
-/* Drag Handle */
-.dsa-split-handle{
-  flex:0 0 auto;height:12px;cursor:row-resize;
-  position:relative;touch-action:none;background:var(--bg-elev);z-index:5;
-}
-.dsa-split-handle::before{
-  content:"";position:absolute;inset:50% 16px auto 16px;height:2px;
-  transform:translateY(-50%);background:var(--border);border-radius:2px;
-  transition:background .15s,opacity .15s;
-}
-.dsa-split-handle:hover::before,.dsa-split-handle:focus-visible::before{background:var(--accent);}
-.dsa-split-handle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+    }
 
-/* Global cursor & selection during drag */
-body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:none !important;}
+    .dsa-playground {
+      width: 100%;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-elev);
+      overflow: hidden;
+    }
 
-/* Terminal inside split */
-.dsa-split-terminal .dsa-terminal{
-  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
-  height:100%;border-top:0;background:var(--code-bg);
-}
-.dsa-split-terminal .dsa-terminal-head{
-  flex:0 0 auto;display:flex;justify-content:space-between;
-  padding:6px 12px;color:var(--ink-faint);
-  font:10px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-.dsa-split-terminal .dsa-terminal-screen{
-  flex:1 1 auto;min-height:0;padding:8px 10px;
-  background:#080d17;overflow:hidden;
-}
-.dsa-split-terminal .dsa-terminal-screen .xterm{height:100%;padding:4px;}
-.dsa-split-terminal .dsa-terminal-screen .xterm-viewport{overflow-y:auto !important;}
+    .dsa-playground-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
 
-@media (max-width:640px){
-  .dsa-playground-head{align-items:flex-start;flex-direction:column;gap:4px;}
-  .dsa-playground-controls{align-items:stretch;flex-wrap:wrap;}
-}
-</style>
+    .dsa-playground-title {
+      font: 600 13px 'IBM Plex Mono', monospace;
+      color: var(--ink);
+    }
+
+    .dsa-playground-meta {
+      font-size: 12px;
+      color: var(--ink-faint);
+    }
+
+    .dsa-playground-close {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 9px;
+      background: var(--bg);
+      color: var(--ink);
+      font: 500 12px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+    }
+
+    .dsa-playground-close:hover {
+      background: var(--accent-soft);
+    }
+
+    /* Resizable Split */
+    .dsa-split {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .dsa-split-editor {
+      flex: 4 1 0;
+      min-height: 120px;
+      display: flex;
+      min-width: 0;
+      position: relative;
+    }
+
+    .dsa-split-terminal {
+      flex: 1 1 0;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    /* Editor */
+    .dsa-playground-editor {
+      flex: 1 1 auto;
+      width: 100%;
+      min-height: 0;
+      resize: none;
+      overflow: auto;
+      box-sizing: border-box;
+      padding: 14px;
+      border: 0;
+      outline: none;
+      background: var(--code-bg);
+      color: var(--code-ink);
+      font: 13px/1.6 'IBM Plex Mono', monospace;
+      tab-size: 4;
+    }
+
+    .dsa-playground-editor:focus {
+      box-shadow: inset 0 0 0 2px var(--accent);
+    }
+
+    /* Controls Toolbar */
+    .dsa-playground-controls {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-elev);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .dsa-playground-controls button {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      background: var(--bg);
+      color: var(--ink);
+      font: 500 12px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+    }
+
+    .dsa-playground-controls button:hover {
+      background: var(--accent-soft);
+    }
+
+    .dsa-playground-controls .run {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    /* Drag Handle */
+    .dsa-split-handle {
+      flex: 0 0 auto;
+      height: 12px;
+      cursor: row-resize;
+      position: relative;
+      touch-action: none;
+      background: var(--bg-elev);
+      z-index: 5;
+    }
+
+    .dsa-split-handle::before {
+      content: "";
+      position: absolute;
+      inset: 50% 16px auto 16px;
+      height: 2px;
+      transform: translateY(-50%);
+      background: var(--border);
+      border-radius: 2px;
+      transition: background .15s, opacity .15s;
+    }
+
+    .dsa-split-handle:hover::before,
+    .dsa-split-handle:focus-visible::before {
+      background: var(--accent);
+    }
+
+    .dsa-split-handle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+
+    /* Global cursor & selection during drag */
+    body.dsa-resizing,
+    body.dsa-resizing * {
+      cursor: row-resize !important;
+      user-select: none !important;
+    }
+
+    /* Terminal inside split */
+    .dsa-split-terminal .dsa-terminal {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      border-top: 0;
+      background: var(--code-bg);
+    }
+
+    .dsa-split-terminal .dsa-terminal-head {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 12px;
+      color: var(--ink-faint);
+      font: 10px 'IBM Plex Mono', monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .dsa-split-terminal .dsa-terminal-screen {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 8px 10px;
+      background: #080d17;
+      overflow: hidden;
+    }
+
+    .dsa-split-terminal .dsa-terminal-screen .xterm {
+      height: 100%;
+      padding: 4px;
+    }
+
+    .dsa-split-terminal .dsa-terminal-screen .xterm-viewport {
+      overflow-y: auto !important;
+    }
+
+    @media (max-width:640px) {
+      .dsa-playground-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .dsa-playground-controls {
+        align-items: stretch;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
 </head>
-<body>
-<section class="dsa-playground" id="dsaPlayground">
-  <div class="dsa-playground-head">
-    <span class="dsa-playground-title">C Playground</span>
-    <button class="dsa-playground-close" id="dsaClose" type="button">Close</button>
-  </div>
 
-  <div class="dsa-split" id="dsaSplit">
-    <div class="dsa-split-pane dsa-split-editor">
-      <textarea class="dsa-playground-editor" id="dsaCode" spellcheck="false">#include &lt;stdio.h&gt;
+<body>
+  <section class="dsa-playground" id="dsaPlayground">
+    <div class="dsa-playground-head">
+      <span class="dsa-playground-title">C Playground</span>
+      <button class="dsa-playground-close" id="dsaClose" type="button">Close</button>
+    </div>
+
+    <div class="dsa-split" id="dsaSplit">
+      <div class="dsa-split-pane dsa-split-editor">
+        <textarea class="dsa-playground-editor" id="dsaCode" spellcheck="false">#include &lt;stdio.h&gt;
 
 int main() {
   int queue[5], rear = -1, front = -1, count = 0, value, choice;
@@ -179,85 +313,84 @@ int main() {
   }
   return 0;
 }</textarea>
-    </div>
+      </div>
 
-    <div class="dsa-playground-controls">
-      <button class="run" id="dsaRun" type="button">Run</button>
-      <button id="dsaStop" type="button">Stop</button>
-      <button id="dsaReset" type="button">Reset</button>
-      <span id="dsaStatus" class="dsa-playground-meta"></span>
-    </div>
+      <div class="dsa-playground-controls">
+        <button class="run" id="dsaRun" type="button">Run</button>
+        <button id="dsaStop" type="button">Stop</button>
+        <button id="dsaReset" type="button">Reset</button>
+        <span id="dsaStatus" class="dsa-playground-meta"></span>
+      </div>
 
-    <div class="dsa-split-handle" id="dsaSplitHandle"
-         role="separator" aria-orientation="horizontal"
-         aria-label="Resize code editor and terminal" title="Drag to resize" tabindex="0"></div>
+      <div class="dsa-split-handle" id="dsaSplitHandle" role="separator" aria-orientation="horizontal"
+        aria-label="Resize code editor and terminal" title="Drag to resize" tabindex="0"></div>
 
-    <div class="dsa-split-pane dsa-split-terminal">
-      <div class="dsa-terminal">
-        <div class="dsa-terminal-head">
-          <span>Interactive Terminal</span><span>C · In-Browser WebAssembly</span>
+      <div class="dsa-split-pane dsa-split-terminal">
+        <div class="dsa-terminal">
+          <div class="dsa-terminal-head">
+            <span>Interactive Terminal</span><span>C · In-Browser WebAssembly</span>
+          </div>
+          <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="Interactive C terminal"></div>
         </div>
-        <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="Interactive C terminal"></div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js" crossorigin="anonymous"></script>
-<script>
-(function(){
-  var editor = document.getElementById('dsaCode');
-  var runButton = document.getElementById('dsaRun');
-  var stopButton = document.getElementById('dsaStop');
-  var resetButton = document.getElementById('dsaReset');
-  var statusEl = document.getElementById('dsaStatus');
-  var closeButton = document.getElementById('dsaClose');
+  <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js" crossorigin="anonymous"></script>
+  <script>
+    (function () {
+      var editor = document.getElementById('dsaCode');
+      var runButton = document.getElementById('dsaRun');
+      var stopButton = document.getElementById('dsaStop');
+      var resetButton = document.getElementById('dsaReset');
+      var statusEl = document.getElementById('dsaStatus');
+      var closeButton = document.getElementById('dsaClose');
 
-  var terminal = new Terminal({
-    cursorBlink: true, convertEol: true, disableStdin: false,
-    fontFamily: 'IBM Plex Mono, monospace', fontSize: 13,
-    theme: { background: '#080d17', foreground: '#eaf3ff', cursor: '#60a5fa', selectionBackground: '#1e3a5f' }
-  });
+      var terminal = new Terminal({
+        cursorBlink: true, convertEol: true, disableStdin: false,
+        fontFamily: 'IBM Plex Mono, monospace', fontSize: 13,
+        theme: { background: '#080d17', foreground: '#eaf3ff', cursor: '#60a5fa', selectionBackground: '#1e3a5f' }
+      });
 
-  var fitAddon = new FitAddon.FitAddon();
-  terminal.loadAddon(fitAddon);
-  terminal.open(document.getElementById('dsaTerminal'));
+      var fitAddon = new FitAddon.FitAddon();
+      terminal.loadAddon(fitAddon);
+      terminal.open(document.getElementById('dsaTerminal'));
 
-  function fitTerminal(){ try { fitAddon.fit(); } catch(e){} }
-  function writeLines(text){ if(!text) return; terminal.write(String(text).replace(/\n/g, '\r\n')); }
-  function status(text){ if(statusEl) statusEl.textContent = text || ''; }
+      function fitTerminal() { try { fitAddon.fit(); } catch (e) { } }
+      function writeLines(text) { if (!text) return; terminal.write(String(text).replace(/\n/g, '\r\n')); }
+      function status(text) { if (statusEl) statusEl.textContent = text || ''; }
 
-  terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
-  terminal.writeln('\x1b[90mPress Run, then type input and press Enter.\x1b[0m\r\n');
-  fitTerminal();
+      terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
+      terminal.writeln('\x1b[90mPress Run, then type input and press Enter.\x1b[0m\r\n');
+      fitTerminal();
 
-  closeButton.addEventListener('click', function(){
-    if(window.parent !== window){
-      window.parent.postMessage({type:'close-playground'}, '*');
-    }
-  });
+      closeButton.addEventListener('click', function () {
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: 'close-playground' }, '*');
+        }
+      });
 
-  /* ================= Worker-based C Engine ================= */
-  var isRunning = false;
-  var activeWorker = null;
-  var lineInputBuffer = '';
-  var jsCppSource = '';
-  var traceurSource = '';
+      /* ================= Worker-based C Engine ================= */
+      var isRunning = false;
+      var activeWorker = null;
+      var lineInputBuffer = '';
+      var jsCppSource = '';
+      var traceurSource = '';
 
-  // Fetch JSCPP source in main thread, then embed in worker blob
-  Promise.all([
-    fetch('https://cdn.jsdelivr.net/npm/JSCPP@latest/dist/JSCPP.es5.min.js').then(function(r){ return r.text(); }),
-    fetch('https://cdn.jsdelivr.net/npm/traceur@0.0.111/bin/traceur-runtime.js').then(function(r){ return r.text(); })
-  ]).then(function(sources){
-    jsCppSource = sources[0];
-    traceurSource = sources[1];
-  }).catch(function(){
-    terminal.writeln('\x1b[91m[Error] Failed to load JSCPP. Check your internet connection.\x1b[0m');
-  });
+      // Fetch JSCPP source in main thread, then embed in worker blob
+      Promise.all([
+        fetch('https://cdn.jsdelivr.net/npm/JSCPP@latest/dist/JSCPP.es5.min.js').then(function (r) { return r.text(); }),
+        fetch('https://cdn.jsdelivr.net/npm/traceur@0.0.111/bin/traceur-runtime.js').then(function (r) { return r.text(); })
+      ]).then(function (sources) {
+        jsCppSource = sources[0];
+        traceurSource = sources[1];
+      }).catch(function () {
+        terminal.writeln('\x1b[91m[Error] Failed to load JSCPP. Check your internet connection.\x1b[0m');
+      });
 
-  function buildWorkerBlobUrl(){
-    var workerCode = `
+      function buildWorkerBlobUrl() {
+        var workerCode = `
       ${traceurSource}
       ${jsCppSource}
 
@@ -407,184 +540,185 @@ int main() {
       }
     `;
 
-    var blob = new Blob([workerCode], { type: 'application/javascript' });
-    return URL.createObjectURL(blob);
-  }
-
-  function terminateExecution(reason){
-    if(activeWorker){
-      try { activeWorker.terminate(); } catch(e){}
-      activeWorker = null;
-    }
-    isRunning = false;
-    runButton.disabled = false;
-    runButton.textContent = 'Run';
-    if(reason) status(reason);
-  }
-
-  terminal.onData(function(data){
-    if(!isRunning) return;
-    if(data === '\x03'){
-      terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
-      terminateExecution('stopped');
-      return;
-    }
-    if(data === '\r'){
-      terminal.write('\r\n');
-      var fullLine = lineInputBuffer + '\n';
-      lineInputBuffer = '';
-      if(activeWorker){
-        activeWorker.postMessage({ type: 'stdin_data', data: fullLine });
+        var blob = new Blob([workerCode], { type: 'application/javascript' });
+        return URL.createObjectURL(blob);
       }
-      return;
-    }
-    if(data === '\x7f' || data === '\b'){
-      if(lineInputBuffer.length > 0){
-        lineInputBuffer = lineInputBuffer.slice(0, -1);
-        terminal.write('\b \b');
-      }
-      return;
-    }
-    if(data.charCodeAt(0) === 27) return;
-    lineInputBuffer += data;
-    terminal.write(data);
-  });
 
-  runButton.addEventListener('click', function(){
-    if(isRunning) return;
-    if(!jsCppSource){
-      terminal.writeln('\x1b[91m[Error] JSCPP not loaded yet. Please wait and try again.\x1b[0m');
-      return;
-    }
-
-    terminal.clear();
-    terminal.write('\x1b[90mCompiling & running...\x1b[0m\r\n\r\n');
-    status('running');
-    isRunning = true;
-    runButton.disabled = true;
-    runButton.textContent = 'Running';
-    lineInputBuffer = '';
-
-    try {
-      var blobUrl = buildWorkerBlobUrl();
-      activeWorker = new Worker(blobUrl);
-
-      activeWorker.onmessage = function(event){
-        var msg = event.data;
-        if(msg.type === 'stdout'){
-          writeLines(msg.data);
-        } else if(msg.type === 'stdin_request'){
-          status('waiting for input');
-          terminal.focus();
-        } else if(msg.type === 'exit'){
-          terminal.write('\r\n\x1b[92m[Program finished successfully]\x1b[0m\r\n');
-          terminateExecution('finished');
-        } else if(msg.type === 'error'){
-          terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
-          terminateExecution('error');
+      function terminateExecution(reason) {
+        if (activeWorker) {
+          try { activeWorker.terminate(); } catch (e) { }
+          activeWorker = null;
         }
-      };
+        isRunning = false;
+        runButton.disabled = false;
+        runButton.textContent = 'Run';
+        if (reason) status(reason);
+      }
 
-      activeWorker.onerror = function(err){
-        terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
-        terminateExecution('error');
-      };
+      terminal.onData(function (data) {
+        if (!isRunning) return;
+        if (data === '\x03') {
+          terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
+          terminateExecution('stopped');
+          return;
+        }
+        if (data === '\r') {
+          terminal.write('\r\n');
+          var fullLine = lineInputBuffer + '\n';
+          lineInputBuffer = '';
+          if (activeWorker) {
+            activeWorker.postMessage({ type: 'stdin_data', data: fullLine });
+          }
+          return;
+        }
+        if (data === '\x7f' || data === '\b') {
+          if (lineInputBuffer.length > 0) {
+            lineInputBuffer = lineInputBuffer.slice(0, -1);
+            terminal.write('\b \b');
+          }
+          return;
+        }
+        if (data.charCodeAt(0) === 27) return;
+        lineInputBuffer += data;
+        terminal.write(data);
+      });
 
-      activeWorker.postMessage({ type: 'run', code: editor.value });
-      terminal.focus();
-    } catch(err){
-      terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
-      terminateExecution('failed');
-    }
-  });
+      runButton.addEventListener('click', function () {
+        if (isRunning) return;
+        if (!jsCppSource) {
+          terminal.writeln('\x1b[91m[Error] JSCPP not loaded yet. Please wait and try again.\x1b[0m');
+          return;
+        }
 
-  stopButton.addEventListener('click', function(){
-    if(isRunning){
-      terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
-      terminateExecution('stopped');
-    }
-  });
+        terminal.clear();
+        terminal.write('\x1b[90mCompiling & running...\x1b[0m\r\n\r\n');
+        status('running');
+        isRunning = true;
+        runButton.disabled = true;
+        runButton.textContent = 'Running';
+        lineInputBuffer = '';
 
-  resetButton.addEventListener('click', function(){
-    terminateExecution();
-    editor.value = editor.defaultValue;
-    lineInputBuffer = '';
-    terminal.clear();
-    terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
-    terminal.writeln('\x1b[90mPress Run, then type input and press Enter.\x1b[0m\r\n');
-    status('');
-    fitTerminal();
-  });
+        try {
+          var blobUrl = buildWorkerBlobUrl();
+          activeWorker = new Worker(blobUrl);
 
-  editor.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
-    if(event.key === 'Tab'){ event.preventDefault(); editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end'); }
-  });
+          activeWorker.onmessage = function (event) {
+            var msg = event.data;
+            if (msg.type === 'stdout') {
+              writeLines(msg.data);
+            } else if (msg.type === 'stdin_request') {
+              status('waiting for input');
+              terminal.focus();
+            } else if (msg.type === 'exit') {
+              terminal.write('\r\n\x1b[92m[Program finished successfully]\x1b[0m\r\n');
+              terminateExecution('finished');
+            } else if (msg.type === 'error') {
+              terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
+              terminateExecution('error');
+            }
+          };
 
-  /* --- Resizable Split Controller --- */
-  var split = document.getElementById('dsaSplit');
-  if(split){
-    var handle = document.getElementById('dsaSplitHandle');
-    var editorPane = split.querySelector('.dsa-split-editor');
-    var termPane = split.querySelector('.dsa-split-terminal');
-    var MIN_EDITOR = 120, MIN_TERM = 90, DEFAULT_EDITOR_SHARE = 0.75;
+          activeWorker.onerror = function (err) {
+            terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
+            terminateExecution('error');
+          };
 
-    function setEditorHeight(px, total){
-      if(total <= 0) return;
-      var maxEditor = Math.max(MIN_EDITOR, total - MIN_TERM);
-      var h = Math.min(Math.max(px, MIN_EDITOR), maxEditor);
-      editorPane.style.flexGrow = String(h / total);
-      termPane.style.flexGrow = String(1 - h / total);
-      fitTerminal();
-    }
-    function measure(){ return { editor: editorPane.getBoundingClientRect().height, term: termPane.getBoundingClientRect().height }; }
-    function totalSpace(){ var m = measure(); return m.editor + m.term; }
-    function resetRatio(){ var total = totalSpace(); setEditorHeight(total * DEFAULT_EDITOR_SHARE, total); }
+          activeWorker.postMessage({ type: 'run', code: editor.value });
+          terminal.focus();
+        } catch (err) {
+          terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
+          terminateExecution('failed');
+        }
+      });
 
-    var drag = null;
-    handle.addEventListener('pointerdown', function(e){
-      if(e.pointerType === 'mouse' && e.button !== 0) return;
-      var m = measure();
-      drag = { id: e.pointerId, startY: e.clientY, startEditor: m.editor, total: m.editor + m.term };
-      handle.setPointerCapture(e.pointerId);
-      document.body.classList.add('dsa-resizing');
-      e.preventDefault();
-    });
-    handle.addEventListener('pointermove', function(e){
-      if(!drag || e.pointerId !== drag.id) return;
-      setEditorHeight(drag.startEditor + (e.clientY - drag.startY), drag.total);
-    });
-    function endDrag(e){
-      if(!drag || (e && e.pointerId !== drag.id)) return;
-      if(handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
-      drag = null;
-      document.body.classList.remove('dsa-resizing');
-    }
-    handle.addEventListener('pointerup', endDrag);
-    handle.addEventListener('pointercancel', endDrag);
-    handle.addEventListener('lostpointercapture', endDrag);
-    handle.addEventListener('keydown', function(e){
-      var m = measure(), total = m.editor + m.term;
-      var step = (e.shiftKey ? 0.05 : 0.02) * total;
-      var next = null;
-      if(e.key === 'ArrowUp') next = m.editor - step;
-      else if(e.key === 'ArrowDown') next = m.editor + step;
-      else if(e.key === 'Home') next = total * DEFAULT_EDITOR_SHARE;
-      else if(e.key === 'End') next = total;
-      if(next === null) return;
-      e.preventDefault();
-      setEditorHeight(next, total);
-    });
-    handle.addEventListener('dblclick', resetRatio);
-  }
+      stopButton.addEventListener('click', function () {
+        if (isRunning) {
+          terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
+          terminateExecution('stopped');
+        }
+      });
 
-  /* --- Load code sent from notes pages --- */
-  var storedCode = sessionStorage.getItem('playground-code');
-  if(storedCode){
-    editor.value = storedCode;
-    sessionStorage.removeItem('playground-code');
-  }
-})();
-</script>
+      resetButton.addEventListener('click', function () {
+        terminateExecution();
+        editor.value = editor.defaultValue;
+        lineInputBuffer = '';
+        terminal.clear();
+        terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
+        terminal.writeln('\x1b[90mPress Run, then type input and press Enter.\x1b[0m\r\n');
+        status('');
+        fitTerminal();
+      });
+
+      editor.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { event.preventDefault(); runButton.click(); }
+        if (event.key === 'Tab') { event.preventDefault(); editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end'); }
+      });
+
+      /* --- Resizable Split Controller --- */
+      var split = document.getElementById('dsaSplit');
+      if (split) {
+        var handle = document.getElementById('dsaSplitHandle');
+        var editorPane = split.querySelector('.dsa-split-editor');
+        var termPane = split.querySelector('.dsa-split-terminal');
+        var MIN_EDITOR = 120, MIN_TERM = 90, DEFAULT_EDITOR_SHARE = 0.75;
+
+        function setEditorHeight(px, total) {
+          if (total <= 0) return;
+          var maxEditor = Math.max(MIN_EDITOR, total - MIN_TERM);
+          var h = Math.min(Math.max(px, MIN_EDITOR), maxEditor);
+          editorPane.style.flexGrow = String(h / total);
+          termPane.style.flexGrow = String(1 - h / total);
+          fitTerminal();
+        }
+        function measure() { return { editor: editorPane.getBoundingClientRect().height, term: termPane.getBoundingClientRect().height }; }
+        function totalSpace() { var m = measure(); return m.editor + m.term; }
+        function resetRatio() { var total = totalSpace(); setEditorHeight(total * DEFAULT_EDITOR_SHARE, total); }
+
+        var drag = null;
+        handle.addEventListener('pointerdown', function (e) {
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          var m = measure();
+          drag = { id: e.pointerId, startY: e.clientY, startEditor: m.editor, total: m.editor + m.term };
+          handle.setPointerCapture(e.pointerId);
+          document.body.classList.add('dsa-resizing');
+          e.preventDefault();
+        });
+        handle.addEventListener('pointermove', function (e) {
+          if (!drag || e.pointerId !== drag.id) return;
+          setEditorHeight(drag.startEditor + (e.clientY - drag.startY), drag.total);
+        });
+        function endDrag(e) {
+          if (!drag || (e && e.pointerId !== drag.id)) return;
+          if (handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
+          drag = null;
+          document.body.classList.remove('dsa-resizing');
+        }
+        handle.addEventListener('pointerup', endDrag);
+        handle.addEventListener('pointercancel', endDrag);
+        handle.addEventListener('lostpointercapture', endDrag);
+        handle.addEventListener('keydown', function (e) {
+          var m = measure(), total = m.editor + m.term;
+          var step = (e.shiftKey ? 0.05 : 0.02) * total;
+          var next = null;
+          if (e.key === 'ArrowUp') next = m.editor - step;
+          else if (e.key === 'ArrowDown') next = m.editor + step;
+          else if (e.key === 'Home') next = total * DEFAULT_EDITOR_SHARE;
+          else if (e.key === 'End') next = total;
+          if (next === null) return;
+          e.preventDefault();
+          setEditorHeight(next, total);
+        });
+        handle.addEventListener('dblclick', resetRatio);
+      }
+
+      /* --- Load code sent from notes pages --- */
+      var storedCode = sessionStorage.getItem('playground-code');
+      if (storedCode) {
+        editor.value = storedCode;
+        sessionStorage.removeItem('playground-code');
+      }
+    })();
+  </script>
 </body>
+
 </html>
