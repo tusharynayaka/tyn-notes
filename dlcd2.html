@@ -528,7 +528,7 @@ main{max-width:820px;padding:36px 48px 120px;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle, #themeBtn{top:12px;right:76px;}}
 </style>
 <style>
-body.playground-open .app { width:var(--notes-width, 50vw) !important; max-width:var(--notes-width, 50vw) !important; }
+body.playground-open .app { transition:width .1s ease; }
 body.playground-open .sidebar { width:25% !important; flex-shrink:0 !important; }
 body.playground-open main { flex:1 !important; width:auto !important; max-width:none !important; overflow:hidden !important; }
 </style>
@@ -1657,7 +1657,8 @@ R' = R</pre>
           function onMove(ev){
             var w = Math.min(window.innerWidth - 200, Math.max(200, window.innerWidth - ev.clientX));
             panel.style.width = w + 'px';
-            document.body.style.setProperty('--notes-width', (window.innerWidth - w) + 'px');
+            var app = document.querySelector('.app');
+            if(app) app.style.width = (window.innerWidth - w) + 'px';
           }
           function onUp(){
             resizeHandle.classList.remove('active');
@@ -1682,7 +1683,8 @@ R' = R</pre>
       }
       panel.classList.add('open');
       document.body.classList.add('playground-open');
-      document.body.style.setProperty('--notes-width', '50vw');
+      var app = document.querySelector('.app');
+      if(app) app.style.width = '50vw';
     };
     toolbar.appendChild(copyBtn);
     toolbar.appendChild(playgroundBtn);
