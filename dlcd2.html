@@ -1673,6 +1673,9 @@ R' = R</pre>
             setTimeout(function(){ panel.remove(); }, 300);
           }
         });
+      } else {
+        var iframe = panel.querySelector('iframe');
+        if(iframe) iframe.src = iframe.src;
       }
       panel.classList.add('open');
     };

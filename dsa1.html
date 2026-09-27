@@ -2350,6 +2350,9 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
             setTimeout(function(){ panel.remove(); }, 300);
           }
         });
+      } else {
+        var iframe = panel.querySelector('iframe');
+        if(iframe) iframe.src = iframe.src;
       }
       panel.classList.add('open');
     };
