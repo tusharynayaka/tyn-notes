@@ -546,12 +546,6 @@ body.playground-open main{flex:0 0 calc(100vw - var(--playground-width,50vw));wi
 .dsa-playground-controls button:hover{background:var(--accent-soft);}
 .dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
-/* Stdin (fallback mode) */
-.dsa-playground-stdin-wrap{flex:0 0 auto;padding:8px 12px 0;border-top:1px solid var(--border);background:var(--bg-elev);}
-.dsa-playground-stdin-label{display:block;margin:0 0 4px;font:500 11px 'IBM Plex Mono',monospace;color:var(--ink-faint);letter-spacing:.04em;text-transform:uppercase;}
-.dsa-playground-stdin{width:100%;min-height:56px;max-height:120px;resize:vertical;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--code-bg);color:var(--code-ink);font:12px/1.5 'IBM Plex Mono',monospace;tab-size:4;}
-.dsa-playground-stdin:focus{outline:none;box-shadow:0 0 0 2px var(--accent-soft);}
-
 /* Drag Handle */
 .dsa-split-handle{flex:0 0 auto;height:12px;cursor:row-resize;position:relative;touch-action:none;background:var(--bg-elev);z-index:5;}
 .dsa-split-handle::before{content:"";position:absolute;inset:50% 16px auto 16px;height:2px;transform:translateY(-50%);background:var(--border);border-radius:2px;transition:background .15s,opacity .15s;}
@@ -740,12 +734,6 @@ int main() {
           <button id="dsaStop" type="button">Stop</button>
           <button id="dsaReset" type="button">Reset</button>
           <span id="dsaStatus" class="dsa-playground-meta"></span>
-        </div>
-
-        <!-- stdin (fallback mode) -->
-        <div class="dsa-playground-stdin-wrap" id="dsaStdinWrap">
-          <label class="dsa-playground-stdin-label" for="dsaStdin">Program input (stdin)</label>
-          <textarea class="dsa-playground-stdin" id="dsaStdin" spellcheck="false" placeholder="Enter scanf input here — one value per line. Queue demo: 1, 5, 3, 4"></textarea>
         </div>
 
         <!-- drag handle -->
@@ -1767,28 +1755,26 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
 <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js" crossorigin="anonymous"></script>
 <script>
 (function(){
-  var JUDGE0_URL = 'https://ce.judge0.com/submissions?base64_encoded=false&wait=true';
-  var C_LANGUAGE_ID = 50;
+  if(typeof SharedArrayBuffer === 'undefined'){
+    document.getElementById('dsaTerminal').innerHTML = '<div style="padding:20px;color:#eaf3ff;font-family:monospace;">SharedArrayBuffer not available.<br>Serve this page with cross-origin isolation headers (COOP/COEP) for the interactive C playground.</div>';
+    return;
+  }
 
   var editor = document.getElementById('dsaCode');
   var runButton = document.getElementById('dsaRun');
   var stopButton = document.getElementById('dsaStop');
   var resetButton = document.getElementById('dsaReset');
   var statusEl = document.getElementById('dsaStatus');
-  var stdinEl = document.getElementById('dsaStdin');
-  var stdinWrap = document.getElementById('dsaStdinWrap');
   var openButton = document.getElementById('dsaOpen');
   var closeButton = document.getElementById('dsaClose');
   var resizeHandle = document.getElementById('dsaResize');
   var sidebar = document.getElementById('sidebar');
   var menuToggle = document.getElementById('menuToggle');
 
-  var interactive = typeof SharedArrayBuffer !== 'undefined';
-
   var terminal = new Terminal({
     cursorBlink: true,
     convertEol: true,
-    disableStdin: !interactive,
+    disableStdin: false,
     fontFamily: 'IBM Plex Mono, monospace',
     fontSize: 13,
     theme: {
@@ -1816,12 +1802,8 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
     if(statusEl) statusEl.textContent = text || '';
   }
 
-  if(interactive){
-    terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
-    terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
-  } else {
-    terminal.writeln('C Playground ready. Enter stdin input below (one value per line), then press Run.\r\n');
-  }
+  terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
+  terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
   fitTerminal();
 
   openButton.addEventListener('click', function(){
@@ -1862,7 +1844,7 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   });
   window.addEventListener('resize', fitTerminal);
 
-  /* ================= Interactive mode (SharedArrayBuffer) ================= */
+  /* ================= Interactive C Engine (SharedArrayBuffer) ================= */
   var isRunning = false;
   var activeWorker = null;
   var lineInputBuffer = '';
@@ -1877,6 +1859,7 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
       sharedData = new Uint8Array(sharedSab, 16, 4000);
     } catch(e){}
   }
+  initSharedMemory();
 
   function buildWorkerBlobUrl(){
     var workerCode = `
@@ -2088,172 +2071,110 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
     if(reason) status(reason);
   }
 
-  if(interactive){
-    initSharedMemory();
+  terminal.onData(function(data){
+    if(!isRunning) return;
 
-    terminal.onData(function(data){
-      if(!isRunning) return;
+    if(data === '\x03'){
+      terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
+      terminateExecution('stopped');
+      return;
+    }
 
-      if(data === '\x03'){
-        terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
-        terminateExecution('stopped');
-        return;
-      }
-
-      if(data === '\r'){
-        terminal.write('\r\n');
-        var fullLine = lineInputBuffer + '\n';
-        lineInputBuffer = '';
-
-        if(sharedControl && sharedData){
-          var encoder = new TextEncoder();
-          var bytes = encoder.encode(fullLine);
-          sharedData.set(bytes, 0);
-          sharedControl[1] = bytes.length;
-          Atomics.store(sharedControl, 0, 1);
-          Atomics.notify(sharedControl, 0);
-        }
-        return;
-      }
-
-      if(data === '\x7f' || data === '\b'){
-        if(lineInputBuffer.length > 0){
-          lineInputBuffer = lineInputBuffer.slice(0, -1);
-          terminal.write('\b \b');
-        }
-        return;
-      }
-
-      if(data.charCodeAt(0) === 27) return;
-
-      lineInputBuffer += data;
-      terminal.write(data);
-    });
-
-    runButton.addEventListener('click', function(){
-      if(isRunning) return;
-
-      terminal.clear();
-      terminal.write('\x1b[90mCompiling & running in WebAssembly (type inputs directly in terminal)...\x1b[0m\r\n\r\n');
-      status('running');
-      isRunning = true;
-      runButton.disabled = true;
-      runButton.textContent = 'Running';
+    if(data === '\r'){
+      terminal.write('\r\n');
+      var fullLine = lineInputBuffer + '\n';
       lineInputBuffer = '';
 
-      try {
-        var blobUrl = buildWorkerBlobUrl();
-        activeWorker = new Worker(blobUrl);
+      if(sharedControl && sharedData){
+        var encoder = new TextEncoder();
+        var bytes = encoder.encode(fullLine);
+        sharedData.set(bytes, 0);
+        sharedControl[1] = bytes.length;
+        Atomics.store(sharedControl, 0, 1);
+        Atomics.notify(sharedControl, 0);
+      }
+      return;
+    }
 
-        if(sharedSab){
-          activeWorker.postMessage({ type: 'init_sab', sab: sharedSab });
-        }
+    if(data === '\x7f' || data === '\b'){
+      if(lineInputBuffer.length > 0){
+        lineInputBuffer = lineInputBuffer.slice(0, -1);
+        terminal.write('\b \b');
+      }
+      return;
+    }
 
-        activeWorker.onmessage = function(event){
-          var msg = event.data;
-          if(msg.type === 'stdout'){
-            writeLines(msg.data);
-          } else if(msg.type === 'stdin_request'){
-            status('waiting for input');
-            terminal.focus();
-          } else if(msg.type === 'exit'){
-            terminal.write('\r\n\x1b[92m[Program finished successfully (exit code ' + msg.code + ')]\x1b[0m\r\n');
-            terminateExecution('finished');
-          } else if(msg.type === 'error'){
-            terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
-            terminateExecution('error');
-          }
-        };
+    if(data.charCodeAt(0) === 27) return;
 
-        activeWorker.onerror = function(err){
-          terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
+    lineInputBuffer += data;
+    terminal.write(data);
+  });
+
+  runButton.addEventListener('click', function(){
+    if(isRunning) return;
+
+    terminal.clear();
+    terminal.write('\x1b[90mCompiling & running in WebAssembly (type inputs directly in terminal)...\x1b[0m\r\n\r\n');
+    status('running');
+    isRunning = true;
+    runButton.disabled = true;
+    runButton.textContent = 'Running';
+    lineInputBuffer = '';
+
+    try {
+      var blobUrl = buildWorkerBlobUrl();
+      activeWorker = new Worker(blobUrl);
+
+      if(sharedSab){
+        activeWorker.postMessage({ type: 'init_sab', sab: sharedSab });
+      }
+
+      activeWorker.onmessage = function(event){
+        var msg = event.data;
+        if(msg.type === 'stdout'){
+          writeLines(msg.data);
+        } else if(msg.type === 'stdin_request'){
+          status('waiting for input');
+          terminal.focus();
+        } else if(msg.type === 'exit'){
+          terminal.write('\r\n\x1b[92m[Program finished successfully (exit code ' + msg.code + ')]\x1b[0m\r\n');
+          terminateExecution('finished');
+        } else if(msg.type === 'error'){
+          terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
           terminateExecution('error');
-        };
-
-        activeWorker.postMessage({ type: 'run', code: editor.value });
-        terminal.focus();
-      } catch(err){
-        terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
-        terminateExecution('failed');
-      }
-    });
-
-    stopButton.addEventListener('click', function(){
-      if(isRunning){
-        terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
-        terminateExecution('stopped');
-      }
-    });
-
-    resetButton.addEventListener('click', function(){
-      terminateExecution();
-      editor.value = editor.defaultValue;
-      lineInputBuffer = '';
-      terminal.clear();
-      terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
-      terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
-      status('');
-      fitTerminal();
-    });
-  } else {
-    /* ================= Fallback mode (Judge0 API) ================= */
-    if(stdinWrap) stdinWrap.style.display = '';
-
-    runButton.addEventListener('click', async function(){
-      terminal.clear();
-      terminal.writeln('\x1b[90mCompiling & running...\x1b[0m\r\n');
-      status('running');
-      runButton.disabled = true;
-      runButton.textContent = 'Running';
-
-      try {
-        var response = await fetch(JUDGE0_URL, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            language_id: C_LANGUAGE_ID,
-            source_code: editor.value,
-            stdin: stdinEl ? stdinEl.value : ''
-          })
-        });
-
-        var result = await response.json();
-
-        if(result.status && result.status.description){
-          terminal.writeln('\x1b[90m[' + result.status.description + ']\x1b[0m');
         }
+      };
 
-        if(result.stdout){
-          writeLines(result.stdout);
-        }
-        if(result.stderr){
-          terminal.write('\x1b[91m' + result.stderr.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
-        }
-        if(result.compile_output){
-          terminal.write('\x1b[93m' + result.compile_output.replace(/\n/g, '\r\n') + '\x1b[0m\r\n');
-        }
-      } catch(err){
-        terminal.writeln('\x1b[91m[Error]: ' + err.message + '\x1b[0m');
-      }
+      activeWorker.onerror = function(err){
+        terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
+        terminateExecution('error');
+      };
 
-      status('finished');
-      runButton.disabled = false;
-      runButton.textContent = 'Run';
-    });
+      activeWorker.postMessage({ type: 'run', code: editor.value });
+      terminal.focus();
+    } catch(err){
+      terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
+      terminateExecution('failed');
+    }
+  });
 
-    stopButton.addEventListener('click', function(){
-      status('stopped');
-    });
+  stopButton.addEventListener('click', function(){
+    if(isRunning){
+      terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
+      terminateExecution('stopped');
+    }
+  });
 
-    resetButton.addEventListener('click', function(){
-      editor.value = editor.defaultValue;
-      if(stdinEl) stdinEl.value = '';
-      terminal.clear();
-      terminal.writeln('C Playground ready. Enter stdin input below (one value per line), then press Run.\r\n');
-      status('');
-      fitTerminal();
-    });
-  }
+  resetButton.addEventListener('click', function(){
+    terminateExecution();
+    editor.value = editor.defaultValue;
+    lineInputBuffer = '';
+    terminal.clear();
+    terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
+    terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
+    status('');
+    fitTerminal();
+  });
 
   editor.addEventListener('keydown', function(event){
     if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
@@ -2346,6 +2267,55 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
 
     handle.addEventListener('dblclick', resetRatio);
   }
+
+  /* --- Load code sent from notes pages --- */
+  var storedCode = sessionStorage.getItem('playground-code');
+  if(storedCode){
+    editor.value = storedCode;
+    sessionStorage.removeItem('playground-code');
+    document.body.classList.add('playground-open');
+    requestAnimationFrame(fitTerminal);
+  }
+})();
+</script>
+<style>
+.code-block-wrapper{position:relative;margin:0 0 20px;}
+.code-block-wrapper pre{margin:0;border-radius:var(--radius) var(--radius) 0 0;}
+.code-block-toolbar{display:flex;gap:6px;padding:6px 10px;background:var(--bg-elev);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;}
+.code-block-toolbar button{border:1px solid var(--border);border-radius:var(--radius);padding:3px 10px;background:var(--bg);color:var(--ink-soft);font:500 11px 'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s ease;}
+.code-block-toolbar button:hover{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);}
+.code-block-toolbar button.copied{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+</style>
+<script>
+(function(){
+  document.querySelectorAll('pre > code').forEach(function(code){
+    var pre = code.parentElement;
+    if(pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+    var toolbar = document.createElement('div');
+    toolbar.className = 'code-block-toolbar';
+    var copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Copy';
+    copyBtn.onclick = function(){
+      navigator.clipboard.writeText(code.textContent).then(function(){
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
+      });
+    };
+    var playgroundBtn = document.createElement('button');
+    playgroundBtn.textContent = 'Open in Playground';
+    playgroundBtn.onclick = function(){
+      sessionStorage.setItem('playground-code', code.textContent);
+      window.location.href = 'dsa1.html';
+    };
+    toolbar.appendChild(copyBtn);
+    toolbar.appendChild(playgroundBtn);
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(toolbar);
+    wrapper.appendChild(pre);
+  });
 })();
 </script>
 </body>
