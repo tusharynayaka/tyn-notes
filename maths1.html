@@ -135,6 +135,10 @@ mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
   #themeToggle{top:12px;right:76px;}
 }
 </style>
+<style>
+body:has(.playground-panel.open) main { margin-right:50vw !important; max-width:calc(50vw) !important; overflow:hidden !important; }
+body:has(.playground-panel.open) .sidebar { display:none !important; }
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>

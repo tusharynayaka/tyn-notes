@@ -34,9 +34,6 @@
   --code-ink:#eaf3ff;
   --accent:#2c5f52;
   --accent-soft:#dfe9e4;
-  --accent-2:#2c5f52;
-  --accent-2-soft:#dfe9e4;
-  --link:#2c5f52;
   --radius:3px;
 }
 :root[data-theme="dark"]{
@@ -50,8 +47,6 @@
   --code-ink:#eaf3ff;
   --accent:#60a5fa;
   --accent-soft:#10213d;
-  --accent-2:#60a5fa;
-  --accent-2-soft:#10213d;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;overflow:hidden;}
@@ -62,8 +57,6 @@ body{
   font-size:16px;
   line-height:1.65;
 }
-
-/* Playground fills entire page */
 .dsa-playground{
   width:100%;
   height:100vh;
@@ -82,14 +75,8 @@ body{
   border-bottom:1px solid var(--border);
   flex-shrink:0;
 }
-.dsa-playground-title{
-  font:600 13px 'IBM Plex Mono',monospace;
-  color:var(--ink);
-}
-.dsa-playground-meta{
-  font-size:12px;
-  color:var(--ink-faint);
-}
+.dsa-playground-title{font:600 13px 'IBM Plex Mono',monospace;color:var(--ink);}
+.dsa-playground-meta{font-size:12px;color:var(--ink-faint);}
 .dsa-playground-close{
   border:1px solid var(--border);
   border-radius:var(--radius);
@@ -102,96 +89,44 @@ body{
 .dsa-playground-close:hover{background:var(--accent-soft);}
 
 /* Resizable Split */
-.dsa-split{
-  display:flex;
-  flex-direction:column;
-  flex:1 1 auto;
-  min-height:0;
-  overflow:hidden;
-}
-.dsa-split-editor{
-  flex:4 1 0;
-  min-height:120px;
-  display:flex;
-  min-width:0;
-  position:relative;
-}
-.dsa-split-terminal{
-  flex:1 1 0;
-  min-height:90px;
-  display:flex;
-  flex-direction:column;
-  min-width:0;
-  overflow:hidden;
-}
+.dsa-split{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden;}
+.dsa-split-editor{flex:4 1 0;min-height:120px;display:flex;min-width:0;position:relative;}
+.dsa-split-terminal{flex:1 1 0;min-height:90px;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
 
 /* Editor */
 .dsa-playground-editor{
-  flex:1 1 auto;
-  width:100%;
-  min-height:0;
-  resize:none;
-  overflow:auto;
-  box-sizing:border-box;
-  padding:14px;
-  border:0;
-  outline:none;
-  background:var(--code-bg);
-  color:var(--code-ink);
-  font:13px/1.6 'IBM Plex Mono',monospace;
-  tab-size:4;
+  flex:1 1 auto;width:100%;min-height:0;resize:none;overflow:auto;
+  box-sizing:border-box;padding:14px;border:0;outline:none;
+  background:var(--code-bg);color:var(--code-ink);
+  font:13px/1.6 'IBM Plex Mono',monospace;tab-size:4;
 }
 .dsa-playground-editor:focus{box-shadow:inset 0 0 0 2px var(--accent);}
 
 /* Controls Toolbar */
 .dsa-playground-controls{
-  flex:0 0 auto;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 12px;
-  background:var(--bg-elev);
-  border-top:1px solid var(--border);
-  border-bottom:1px solid var(--border);
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  padding:8px 12px;background:var(--bg-elev);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
 }
 .dsa-playground-controls button{
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:5px 10px;
-  background:var(--bg);
-  color:var(--ink);
-  font:500 12px 'IBM Plex Mono',monospace;
-  cursor:pointer;
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:5px 10px;background:var(--bg);color:var(--ink);
+  font:500 12px 'IBM Plex Mono',monospace;cursor:pointer;
 }
 .dsa-playground-controls button:hover{background:var(--accent-soft);}
-.dsa-playground-controls .run{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:var(--bg);
-}
+.dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 
 /* Drag Handle */
 .dsa-split-handle{
-  flex:0 0 auto;
-  height:12px;
-  cursor:row-resize;
-  position:relative;
-  touch-action:none;
-  background:var(--bg-elev);
-  z-index:5;
+  flex:0 0 auto;height:12px;cursor:row-resize;
+  position:relative;touch-action:none;background:var(--bg-elev);z-index:5;
 }
 .dsa-split-handle::before{
-  content:"";
-  position:absolute;
-  inset:50% 16px auto 16px;
-  height:2px;
-  transform:translateY(-50%);
-  background:var(--border);
-  border-radius:2px;
+  content:"";position:absolute;inset:50% 16px auto 16px;height:2px;
+  transform:translateY(-50%);background:var(--border);border-radius:2px;
   transition:background .15s,opacity .15s;
 }
-.dsa-split-handle:hover::before,
-.dsa-split-handle:focus-visible::before{background:var(--accent);}
+.dsa-split-handle:hover::before,.dsa-split-handle:focus-visible::before{background:var(--accent);}
 .dsa-split-handle:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
 
 /* Global cursor & selection during drag */
@@ -199,31 +134,18 @@ body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:n
 
 /* Terminal inside split */
 .dsa-split-terminal .dsa-terminal{
-  flex:1 1 auto;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
-  height:100%;
-  border-top:0;
-  background:var(--code-bg);
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+  height:100%;border-top:0;background:var(--code-bg);
 }
 .dsa-split-terminal .dsa-terminal-head{
-  flex:0 0 auto;
-  display:flex;
-  justify-content:space-between;
-  padding:6px 12px;
-  color:var(--ink-faint);
-  font:10px 'IBM Plex Mono',monospace;
-  letter-spacing:.08em;
-  text-transform:uppercase;
+  flex:0 0 auto;display:flex;justify-content:space-between;
+  padding:6px 12px;color:var(--ink-faint);
+  font:10px 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;
   border-bottom:1px solid rgba(255,255,255,.06);
 }
 .dsa-split-terminal .dsa-terminal-screen{
-  flex:1 1 auto;
-  min-height:0;
-  padding:8px 10px;
-  background:#080d17;
-  overflow:hidden;
+  flex:1 1 auto;min-height:0;padding:8px 10px;
+  background:#080d17;overflow:hidden;
 }
 .dsa-split-terminal .dsa-terminal-screen .xterm{height:100%;padding:4px;}
 .dsa-split-terminal .dsa-terminal-screen .xterm-viewport{overflow-y:auto !important;}
@@ -267,11 +189,8 @@ int main() {
     </div>
 
     <div class="dsa-split-handle" id="dsaSplitHandle"
-         role="separator"
-         aria-orientation="horizontal"
-         aria-label="Resize code editor and terminal"
-         title="Drag to resize"
-         tabindex="0"></div>
+         role="separator" aria-orientation="horizontal"
+         aria-label="Resize code editor and terminal" title="Drag to resize" tabindex="0"></div>
 
     <div class="dsa-split-pane dsa-split-terminal">
       <div class="dsa-terminal">
@@ -286,10 +205,12 @@ int main() {
 
 <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/traceur@0.0.111/bin/traceur-runtime.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/JSCPP@latest/dist/JSCPP.es5.min.js" crossorigin="anonymous"></script>
 <script>
 (function(){
-  if(typeof SharedArrayBuffer === 'undefined'){
-    document.getElementById('dsaTerminal').innerHTML = '<div style="padding:20px;color:#eaf3ff;font-family:monospace;">SharedArrayBuffer not available.<br>Serve this page with cross-origin isolation headers (COOP/COEP) for the interactive C playground.</div>';
+  if(typeof JSCPP === 'undefined'){
+    document.getElementById('dsaTerminal').innerHTML = '<div style="padding:20px;color:#eaf3ff;font-family:monospace;">JSCPP failed to load. Check your internet connection.</div>';
     return;
   }
 
@@ -301,38 +222,21 @@ int main() {
   var closeButton = document.getElementById('dsaClose');
 
   var terminal = new Terminal({
-    cursorBlink: true,
-    convertEol: true,
-    disableStdin: false,
-    fontFamily: 'IBM Plex Mono, monospace',
-    fontSize: 13,
-    theme: {
-      background: '#080d17',
-      foreground: '#eaf3ff',
-      cursor: '#60a5fa',
-      selectionBackground: '#1e3a5f'
-    }
+    cursorBlink: true, convertEol: true, disableStdin: false,
+    fontFamily: 'IBM Plex Mono, monospace', fontSize: 13,
+    theme: { background: '#080d17', foreground: '#eaf3ff', cursor: '#60a5fa', selectionBackground: '#1e3a5f' }
   });
 
   var fitAddon = new FitAddon.FitAddon();
   terminal.loadAddon(fitAddon);
   terminal.open(document.getElementById('dsaTerminal'));
 
-  function fitTerminal(){
-    try { fitAddon.fit(); } catch(e){}
-  }
+  function fitTerminal(){ try { fitAddon.fit(); } catch(e){} }
+  function writeLines(text){ if(!text) return; terminal.write(String(text).replace(/\n/g, '\r\n')); }
+  function status(text){ if(statusEl) statusEl.textContent = text || ''; }
 
-  function writeLines(text){
-    if(!text) return;
-    terminal.write(String(text).replace(/\n/g, '\r\n'));
-  }
-
-  function status(text){
-    if(statusEl) statusEl.textContent = text || '';
-  }
-
-  terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
-  terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
+  terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
+  terminal.writeln('\x1b[90mType your input below, then press Enter.\x1b[0m\r\n');
   fitTerminal();
 
   closeButton.addEventListener('click', function(){
@@ -341,258 +245,25 @@ int main() {
     }
   });
 
-  /* ================= Interactive C Engine (SharedArrayBuffer) ================= */
   var isRunning = false;
-  var activeWorker = null;
-  var lineInputBuffer = '';
-  var sharedSab = null;
-  var sharedControl = null;
-  var sharedData = null;
-
-  function initSharedMemory(){
-    try {
-      sharedSab = new SharedArrayBuffer(4096);
-      sharedControl = new Int32Array(sharedSab, 0, 4);
-      sharedData = new Uint8Array(sharedSab, 16, 4000);
-    } catch(e){}
-  }
-  initSharedMemory();
-
-  function buildWorkerBlobUrl(){
-    var workerCode = `
-      self.importScripts(
-        'https://cdn.jsdelivr.net/npm/traceur@0.0.111/bin/traceur-runtime.js',
-        'https://cdn.jsdelivr.net/npm/JSCPP@latest/dist/JSCPP.es5.min.js'
-      );
-
-      var sharedControl = null;
-      var sharedData = null;
-      var stdinBuffer = '';
-
-      self.onmessage = function(e){
-        var msg = e.data;
-        if(msg.type === 'init_sab'){
-          sharedControl = new Int32Array(msg.sab, 0, 4);
-          sharedData = new Uint8Array(msg.sab, 16, 4000);
-        } else if(msg.type === 'run'){
-          runCode(msg.code);
-        } else if(msg.type === 'stdin_data'){
-          stdinBuffer += msg.data;
-        }
-      };
-
-      function readStdinSync(){
-        if(sharedControl){
-          while(stdinBuffer.trim().length === 0){
-            self.postMessage({ type: 'stdin_request' });
-            Atomics.wait(sharedControl, 0, 0);
-            while(true){
-              var len = sharedControl[1];
-              Atomics.store(sharedControl, 0, 0);
-              var bytes = sharedData.slice(0, len);
-              stdinBuffer += new TextDecoder().decode(bytes);
-              if(Atomics.load(sharedControl, 0) === 0) break;
-            }
-          }
-        }
-      }
-
-      function runCode(code){
-        try {
-          var custom_stdio = {
-            load: function(rt){
-              var char_pointer = rt.normalPointerType(rt.charTypeLiteral);
-
-              var _printf = function(rt, _this, formatVar){
-                var params = Array.prototype.slice.call(arguments, 3);
-                var formatStr = rt.getStringFromCharArray(formatVar);
-                var paramIdx = 0;
-                var out = '';
-                for(var i = 0; i < formatStr.length; i++){
-                  if(formatStr[i] === '%' && i + 1 < formatStr.length){
-                    var spec = formatStr[i + 1];
-                    if(spec === '%'){ out += '%'; i++; continue; }
-                    var p = params[paramIdx++];
-                    if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
-                      out += String(p && p.v != null ? p.v : 0);
-                    } else if(spec === 'f'){
-                      out += String(p && p.v != null ? p.v : 0);
-                    } else if(spec === 's'){
-                      out += p ? (rt.isStringType(p.t) || rt.isArrayType(p.t) || rt.isNormalPointerType(p.t) ? rt.getStringFromCharArray(p) : String(p.v)) : '';
-                    } else if(spec === 'c'){
-                      out += p ? (typeof p.v === 'number' ? String.fromCharCode(p.v) : String(p.v)) : '';
-                    } else if(spec === 'p'){
-                      out += '0x' + (p && p.v != null ? p.v.toString(16) : '0');
-                    } else {
-                      out += '%' + spec;
-                    }
-                    i++;
-                  } else {
-                    out += formatStr[i];
-                  }
-                }
-                self.postMessage({ type: 'stdout', data: out });
-                return rt.val(rt.intTypeLiteral, out.length);
-              };
-
-              var _scanf = function(rt, _this, formatVar){
-                var args = Array.prototype.slice.call(arguments, 3);
-                var formatStr = rt.getStringFromCharArray(formatVar);
-                var re = /%([dicsfuxX])/g;
-                var match;
-                var argIdx = 0;
-                var matchedCount = 0;
-
-                while((match = re.exec(formatStr)) !== null && argIdx < args.length){
-                  readStdinSync();
-                  var trimmed = stdinBuffer.trimStart();
-                  var spec = match[1];
-                  var targetPtr = args[argIdx++];
-
-                  if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
-                    var numMatch = trimmed.match(/^([-+]?[0-9]+)/);
-                    if(numMatch){
-                      var num = parseInt(numMatch[1], 10);
-                      stdinBuffer = trimmed.slice(numMatch[1].length);
-                      if(targetPtr && targetPtr.v && targetPtr.v.target){
-                        targetPtr.v.target.v = num;
-                      }
-                      matchedCount++;
-                    } else { break; }
-                  } else if(spec === 'f'){
-                    var floatMatch = trimmed.match(/^([-+]?[0-9]*\\.?[0-9]+)/);
-                    if(floatMatch){
-                      var fnum = parseFloat(floatMatch[1]);
-                      stdinBuffer = trimmed.slice(floatMatch[1].length);
-                      if(targetPtr && targetPtr.v && targetPtr.v.target){
-                        targetPtr.v.target.v = fnum;
-                      }
-                      matchedCount++;
-                    } else { break; }
-                  } else if(spec === 's'){
-                    var strMatch = trimmed.match(/^(\\S+)/);
-                    if(strMatch){
-                      var strVal = strMatch[1];
-                      stdinBuffer = trimmed.slice(strVal.length);
-                      if(targetPtr && targetPtr.v && targetPtr.v.target){
-                        var arr = rt.makeCharArrayFromString(strVal);
-                        for(var j = 0; j < arr.v.target.length; j++){
-                          targetPtr.v.target[j] = arr.v.target[j];
-                        }
-                      }
-                      matchedCount++;
-                    } else { break; }
-                  } else if(spec === 'c'){
-                    if(stdinBuffer.length > 0){
-                      var ch = stdinBuffer[0];
-                      stdinBuffer = stdinBuffer.slice(1);
-                      if(targetPtr && targetPtr.v && targetPtr.v.target){
-                        targetPtr.v.target.v = ch.charCodeAt(0);
-                      }
-                      matchedCount++;
-                    }
-                  }
-                }
-                return rt.val(rt.intTypeLiteral, matchedCount);
-              };
-
-              var _getchar = function(rt){
-                while(stdinBuffer.length === 0){ readStdinSync(); }
-                var code = stdinBuffer.charCodeAt(0);
-                stdinBuffer = stdinBuffer.slice(1);
-                return rt.val(rt.intTypeLiteral, code);
-              };
-
-              var _putchar = function(rt, _this, ch){
-                var s = String.fromCharCode(ch.v);
-                self.postMessage({ type: 'stdout', data: s });
-                return ch;
-              };
-
-              var _puts = function(rt, _this, strVar){
-                var s = rt.getStringFromCharArray(strVar);
-                self.postMessage({ type: 'stdout', data: s + '\\n' });
-                return rt.val(rt.intTypeLiteral, s.length + 1);
-              };
-
-              var _fflush = function(rt){
-                return rt.val(rt.intTypeLiteral, 0);
-              };
-
-              rt.regFunc(_printf, 'global', 'printf', [char_pointer, '?'], rt.intTypeLiteral);
-              rt.regFunc(_scanf, 'global', 'scanf', [char_pointer, '?'], rt.intTypeLiteral);
-              rt.regFunc(_getchar, 'global', 'getchar', [], rt.intTypeLiteral);
-              rt.regFunc(_putchar, 'global', 'putchar', [rt.intTypeLiteral], rt.intTypeLiteral);
-              rt.regFunc(_puts, 'global', 'puts', [char_pointer], rt.intTypeLiteral);
-              rt.regFunc(_fflush, 'global', 'fflush', ['?'], rt.intTypeLiteral);
-            }
-          };
-
-          var myDebugger = JSCPP.run(code, '', {
-            debug: true,
-            includes: {
-              'stdio.h': custom_stdio,
-              'cstdio': custom_stdio
-            },
-            stdio: {
-              write: function(s){
-                self.postMessage({ type: 'stdout', data: s });
-              }
-            }
-          });
-
-          var done = false;
-          while(!done){
-            done = myDebugger.next() || myDebugger.done;
-          }
-
-          self.postMessage({ type: 'exit', code: 0 });
-        } catch(err){
-          self.postMessage({ type: 'error', message: err.message || String(err) });
-        }
-      }
-    `;
-
-    var blob = new Blob([workerCode], { type: 'application/javascript' });
-    return URL.createObjectURL(blob);
-  }
-
-  function terminateExecution(reason){
-    if(activeWorker){
-      try { activeWorker.terminate(); } catch(e){}
-      activeWorker = null;
-    }
-    isRunning = false;
-    runButton.disabled = false;
-    runButton.textContent = 'Run';
-    if(reason) status(reason);
-  }
+  var stdinBuffer = '';
 
   terminal.onData(function(data){
     if(!isRunning) return;
-
     if(data === '\x03'){
       terminal.write('^C\r\n\x1b[93m[Process stopped by user]\x1b[0m\r\n');
-      terminateExecution('stopped');
+      isRunning = false;
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+      status('stopped');
       return;
     }
-
     if(data === '\r'){
       terminal.write('\r\n');
-      var fullLine = lineInputBuffer + '\n';
+      stdinBuffer += lineInputBuffer + '\n';
       lineInputBuffer = '';
-
-      if(sharedControl && sharedData){
-        var encoder = new TextEncoder();
-        var bytes = encoder.encode(fullLine);
-        sharedData.set(bytes, 0);
-        sharedControl[1] = bytes.length;
-        Atomics.store(sharedControl, 0, 1);
-        Atomics.notify(sharedControl, 0);
-      }
       return;
     }
-
     if(data === '\x7f' || data === '\b'){
       if(lineInputBuffer.length > 0){
         lineInputBuffer = lineInputBuffer.slice(0, -1);
@@ -600,75 +271,183 @@ int main() {
       }
       return;
     }
-
     if(data.charCodeAt(0) === 27) return;
-
     lineInputBuffer += data;
     terminal.write(data);
   });
 
+  var lineInputBuffer = '';
+
   runButton.addEventListener('click', function(){
     if(isRunning) return;
-
     terminal.clear();
-    terminal.write('\x1b[90mCompiling & running in WebAssembly (type inputs directly in terminal)...\x1b[0m\r\n\r\n');
+    terminal.write('\x1b[90mCompiling & running...\x1b[0m\r\n\r\n');
     status('running');
     isRunning = true;
     runButton.disabled = true;
     runButton.textContent = 'Running';
+    stdinBuffer = '';
     lineInputBuffer = '';
 
     try {
-      var blobUrl = buildWorkerBlobUrl();
-      activeWorker = new Worker(blobUrl);
+      var custom_stdio = {
+        load: function(rt){
+          var char_pointer = rt.normalPointerType(rt.charTypeLiteral);
 
-      if(sharedSab){
-        activeWorker.postMessage({ type: 'init_sab', sab: sharedSab });
-      }
+          var _printf = function(rt, _this, formatVar){
+            var params = Array.prototype.slice.call(arguments, 3);
+            var formatStr = rt.getStringFromCharArray(formatVar);
+            var paramIdx = 0;
+            var out = '';
+            for(var i = 0; i < formatStr.length; i++){
+              if(formatStr[i] === '%' && i + 1 < formatStr.length){
+                var spec = formatStr[i + 1];
+                if(spec === '%'){ out += '%'; i++; continue; }
+                var p = params[paramIdx++];
+                if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
+                  out += String(p && p.v != null ? p.v : 0);
+                } else if(spec === 'f'){
+                  out += String(p && p.v != null ? p.v : 0);
+                } else if(spec === 's'){
+                  out += p ? (rt.isStringType(p.t) || rt.isArrayType(p.t) || rt.isNormalPointerType(p.t) ? rt.getStringFromCharArray(p) : String(p.v)) : '';
+                } else if(spec === 'c'){
+                  out += p ? (typeof p.v === 'number' ? String.fromCharCode(p.v) : String(p.v)) : '';
+                } else if(spec === 'p'){
+                  out += '0x' + (p && p.v != null ? p.v.toString(16) : '0');
+                } else { out += '%' + spec; }
+                i++;
+              } else { out += formatStr[i]; }
+            }
+            writeLines(out);
+            return rt.val(rt.intTypeLiteral, out.length);
+          };
 
-      activeWorker.onmessage = function(event){
-        var msg = event.data;
-        if(msg.type === 'stdout'){
-          writeLines(msg.data);
-        } else if(msg.type === 'stdin_request'){
-          status('waiting for input');
-          terminal.focus();
-        } else if(msg.type === 'exit'){
-          terminal.write('\r\n\x1b[92m[Program finished successfully (exit code ' + msg.code + ')]\x1b[0m\r\n');
-          terminateExecution('finished');
-        } else if(msg.type === 'error'){
-          terminal.write('\r\n\x1b[91m[Error]: ' + msg.message + '\x1b[0m\r\n');
-          terminateExecution('error');
+          var _scanf = function(rt, _this, formatVar){
+            var args = Array.prototype.slice.call(arguments, 3);
+            var formatStr = rt.getStringFromCharArray(formatVar);
+            var re = /%([dicsfuxX])/g;
+            var match;
+            var argIdx = 0;
+            var matchedCount = 0;
+
+            while((match = re.exec(formatStr)) !== null && argIdx < args.length){
+              while(stdinBuffer.trim().length === 0){
+                status('waiting for input');
+                return rt.val(rt.intTypeLiteral, matchedCount);
+              }
+              var trimmed = stdinBuffer.trimStart();
+              var spec = match[1];
+              var targetPtr = args[argIdx++];
+
+              if(spec === 'd' || spec === 'i' || spec === 'u' || spec === 'x' || spec === 'X'){
+                var numMatch = trimmed.match(/^([-+]?[0-9]+)/);
+                if(numMatch){
+                  var num = parseInt(numMatch[1], 10);
+                  stdinBuffer = trimmed.slice(numMatch[1].length);
+                  if(targetPtr && targetPtr.v && targetPtr.v.target){ targetPtr.v.target.v = num; }
+                  matchedCount++;
+                } else { break; }
+              } else if(spec === 'f'){
+                var floatMatch = trimmed.match(/^([-+]?[0-9]*\.?[0-9]+)/);
+                if(floatMatch){
+                  var fnum = parseFloat(floatMatch[1]);
+                  stdinBuffer = trimmed.slice(floatMatch[1].length);
+                  if(targetPtr && targetPtr.v && targetPtr.v.target){ targetPtr.v.target.v = fnum; }
+                  matchedCount++;
+                } else { break; }
+              } else if(spec === 's'){
+                var strMatch = trimmed.match(/^(\S+)/);
+                if(strMatch){
+                  var strVal = strMatch[1];
+                  stdinBuffer = trimmed.slice(strVal.length);
+                  if(targetPtr && targetPtr.v && targetPtr.v.target){
+                    var arr = rt.makeCharArrayFromString(strVal);
+                    for(var j = 0; j < arr.v.target.length; j++){ targetPtr.v.target[j] = arr.v.target[j]; }
+                  }
+                  matchedCount++;
+                } else { break; }
+              } else if(spec === 'c'){
+                if(stdinBuffer.length > 0){
+                  var ch = stdinBuffer[0];
+                  stdinBuffer = stdinBuffer.slice(1);
+                  if(targetPtr && targetPtr.v && targetPtr.v.target){ targetPtr.v.target.v = ch.charCodeAt(0); }
+                  matchedCount++;
+                }
+              }
+            }
+            return rt.val(rt.intTypeLiteral, matchedCount);
+          };
+
+          var _getchar = function(rt){
+            while(stdinBuffer.length === 0){ return rt.val(rt.intTypeLiteral, -1); }
+            var code = stdinBuffer.charCodeAt(0);
+            stdinBuffer = stdinBuffer.slice(1);
+            return rt.val(rt.intTypeLiteral, code);
+          };
+
+          var _putchar = function(rt, _this, ch){
+            writeLines(String.fromCharCode(ch.v));
+            return ch;
+          };
+
+          var _puts = function(rt, _this, strVar){
+            var s = rt.getStringFromCharArray(strVar);
+            writeLines(s + '\n');
+            return rt.val(rt.intTypeLiteral, s.length + 1);
+          };
+
+          var _fflush = function(rt){ return rt.val(rt.intTypeLiteral, 0); };
+
+          rt.regFunc(_printf, 'global', 'printf', [char_pointer, '?'], rt.intTypeLiteral);
+          rt.regFunc(_scanf, 'global', 'scanf', [char_pointer, '?'], rt.intTypeLiteral);
+          rt.regFunc(_getchar, 'global', 'getchar', [], rt.intTypeLiteral);
+          rt.regFunc(_putchar, 'global', 'putchar', [rt.intTypeLiteral], rt.intTypeLiteral);
+          rt.regFunc(_puts, 'global', 'puts', [char_pointer], rt.intTypeLiteral);
+          rt.regFunc(_fflush, 'global', 'fflush', ['?'], rt.intTypeLiteral);
         }
       };
 
-      activeWorker.onerror = function(err){
-        terminal.write('\r\n\x1b[91m[Runtime Error]: ' + (err.message || 'Worker execution failed') + '\x1b[0m\r\n');
-        terminateExecution('error');
-      };
+      var myDebugger = JSCPP.run(editor.value, '', {
+        debug: true,
+        includes: { 'stdio.h': custom_stdio, 'cstdio': custom_stdio },
+        stdio: { write: function(s){ writeLines(s); } }
+      });
 
-      activeWorker.postMessage({ type: 'run', code: editor.value });
-      terminal.focus();
+      var done = false;
+      while(!done){ done = myDebugger.next() || myDebugger.done; }
+
+      terminal.write('\r\n\x1b[92m[Program finished successfully]\x1b[0m\r\n');
+      isRunning = false;
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+      status('finished');
     } catch(err){
-      terminal.write('\r\n\x1b[91m[Failed to launch]: ' + err.message + '\x1b[0m\r\n');
-      terminateExecution('failed');
+      terminal.write('\r\n\x1b[91m[Error]: ' + err.message + '\x1b[0m\r\n');
+      isRunning = false;
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+      status('error');
     }
   });
 
   stopButton.addEventListener('click', function(){
     if(isRunning){
       terminal.write('\r\n\x1b[93m[Process stopped]\x1b[0m\r\n');
-      terminateExecution('stopped');
+      isRunning = false;
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+      status('stopped');
     }
   });
 
   resetButton.addEventListener('click', function(){
-    terminateExecution();
+    isRunning = false;
+    runButton.disabled = false;
+    runButton.textContent = 'Run';
     editor.value = editor.defaultValue;
-    lineInputBuffer = '';
     terminal.clear();
-    terminal.writeln('\x1b[36m=== C Interactive Terminal (In-Browser WebAssembly) ===\x1b[0m');
-    terminal.writeln('\x1b[90mPress \x1b[1;37mRun\x1b[0;90m to start, then type your inputs directly in this terminal.\x1b[0m\r\n');
+    terminal.writeln('\x1b[36m=== C Interactive Terminal ===\x1b[0m');
+    terminal.writeln('\x1b[90mType your input below, then press Enter.\x1b[0m\r\n');
     status('');
     fitTerminal();
   });
@@ -684,73 +463,44 @@ int main() {
     var handle = document.getElementById('dsaSplitHandle');
     var editorPane = split.querySelector('.dsa-split-editor');
     var termPane = split.querySelector('.dsa-split-terminal');
-
-    var MIN_EDITOR = 120;
-    var MIN_TERM = 90;
-    var DEFAULT_EDITOR_SHARE = 0.75;
+    var MIN_EDITOR = 120, MIN_TERM = 90, DEFAULT_EDITOR_SHARE = 0.75;
 
     function setEditorHeight(px, total){
       if(total <= 0) return;
       var maxEditor = Math.max(MIN_EDITOR, total - MIN_TERM);
       var h = Math.min(Math.max(px, MIN_EDITOR), maxEditor);
-      var ratio = h / total;
-      editorPane.style.flexGrow = String(ratio);
-      termPane.style.flexGrow = String(1 - ratio);
+      editorPane.style.flexGrow = String(h / total);
+      termPane.style.flexGrow = String(1 - h / total);
       fitTerminal();
     }
-
-    function measure(){
-      return {
-        editor: editorPane.getBoundingClientRect().height,
-        term: termPane.getBoundingClientRect().height
-      };
-    }
-
-    function totalSpace(){
-      var m = measure();
-      return m.editor + m.term;
-    }
-
-    function resetRatio(){
-      var total = totalSpace();
-      setEditorHeight(total * DEFAULT_EDITOR_SHARE, total);
-    }
+    function measure(){ return { editor: editorPane.getBoundingClientRect().height, term: termPane.getBoundingClientRect().height }; }
+    function totalSpace(){ var m = measure(); return m.editor + m.term; }
+    function resetRatio(){ var total = totalSpace(); setEditorHeight(total * DEFAULT_EDITOR_SHARE, total); }
 
     var drag = null;
     handle.addEventListener('pointerdown', function(e){
       if(e.pointerType === 'mouse' && e.button !== 0) return;
       var m = measure();
-      drag = {
-        id: e.pointerId,
-        startY: e.clientY,
-        startEditor: m.editor,
-        total: m.editor + m.term
-      };
+      drag = { id: e.pointerId, startY: e.clientY, startEditor: m.editor, total: m.editor + m.term };
       handle.setPointerCapture(e.pointerId);
       document.body.classList.add('dsa-resizing');
       e.preventDefault();
     });
-
     handle.addEventListener('pointermove', function(e){
       if(!drag || e.pointerId !== drag.id) return;
-      var delta = e.clientY - drag.startY;
-      setEditorHeight(drag.startEditor + delta, drag.total);
+      setEditorHeight(drag.startEditor + (e.clientY - drag.startY), drag.total);
     });
-
     function endDrag(e){
       if(!drag || (e && e.pointerId !== drag.id)) return;
       if(handle.hasPointerCapture(drag.id)) handle.releasePointerCapture(drag.id);
       drag = null;
       document.body.classList.remove('dsa-resizing');
     }
-
     handle.addEventListener('pointerup', endDrag);
     handle.addEventListener('pointercancel', endDrag);
     handle.addEventListener('lostpointercapture', endDrag);
-
     handle.addEventListener('keydown', function(e){
-      var m = measure();
-      var total = m.editor + m.term;
+      var m = measure(), total = m.editor + m.term;
       var step = (e.shiftKey ? 0.05 : 0.02) * total;
       var next = null;
       if(e.key === 'ArrowUp') next = m.editor - step;
@@ -761,7 +511,6 @@ int main() {
       e.preventDefault();
       setEditorHeight(next, total);
     });
-
     handle.addEventListener('dblclick', resetRatio);
   }
 

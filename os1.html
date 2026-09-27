@@ -340,6 +340,10 @@ html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--te
 .home-link{top:18px;bottom:auto;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
+<style>
+body:has(.playground-panel.open) main { margin-right:50vw !important; max-width:calc(50vw) !important; overflow:hidden !important; }
+body:has(.playground-panel.open) .sidebar { display:none !important; }
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>

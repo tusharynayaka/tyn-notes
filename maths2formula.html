@@ -95,6 +95,10 @@ th { background: var(--surface); color: var(--text); }
 #themeToggle svg{width:16px;height:16px;}
 @media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
 </style>
+<style>
+body:has(.playground-panel.open) main { margin-right:50vw !important; max-width:calc(50vw) !important; overflow:hidden !important; }
+body:has(.playground-panel.open) .sidebar { display:none !important; }
+</style>
 </head>
 <body>
 <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
