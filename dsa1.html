@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/coi-serviceworker/coi-serviceworker.min.js"></script>
 <script>
   (function() {
     var root = document.documentElement;
@@ -714,7 +715,7 @@ body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:n
         <div class="dsa-split-pane dsa-split-editor">
           <textarea class="dsa-playground-editor" id="dsaCode" spellcheck="false">#include &lt;stdio.h&gt;
 
-int main(void) {
+int main() {
   int queue[5], rear = -1, front = -1, count = 0, value, choice;
   while (1) {
     printf("\n1. Enqueue\n2. Dequeue\n3. Display\n4. Exit\nEnter your choice: "); fflush(stdout);
@@ -2142,6 +2143,18 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
 
   runButton.addEventListener('click', function(){
     if(isRunning) return;
+
+    if(!hasSharedBuffer || typeof SharedArrayBuffer === 'undefined'){
+      terminal.clear();
+      terminal.writeln('\x1b[93m[Cross-Origin Isolation Setup]\x1b[0m');
+      terminal.writeln('\x1b[90mActivating ServiceWorker to enable interactive terminal keyboard access...\x1b[0m');
+      terminal.writeln('\x1b[36mReloading page to activate interactive terminal mode...\x1b[0m\r\n');
+      status('activating');
+      setTimeout(function(){
+        window.location.reload();
+      }, 900);
+      return;
+    }
 
     terminal.clear();
     terminal.write('\x1b[90mCompiling & running in WebAssembly (Type inputs directly in terminal)...\x1b[0m\r\n\r\n');
