@@ -546,6 +546,10 @@ body.playground-open main{flex:0 0 calc(100vw - var(--playground-width,50vw));wi
 .dsa-playground-controls button:hover{background:var(--accent-soft);}
 .dsa-playground-controls .run{background:var(--accent);border-color:var(--accent);color:var(--bg);}
 .dsa-playground-controls .run:hover{filter:brightness(1.08);}
+.dsa-playground-stdin-wrap{flex:0 0 auto;padding:8px 12px 0;border-top:1px solid var(--border);background:var(--bg-elev);}
+.dsa-playground-stdin-label{display:block;margin:0 0 4px;font:500 11px 'IBM Plex Mono',monospace;color:var(--ink-faint);letter-spacing:.04em;text-transform:uppercase;}
+.dsa-playground-stdin{width:100%;min-height:56px;max-height:120px;resize:vertical;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--code-bg);color:var(--code-ink);font:12px/1.5 'IBM Plex Mono',monospace;tab-size:4;}
+.dsa-playground-stdin:focus{outline:none;box-shadow:0 0 0 2px var(--accent-soft);}
 
 /* Drag Handle */
 .dsa-split-handle{flex:0 0 auto;height:12px;cursor:row-resize;position:relative;touch-action:none;background:var(--bg-elev);z-index:5;}
@@ -704,7 +708,7 @@ body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:n
     <section class="dsa-playground" id="dsaPlayground" aria-labelledby="playground-title">
       <div class="dsa-playground-resize" id="dsaResize" role="separator" aria-label="Resize playground"></div>
       <div class="dsa-playground-head">
-        <span class="dsa-playground-title" id="playground-title">C playground · local GCC</span>
+        <span class="dsa-playground-title" id="playground-title">C playground · GCC via Judge0</span>
         <button class="dsa-playground-close" id="dsaClose" type="button">Close</button>
       </div>
 
@@ -737,6 +741,14 @@ int main(void) {
           <span id="dsaStatus" class="dsa-playground-meta"></span>
         </div>
 
+        <div class="dsa-playground-stdin-wrap">
+          <label class="dsa-playground-stdin-label" for="dsaStdin">Program input (stdin)</label>
+          <textarea class="dsa-playground-stdin" id="dsaStdin" spellcheck="false" placeholder="Enter scanf input here — one value per line. Queue demo: 1, 5, 3, 4">1
+5
+3
+4</textarea>
+        </div>
+
         <!-- drag handle -->
         <div class="dsa-split-handle" id="dsaSplitHandle"
              role="separator"
@@ -749,7 +761,7 @@ int main(void) {
         <div class="dsa-split-pane dsa-split-terminal">
           <div class="dsa-terminal">
             <div class="dsa-terminal-head">
-              <span>Terminal · PTY</span><span>type directly below</span>
+              <span>Output</span><span>GCC 13 · Judge0 CE</span>
             </div>
             <div class="dsa-terminal-screen" id="dsaTerminal" aria-label="C terminal"></div>
           </div>
@@ -1752,203 +1764,45 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
   });
 })();
 </script>
-<script>
-(function(){
-  return;
-  var editor = document.getElementById('dsaCode');
-  var runButton = document.getElementById('dsaRun');
-  var sendButton = document.getElementById('dsaSend');
-  var resetButton = document.getElementById('dsaReset');
-  var stdin = document.getElementById('dsaStdin');
-  var output = document.getElementById('dsaOutput');
-  var openButton = document.getElementById('dsaOpen');
-  var closeButton = document.getElementById('dsaClose');
-  var resizeHandle = document.getElementById('dsaResize');
-  var initialCode = editor.value;
-  var running = false;
-  var pendingInput = null;
-  var inputQueue = [];
-
-  var sidebar = document.getElementById('sidebar');
-  var menuToggle = document.getElementById('menuToggle');
-  openButton.addEventListener('click', function(){
-    document.body.classList.add('playground-open');
-    sidebar.classList.remove('open');
-    sidebar.classList.add('closed');
-  });
-  closeButton.addEventListener('click', function(){ stopProgram(); document.body.classList.remove('playground-open'); });
-  document.addEventListener('keydown', function(event){
-    if(event.key === 'Escape'){ stopProgram(); document.body.classList.remove('playground-open'); }
-  });
-
-  menuToggle.addEventListener('click', function(){
-    if(window.matchMedia('(max-width:760px)').matches){
-      sidebar.classList.toggle('open');
-    } else {
-      sidebar.classList.toggle('closed');
-    }
-  });
-
-  resizeHandle.addEventListener('pointerdown', function(event){
-    if(window.matchMedia('(max-width:480px)').matches) return;
-    event.preventDefault();
-    resizeHandle.classList.add('active');
-    resizeHandle.setPointerCapture(event.pointerId);
-    function resize(moveEvent){
-      var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
-      document.body.style.setProperty('--playground-width', width + 'px');
-    }
-    function stop(){
-      resizeHandle.classList.remove('active');
-      resizeHandle.removeEventListener('pointermove', resize);
-      resizeHandle.removeEventListener('pointerup', stop);
-      resizeHandle.removeEventListener('pointercancel', stop);
-    }
-    resizeHandle.addEventListener('pointermove', resize);
-    resizeHandle.addEventListener('pointerup', stop);
-    resizeHandle.addEventListener('pointercancel', stop);
-  });
-
-  function show(text, isError){
-    output.textContent = text;
-    output.classList.toggle('error', isError);
-  }
-
-  function print(text){
-    output.textContent += String(text) + '\n';
-    output.scrollTop = output.scrollHeight;
-  }
-
-  function input(prompt){
-    print(prompt);
-    if(inputQueue.length){
-      var queued = inputQueue.shift();
-      print(queued);
-      return Promise.resolve(queued);
-    }
-    sendButton.disabled = false;
-    return new Promise(function(resolve, reject){ pendingInput = {resolve:resolve, reject:reject}; });
-  }
-
-  function stopProgram(){
-    running = false;
-    sendButton.disabled = true;
-    inputQueue = [];
-    if(pendingInput){
-      pendingInput.reject(new Error('Program stopped.'));
-      pendingInput = null;
-    }
-    runButton.disabled = false;
-    runButton.textContent = 'Run';
-  }
-
-  runButton.addEventListener('click', function(){
-    if(running){ stopProgram(); return; }
-    running = true;
-    runButton.textContent = 'Stop';
-    sendButton.disabled = false;
-    inputQueue = [];
-    show('', false);
-    try {
-      if(/#include\s*</.test(editor.value) || /\bscanf\s*\(/.test(editor.value)){
-        throw new Error('This playground runs JavaScript. Convert C scanf/printf code to await input() and print().');
-      }
-      var AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
-      Promise.resolve(new AsyncFunction('input', 'print', editor.value)(input, print))
-        .catch(function(error){ print(error.message); output.classList.add('error'); })
-        .finally(function(){
-          running = false;
-          sendButton.disabled = true;
-          runButton.textContent = 'Run';
-        });
-    } catch(error){
-      running = false;
-      show(error.message, true);
-      runButton.textContent = 'Run';
-    }
-  });
-
-  sendButton.addEventListener('click', function(){
-    if(!running || !stdin.value) return;
-    var value = stdin.value;
-    stdin.value = '';
-    if(pendingInput){
-      print(value);
-      var resolve = pendingInput.resolve;
-      pendingInput = null;
-      resolve(value);
-    } else {
-      inputQueue.push(value);
-    }
-    sendButton.disabled = !running;
-  });
-
-  stdin.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){
-      event.preventDefault();
-      sendButton.click();
-    }
-  });
-
-  resetButton.addEventListener('click', function(){
-    stopProgram();
-    editor.value = initialCode;
-    stdin.value = '';
-    show('Output will appear here.', false);
-  });
-
-  editor.addEventListener('keydown', function(event){
-    if((event.ctrlKey || event.metaKey) && event.key === 'Enter') runButton.click();
-    if(event.key === 'Tab'){
-      event.preventDefault();
-      var start = editor.selectionStart;
-      editor.setRangeText('    ', start, editor.selectionEnd, 'end');
-    }
-  });
-})();
-</script>
 <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm@5.5.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit@0.10.0/lib/addon-fit.js"></script>
 <script>
 (function(){
+  var JUDGE0_URL = 'https://ce.judge0.com/submissions?base64_encoded=false&wait=true';
+  var C_LANGUAGE_ID = 50;
+
   var editor = document.getElementById('dsaCode');
   var runButton = document.getElementById('dsaRun');
   var stopButton = document.getElementById('dsaStop');
   var resetButton = document.getElementById('dsaReset');
+  var stdinEl = document.getElementById('dsaStdin');
   var statusEl = document.getElementById('dsaStatus');
   var openButton = document.getElementById('dsaOpen');
   var closeButton = document.getElementById('dsaClose');
   var resizeHandle = document.getElementById('dsaResize');
   var sidebar = document.getElementById('sidebar');
   var menuToggle = document.getElementById('menuToggle');
-  var terminal = new Terminal({cursorBlink:true, convertEol:true, fontFamily:'IBM Plex Mono, monospace', fontSize:13, theme:{background:'#080d17', foreground:'#eaf3ff', cursor:'#60a5fa'}});
+  var terminal = new Terminal({cursorBlink:true, convertEol:true, disableStdin:true, fontFamily:'IBM Plex Mono, monospace', fontSize:13, theme:{background:'#080d17', foreground:'#eaf3ff', cursor:'#60a5fa'}});
+  var fitAddon = new FitAddon.FitAddon();
+  terminal.loadAddon(fitAddon);
   terminal.open(document.getElementById('dsaTerminal'));
-  var remoteBackend = window.TYN_BACKEND_HOST || localStorage.getItem('tyn_backend_host') || '';
-  var wsHost = '';
-  var wsProto = 'ws://';
-
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    wsHost = location.host;
-    wsProto = location.protocol === 'https:' ? 'wss://' : 'ws://';
-  } else if (location.protocol === 'file:') {
-    wsHost = '127.0.0.1:3002';
-    wsProto = 'ws://';
-  } else if (remoteBackend) {
-    wsHost = remoteBackend.replace(/^https?:\/\//, '').replace(/^wss?:\/\//, '').replace(/\/+$/, '');
-    wsProto = 'wss://';
-  }
-
-  var socket = null;
-  if(wsHost){
-    try {
-      socket = new WebSocket(wsProto + wsHost);
-    } catch(e) {}
-  }
   var running = false;
+  var abortController = null;
+
+  function fitTerminal(){
+    try { fitAddon.fit(); } catch(e){}
+  }
+
+  function writeLines(text){
+    if(!text) return;
+    terminal.write(String(text).replace(/\n/g, '\r\n'));
+  }
 
   openButton.addEventListener('click', function(){
     document.body.classList.add('playground-open');
     sidebar.classList.remove('open');
     if(window.matchMedia('(min-width:761px)').matches) sidebar.classList.add('closed');
+    requestAnimationFrame(fitTerminal);
     terminal.focus();
   });
   closeButton.addEventListener('click', function(){ document.body.classList.remove('playground-open'); });
@@ -1965,7 +1819,7 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
     function resize(moveEvent){
       var width = Math.min(window.innerWidth - 320, Math.max(320, window.innerWidth - moveEvent.clientX));
       document.body.style.setProperty('--playground-width', width + 'px');
-      terminal.fit && terminal.fit();
+      fitTerminal();
     }
     function stop(){
       resizeHandle.classList.remove('active');
@@ -1977,70 +1831,93 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
     resizeHandle.addEventListener('pointerup', stop);
     resizeHandle.addEventListener('pointercancel', stop);
   });
+  window.addEventListener('resize', fitTerminal);
 
   function status(text){ statusEl.textContent = text || ''; }
-  function send(message){ if(socket && socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify(message)); }
 
-  if(socket){
-    socket.addEventListener('open', function(){ status('connected'); });
-    socket.addEventListener('error', function(){ status('server unavailable'); terminal.writeln('\r\n[Start with: npm install, then npm start]'); });
-    socket.addEventListener('close', function(){
-      if(running){ running = false; runButton.textContent = 'Run'; status('disconnected'); }
-    });
-    socket.addEventListener('message', function(event){
-      var message = JSON.parse(event.data);
-      if(message.type === 'output') terminal.write(message.data);
-      if(message.type === 'compile-error') { terminal.writeln('\r\n[compile error]'); terminal.write(message.data.replace(/\n/g, '\r\n')); running = false; status('compile failed'); }
-      if(message.type === 'error') { terminal.writeln('\r\n[error] ' + message.data); running = false; status('failed'); }
-      if(message.type === 'exit') { terminal.writeln('\r\n[process exited with code ' + message.data.code + ']'); running = false; status('finished'); }
-      runButton.textContent = running ? 'Running' : 'Run';
-    });
-  } else {
-    status('server offline');
-    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.protocol !== 'file:') {
-      terminal.writeln('C compiler backend not connected.\r\nDeploy your backend (e.g. Railway/Render) and set: localStorage.setItem("tyn_backend_host", "your-backend.up.railway.app")\r\n');
-    } else {
-      terminal.writeln('C Playground ready. Start the backend with: npm start\r\n');
-    }
-  }
+  terminal.writeln('C Playground ready. Add stdin input if your code uses scanf(), then press Run.\r\n');
+  fitTerminal();
 
-  terminal.onData(function(data){ if(running) send({type:'input', data:data}); });
-
-  runButton.addEventListener('click', function(){
-    /* Reset stale running flag if socket dropped mid-run */
-    if(running && (!socket || socket.readyState > WebSocket.OPEN)){
-      running = false; runButton.textContent = 'Run';
-    }
+  runButton.addEventListener('click', async function(){
     if(running) return;
 
-    /* If socket is null or definitively closed, warn and bail */
-    if(!socket || socket.readyState === WebSocket.CLOSED || socket.readyState === WebSocket.CLOSING){
-      status('not connected');
-      terminal.writeln('\r\n[Server offline — open http://127.0.0.1:3002/dsa1.html or run: npm start]\r\n');
-      return;
-    }
-
-    /* Socket is OPEN or still CONNECTING — proceed (send is guarded by readyState check) */
     terminal.clear();
-    terminal.write('\x1b[90mStarting GCC...\x1b[0m\r\n');
+    terminal.write('\x1b[90mCompiling and running...\x1b[0m\r\n');
     running = true;
+    runButton.disabled = true;
     runButton.textContent = 'Running';
     status('compiling');
+    abortController = new AbortController();
 
-    if(socket.readyState === WebSocket.OPEN){
-      send({type:'start', code:editor.value});
-    } else {
-      /* CONNECTING: queue send for when it opens */
-      socket.addEventListener('open', function onceOpen(){
-        socket.removeEventListener('open', onceOpen);
-        send({type:'start', code:editor.value});
+    try {
+      var response = await fetch(JUDGE0_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          language_id: C_LANGUAGE_ID,
+          source_code: editor.value,
+          stdin: stdinEl.value
+        }),
+        signal: abortController.signal
       });
+
+      if(!response.ok){
+        var errText = '';
+        try { errText = await response.text(); } catch(e){}
+        throw new Error('Compiler service returned HTTP ' + response.status + (errText ? ': ' + errText.slice(0, 120) : ''));
+      }
+
+      var result = await response.json();
+      var compileOutput = result.compile_output;
+      var stdout = result.stdout;
+      var stderr = result.stderr;
+      var statusDesc = result.status && result.status.description ? result.status.description : 'Unknown';
+
+      if(compileOutput){
+        terminal.writeln('\r\n\x1b[91m[compile error]\x1b[0m\r\n');
+        writeLines(compileOutput);
+        status('compile failed');
+      } else {
+        if(stdout) writeLines(stdout);
+        if(stderr){
+          terminal.write('\r\n\x1b[91m[stderr]\x1b[0m\r\n');
+          writeLines(stderr);
+        }
+        if(!stdout && !stderr && result.message){
+          terminal.writeln('\r\n\x1b[93m[runtime]\x1b[0m ' + result.message);
+        }
+        terminal.write('\r\n\x1b[90m[' + statusDesc.toLowerCase() + ']\x1b[0m\r\n');
+        status(statusDesc.toLowerCase());
+      }
+    } catch(error) {
+      if(error.name === 'AbortError') {
+        terminal.writeln('\r\n\x1b[93m[stopped]\x1b[0m\r\n');
+        status('stopped');
+      } else {
+        terminal.writeln('\r\n\x1b[91m[error]\x1b[0m ' + error.message);
+        status('failed');
+      }
+    } finally {
+      running = false;
+      runButton.disabled = false;
+      runButton.textContent = 'Run';
+      abortController = null;
     }
+    fitTerminal();
     terminal.focus();
   });
 
-  stopButton.addEventListener('click', function(){ if(running) send({type:'input', data:'\u0003'}); });
-  resetButton.addEventListener('click', function(){ editor.value = editor.defaultValue; terminal.clear(); terminal.write('Press Run to compile and start the C program.\r\n'); status(''); });
+  stopButton.addEventListener('click', function(){
+    if(running && abortController) abortController.abort();
+  });
+  resetButton.addEventListener('click', function(){
+    editor.value = editor.defaultValue;
+    stdinEl.value = '';
+    terminal.clear();
+    terminal.write('C Playground ready. Add stdin input if your code uses scanf(), then press Run.\r\n');
+    status('');
+    fitTerminal();
+  });
   editor.addEventListener('keydown', function(event){
     if((event.ctrlKey || event.metaKey) && event.key === 'Enter'){ event.preventDefault(); runButton.click(); }
     if(event.key === 'Tab'){ event.preventDefault(); editor.setRangeText('    ', editor.selectionStart, editor.selectionEnd, 'end'); }
@@ -2063,7 +1940,7 @@ printf(<span class="str">"result : %d\n"</span>, pop(&amp;mystack));</code></pre
       var ratio = h / total;
       editorPane.style.flexGrow = String(ratio);
       termPane.style.flexGrow = String(1 - ratio);
-      terminal.fit && terminal.fit();
+      fitTerminal();
     }
 
     function measure(){
