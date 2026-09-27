@@ -569,8 +569,8 @@ body.dsa-resizing,body.dsa-resizing *{cursor:row-resize !important;user-select:n
 @media (max-width:480px){.dsa-playground{width:100vw;}body.playground-open main{flex:1 1 auto;width:auto;max-width:880px;}.dsa-playground-resize{display:none;}.dsa-playground-launch{margin-bottom:24px;}}
 </style>
 <style>
-body:has(.playground-panel.open) .app main, body:has(.playground-panel.open) main { margin-right:50vw !important; max-width:calc(50vw) !important; overflow:hidden !important; }
-body:has(.playground-panel.open) .sidebar { display:none !important; }
+body:has(.playground-panel.open) .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; }
+body:has(.playground-panel.open) .app main, body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
 </style>
 </head>
 <body>

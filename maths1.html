@@ -136,8 +136,8 @@ mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
 }
 </style>
 <style>
-body:has(.playground-panel.open) main { margin-right:50vw !important; max-width:calc(50vw) !important; overflow:hidden !important; }
-body:has(.playground-panel.open) .sidebar { display:none !important; }
+body:has(.playground-panel.open) .sidebar { width:calc(var(--notes-width, 50vw) * 0.25) !important; }
+body:has(.playground-panel.open) main { width:calc(var(--notes-width, 50vw) * 0.75) !important; max-width:calc(var(--notes-width, 50vw) * 0.75) !important; overflow:hidden !important; }
 </style>
 </head>
 <body>
