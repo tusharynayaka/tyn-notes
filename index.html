@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DLCD Lab Quiz Revision — 12 Nov 2026</title>
+<style>
+  :root{
+    --paper:#0c1014;
+    --panel:#12171d;
+    --panel2:#171d24;
+    --rule:#232b34;
+    --rule2:#2e3843;
+    --ink:#d7dfe8;
+    --ink2:#aeb9c5;
+    --dim:#7e8996;
+    --dim2:#5f6a77;
+    --accent:#6ea8dc;
+    --ok:#4fa96a;
+    --okbg:#12231a;
+    --bad:#cf6a62;
+    --badbg:#251413;
+    --code:#090d11;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:76px}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font:16px/1.62 var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  code,kbd,pre{font-family:var(--mono)}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid transparent}
+  a:hover{border-bottom-color:var(--accent)}
+
+  /* ---------- masthead ---------- */
+  header.top{
+    position:sticky;top:0;z-index:50;background:var(--paper);
+    border-bottom:1px solid var(--rule);padding:11px 24px;
+  }
+  .headrow{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .mark{
+    font:600 11px/1 var(--mono);letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--dim);border:1px solid var(--rule2);padding:6px 8px;border-radius:3px;
+  }
+  .headrow h1{font:600 14px/1.3 var(--sans);margin:0;letter-spacing:.1px}
+  .headrow h1 span{display:block;font:400 11.5px/1.4 var(--sans);color:var(--dim);letter-spacing:0}
+  .headtools{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .btn{
+    font:500 12.5px/1 var(--sans);background:var(--panel2);color:var(--ink2);
+    border:1px solid var(--rule2);border-radius:4px;padding:8px 12px;cursor:pointer;
+  }
+  .btn:hover{background:#1d242c;color:var(--ink)}
+  .btn.primary{background:var(--accent);color:#0a1520;border-color:var(--accent);font-weight:600}
+  .btn.primary:hover{background:#84b8e6;color:#0a1520}
+  .search{
+    font:400 12.5px/1 var(--sans);background:var(--panel2);color:var(--ink);
+    border:1px solid var(--rule2);border-radius:4px;padding:8px 10px;width:200px;outline:none;
+  }
+  .search:focus{border-color:var(--accent)}
+
+  /* ---------- shell ---------- */
+  .layout{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:236px minmax(0,1fr);gap:36px;padding:30px 24px 120px}
+  aside.toc{position:sticky;top:76px;align-self:start;max-height:calc(100vh - 110px);overflow:auto}
+  aside.toc a{display:block;padding:5px 0 5px 12px;font-size:13px;color:var(--dim);border-left:1px solid var(--rule);border-bottom:0}
+  aside.toc a:hover{color:var(--ink);border-left-color:var(--rule2)}
+  aside.toc .grp{
+    font:600 10px/1 var(--mono);text-transform:uppercase;letter-spacing:1.4px;
+    color:var(--dim2);margin:18px 0 6px;padding-left:12px;
+  }
+  main{min-width:0}
+
+  /* ---------- intro ---------- */
+  .intro{border-bottom:1px solid var(--rule);padding-bottom:22px;margin-bottom:30px}
+  .intro h2{font:400 30px/1.2 var(--serif);margin:0 0 12px;letter-spacing:-.3px}
+  .intro p{margin:0;color:var(--ink2);max-width:64ch}
+  .intro p + p{margin-top:10px;font-size:14.5px;color:var(--dim)}
+  .facts{
+    display:flex;gap:0;flex-wrap:wrap;margin-top:18px;
+    border-top:1px solid var(--rule);padding-top:12px;
+  }
+  .facts div{
+    font-size:12px;color:var(--dim);padding-right:16px;margin-right:16px;
+    border-right:1px solid var(--rule);
+  }
+  .facts div:last-child{border-right:0}
+  .facts b{display:block;font:600 14px/1.4 var(--sans);color:var(--ink2)}
+
+  /* ---------- sections ---------- */
+  section{margin-bottom:36px;scroll-margin-top:82px}
+  .sechead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:16px}
+  .sechead .n{font:600 11px/1 var(--mono);color:var(--dim2);letter-spacing:.5px}
+  .sechead h2{font:400 19px/1.3 var(--serif);margin:0;letter-spacing:-.1px}
+  .sechead .spacer{margin-left:auto}
+  .sec-reveal{font-size:11.5px;padding:6px 10px}
+
+  .card{background:var(--panel);border:1px solid var(--rule);border-radius:5px;padding:16px 18px;margin-bottom:12px}
+  .card p{margin:0 0 9px;color:var(--ink2);font-size:14.5px}
+  .card p:last-child{margin-bottom:0}
+  .card ul{margin:0 0 9px;padding-left:19px;color:var(--ink2);font-size:14.5px}
+  .card li{margin-bottom:5px}
+  .card li:last-child{margin-bottom:0}
+  .card h3{font:600 13px/1.4 var(--sans);margin:0 0 8px;color:var(--ink)}
+
+  pre{
+    background:var(--code);border:1px solid var(--rule);border-left:2px solid var(--rule2);
+    padding:10px 13px;border-radius:3px;overflow-x:auto;font-size:12.5px;line-height:1.65;
+    margin:9px 0;color:#a9c2d8;
+  }
+  code.inl{
+    background:var(--code);border:1px solid var(--rule);border-radius:3px;
+    padding:1px 5px;font-size:.86em;color:#9dc4e4;
+  }
+
+  /* ---------- math ---------- */
+  .ovl{text-decoration:overline}
+  .eq{
+    font-family:var(--serif);font-size:16.5px;line-height:1.9;color:#e6eef6;
+    background:var(--code);border:1px solid var(--rule);border-radius:3px;
+    padding:8px 14px;margin:9px 0;text-align:center;overflow-x:auto;
+  }
+  .eq i,.m i{font-style:italic}
+  .m{font-family:var(--serif);font-size:1.04em;font-style:italic;color:#e6eef6;white-space:nowrap}
+  .m sub,.m sup,.eq sub,.eq sup{font-style:normal;font-size:.68em}
+
+  .note{border-left:2px solid #b9902f;background:#191509;padding:10px 14px;border-radius:3px;margin:10px 0;font-size:14px;color:#ddc48c}
+  .note b{color:#f0d69c}
+
+  /* ---------- questions ---------- */
+  .q{background:var(--panel);border:1px solid var(--rule);border-radius:5px;padding:14px 16px;margin-bottom:9px}
+  .q:hover{border-color:var(--rule2)}
+  .q.correct{border-color:#2c5a3b}
+  .q.wrong{border-color:#5f302c}
+  .qhead{display:flex;gap:10px;align-items:baseline;margin-bottom:11px}
+  .qnum{
+    flex:none;font:600 11.5px/1 var(--mono);color:var(--dim2);
+    min-width:26px;text-align:right;padding-top:3px;
+  }
+  .q.correct .qnum{color:var(--ok)}
+  .q.wrong .qnum{color:var(--bad)}
+  .qtext{margin:0;font-size:15px;line-height:1.55}
+  .opts{display:grid;gap:6px;margin-left:36px}
+  .opt{
+    display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;
+    background:transparent;border:1px solid var(--rule);border-radius:4px;
+    color:var(--ink2);font:inherit;font-size:14.5px;padding:8px 11px;cursor:pointer;
+  }
+  .opt:hover:not(:disabled){background:var(--panel2);border-color:var(--rule2);color:var(--ink)}
+  .opt:disabled{cursor:default}
+  .opt .letter{flex:none;font:600 11px/1.5 var(--mono);color:var(--dim2);width:14px}
+  .opt.answer{border-color:#2c5a3b;background:var(--okbg);color:#cfe8d7}
+  .opt.answer .letter{color:var(--ok)}
+  .opt.pick-bad{border-color:#5f302c;background:var(--badbg);color:#eccbc7}
+  .opt.pick-bad .letter{color:var(--bad)}
+  .expl{
+    display:none;margin:11px 0 0 36px;padding:9px 13px;border-left:2px solid var(--accent);
+    background:#101a22;border-radius:3px;font-size:14px;color:#b6cfe2;
+  }
+  .expl.show{display:block}
+  .expl b{color:var(--accent);font-weight:600}
+
+  /* ---------- footer bar ---------- */
+  .scorebar{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--paper);
+    border-top:1px solid var(--rule);padding:9px 24px;
+    display:flex;align-items:center;gap:16px;font-size:12.5px;color:var(--dim);
+  }
+  .scorebar .inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:16px;width:100%}
+  .scorebar b{color:var(--ink2);font-variant-numeric:tabular-nums;font-weight:600}
+  .bar{flex:1;height:3px;background:var(--rule);min-width:60px}
+  .bar > i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+
+  /* ---------- key ---------- */
+  .keygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:3px;font:400 11.5px/1.5 var(--mono)}
+  .keygrid div{border:1px solid var(--rule);border-radius:3px;padding:4px 2px;text-align:center;color:var(--dim2)}
+  .keygrid div b{color:var(--ink2)}
+
+  .hidden{display:none!important}
+  footer.page{max-width:1320px;margin:0 auto;padding:0 24px 40px;color:var(--dim2);font-size:12.5px}
+
+  @media (max-width:880px){
+    .layout{grid-template-columns:1fr;gap:0;padding:20px 16px 120px}
+    aside.toc{position:static;max-height:none;display:none;margin-bottom:20px}
+    aside.toc.open{display:block}
+    .opts,.expl{margin-left:0}
+    .qnum{min-width:0;text-align:left}
+    .search{width:100%}
+    .intro h2{font-size:23px}
+  }
+  @media print{
+    header.top,.scorebar,aside.toc,.headtools{display:none}
+    body{background:#fff;color:#000}
+    .layout{display:block;padding:0}
+    .card,.q,.intro{border-color:#bbb;background:#fff;break-inside:avoid}
+    .expl{display:block!important}
+    pre,.eq{background:#f5f5f5;color:#111;border-color:#ddd}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="headrow">
+    <span class="mark">DLCD</span>
+    <h1>Lab Quiz Revision<span>Weeks 1–11 · 12 Nov 2026, 15:30–15:50 · GJB Assessment Centre</span></h1>
+    <div class="headtools">
+      <input class="search" id="search" type="search" placeholder="Filter questions" aria-label="Filter questions">
+      <button class="btn" id="tocBtn">Sections</button>
+      <button class="btn" id="revealAll">Reveal all</button>
+      <button class="btn primary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="toc" id="toc">
+    <div class="grp">Overview</div>
+    <a href="#start">About this page</a>
+    <div class="grp">Week summaries</div>
+    <a href="#w1">Week 1 — Gates</a>
+    <a href="#w2">Week 2 — Simple circuits</a>
+    <a href="#w3">Week 3 — Vectors</a>
+    <a href="#w4">Week 4 — Mux and decoder</a>
+    <a href="#w5">Week 5 — D flip-flops</a>
+    <a href="#w6">Week 6 — Ripple carry adder</a>
+    <a href="#w78">Weeks 7–8 — 16-bit ALU</a>
+    <a href="#w910">Weeks 9–10 — Register file</a>
+    <a href="#w11">Week 11 — Reg file with ALU</a>
+    <a href="#tools">Verilog and tooling</a>
+    <div class="grp">Practice questions</div>
+    <a href="#q1">1–10 · Gates</a>
+    <a href="#q11">11–21 · Simple circuits</a>
+    <a href="#q22">22–33 · Vectors</a>
+    <a href="#q34">34–44 · Mux, decoder</a>
+    <a href="#q45">45–56 · Flip-flops</a>
+    <a href="#q57">57–66 · Ripple adder</a>
+    <a href="#q67">67–84 · ALU</a>
+    <a href="#q85">85–100 · Register file</a>
+    <a href="#q101">101–112 · Integration</a>
+    <a href="#q113">113–122 · General</a>
+    <div class="grp">Appendix</div>
+    <a href="#key">Answer key</a>
+  </aside>
+
+  <main>
+
+    <div class="intro" id="start">
+      <h2>Digital Logic and Computer Design: lab quiz revision</h2>
+      <p>Summaries of Weeks 1 to 11 and 122 practice questions. Each summary is drawn from the lab zip, and every answer has been checked against the source files and confirmed by running the testbenches in iverilog.</p>
+      <p>Choose an option to score yourself. The explanation appears either way, so you can also just read down the page with <em>Reveal all</em> switched on.</p>
+      <div class="facts">
+        <div><b>20 min</b>Quiz window</div>
+        <div><b>122</b>Questions</div>
+        <div><b>11</b>Weeks covered</div>
+        <div><b>Icarus</b>Simulator</div>
+      </div>
+    </div>
+
+    <!-- ======================= WEEK SUMMARIES ======================= -->
+
+    <section id="w1">
+      <div class="sechead"><span class="n">W01</span><h2>Basic gates</h2></div>
+      <div class="card">
+        <p>Each gate is a small module driven by a continuous assignment. Typical forms:</p>
+        <pre>assign c = a &amp; b;        // and
+assign c = !(a ^ b);     // xnor</pre>
+        <p>The testbench declares inputs as <code class="inl">reg</code> and outputs as <code class="inl">wire</code>, instantiates the gate, then applies every input combination with <code class="inl">#100</code> between vectors. <code class="inl">$monitor</code> prints values whenever any listed signal changes, and <code class="inl">$dumpfile</code> with <code class="inl">$dumpvars</code> writes the <code class="inl">.vcd</code> trace for GTKWave.</p>
+        <p>Build and run:</p>
+        <pre>iverilog -o out gate.v gate_tb.v
+vvp out
+gtkwave file.vcd</pre>
+      </div>
+    </section>
+
+    <section id="w2">
+      <div class="sechead"><span class="n">W02</span><h2>Simple circuits</h2></div>
+      <div class="card">
+        <p>Gates are written once as small modules (<code class="inl">and2</code>, <code class="inl">or2</code>, <code class="inl">not2</code>) and wired together as instances inside a larger module, using internal wires for the connections.</p>
+        <p><b>simple_circuit</b> sets <span class="m">w1 = A·B</span>, <span class="m">E = <span class="ovl">C</span></span> and <span class="m">D = w1 + E</span>, giving:</p>
+        <div class="eq">D = AB + <span class="ovl">C</span></div>
+        <p><b>circuit1</b> and <b>circuit2</b> follow the same pattern:</p>
+        <div class="eq">Y = BC + A</div>
+        <div class="eq">Y = (BC + A) + AB &nbsp;→&nbsp; Y = A + BC</div>
+        <p>The <span class="m">AB</span> term is absorbed by <span class="m">A</span>, so circuit2 reduces to <span class="m">A + BC</span>. Instances use positional port connection, for example <code class="inl">and2 G1 (A, B, w1);</code>, and the testbenches apply all eight combinations of A, B and C at <code class="inl">#20</code> intervals.</p>
+      </div>
+    </section>
+
+    <section id="w3">
+      <div class="sechead"><span class="n">W03</span><h2>Combinational circuits with vectors</h2></div>
+      <div class="card">
+        <p>The full adder is built from gate modules. Sum and carry reduce to:</p>
+        <div class="eq">sum = <span class="m">i<sub>0</sub></span> ⊕ <span class="m">i<sub>1</sub></span> ⊕ <span class="m">cin</span></div>
+        <div class="eq">cout = <span class="m">i<sub>0</sub>i<sub>1</sub></span> + (<span class="m">i<sub>0</sub></span> ⊕ <span class="m">i<sub>1</sub></span>)<span class="m">cin</span></div>
+        <pre>w1  = i0 ^ i1;
+sum = w1 ^ cin;
+w2  = i0 &amp; i1;
+w3  = w1 &amp; cin;
+cout = w2 | w3;</pre>
+        <p>The vector testbench stores every pattern in an array and walks it with a loop:</p>
+        <pre>reg [2:0] test_vecs [0:7];
+`define TESTVECS 8
+for (i = 0; i &lt; `TESTVECS; i = i + 1)
+  {i0,i1,cin} = test_vecs[i];   // i0 is the MSB</pre>
+        <p><code class="inl">$finish</code> ends the run. In <b>example2</b> (circuit3) the sum and carry of the first adder feed the second. The input there is declared <code class="inl">[0:2]</code>, so <code class="inl">i1[0]</code> is the leftmost bit, not the least significant one.</p>
+      </div>
+    </section>
+
+    <section id="w4">
+      <div class="sechead"><span class="n">W04</span><h2>Multiplexers and decoder</h2></div>
+      <div class="card">
+        <p>The 2:1 mux is a conditional assignment; <code class="inl">j=0</code> passes <code class="inl">i0</code> and <code class="inl">j=1</code> passes <code class="inl">i1</code>.</p>
+        <pre>assign o = (j==0) ? i0 : i1;</pre>
+        <p><b>mux4</b> is built from three mux2 blocks. The two first-level muxes are selected by <code class="inl">j1</code>, choosing between <code class="inl">i[0]</code>/<code class="inl">i[1]</code> and between <code class="inl">i[2]</code>/<code class="inl">i[3]</code>; the output mux is selected by <code class="inl">j0</code>. The selected index is therefore</p>
+        <div class="eq">k = 2<span class="m">j<sub>0</sub></span> + <span class="m">j<sub>1</sub></span></div>
+        <p><b>decoder2X4</b> asserts one output per address:</p>
+        <div class="eq"><span class="m">Y<sub>0</sub></span> = <span class="ovl">A<sub>1</sub></span><span class="ovl">A<sub>0</sub></span> &nbsp;&nbsp; <span class="m">Y<sub>1</sub></span> = <span class="ovl">A<sub>1</sub></span><span class="m">A<sub>0</sub></span> &nbsp;&nbsp; <span class="m">Y<sub>2</sub></span> = <span class="m">A<sub>1</sub></span><span class="ovl">A<sub>0</sub></span> &nbsp;&nbsp; <span class="m">Y<sub>3</sub></span> = <span class="m">A<sub>1</sub>A<sub>0</sub></span></div>
+        <p>Exactly one line is high for any 2-bit input, which is the one-hot property.</p>
+      </div>
+    </section>
+
+    <section id="w5">
+      <div class="sechead"><span class="n">W05</span><h2>D flip-flops</h2></div>
+      <div class="card">
+        <p><b>df</b> is a positive-edge triggered flip-flop. The output must be a <code class="inl">reg</code> because it is assigned in a procedural block, and the assignment is nonblocking:</p>
+        <pre>always @(posedge clk) df_out &lt;= in;</pre>
+        <p>Before the first rising edge the output is <code class="inl">x</code>.</p>
+        <p><b>dfr</b> adds a synchronous, active-high reset using gates: <span class="m">reset' = ¬reset</span> and <span class="m">df_in = in · reset'</span>. The flop only clears on a clock edge while <code class="inl">reset=1</code>.</p>
+        <p><b>dfrl</b> adds load through a mux2: with <code class="inl">load=0</code> the flop's own output is fed back and the value holds, with <code class="inl">load=1</code> the new input is taken.</p>
+        <p>The testbench clock runs at a period of 10:</p>
+        <pre>initial clk = 0;
+always #5 clk = ~clk;</pre>
+        <p>Reset is held high until <code class="inl">#12.5</code>, so the first edge that captures data is at <code class="inl">t = 15</code>.</p>
+      </div>
+    </section>
+
+    <section id="w6">
+      <div class="sechead"><span class="n">W06</span><h2>4-bit ripple carry adder</h2></div>
+      <div class="card">
+        <p><b>ripple_c4b</b> chains four full adders, each written with gate primitives (xor for sum, three ands and an or for carry). <code class="inl">cin</code> enters <code class="inl">FA_0</code>, the carry of each stage feeds the next through <code class="inl">c1</code>, <code class="inl">c2</code> and <code class="inl">c3</code>, and the final stage drives <code class="inl">cout</code>.</p>
+        <p>Because every stage waits for the carry below it, total delay grows with the number of bits. Testbench results:</p>
+        <ul>
+          <li><code class="inl">0101 + 0011</code> → <code class="inl">1000</code>, <code class="inl">cout</code> 0</li>
+          <li><code class="inl">1111 + 0001</code> → <code class="inl">0000</code>, <code class="inl">cout</code> 1</li>
+          <li><code class="inl">1010 + 0101 + 1</code> → <code class="inl">0000</code>, <code class="inl">cout</code> 1</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="w78">
+      <div class="sechead"><span class="n">W07–08</span><h2>16-bit ALU</h2></div>
+      <div class="card">
+        <p>Two 16-bit operands <code class="inl">i0</code> and <code class="inl">i1</code>, a 2-bit <code class="inl">op</code>, a 16-bit result <code class="inl">o</code> and a carry out. The opcode map is:</p>
+        <ul>
+          <li><code class="inl">00</code> add</li>
+          <li><code class="inl">01</code> subtract</li>
+          <li><code class="inl">10</code> AND</li>
+          <li><code class="inl">11</code> OR</li>
+        </ul>
+        <p>The block is purely combinational: 16 <code class="inl">alu_slice</code> instances with the carry chained between them, and the carry into bit 0 is <code class="inl">op[0]</code>. Inside a slice, <code class="inl">addsub</code> XORs <code class="inl">i1</code> with <code class="inl">op[0]</code> before the full adder, so subtraction becomes two's complement addition:</p>
+        <div class="eq"><span class="m">o</span> = <span class="m">i<sub>0</sub></span> + <span class="ovl">i<sub>1</sub></span> + 1</div>
+        <p>A mux2 selected by <code class="inl">op[0]</code> chooses AND or OR, and a second mux2 selected by <code class="inl">op[1]</code> chooses arithmetic or logic. The carry out is only meaningful for add and subtract.</p>
+        <p>Verified testbench results:</p>
+        <ul>
+          <li><code class="inl">aa55 + 55aa</code> → <code class="inl">ffff</code></li>
+          <li><code class="inl">ffff + 0001</code> → <code class="inl">0000</code>, carry out</li>
+          <li><code class="inl">0001 + 7fff</code> → <code class="inl">8000</code>, signed overflow</li>
+          <li><code class="inl">aa55 − 55aa</code> → <code class="inl">54ab</code></li>
+          <li><code class="inl">0001 − 7fff</code> → <code class="inl">8002</code></li>
+          <li><code class="inl">aa55 AND 55aa</code> → <code class="inl">0000</code></li>
+          <li><code class="inl">aa55 OR 55aa</code> → <code class="inl">ffff</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="w910">
+      <div class="sechead"><span class="n">W09–10</span><h2>Register file</h2></div>
+      <div class="card">
+        <p><b>reg_file</b> holds eight 16-bit registers, each built from sixteen <code class="inl">dfrl</code> flip-flops (<code class="inl">dfrl_16</code>). It has one write port (<code class="inl">wr</code>, <code class="inl">wr_addr</code>, <code class="inl">d_in</code>) and two read ports (<code class="inl">rd_addr_a</code> to <code class="inl">d_out_a</code>, <code class="inl">rd_addr_b</code> to <code class="inl">d_out_b</code>).</p>
+        <p>On the write side, <code class="inl">demux8</code> decodes <code class="inl">wr</code> and <code class="inl">wr_addr</code> into eight load lines, one per register, so only the addressed register loads on the clock edge and nothing loads when <code class="inl">wr=0</code>.</p>
+        <p>On the read side, two <code class="inl">mux8_16</code> banks select one of the eight registers per bit from three address bits. Reads are combinational.</p>
+        <p>The library <code class="inl">mlib.v</code> provides mux2, mux4, mux8, demux2, demux4, demux8, df, dfr and dfrl. Reset clears every register to zero synchronously. Two read ports exist because the ALU needs two operands in the same cycle.</p>
+        <div class="note"><b>Worth noting:</b> the assignment PDF says register 0 should always read as zero, but the supplied code treats it as an ordinary register. The testbench writes <code class="inl">ba98</code> into it.</div>
+      </div>
+    </section>
+
+    <section id="w11">
+      <div class="sechead"><span class="n">W11</span><h2>Register file integrated with the ALU</h2></div>
+      <div class="card">
+        <p><b>reg_alu</b> joins the two blocks: read ports <code class="inl">d_out_a</code> and <code class="inl">d_out_b</code> drive the ALU inputs <code class="inl">i0</code> and <code class="inl">i1</code>. A 16-bit <code class="inl">mux2_16</code> selected by <code class="inl">sel</code> decides the write data, taking the external <code class="inl">d_in</code> when <code class="inl">sel=0</code> and the ALU result when <code class="inl">sel=1</code>.</p>
+        <p>The ALU carry out passes through a <code class="inl">dfr</code>, so <code class="inl">cout</code> is registered and arrives one clock later than the operation.</p>
+        <p>The testbench writes <code class="inl">1111</code> into reg1 and <code class="inl">3333</code> into reg2 with <code class="inl">sel=0</code>, reads them back, writes <code class="inl">5555</code> into reg6 and <code class="inl">2222</code> into reg7, then runs the ALU with <code class="inl">sel=1</code>:</p>
+        <ul>
+          <li>reg1 + reg2 into reg3 → <code class="inl">4444</code></li>
+          <li>reg3 − reg1 into reg5 → <code class="inl">3333</code></li>
+          <li>reg6 AND reg7 into reg0 → <code class="inl">0000</code></li>
+          <li>reg6 OR reg7 into reg4 → <code class="inl">7777</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="tools">
+      <div class="sechead"><span class="n">REF</span><h2>Verilog values and tooling</h2></div>
+      <div class="card">
+        <p>Verilog nets and registers carry four values:</p>
+        <ul>
+          <li><code class="inl">0</code> and <code class="inl">1</code> — driven logic levels</li>
+          <li><code class="inl">z</code> — undriven, high impedance</li>
+          <li><code class="inl">x</code> — unknown, the initial value of a reg, also the result of conflicting drivers</li>
+        </ul>
+        <p><code class="inl">initial</code> runs once at time 0. <code class="inl">always</code> repeats. <code class="inl">=</code> is a blocking assignment and <code class="inl">&lt;=</code> is nonblocking, which is what flip-flops use. <code class="inl">#n</code> delays by <span class="m">n</span> time units and <code class="inl">$time</code> returns the current simulation time. Without a <code class="inl">`timescale</code> directive, Icarus reports time in whole seconds.</p>
+        <pre>iverilog -o sim design.v design_tb.v
+vvp sim
+gtkwave dump.vcd</pre>
+      </div>
+    </section>
+
+    <!-- ======================= QUESTIONS ======================= -->
+
+    <section id="q1">
+      <div class="sechead"><span class="n">Q01–10</span><h2>Basic gates</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q1">Reveal section</button></div>
+      <div class="qlist" data-range="1,10"></div>
+    </section>
+
+    <section id="q11">
+      <div class="sechead"><span class="n">Q11–21</span><h2>Simple circuits</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q11">Reveal section</button></div>
+      <div class="qlist" data-range="11,21"></div>
+    </section>
+
+    <section id="q22">
+      <div class="sechead"><span class="n">Q22–33</span><h2>Combinational circuits with vectors</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q22">Reveal section</button></div>
+      <div class="qlist" data-range="22,33"></div>
+    </section>
+
+    <section id="q34">
+      <div class="sechead"><span class="n">Q34–44</span><h2>Multiplexers and decoder</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q34">Reveal section</button></div>
+      <div class="qlist" data-range="34,44"></div>
+    </section>
+
+    <section id="q45">
+      <div class="sechead"><span class="n">Q45–56</span><h2>D flip-flops</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q45">Reveal section</button></div>
+      <div class="qlist" data-range="45,56"></div>
+    </section>
+
+    <section id="q57">
+      <div class="sechead"><span class="n">Q57–66</span><h2>4-bit ripple carry adder</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q57">Reveal section</button></div>
+      <div class="qlist" data-range="57,66"></div>
+    </section>
+
+    <section id="q67">
+      <div class="sechead"><span class="n">Q67–84</span><h2>16-bit ALU</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q67">Reveal section</button></div>
+      <div class="qlist" data-range="67,84"></div>
+    </section>
+
+    <section id="q85">
+      <div class="sechead"><span class="n">Q85–100</span><h2>Register file</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q85">Reveal section</button></div>
+      <div class="qlist" data-range="85,100"></div>
+    </section>
+
+    <section id="q101">
+      <div class="sechead"><span class="n">Q101–112</span><h2>Register file integrated with the ALU</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q101">Reveal section</button></div>
+      <div class="qlist" data-range="101,112"></div>
+    </section>
+
+    <section id="q113">
+      <div class="sechead"><span class="n">Q113–122</span><h2>Verilog values and tooling</h2><span class="spacer"></span><button class="btn sec-reveal" data-sec="q113">Reveal section</button></div>
+      <div class="qlist" data-range="113,122"></div>
+    </section>
+
+    <section id="key">
+      <div class="sechead"><span class="n">KEY</span><h2>Answer key</h2></div>
+      <div class="card"><div class="keygrid" id="keygrid"></div></div>
+    </section>
+
+  </main>
+</div>
+
+<div class="scorebar">
+  <div class="inner">
+    <span>Answered <b id="sAnswered">0</b>/122</span>
+    <span>Correct <b id="sCorrect">0</b></span>
+    <span>Score <b id="sPct">0%</b></span>
+    <div class="bar"><i id="barFill"></i></div>
+  </div>
+</div>
+
+<footer class="page">Compiled from the Weeks 1–11 lab zip. Answers verified against the source and by running each testbench.</footer>
+
+<script>
+const RAW = [
+[1,"Which keyword creates a continuous assignment for a combinational gate?",["assign","always","initial","force"],"A","`assign` drives a wire continuously, which is the combinational construct."],
+[2,"In a testbench, the inputs to the design under test are declared as `reg` and the outputs as `wire` because:",["wires cannot be 0 or 1","regs hold values assigned in procedural blocks, wires carry values driven by module outputs","regs are only allowed for outputs","the simulator requires alphabetical order"],"B","Procedural assignment needs a reg; module outputs drive wires."],
+[3,"Which system task prints signal values every time any of them changes?",["$monitor","$time","$dumpfile","$finish"],"A","$monitor fires on any change to a listed signal."],
+[4,"Which pair of tasks creates the waveform file used by GTKWave?",["$readmemh and $finish","$time and $stop","$dumpfile and $dumpvars","$monitor and $display"],"C","$dumpfile names the VCD, $dumpvars selects the signals."],
+[5,"Which command compiles Verilog files with Icarus Verilog?",["vvp -o out design.v","make design.v","iverilog -o out design.v tb.v","gtkwave design.v"],"C","iverilog compiles, vvp runs, gtkwave views."],
+[6,"Which command runs the compiled simulation file 'out'?",["./out.v","iverilog out","gtkwave out","vvp out"],"D","vvp executes the compiled output."],
+[7,"For xnor2 (`assign c = !(a ^ b);`), what is c when a=1 and b=0?",["1","0","x","z"],"B","a^b is 1, negated gives 0."],
+[8,"In and2_tb the stimulus uses #100 between vectors starting at #000. At what simulation time is a=1, b=1 applied?",["100","400","200","300"],"D","Vectors apply at 0, 100, 200, 300."],
+[9,"What is the output of nand2 for a=1, b=1?",["1","x","z","0"],"D","AND of 1,1 is 1, NAND inverts it to 0."],
+[10,"What does a 'not' gate module with `assign c = !a;` output when a=0?",["z","1","x","0"],"B","Inverting 0 gives 1."],
+[11,"In simple_circuit, which Boolean expression does output D implement?",["D = AB + C′","D = (A+B)C′","D = A + BC","D = A′B + C"],"A","w1=AB, E=C′, D=w1+E."],
+[12,"For simple_circuit with A=1, B=0, C=1, what are D and E?",["D=1, E=1","D=0, E=0","D=0, E=1","D=1, E=0"],"B","w1=0, E=!1=0, D=0+0=0."],
+[13,"In simple_circuit with A=0, B=0, C=0, what are D and E?",["D=0, E=1","D=1, E=1","D=0, E=0","D=1, E=0"],"B","E=1, so D=0+1=1."],
+[14,"What does circuit1 (`Y = (B&C) | A`) output for A=0, B=1, C=1?",["z","x","0","1"],"D","B&C=1, OR with 0 gives 1."],
+[15,"circuit2 (two and2 and two or2 gates) simplifies to which function?",["Y = AB + C","Y = A + BC","Y = ABC","Y = A(B+C)"],"B","AB is absorbed by A."],
+[16,"In simple_circuit2, how many times is the and2 module instantiated?",["4","2","1","3"],"B","an2_1 and and2_2."],
+[17,"The statement 'and2 G1 (A, B, w1);' uses which port connection style?",["Named (by name)","Parameter override","Positional (by order)","Implicit .* style"],"C","Ports are listed in declaration order."],
+[18,"Why is 'wire w1;' declared inside simple_circuit?",["To store a value between clock edges","To declare a testbench variable","To make a module input","To carry the internal signal between the AND gate output and the OR gate input"],"D","It is the internal net joining the two gates."],
+[19,"In circuit2_tb, 'wire Y' is not declared but Y is used in the instance. What does Icarus Verilog do?",["Ignores the instance","Treats Y as an implicit 1-bit wire","Gives a syntax error always","Treats Y as a 32-bit reg"],"B","Implicit nets default to a 1-bit wire."],
+[20,"With 3 inputs applied in steps of #20 starting at #0, when is the last (ABC=111) vector applied?",["120","180","160","140"],"D","0, 20, … 140 is the eighth vector."],
+[21,"Which statement about module definitions is correct?",["Module instances need reg ports","Instances must have the same name as the module","Modules and2, or2 can be defined once and instantiated many times","A module can be used only once"],"C","One definition, many instances."],
+[22,"Which expression gives the full adder sum?",["i0 ^ i1 ^ cin","(i0 | i1) & cin","i0 & i1 & cin","i0 ^ i1 & cin"],"A","Sum is the XOR of all three inputs."],
+[23,"In the lab full adder, signal w3 equals:",["i0 & i1","i0 | cin","(i0 ^ i1) & cin","i1 ^ cin"],"C","G4 = and2(w1, cin)."],
+[24,"For i0=1, i1=1, cin=1, the full adder gives:",["sum=0, cout=0","sum=1, cout=1","sum=0, cout=1","sum=1, cout=0"],"B","1+1+1 is 11 in binary."],
+[25,"For i0=1, i1=0, cin=1, the full adder gives:",["sum=0, cout=0","sum=0, cout=1","sum=1, cout=0","sum=1, cout=1"],"B","1+0+1 is 10 in binary."],
+[26,"What does 'reg [2:0] test_vecs [0:7];' declare?",["A 3-element array of 8-bit values","One 24-bit register","An array of 8 elements, each 3 bits wide","A 3-bit wire"],"C","Eight entries of 3 bits."],
+[27,"What does `{i0, i1, cin} = test_vecs[i];` do?",["Concatenates the signals into a string","Splits the 3-bit vector into the three signals, i0 getting the MSB","Writes i0,i1,cin into the array","Adds the three signals"],"B","Concatenation splits, MSB first."],
+[28,"How is the macro TESTVECS (defined with `define) used in code?",["As #TESTVECS","As $TESTVECS","As TESTVECS without any prefix","As `TESTVECS with a backtick"],"D","Macros need the backtick prefix."],
+[29,"The main advantage of a vector testbench over a manually written one is:",["It makes the design synthesizable","It removes the need for a clock","Many test patterns are stored in an array and applied automatically with a loop","It runs faster on hardware"],"C","Loop-driven pattern application."],
+[30,"What does $finish do?",["Pauses and waits for input","Ends the simulation","Closes the VCD file only","Resets all registers"],"B","$finish terminates the run."],
+[31,"In example2 (circuit3), what feeds the inputs of the second full adder fa_2?",["sum and cout of fa_1, plus i2","i1[0], i1[1], i1[2]","The testbench directly","Only i2"],"A","fa fa_2(x1, x2, i2, …)."],
+[32,"In circuit3 with input declared [0:2] i1 and value 3'b100, what is i1[0]?",["Depends on clock","x","0","1"],"D","With [0:2], index 0 is the leftmost bit."],
+[33,"circuit3 with i1=001, i2=1 gives:",["sum1=1, cout1=1","sum1=0, cout1=0","sum1=0, cout1=1","sum1=1, cout1=0"],"C","fa_1: 0+0+1 gives sum 1, cout 0. fa_2: 1+0+1 gives sum 0, cout 1."],
+[34,"In mux2 (`assign o = (j==0)?i0:i1;`), which input is output when j=1?",["i0","Neither, output is z","i1","j"],"C","j=1 selects i1."],
+[35,"How many select lines does a 4-to-1 mux need?",["3","2","4","1"],"B","log₂4 = 2."],
+[36,"How is mux4 built in the lab?",["Four mux2 modules","Two decoders","One mux2 and an adder","Three mux2 modules"],"D","Three mux2 in two levels."],
+[37,"In the lab mux4, which select signal drives the two first-level mux2 modules?",["Both j1 and j0","j1","j0","A clock"],"B","mux2_0 and mux2_1 use j1; mux2_2 uses j0."],
+[38,"In the lab mux4 with i=4'b0100, j1=1, j0=0, which input bit reaches o?",["i[1]","i[3]","i[0]","i[2]"],"A","t0 = j1 ? i[1] : i[0] = i[1]; o = j0 ? t1 : t0 = t0."],
+[39,"In the lab mux4 with i=4'b0010, j1=0, j0=1, what is o?",["0","x","z","1"],"D","t1 = j1 ? i[3] : i[2] = i[2] = 1; o = t1."],
+[40,"A 2-to-4 decoder with A=2'b10 produces Y (Y[3:0]) =",["0001","0100","1000","0010"],"B","Y₂ = A₁ & ¬A₀."],
+[41,"How many outputs of the 2-to-4 decoder are high at any time?",["All four","Always two","None","Exactly one"],"D","The output is one-hot."],
+[42,"Which expression is Y[3] of the decoder?",["A₁ & A₀","¬A₁ & ¬A₀","¬A₁ & A₀","A₁ | A₀"],"A","Both address bits must be high."],
+[43,"In 'module mux2 (input wire i0, i1, j, output wire o);' which port is the select?",["j","i1","o","i0"],"A","j is the select line."],
+[44,"What is the decoder's Y when A=2'b00?",["0000","0001","1111","1000"],"B","Y₀ is high."],
+[45,"The flip-flop in dff.v is triggered by:",["Any change of in","The rising edge of clk","clk being high (level)","The falling edge of clk"],"B","posedge clk."],
+[46,"Why is df_out declared as reg?",["It stores a clock","It is assigned inside an always block","It is a 4-state wire","Registers are required for all outputs"],"B","Procedural assignment requires a reg."],
+[47,"Which assignment type is used for flip-flops in the lab?",["force","Nonblocking (<=)","assign","Blocking (=)"],"B","<= avoids races between flops."],
+[48,"Before the first clock edge, the dff output is:",["1","x","0","z"],"B","Regs start as x."],
+[49,"'initial clk = 1'b0; always #5 clk = ~clk;' creates a clock with period:",["5 time units","20 time units","10 time units","2.5 time units"],"C","5 low plus 5 high is 10."],
+[50,"In dfr, reset is implemented as:",["Synchronous, active low","Asynchronous, active high","Asynchronous, active low","Synchronous, active high"],"D","reset only affects df_in, which is sampled at the edge."],
+[51,"In dfr, if reset=1 and in=1 at a rising clock edge, the output becomes:",["0","Unchanged","x","1"],"A","df_in = 1 & ¬1 = 0."],
+[52,"In dfr, what does the 'not (reset_, reset);' primitive do?",["Drives reset_ with the inverse of reset","Creates a clock","Drives reset with the inverse of reset_","Latches reset"],"A","The first terminal of a gate primitive is the output."],
+[53,"In dffreset_tb (reset=1 until 12.5, period 10), what is the first clock edge at which in is captured normally?",["t = 5","t = 15","t = 25","t = 10"],"B","Edges fall at 5, 15 and 25; reset is low from 12.5."],
+[54,"In dfrl, what happens when load=0 (reset=0)?",["It loads in","It resets to 0","It toggles","The flip-flop keeps its current value"],"D","The mux selects the feedback path."],
+[55,"In dfrl, what happens at a clock edge when load=1 and reset=0?",["It holds","The flip-flop captures in","It clears","It becomes z"],"B","load=1 passes in to the flop."],
+[56,"Which module is used inside dfrl to implement the load function?",["decoder2X4","alu_slice","mux2","fa"],"C","A mux2 picks in or feedback."],
+[57,"How many full adders does ripple_c4b use?",["3","2","8","4"],"D","One per bit."],
+[58,"In a ripple carry adder, the carry-out of a stage goes to:",["The sum output","The carry-in of the next more significant stage","The carry-in of the same stage","The clock"],"B","The carry chains upward."],
+[59,"Why is it called 'ripple' carry?",["It uses a rippling clock","It uses a mux","It has no carries","The carry propagates stage by stage from LSB to MSB"],"D","The carry ripples through the stages."],
+[60,"Delay of a ripple carry adder:",["Depends only on cin","Grows with the number of bits","Is constant","Shrinks with more bits"],"B","Each stage waits on the carry below it."],
+[61,"ripple_c4b with a=0101, b=0011, cin=0 gives sum and cout:",["sum=1000, cout=1","sum=0010, cout=0","sum=0111, cout=0","sum=1000, cout=0"],"D","5 + 3 = 8."],
+[62,"ripple_c4b with a=1111, b=0001, cin=0 gives:",["sum=0000, cout=0","sum=0000, cout=1","sum=1110, cout=0","sum=1111, cout=1"],"B","15 + 1 = 16, so 0000 with carry."],
+[63,"ripple_c4b with a=1010, b=0101, cin=1 gives:",["sum=1111, cout=1","sum=1111, cout=0","sum=0000, cout=0","sum=0000, cout=1"],"D","10 + 5 + 1 = 16, so 0000 with carry."],
+[64,"In 'xor (x1, a, b);' which terminal is the output?",["x1","a","All three","b"],"A","Gate primitives list the output first."],
+[65,"In ripple.v, c1, c2, c3 are:",["Inputs of the module","Registers","Test vectors","Internal carry wires between the full adders"],"D","They are the inter-stage carry nets."],
+[66,"Which signal of ripple_c4b is the carry out of the last stage?",["cin","c3","cout","sum[3]"],"C","FA_3 produces cout."],
+[67,"What does op = 2'b01 do in the lab ALU?",["Add","OR","Subtract","AND"],"C","01 selects subtract."],
+[68,"Which op code selects the AND operation?",["2'b11","2'b01","2'b00","2'b10"],"D","10 selects AND."],
+[69,"Which op code selects OR?",["2'b10","2'b01","2'b00","2'b11"],"D","11 selects OR."],
+[70,"Subtraction in the ALU is implemented as:",["i0 XOR i1","i0 + (~i1) + 1","i0 - i1 using a subtractor gate","i0 AND ~i1"],"B","Two's complement addition."],
+[71,"In addsub, what does 'xor(t, i1, addsub);' do?",["ANDs i1 with addsub","Adds i1 and addsub","Inverts i1 when addsub=1 and passes it unchanged when addsub=0","Selects i0"],"C","Conditional inversion."],
+[72,"What is the carry-in of bit 0 in the 16-bit ALU?",["Always 0","cout","op[1]","op[0]"],"D","alu_slice _i0 (op, i0[0], i1[0], op[0], …)."],
+[73,"In alu_slice, mux2_1 (select op[1]) chooses between:",["i0 and i1","The add/sub result and the AND/OR result","AND and OR","cin and cout"],"B","op[1] picks arithmetic or logic."],
+[74,"In alu_slice, mux2_0 (select op[0]) chooses between:",["Add and subtract","i0 and i1","Carry and sum","AND result (0) and OR result (1)"],"D","op[0] picks AND or OR."],
+[75,"How many alu_slice instances form the 16-bit ALU?",["2","4","8","16"],"D","One slice per bit."],
+[76,"The ALU is an example of:",["Combinational logic","A memory","Sequential logic","A state machine"],"A","No clock is involved."],
+[77,"op=00, i0=ffff, i1=0001 gives:",["o=0000, cout=0","o=0000, cout=1","o=ffff, cout=0","o=0002, cout=1"],"B","The sum wraps to 0 with a carry out."],
+[78,"op=00, i0=aa55, i1=55aa gives o =",["aa55","ff00","0000","ffff"],"D","The two values are bitwise complements."],
+[79,"op=10, i0=aa55, i1=55aa gives o =",["ffff","aa55","0000","55aa"],"C","Bitwise AND of complements is all zero."],
+[80,"op=11, i0=aa55, i1=55aa gives o =",["fffe","aa55","0000","ffff"],"D","Bitwise OR fills every bit."],
+[81,"op=01, i0=aa55, i1=55aa gives o =",["0000","ffff","54ab","aa55"],"C","0xaa55 − 0x55aa = 0x54ab."],
+[82,"op=01, i0=0001, i1=7fff gives o =",["8000","0002","8002","7ffe"],"C","1 − 32767 = −32766 = 0x8002."],
+[83,"op=00, i0=0001, i1=7fff gives 8000 with cout=0. What does this indicate in signed arithmetic?",["Signed overflow (positive + positive gave a negative result)","A carry out","An AND operation","A correct result"],"A","The carry out is 0 but the sign flipped."],
+[84,"For logic operations (AND/OR), the carry out value is:",["Always 0 and meaningful","Always 1","Irrelevant","The result of AND"],"C","Carry only matters for add and subtract."],
+[85,"How many registers and how wide is each in the lab register file?",["8 registers, 16 bits each","16 registers, 8 bits each","8 registers, 8 bits each","4 registers, 16 bits each"],"A","Eight registers of 16 bits."],
+[86,"How many bits are needed for a register address?",["3","8","4","2"],"A","log₂8 = 3."],
+[87,"How many read and write ports does reg_file have?",["2 read and 2 write","1 read and 1 write","2 read ports and 1 write port","1 read and 2 write"],"C","Two read ports, one write port."],
+[88,"Which block generates the per-register load signals?",["demux8","decoder2X4","alu","mux8"],"A","demux8 decodes wr and wr_addr."],
+[89,"Which block selects the register to be read on each port?",["fa","dfrl","mux8_16 (a bank of 16 mux8)","demux8"],"C","mux8_16 is combinational, with no clock."],
+[90,"What does dfrl_16 consist of?",["8 dfr flip-flops","16 dfrl flip-flops sharing clk, reset and load","16 mux2 only","A 16-bit adder"],"B","Sixteen 1-bit flops with shared control."],
+[91,"When wr = 0, what happens?",["All registers are loaded","Only register 0 is written","All registers are cleared","No load line is asserted, so no register is written"],"D","The demux8 is disabled."],
+[92,"When are writes performed?",["Only during reset","At the falling clock edge always","Immediately when d_in changes","At the rising clock edge, if wr=1, into the register at wr_addr"],"D","Synchronous write with an enable."],
+[93,"Reading a register is:",["Only after reset","Only on the rising clock edge","Combinational: output follows the read address","Only when wr=1"],"C","mux8_16 is purely combinational."],
+[94,"What does demux2 do when j=1?",["Routes i to o1 and drives o0 with 0","Routes i to o0","Drives both outputs with i","Drives o1 with 0"],"A","j=1 selects the second output."],
+[95,"demux8 is built from:",["One demux2 and two demux4","Eight demux2 only","One decoder and one adder","Two mux4 and one mux2"],"A","A two-level demux tree."],
+[96,"mux8 is built from:",["Eight mux2 and one demux","Four mux2 only","Two mux4 and one mux2","One mux4 and one demux4"],"C","Two mux4 plus a final mux2."],
+[97,"Why does the register file have two read ports?",["One port is for the clock","The ALU needs two operands per operation","To reset faster","To double the capacity"],"B","Both ALU inputs come from the file."],
+[98,"After reset=1 at a clock edge, the registers contain:",["0","All ones","z","x"],"A","dfrl resets through dfr."],
+[99,"In the register file testbench, 'd_in = 16'hxxxx' with wr=0 shows that:",["The design is faulty","Unused inputs can be x because nothing is written","The simulator stops","x is written to the register"],"B","With wr=0 the data lines are don't-care."],
+[100,"Why is a register file used between memory and the ALU?",["It provides fast temporary storage so the ALU does not wait for memory","It increases the ALU word size","It makes memory unnecessary","It replaces the clock"],"A","Fast local storage for operands."],
+[101,"In reg_alu, where do the ALU operands come from?",["The clock","The mux2_16 only","The two read ports of the register file","Directly from d_in"],"C","d_out_a and d_out_b feed the ALU."],
+[102,"In reg_alu, sel=1 selects:",["The read address","The carry flop","The ALU result as the data written to the register file","The external d_in"],"C","mux2_16 (d_in, d_in_alu, sel, …)."],
+[103,"In reg_alu, sel=0 selects:",["The read data of port a","Zero","The ALU result","The external d_in"],"D","The external data path."],
+[104,"What does mux2_16 do?",["Selects among 16 inputs","Decodes a 4-bit address","Selects between two 16-bit buses using one select line","Adds two 16-bit numbers"],"C","A 16-bit-wide 2:1 mux."],
+[105,"Why is the ALU carry out passed through a dfr in reg_alu?",["So cout is registered and synchronized to the clock","To create a clock","To decode the address","To invert it"],"A","It registers the carry flag."],
+[106,"In the testbench, 'op=2'b00; rd_addr_a=1; rd_addr_b=2; wr_addr=3; sel=1; wr=1' does:",["reg3 = d_in","reg3 = reg1 + reg2","reg3 = reg1 AND reg2","reg1 = reg2 + reg3"],"B","It adds reg1 and reg2 into reg3."],
+[107,"If reg1 = 1111 and reg2 = 3333, reg3 after the add is:",["2222","4444","3333","5555"],"B","1111 + 3333 = 4444."],
+[108,"If reg3 = 4444 and reg1 = 1111, then 'sub reg3, reg1 into reg5' gives reg5 =",["1111","4444","3333","5555"],"C","4444 − 1111 = 3333."],
+[109,"With reg6 = 5555 and reg7 = 2222, AND gives:",["7777","0000","2222","5555"],"B","Nibbles 0101 & 0010 give 0000."],
+[110,"With reg6 = 5555 and reg7 = 2222, OR gives:",["0000","7777","5555","2222"],"B","Nibbles 0101 | 0010 give 0111."],
+[111,"To load an external value into a register in reg_alu, you set:",["reset=1 only","op=11 only","sel=1 and wr=0","sel=0 and wr=1 with wr_addr and d_in"],"D","The external path plus write enable."],
+[112,"To only display register contents without changing any register, the testbench sets:",["wr=0 and the read addresses","reset=1","op=00","wr=1 and sel=1"],"A","Reads are combinational and wr=0 blocks writes."],
+[113,"What are the four values of Verilog signals?",["low, high, rise, fall","0, 1, x, z","true, false, null, undefined","0, 1, 2, 3"],"B","Verilog uses four-state logic."],
+[114,"The initial value of a reg before it is assigned is:",["x","0","1","z"],"A","Regs start unknown."],
+[115,"An undriven wire has the value:",["0","z","x","1"],"B","High impedance."],
+[116,"An 'initial' block:",["Repeats forever","Is synthesized as a flip-flop only","Runs only on clock edges","Executes once starting at time 0"],"D","It runs exactly once."],
+[117,"An 'always #5 clk = ~clk;' statement:",["Toggles clk every 10 units","Is illegal in a testbench","Toggles clk every 5 time units forever","Runs once"],"C","It repeats every 5 time units."],
+[118,"What does #20 in a testbench mean?",["Set the clock to 20","Stop for 20 clock cycles","Assign the value 20","Wait 20 time units before the next statement"],"D","It is a delay control."],
+[119,"What does $time return?",["The real wall-clock time","The current simulation time","The number of vectors applied","The clock period"],"B","It returns the simulation time value."],
+[120,"Which command displays the waveform from a .vcd file?",["vvp file.vcd","gtkwave file.vcd","cat file.vcd","iverilog file.vcd"],"B","GTKWave opens VCD dumps."],
+[121,"Which loop-friendly variable type is used in the vector testbenches (for i)?",["tri","real clock","wire","integer"],"D","The loop variable is an integer."],
+[122,"Which keyword ends a module definition?",["endmodule","endcase","end","finish"],"A","endmodule closes the module."]
+];
+
+const LETTERS = ["A","B","C","D"];
+const state = {};
+const byNum = {};
+RAW.forEach(r => byNum[r[0]] = r);
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function fmt(s){
+  s = esc(s);
+  s = s.replace(/`([^`]+)`/g,'<code class="inl">$1</code>');
+  s = s.replace(/\{bar:([^}]*)\}/g,'<span class="ovl">$1</span>');
+  return s;
+}
+
+function build(){
+  document.querySelectorAll(".qlist").forEach(list=>{
+    const [a,b] = list.dataset.range.split(",").map(Number);
+    for(let n=a;n<=b;n++){
+      const [num,qt,opts,ans,expl] = byNum[n];
+      const el = document.createElement("div");
+      el.className = "q";
+      el.id = "q"+num;
+      el.dataset.n = num;
+      el.innerHTML =
+        '<div class="qhead"><span class="qnum">'+num+'</span><p class="qtext">'+fmt(qt)+'</p></div>'+
+        '<div class="opts">'+opts.map((o,i)=>
+          '<button class="opt" data-i="'+i+'"><span class="letter">'+LETTERS[i]+'</span><span>'+fmt(o)+'</span></button>'
+        ).join("")+'</div>'+
+        '<div class="expl"><b>Answer '+ans+'</b>. '+fmt(expl)+'</div>';
+      el.querySelectorAll(".opt").forEach(btn=>{
+        btn.addEventListener("click",()=>pick(el,num,Number(btn.dataset.i)));
+      });
+      list.appendChild(el);
+      state[num] = {picked:null,status:"unanswered"};
+    }
+  });
+}
+
+function pick(el,num,idx){
+  const st = state[num];
+  if(st.status !== "unanswered") return;
+  const ansIdx = LETTERS.indexOf(byNum[num][3]);
+  st.picked = idx;
+  const btns = el.querySelectorAll(".opt");
+  btns.forEach(b=>b.disabled = true);
+  btns[ansIdx].classList.add("answer");
+  if(idx === ansIdx){
+    st.status = "correct";
+    el.classList.add("correct");
+  }else{
+    st.status = "wrong";
+    btns[idx].classList.add("pick-bad");
+    el.classList.add("wrong");
+  }
+  el.querySelector(".expl").classList.add("show");
+  updateScore();
+}
+
+function reveal(el,num){
+  const st = state[num];
+  if(st.status !== "unanswered") return;
+  const ansIdx = LETTERS.indexOf(byNum[num][3]);
+  const btns = el.querySelectorAll(".opt");
+  btns.forEach(b=>b.disabled = true);
+  btns[ansIdx].classList.add("answer");
+  el.querySelector(".expl").classList.add("show");
+  st.status = "revealed";
+  updateScore();
+}
+
+function updateScore(){
+  let answered = 0, correct = 0;
+  Object.values(state).forEach(s=>{
+    if(s.status !== "unanswered") answered++;
+    if(s.status === "correct") correct++;
+  });
+  document.getElementById("sAnswered").textContent = answered;
+  document.getElementById("sCorrect").textContent = correct;
+  const pct = answered ? Math.round(correct/answered*100) : 0;
+  document.getElementById("sPct").textContent = pct + "%";
+  document.getElementById("barFill").style.width = (answered/RAW.length*100) + "%";
+}
+
+document.getElementById("revealAll").addEventListener("click",()=>{
+  document.querySelectorAll(".q").forEach(el=>{
+    if(el.offsetParent !== null) reveal(el,Number(el.dataset.n));
+  });
+});
+
+document.querySelectorAll(".sec-reveal").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.getElementById(btn.dataset.sec).querySelectorAll(".q")
+      .forEach(el=>reveal(el,Number(el.dataset.n)));
+  });
+});
+
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  Object.keys(state).forEach(k=>state[k] = {picked:null,status:"unanswered"});
+  document.querySelectorAll(".q").forEach(el=>{
+    el.classList.remove("correct","wrong");
+    el.querySelectorAll(".opt").forEach(b=>{
+      b.disabled = false;
+      b.classList.remove("answer","pick-bad");
+    });
+    el.querySelector(".expl").classList.remove("show");
+  });
+  updateScore();
+});
+
+document.getElementById("search").addEventListener("input", e=>{
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll(".q").forEach(el=>{
+    const n = Number(el.dataset.n);
+    const hay = (byNum[n][1] + " " + byNum[n][2].join(" ") + " " + byNum[n][4]).toLowerCase();
+    el.classList.toggle("hidden", q && !hay.includes(q));
+  });
+  document.querySelectorAll("main section[id^='q']").forEach(sec=>{
+    sec.classList.toggle("hidden", sec.querySelectorAll(".q:not(.hidden)").length === 0);
+  });
+});
+
+document.getElementById("tocBtn").addEventListener("click",()=>{
+  document.getElementById("toc").classList.toggle("open");
+});
+
+(function(){
+  const g = document.getElementById("keygrid");
+  RAW.forEach(r=>{
+    const d = document.createElement("div");
+    d.innerHTML = r[0] + " <b>" + r[3] + "</b>";
+    g.appendChild(d);
+  });
+})();
+
+build();
+updateScore();
+</script>
+</body>
+</html>
