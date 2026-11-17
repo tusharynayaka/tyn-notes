@@ -230,23 +230,6 @@
       }
     }
   </style>
-  <style>
-    body.playground-open .app {
-      transition: width .1s ease;
-    }
-
-    body.playground-open .sidebar {
-      width: 25% !important;
-      flex-shrink: 0 !important;
-    }
-
-    body.playground-open main {
-      flex: 1 !important;
-      width: auto !important;
-      max-width: none !important;
-      overflow: hidden !important;
-    }
-  </style>
 </head>
 
 <body>
@@ -533,43 +516,6 @@
         wrapper.appendChild(pre);
       });
 
-      // Create floating action button
-      var fab = document.createElement('button');
-      fab.className = 'playground-fab';
-      fab.innerHTML = '&#9679; C Playground';
-      fab.onclick = function () {
-        var panel = document.querySelector('.playground-panel');
-        if (panel && panel.classList.contains('open')) {
-          panel.classList.remove('open');
-          document.body.classList.remove('playground-open');
-          var app = document.querySelector('.app');
-          if (app) app.style.width = '';
-          fab.style.display = '';
-        } else {
-          if (!panel) {
-            panel = document.createElement('div');
-            panel.className = 'playground-panel';
-            panel.innerHTML = '<iframe src="playground.html" title="C Playground"></iframe>';
-            document.body.appendChild(panel);
-            window.addEventListener('message', function (e) {
-              if (e.data && e.data.type === 'close-playground') {
-                panel.classList.remove('open');
-                document.body.classList.remove('playground-open');
-                var app = document.querySelector('.app');
-                if (app) app.style.width = '';
-                fab.style.display = '';
-                setTimeout(function () { panel.remove(); }, 300);
-              }
-            });
-          }
-          panel.classList.add('open');
-          document.body.classList.add('playground-open');
-          var app = document.querySelector('.app');
-          if (app) app.style.width = '50vw';
-          fab.style.display = 'none';
-        }
-      };
-      document.body.appendChild(fab);
     })();
   </script>
 </body>
