@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>
+<title>MFAD · Unit 4 Super Notes</title>
+<meta name="description" content="Unit 4 of UE25MA242A Mathematical Foundation for AI and Data Science: hypothesis tests, t tests, ANOVA, chi-square, errors and power.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f3f1; --surface:#f8f8f6; --surface-2:#eceae5; --text:#1c1f1d; --text-soft:#565f5a;
+  --text-faint:#8a9089; --border:#dfe1dc; --accent:#2c5f52; --accent-soft:#dfe9e4; --accent-text:#1f4238;
+  --formula-bg:#f3ecdc; --formula-border:#c9a95c; --code-bg:#eef0ec; --mark-bg:#f6d989; --use-bg:#e7eef2; --use-border:#7fa8bd;
+  --radius:3px; --sidebar-w:300px; color-scheme:light;
+}
+html.dark{
+  --bg:#070b14; --surface:#0d1524; --surface-2:#101d33; --text:#eaf3ff; --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf; --border:#1d2d47; --accent:#60a5fa; --accent-soft:#10213d; --accent-text:#dceeff;
+  --formula-bg:#101a2d; --formula-border:#8ab4ff; --code-bg:#101b2d; --mark-bg:#3b5d9c; --use-bg:#0d2130; --use-border:#4a90b8; color-scheme:dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;line-height:1.55;transition:background .25s ease,color .25s ease;}
+::selection{background:var(--mark-bg);color:#1c1f1d;}
+#progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--accent);z-index:500;transition:width .1s linear;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--surface);position:sticky;top:0;height:100vh;overflow-y:auto;padding:22px 16px 60px;}
+.sidebar-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:14px;}
+.brand{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.02em;color:var(--text-faint);}
+.brand strong{display:block;font-family:'IBM Plex Sans',sans-serif;font-size:16px;color:var(--text);font-weight:600;margin-top:2px;}
+#themeToggle{border:1px solid var(--border);background:var(--surface-2);color:var(--text);width:34px;height:34px;border-radius:var(--radius);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s ease;}
+#themeToggle:hover{background:var(--accent-soft);}
+#themeToggle svg{width:16px;height:16px;}
+.search-wrap{position:relative;margin-bottom:18px;}
+#searchInput{width:100%;padding:9px 12px 9px 32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13.5px;outline:none;}
+#searchInput:focus{border-color:var(--accent);}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text-faint);pointer-events:none;}
+#searchCount{font-size:11.5px;color:var(--text-faint);margin:6px 2px 0;min-height:14px;}
+nav.toc{font-size:13.5px;}
+.toc-group{margin-bottom:4px;}
+.toc-group-title{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-faint);padding:14px 8px 6px;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between;}
+.toc-group-title:hover{color:var(--text-soft);}
+.toc-group-title .chev{transition:transform .15s ease;width:9px;height:9px;}
+.toc-group.collapsed .chev{transform:rotate(-90deg);}
+.toc-group.collapsed .toc-list{display:none;}
+.toc-list{list-style:none;margin:0;padding:0;}
+.toc-list li a{display:block;padding:6px 10px 6px 16px;margin:1px 0;border-radius:var(--radius);color:var(--text-soft);text-decoration:none;border-left:2px solid transparent;font-size:13px;}
+.toc-list li a:hover{background:var(--surface-2);color:var(--text);}
+.toc-list li a.active{color:var(--accent-text);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500;}
+.toc-list li.hidden{display:none;}
+main{flex:1;min-width:0;padding:56px clamp(20px,6vw,90px) 140px;display:flex;justify-content:center;}
+.content{max-width:720px;width:100%;}
+.masthead{margin-bottom:52px;border-bottom:1px solid var(--border);padding-bottom:20px;}
+.masthead .kicker{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent-text);letter-spacing:.04em;}
+.masthead h1{font-family:'Newsreader',serif;font-weight:500;font-size:clamp(34px,4.4vw,48px);margin:8px 0 14px;line-height:1.08;letter-spacing:-0.01em;}
+.masthead p{color:var(--text-soft);font-size:15.5px;max-width:58ch;}
+section.topic{margin-bottom:68px;scroll-margin-top:28px;}
+section.topic>h2{font-family:'Newsreader',serif;font-weight:500;font-size:27px;border-bottom:1px solid var(--border);padding-bottom:12px;margin:0 0 20px;letter-spacing:-0.01em;}
+section.topic h3{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:15.5px;margin:28px 0 10px;color:var(--text);}
+section.topic h4{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:14px;margin:20px 0 8px;color:var(--accent-text);}
+section.topic p{font-family:'Newsreader',serif;font-size:16.5px;color:var(--text);margin:0 0 14px;}
+section.topic p,section.topic li{font-size:16.5px;}
+section.topic ul,section.topic ol{font-family:'Newsreader',serif;padding-left:22px;margin:0 0 14px;}
+section.topic ul li,section.topic ol li{margin-bottom:6px;}
+strong{font-weight:600;}
+code{font-family:'IBM Plex Mono',monospace;font-size:.86em;background:var(--code-bg);padding:1.5px 5px;border-radius:3px;color:var(--accent-text);}
+.box{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--surface-2);}
+.box p:last-child{margin-bottom:0;}
+.box .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--accent-text);margin-bottom:5px;display:block;}
+.use{border:1px solid var(--use-border);border-left:3px solid var(--use-border);border-radius:var(--radius);padding:12px 16px;margin:0 0 16px;background:var(--use-bg);}
+.use p:last-child,.use ul:last-child{margin-bottom:0;}
+.use .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:var(--text-soft);margin-bottom:6px;display:block;}
+.use ul{margin-bottom:0;padding-left:20px;}
+.formula{border:1px solid var(--formula-border);background:var(--formula-bg);border-radius:var(--radius);padding:16px 20px;margin:18px 0;}
+.formula .label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#8a6d1f;display:block;margin-bottom:8px;}
+html.dark .formula .label{color:#d8b25b;}
+.formula .expr{font-family:'IBM Plex Mono',monospace;font-size:16.5px;text-align:center;margin:6px 0;}
+.formula .note{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text-soft);margin-top:8px;}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:14px;font-family:'IBM Plex Sans',sans-serif;}
+th{text-align:left;font-weight:600;font-size:12px;letter-spacing:.03em;color:var(--text-faint);border-bottom:1px solid var(--border);padding:8px 10px;}
+td{padding:8px 10px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media (max-width:640px){.two-col{grid-template-columns:1fr;}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;width:100%;}
+.flow .step{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);padding:8px 14px;font-size:13px;font-family:'IBM Plex Mono',monospace;text-align:center;}
+.flow .arrow{color:var(--text-faint);font-size:14px;}
+mark{background:var(--mark-bg);color:#1c1f1d;padding:0 1px;border-radius:2px;}
+.footnote{font-size:13px;color:var(--text-faint);border-top:1px solid var(--border);padding-top:16px;margin-top:46px;}
+.backtotop{position:fixed;bottom:22px;right:18px;width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);color:var(--text-soft);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .2s ease;z-index:400;}
+.backtotop.show{opacity:1;pointer-events:auto;}
+.backtotop svg{width:15px;height:15px;}
+.menu-btn{display:none;}
+#themeToggle{position:fixed;top:18px;right:18px;z-index:700;}
+@media (max-width:880px){
+  .sidebar{position:fixed;left:0;top:0;z-index:600;transform:translateX(-100%);transition:transform .2s ease;box-shadow:0 0 40px rgba(0,0,0,.25);}
+  .sidebar.open{transform:translateX(0);}
+  main{padding:56px 20px 120px;}
+  .menu-btn{display:flex;position:fixed;top:16px;left:16px;z-index:601;width:38px;height:38px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;}
+  .menu-btn svg{width:17px;height:17px;}}
+@media (max-width:600px){#themeToggle{top:12px;right:12px;}}
+</style>
+<style>
+section.topic .kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);margin-bottom:6px;}
+section.topic .dek{color:var(--text-soft);font-size:16px;margin:0 0 18px;}
+.table-wrap{overflow-x:auto;margin:0 0 18px;}
+.table-wrap table{margin:0;min-width:520px;}
+caption{caption-side:top;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);padding:0 0 6px;}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;}
+.formula .expr .op{color:var(--accent-text);padding:0 2px;}
+.formula-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:18px 0;}
+.formula-grid .formula{margin:0;}
+details{border:1px solid var(--border);border-left:3px solid var(--accent);background:var(--surface);border-radius:var(--radius);margin:0 0 14px;overflow:hidden;}
+details summary{cursor:pointer;list-style:none;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-soft);background:var(--surface-2);display:flex;gap:8px;align-items:center;}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:"+";color:var(--accent-text);font-weight:600;}
+details[open] summary::before{content:"−";}
+details[open] summary{border-bottom:1px solid var(--border);}
+details .dbody{padding:14px 16px 2px;}
+details .dbody p:last-child{margin-bottom:12px;}
+.keylist{list-style:none;padding:0;margin:0 0 16px;}
+.keylist li{position:relative;padding-left:20px;}
+.keylist li::before{content:"";position:absolute;left:2px;top:.68em;width:6px;height:6px;border-radius:1px;background:var(--accent);}
+.steps{counter-reset:step;list-style:none;padding:0;margin:0 0 16px;}
+.steps li{counter-increment:step;position:relative;padding-left:36px;}
+.steps li::before{content:counter(step);position:absolute;left:0;top:1px;width:23px;height:23px;display:grid;place-items:center;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface-2);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent-text);}
+.small{font-size:13px;color:var(--text-faint);}
+.quotebox{border-left:3px solid var(--border);padding:2px 0 2px 14px;margin:0 0 16px;color:var(--text-soft);}
+.quotebox p:last-child{margin-bottom:0;}
+.quotebox cite{font-style:normal;font-size:12.5px;color:var(--text-faint);}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:.88em;}
+.rule{border:0;border-top:1px solid var(--border);margin:26px 0;}
+.lead-in{color:var(--text-soft);}
+.box.warn{border-left-color:#b8862b;background:#f8f1e1;}
+.box.warn .label{color:#8a6518;}
+.box.trap{border-left-color:#b4544a;background:#f8eae8;}
+.box.trap .label{color:#8d3a32;}
+html.dark .box.warn{border-left-color:#d8b25b;background:#1b1810;}
+html.dark .box.warn .label{color:#e0c075;}
+html.dark .box.trap{border-left-color:#e08a80;background:#231413;}
+html.dark .box.trap .label{color:#f0a79e;}
+@media print{
+  .sidebar,.menu-btn,#themeToggle,#progress,.backtotop{display:none!important;}
+  .app{display:block;}
+  main{padding:0;}
+  .content{max-width:100%;}
+  body{background:#fff;color:#000;}
+  section.topic{break-inside:avoid-page;margin-bottom:32px;}
+  section.topic>h2{border-bottom:1px solid #bbb;}
+  .box,.use,.formula,details,table{break-inside:avoid;}
+  a{color:#000;text-decoration:none;}
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">UE25MA242A<strong>Unit 4 Super Notes</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Hypothesis tests</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#u4l1" data-title="Introduction to Hypothesis Testing — Large-Sample Tests for a Population Mean">Large-sample tests for μ</a></li>
+          <li><a href="#u4l2" data-title="Drawing Conclusions from the Results of Hypothesis Tests">Drawing conclusions</a></li>
+          <li><a href="#u4l3" data-title="Relationship Between Confidence Intervals and Hypothesis Tests">CI ↔ hypothesis tests</a></li>
+          <li><a href="#u4l4" data-title="Small-Sample Tests for a Population Mean — the One-Sample t Test">Small-sample t tests</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>ANOVA &amp; chi-square</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#u4l5" data-title="One-Way Analysis of Variance (ANOVA) — Comparing Three or More Means">One-way ANOVA</a></li>
+          <li><a href="#u4l6" data-title="Chi-Square Goodness-of-Fit Test — Multinomial Trials">Chi-square goodness of fit</a></li>
+          <li><a href="#u4l7" data-title="Chi-Square Tests for Homogeneity and Independence — Contingency Tables">Homogeneity &amp; independence</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Errors &amp; power</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#u4l8" data-title="Fixed-Level Testing, Critical Points, Type I and Type II Errors">Fixed-level tests &amp; errors</a></li>
+          <li><a href="#u4l9" data-title="Power of a Test — Definition, Computation and Sample Size">Power of a test</a></li>
+          <li><a href="#u4l10" data-title="Factors Affecting the Power of a Test">Factors affecting power</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Reference</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#appendix-formulas" data-title="Master Formula Sheet — Unit 3 and Unit 4">Formula sheet</a></li>
+          <li><a href="#appendix-decision" data-title="Which Test or Interval Do I Use? — Decision Guide">Which test do I use?</a></li>
+          <li><a href="#appendix-mistakes" data-title="Common Mistakes and Exam Traps">Common mistakes</a></li>
+          <li><a href="#appendix-glossary" data-title="Glossary of Symbols and Terms">Glossary</a></li>
+          <li><a href="#appendix-practice" data-title="Self-Check Questions and Exam Strategy">Self-check</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">UE25MA242A — Mathematical Foundation for AI &amp; Data Science</div>
+        <h1>Unit 4</h1>
+        <p>Hypothesis Testing · Lessons L1–L10</p>
+      </header>
+
+      <section class="topic" id="u4l1" data-title="Introduction to Hypothesis Testing — Large-Sample Tests for a Population Mean">
+        <div class="kicker">Unit 4 · Lesson L1 — Hypothesis tests</div>
+        <h2>Large-sample tests for a population mean</h2>
+        <p class="dek">The five-step ritual, the meaning of a P-value, and the z test that mirrors Session 37's interval.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> assume the default, measure how far the data stray from it in standard errors, and convert that distance into a P-value.</p>
+
+      <h3>1. What a hypothesis test is</h3>
+      <div class="box">
+        <span class="label">Definition</span>
+        <p>A <strong>hypothesis test</strong> is a formal procedure for deciding between two mutually exclusive statements about a population, using sample data. It produces a number between 0 and 1 measuring the strength of evidence against the default statement.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Hypothesis</th><th>Role</th><th>Examples</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Null, H₀</strong></td><td>The default / status quo: no difference, no effect, no change. Always contains equality.</td><td>μ = μ₀, μ ≤ μ₀, μ ≥ μ₀</td></tr>
+            <tr><td><strong>Alternative, H₁</strong></td><td>The claim you want to establish — the research hypothesis.</td><td>μ ≠ μ₀, μ &gt; μ₀, μ &lt; μ₀</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>They must be <strong>mutually exclusive</strong> and together cover all possibilities. Hypothesis tests and confidence intervals are two views of the same information: whenever a CI can be computed, a test can be performed, and vice versa (Lesson L3 makes this exact).</p>
+
+      <h3>2. The five steps</h3>
+      <h4>Step 1 — State the hypotheses</h4>
+      <p>Example: to show the mean is <em>less than</em> 100, write</p>
+      <div class="formula"><div class="expr">H₀ : μ ≥ 100 &nbsp;&nbsp;vs&nbsp;&nbsp; H₁ : μ &lt; 100</div></div>
+      <p>The equality always belongs to H₀ (see Lesson L2 for why).</p>
+      <h4>Step 2 — Assume H₀ is true</h4>
+      <p>H₀ may contain many values, so we compute using the value <strong>closest to H₁</strong> — the boundary value μ₀. This is the fairest, most conservative choice: it is the hardest value for the data to reject.</p>
+      <p>Under H₀, and approximating σ by s, the sample mean has the <strong>null distribution</strong></p>
+      <div class="formula"><div class="expr">x̄ ~ N( μ₀ , s/√n )</div><div class="note">This distribution describes what x̄ would look like if H₀ were true.</div></div>
+      <h4>Step 3 — Compute the test statistic</h4>
+      <div class="formula">
+        <span class="label">Large-sample z statistic</span>
+        <div class="expr">z = (x̄ − μ₀) / (s/√n)</div>
+        <div class="note">The numerator is the observed distance from H₀; the denominator converts it into standard-error units. Valid for n ≥ 30. Large |z| means the data are far from H₀.</div>
+      </div>
+      <h4>Step 4 — Compute the P-value</h4>
+      <div class="box">
+        <span class="label">Definition — P-value</span>
+        <p>The probability, <strong>assuming H₀ is true</strong>, of observing a test statistic at least as far from H₀ as the one actually observed. It is an area under the null distribution.</p>
+        <p>Plain English: <em>if H₀ were true, how unusual is what we saw?</em></p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Alternative</th><th>Type of test</th><th>P-value is…</th></tr></thead>
+          <tbody>
+            <tr><td>H₁ : μ &gt; μ₀</td><td>Right-tailed</td><td>Area to the <strong>right</strong> of z</td></tr>
+            <tr><td>H₁ : μ &lt; μ₀</td><td>Left-tailed</td><td>Area to the <strong>left</strong> of z</td></tr>
+            <tr><td>H₁ : μ ≠ μ₀</td><td>Two-tailed</td><td><strong>2 ×</strong> the smaller tail area (both tails beyond ±|z|)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box trap">
+        <span class="label">Two traps</span>
+        <p><strong>The P-value is not the probability that H₀ is true.</strong> It is computed <em>assuming</em> H₀ is true.</p>
+        <p><strong>A large P-value does not prove H₀.</strong> It only says the sample does not provide sufficient evidence to reject it.</p>
+      </div>
+      <h4>Step 5 — Draw a conclusion</h4>
+      <div class="formula">
+        <span class="label">Decision rule at significance level α</span>
+        <div class="expr">P ≤ α ⇒ reject H₀ &nbsp;&nbsp;·&nbsp;&nbsp; P &gt; α ⇒ do not reject H₀</div>
+        <div class="note">α = 0.05 is the common convention, not a universal law. The z-score gives the distance; the P-value turns that distance into evidence.</div>
+      </div>
+
+      <h3>3. Statistical versus practical significance</h3>
+      <p>A result is <strong>statistically significant</strong> at level α when P ≤ α. That measures confidence that a difference exists — not whether the difference matters.</p>
+      <div class="box warn">
+        <span class="label">Why they differ</span>
+        <p>If s or the standard error is tiny (often because n is huge), even a microscopic difference can produce a small P-value. Always ask whether the observed difference is large enough to change a real decision.</p>
+      </div>
+
+      <h3>4. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Battery lifetime — right-tailed</span>
+        <p>A new battery is claimed to last more than 500 cycles. In 45 tests, x̄ = 512 and s = 38. Test at α = 0.05.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>Hypotheses.</strong> The claim is "more than 500", so the equality goes with H₀:</p>
+          <div class="formula"><div class="expr">H₀ : μ ≤ 500 &nbsp;vs&nbsp; H₁ : μ &gt; 500, &nbsp; μ₀ = 500</div></div>
+          <p><strong>Statistic.</strong> s/√n = 38/√45 = 5.665.</p>
+          <div class="formula"><div class="expr">z = (512 − 500)/5.665 = 12/5.665 = 2.12</div></div>
+          <p><strong>P-value.</strong> Right-tailed: P = P(Z &gt; 2.12) = 1 − 0.9830 = <strong>0.017</strong>.</p>
+          <p><strong>Conclusion.</strong> 0.017 ≤ 0.05, so reject H₀. There is sufficient evidence at the 5% level that the new batteries average more than 500 cycles.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">Chlorine residual — two-tailed</span>
+        <p>A plant must keep mean chlorine at exactly 1.5 mg/L; both high and low are out of spec. In 50 readings, x̄ = 1.44 and s = 0.18. Test at α = 0.05.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>Hypotheses.</strong> Either direction is a problem, so:</p>
+          <div class="formula"><div class="expr">H₀ : μ = 1.5 &nbsp;vs&nbsp; H₁ : μ ≠ 1.5</div></div>
+          <p><strong>Statistic.</strong> s/√n = 0.18/√50 = 0.02546.</p>
+          <div class="formula"><div class="expr">z = (1.44 − 1.5)/0.02546 = −0.06/0.02546 = −2.36</div></div>
+          <p><strong>P-value.</strong> Two-tailed: 2 × P(Z &lt; −2.36) = 2 × 0.0091 = <strong>0.0182</strong>.</p>
+          <p><strong>Conclusion.</strong> 0.0182 ≤ 0.05, so reject H₀. There is statistically significant evidence that the true mean residual differs from 1.5 mg/L.</p>
+        </div></details>
+      </div>
+
+      <h3>5. Key takeaways</h3>
+      <ul class="keylist">
+        <li>H₀ is the default and owns the equality; H₁ is the claim you want evidence for.</li>
+        <li>Test against the boundary value of H₀ — the value closest to H₁.</li>
+        <li>z measures distance in standard errors; the P-value converts it to evidence.</li>
+        <li>The tail used depends entirely on the form of H₁.</li>
+        <li>Significance is not importance.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L1 (PES notes by Nandita R Nadig, verified by Dr. Jyothi R).</p>
+      </section>
+
+      <section class="topic" id="u4l2" data-title="Drawing Conclusions from the Results of Hypothesis Tests">
+        <div class="kicker">Unit 4 · Lesson L2 — Interpretation</div>
+        <h2>Drawing conclusions correctly</h2>
+        <p class="dek">There are only two conclusions, neither of which is "H₀ is true" — plus how to choose hypotheses that answer the right question.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> reject H₀ or fail to reject it. Never "accept" it, never "prove" it.</p>
+
+      <h3>1. The only two possible conclusions</h3>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Conclusion A</span><div class="expr">H₀ is false — reject H₀</div></div>
+        <div class="formula"><span class="label">Conclusion B</span><div class="expr">H₀ is plausible — do not reject H₀</div></div>
+      </div>
+      <div class="box trap">
+        <span class="label">We can never conclude H₀ is true</span>
+        <p>"Do not reject" means only that the data are <strong>consistent enough</strong> with H₀ that we cannot rule it out. Absence of evidence is not evidence of absence.</p>
+        <p><strong>Example.</strong> If H₀ : μ ≥ 675 and x̄ = 673.2, we cannot say μ ≥ 675 is true — 673.2 is below 675. We can only say 673.2 is close enough that H₀ might still hold.</p>
+      </div>
+
+      <h3>2. When to reject</h3>
+      <p>Smaller P-values make H₀ less plausible. The common rule of thumb is reject when P ≤ 0.05, but there is <strong>no sharp scientific cutoff</strong>; 0.05 is a convention.</p>
+      <div class="box">
+        <span class="label">Statistical significance</span>
+        <p>If P ≤ α, the result is <strong>statistically significant at the 100α% level</strong>. Equivalently, "H₀ is rejected at level 100α%".</p>
+        <p>P ≤ 0.05 ⇒ significant at 5%; P ≤ 0.01 ⇒ significant at 1%.</p>
+      </div>
+      <div class="use">
+        <span class="label">The nesting rule</span>
+        <p>If a result is significant at α, it is automatically significant at every <em>larger</em> level, but not necessarily at smaller ones. With P = 0.03 it is significant at 10% and 5%, but <strong>not</strong> at 1% (since 0.03 &gt; 0.01).</p>
+      </div>
+
+      <h3>3. Choosing H₀ and H₁ to answer the right question</h3>
+      <p>The hypotheses must be set up so that rejecting versus not rejecting leads to genuinely different <em>actions</em>.</p>
+      <div class="box warn">
+        <span class="label">Rule for one-tailed tests</span>
+        <p>The equality (=) always belongs with H₀.</p>
+        <ul>
+          <li>Allowed: H₀ : μ ≤ μ₀ or H₀ : μ ≥ μ₀</li>
+          <li>Not allowed: H₀ : μ &lt; μ₀ or H₀ : μ &gt; μ₀</li>
+        </ul>
+        <p>Reason: the null distribution needs one specific value of μ — the value in H₀ closest to H₁.</p>
+      </div>
+
+      <h3>4. Significance is not practical importance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Answered by</th></tr></thead>
+          <tbody>
+            <tr><td>How strong is the evidence that a difference exists?</td><td>The P-value</td></tr>
+            <tr><td>Is the difference large enough to matter?</td><td>Domain judgement — not statistics</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>A difference is statistically significant when it is <strong>large relative to its standard error</strong>. A tiny difference with a tiny standard error can be highly significant and practically irrelevant.</p>
+
+      <h3>5. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Corrosion coating — one-tailed decision</span>
+        <p>Current coating has mean corrosion rate 0.5 mm/year. A cheaper coating will be adopted only if its mean rate is convincingly lower. In 40 specimens, x̄ = 0.46 and s = 0.09.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>(a) Hypotheses.</strong> The burden of proof is on the new coating being better, so that claim goes in H₁:</p>
+          <div class="formula"><div class="expr">H₀ : μ ≥ 0.5 &nbsp;vs&nbsp; H₁ : μ &lt; 0.5</div></div>
+          <p>The equality must stay with H₀ because H₁ is the claim requiring convincing evidence. H₀ represents "no improvement, keep the current coating".</p>
+          <p><strong>(b) Statistic.</strong> s/√n = 0.09/√40 = 0.01423.</p>
+          <div class="formula"><div class="expr">z = (0.46 − 0.50)/0.01423 = −2.81 &nbsp;⇒&nbsp; P = P(Z &lt; −2.81) = 0.0025</div></div>
+          <p><strong>(c) Conclusion.</strong> 0.0025 ≤ 0.05 ⇒ reject H₀. There is strong evidence the new coating's mean rate is below 0.5 mm/year, so adopt it.</p>
+          <p><strong>Interpretation.</strong> "Reject" means strong evidence that the new coating is genuinely better. "Do not reject" would have meant only that the evidence was insufficient — not that the coatings are equal.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">GPS firmware — significance vs importance</span>
+        <p>Specified mean positioning error is 2.0 m. After a firmware update, 5,000 readings give x̄ = 1.97 m, s = 0.6 m. (a) Test H₀ : μ = 2.0 vs H₁ : μ ≠ 2.0 at α = 0.05. (b) Evaluate "significantly improves accuracy".</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>(a)</strong> s/√n = 0.6/√5000 = 0.00849.</p>
+          <div class="formula"><div class="expr">z = (1.97 − 2.00)/0.00849 = −3.54 &nbsp;⇒&nbsp; P = 2(0.0002) = 0.0004</div></div>
+          <p>0.0004 ≤ 0.05 ⇒ reject H₀. The true mean error differs significantly from 2.0 m.</p>
+          <p><strong>(b)</strong> The result is statistically significant, but the improvement is only <strong>3 cm</strong> (2.00 → 1.97 m). With n = 5,000 the standard error is minuscule, so even trivial differences become significant. For turn-by-turn navigation, 3 cm almost certainly does not justify a firmware rollout. <strong>Statistically significant ≠ practically significant.</strong></p>
+        </div></details>
+      </div>
+
+      <h3>6. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Two conclusions only: reject or fail to reject. Never "accept H₀".</li>
+        <li>Significance at α implies significance at every larger level, not at smaller ones.</li>
+        <li>Put the equality in H₀ and the burden-of-proof claim in H₁.</li>
+        <li>Report the P-value when possible; a bare reject/not-reject verdict hides information.</li>
+        <li>Always separate statistical significance from practical importance.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L2.</p>
+      </section>
+
+      <section class="topic" id="u4l3" data-title="Relationship Between Confidence Intervals and Hypothesis Tests">
+        <div class="kicker">Unit 4 · Lesson L3 — Duality</div>
+        <h2>Confidence intervals and tests are the same statement</h2>
+        <p class="dek">A CI is the set of all null values that would not be rejected. Understanding this removes half the memorisation.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> a two-sided 95% CI contains exactly the μ₀ values for which a two-tailed test at α = 0.05 gives P &gt; 0.05.</p>
+
+      <h3>1. Two views of the same plausible values</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tool</th><th>Question it answers</th></tr></thead>
+          <tbody>
+            <tr><td>Hypothesis test</td><td>Is <em>this one specific value</em> μ₀ plausible?</td></tr>
+            <tr><td>Confidence interval</td><td>What is the <em>entire range</em> of plausible values?</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2. The two-sided case</h3>
+      <div class="box">
+        <span class="label">Duality theorem</span>
+        <p>The values inside a two-sided level 100(1 − α)% confidence interval for μ are <strong>exactly</strong> those μ₀ for which the two-tailed test H₀ : μ = μ₀ vs H₁ : μ ≠ μ₀ has P &gt; α.</p>
+      </div>
+      <div class="formula">
+        <span class="label">The equivalence</span>
+        <div class="expr">μ₀ ∈ CI ⇔ P &gt; α ⇔ do not reject H₀<br>μ₀ ∉ CI ⇔ P ≤ α ⇔ reject H₀</div>
+      </div>
+      <p>Mechanically: the CI is x̄ ± z<sub>α/2</sub>s/√n. A value μ₀ is inside exactly when |x̄ − μ₀|/(s/√n) ≤ z<sub>α/2</sub>, which is exactly the condition for a two-tailed z test not to reject. Same algebra, different presentation.</p>
+
+      <h3>3. The one-sided case</h3>
+      <p>A one-sided confidence bound corresponds to the boundary of a one-tailed test.</p>
+      <div class="box">
+        <span class="label">One-sided duality</span>
+        <ul>
+          <li>If the 95% <strong>lower</strong> bound is L, then for any μ₀ &gt; L, testing H₀ : μ ≤ μ₀ vs H₁ : μ &gt; μ₀ gives P &gt; 0.05.</li>
+          <li>If the 95% <strong>upper</strong> bound is U, then for any μ₀ &lt; U, testing H₀ : μ ≥ μ₀ vs H₁ : μ &lt; μ₀ gives P &gt; 0.05.</li>
+        </ul>
+      </div>
+      <div class="use">
+        <span class="label">Reading a bound as a test</span>
+        <p>An upper bound U is the exact tipping point: testing at μ₀ = U gives P = 0.05. Move μ₀ <em>above</em> U and the test statistic becomes more negative, so P &lt; 0.05 (reject). Move μ₀ <em>below</em> U and P &gt; 0.05 (do not reject).</p>
+      </div>
+
+      <h3>4. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Coating thickness — CI and test agree exactly</span>
+        <p>n = 60, x̄ = 10.2 mm, s = 1.5 mm. (a) Build a 95% CI. (b) Test H₀ : μ = μ₀ at the lower endpoint. (c) Predict the result for μ₀ = 10.0 and μ₀ = 9.5.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>(a)</strong> Standard error = 1.5/√60 = 0.1936. z<sub>0.025</sub> = 1.96.</p>
+          <div class="formula"><div class="expr">10.2 ± 1.96(0.1936) = 10.2 ± 0.3795 = (9.82, 10.58)</div></div>
+          <p><strong>(b)</strong> With μ₀ = 9.82:</p>
+          <div class="formula"><div class="expr">z = (10.2 − 9.82)/0.1936 = 1.96 &nbsp;⇒&nbsp; P = 2(1 − 0.9750) = 0.05</div></div>
+          <p>Exactly 0.05 — confirming the endpoint is where the decision flips.</p>
+          <p><strong>(c)</strong> μ₀ = 10.0 lies inside (9.82, 10.58) ⇒ <strong>P &gt; 0.05</strong>, do not reject. μ₀ = 9.5 lies outside, below the interval ⇒ <strong>P &lt; 0.05</strong>, reject. No calculation needed: the interval already answers both.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">Syringe fill — one-sided bound as a test</span>
+        <p>A 95% upper confidence bound for mean fill volume is U = 4.92 mL. For each μ₀, decide using only the bound: (a) H₀ : μ ≥ 5.05 vs H₁ : μ &lt; 5.05; (b) H₀ : μ ≥ 4.85 vs H₁ : μ &lt; 4.85.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p>Rule: for an upper bound U, μ₀ &gt; U ⇒ P &lt; 0.05 (reject); μ₀ &lt; U ⇒ P &gt; 0.05 (do not reject).</p>
+          <p><strong>(a)</strong> 5.05 &gt; 4.92 ⇒ <strong>P &lt; 0.05</strong>. Reject H₀: the data suggest the true mean is unlikely to be as high as 5.05 mL.</p>
+          <p><strong>(b)</strong> 4.85 &lt; 4.92 ⇒ <strong>P &gt; 0.05</strong>. Do not reject: the data are consistent with a mean of at least 4.85 mL.</p>
+        </div></details>
+      </div>
+
+      <h3>5. Why this matters in practice</h3>
+      <ul class="keylist">
+        <li>A CI is more informative than a test: it shows <em>which</em> values are plausible and how precisely, not just a verdict on one value.</li>
+        <li>You can read a test result off a CI without recomputing anything — a major time-saver in exams.</li>
+        <li>The correspondence is exact only when the CI and test use the same level, the same distribution (z or t), and the same sidedness.</li>
+        <li>A 99% CI corresponds to a test at α = 0.01, not 0.05. Mixing levels is a classic error.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L3.</p>
+      </section>
+
+      <section class="topic" id="u4l4" data-title="Small-Sample Tests for a Population Mean — the One-Sample t Test">
+        <div class="kicker">Unit 4 · Lesson L4 — t tests</div>
+        <h2>Small-sample t tests for μ</h2>
+        <p class="dek">The same four steps as L1, with t in place of z — plus the one case where a small sample still uses z.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> for n &lt; 30 with unknown σ from an approximately normal population, replace z by t with n − 1 degrees of freedom.</p>
+
+      <h3>1. Why a separate test is needed</h3>
+      <p>The large-sample test replaces σ with s and uses the normal curve. That works when n is large because s is then close to σ. For small n, s may be far from σ, so the normal curve understates the uncertainty. If the population is approximately normal, the <strong>Student's t distribution</strong> accounts for that extra uncertainty.</p>
+      <div class="box warn">
+        <span class="label">Conditions for the t test</span>
+        <ol>
+          <li>The sample size is small (n &lt; 30).</li>
+          <li>The population is approximately normal.</li>
+        </ol>
+        <p>If the population is clearly non-normal and n is small, <strong>neither z nor t is reliable</strong>; nonparametric methods would be needed.</p>
+      </div>
+
+      <h3>2. The four steps</h3>
+      <h4>Step 1 — Hypotheses</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Form</th><th>H₀</th><th>H₁</th><th>Tail</th></tr></thead>
+          <tbody>
+            <tr><td>Two-tailed</td><td>μ = μ₀</td><td>μ ≠ μ₀</td><td>Both</td></tr>
+            <tr><td>Right-tailed</td><td>μ ≤ μ₀</td><td>μ &gt; μ₀</td><td>Right</td></tr>
+            <tr><td>Left-tailed</td><td>μ ≥ μ₀</td><td>μ &lt; μ₀</td><td>Left</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4>Step 2 — Test statistic</h4>
+      <div class="formula">
+        <span class="label">One-sample t statistic</span>
+        <div class="expr">t = (x̄ − μ₀) / (s/√n), &nbsp; df = n − 1</div>
+        <div class="note">Identical in form to the z statistic; only the reference distribution changes.</div>
+      </div>
+      <h4>Step 3 — P-value</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>H₁</th><th>P-value</th></tr></thead>
+          <tbody>
+            <tr><td>μ &gt; μ₀</td><td>Area to the right of t</td></tr>
+            <tr><td>μ &lt; μ₀</td><td>Area to the left of t</td></tr>
+            <tr><td>μ ≠ μ₀</td><td>Sum of both tails beyond t and −t</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box warn">
+        <span class="label">The t table gives ranges</span>
+        <p>Unlike the z table, the t table does not list every value, so P-values are often reported as a range, e.g. "0.01 &lt; P &lt; 0.025". The table value used as a cutoff is the <strong>critical value</strong>.</p>
+      </div>
+      <h4>Step 4 — Conclusion</h4>
+      <div class="formula"><div class="expr">|t| &gt; t<sub>critical</sub> (two-tailed) or t &gt; t<sub>critical</sub> (one-tailed) ⇒ reject H₀</div></div>
+
+      <h3>3. Why t instead of z?</h3>
+      <ul class="keylist">
+        <li>Same symmetric bell shape, but <strong>heavier tails</strong>.</li>
+        <li>Heavier tails compensate for estimating σ by s in a small sample.</li>
+        <li>As n grows, t converges to z — which is why the choice barely matters for large n.</li>
+      </ul>
+
+      <h3>4. If σ is known, use z even for small n</h3>
+      <div class="formula">
+        <span class="label">Known σ, small sample</span>
+        <div class="expr">z = (x̄ − μ₀) / (σ/√n)</div>
+        <div class="note">No estimation error remains, and for a normal population x̄ is exactly normal for any n. This is the only small-sample situation that uses z.</div>
+      </div>
+
+      <h3>5. Choosing the test</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Condition</th><th>Test</th><th>Statistic</th></tr></thead>
+          <tbody>
+            <tr><td>Large sample (n ≥ 30)</td><td>z</td><td>z = (x̄ − μ₀)/(s/√n)</td></tr>
+            <tr><td>Small n, σ unknown, normal population</td><td>t, df = n − 1</td><td>t = (x̄ − μ₀)/(s/√n)</td></tr>
+            <tr><td>Small n, σ known, normal population</td><td>z</td><td>z = (x̄ − μ₀)/(σ/√n)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Tire tread life — right-tailed t test</span>
+        <p>A new compound is claimed to exceed 60,000 km. Seven tires give x̄ = 62,400 km, s = 2,100 km; tread life is approximately normal. Test at α = 0.05.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>Hypotheses.</strong> H₀ : μ ≤ 60,000 vs H₁ : μ &gt; 60,000.</p>
+          <p><strong>Statistic.</strong> n = 7, df = 6.</p>
+          <div class="formula"><div class="expr">t = (62,400 − 60,000)/(2,100/√7) = 2,400/793.7 = 3.02</div></div>
+          <p><strong>Critical value.</strong> Right-tailed at α = 0.05, df = 6 ⇒ t₆,₀.₀₅ = 1.943.</p>
+          <p><strong>Conclusion.</strong> 3.02 &gt; 1.943 ⇒ reject H₀. There is sufficient evidence at the 5% level that mean tread life exceeds 60,000 km.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">Melting point — checking the assumption first</span>
+        <p>Six specimens melt at 661.2, 658.5, 662.0, 659.8, 660.5, 663.1 °C. (a) Is t appropriate? (b) Test H₀ : μ = 660 vs H₁ : μ ≠ 660 at α = 0.05.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <p><strong>(a)</strong> A dotplot shows values fairly evenly spread with no outliers, no strong clustering and no obvious skew — consistent with approximate normality, so t is appropriate.</p>
+          <p><strong>(b)</strong> x̄ = 660.85, s = 1.628, n = 6, df = 5.</p>
+          <div class="formula"><div class="expr">t = (660.85 − 660)/(1.628/√6) = 0.85/0.6646 = 1.28</div></div>
+          <p>Two-tailed critical value: t₅,₀.₀₂₅ = 2.571. Since |1.28| &lt; 2.571, <strong>do not reject H₀</strong>. The data are consistent with a mean melting point of 660 °C.</p>
+        </div></details>
+      </div>
+
+      <h3>7. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Only the reference distribution changes between z and t tests; the four steps are identical.</li>
+        <li>Always compute df = n − 1 before reading the t table.</li>
+        <li>z vs t for a small sample depends on whether σ is known, not on n alone.</li>
+        <li>Check normality with a plot before using t — and never use t with outliers.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L4.</p>
+      </section>
+
+      <section class="topic" id="u4l5" data-title="One-Way Analysis of Variance (ANOVA) — Comparing Three or More Means">
+        <div class="kicker">Unit 4 · Lesson L5 — ANOVA</div>
+        <h2>One-way ANOVA</h2>
+        <p class="dek">Comparing more than two means without inflating the error rate — by comparing variation between groups to variation within groups.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> if the group means are spread out far more than the noise inside the groups, F = MS<sub>between</sub>/MS<sub>within</sub> is large and H₀ is rejected.</p>
+
+      <h3>1. Why not just run many t tests?</h3>
+      <p>With 3 groups there are 3 pairwise comparisons; with 5 groups there are 10. Each test at α = 0.05 has a 5% false-positive chance, so the chance of at least one false positive balloons. <strong>ANOVA tests all means simultaneously at one controlled α.</strong></p>
+
+      <h3>2. Completely randomized experiments</h3>
+      <ul class="keylist">
+        <li>Experimental units (specimens, plots, patients) are assigned to treatments.</li>
+        <li>If every possible assignment is equally likely, the design is a <strong>completely randomized experiment</strong>.</li>
+        <li>Randomisation prevents the design from favouring any treatment, so differences can be attributed to treatments rather than hidden bias.</li>
+        <li>If order could matter (instrument drift, warm-up), randomise the order too. If switching treatments is costly, run each treatment as a block but randomise the order of blocks.</li>
+        <li>Each treatment represents a population; its responses are a random sample. Population means are <strong>treatment means</strong>.</li>
+      </ul>
+
+      <h3>3. Notation</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>I</td><td>Number of treatments (samples)</td></tr>
+            <tr><td>J₁, …, J<sub>I</sub></td><td>Sample size of each treatment (need not be equal)</td></tr>
+            <tr><td>N</td><td>Total observations, N = ΣJ<sub>i</sub></td></tr>
+            <tr><td>X<sub>ij</sub></td><td>j-th observation in the i-th sample</td></tr>
+            <tr><td>x̄<sub>i</sub></td><td>Sample mean of treatment i</td></tr>
+            <tr><td>x̄</td><td>Grand mean of all N observations</td></tr>
+            <tr><td>μ<sub>i</sub></td><td>Population (treatment) mean for treatment i</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Treatment mean</span><div class="expr">x̄<sub>i</sub> = ( Σ<sub>j=1</sub><sup>J<sub>i</sub></sup> X<sub>ij</sub> ) / J<sub>i</sub></div></div>
+        <div class="formula"><span class="label">Grand mean</span><div class="expr">x̄ = Σ<sub>i=1</sub><sup>I</sup> ( J<sub>i</sub> · x̄<sub>i</sub> ) / N</div><div class="note">A weighted average of the sample means, weighted by sample size.</div></div>
+      </div>
+
+      <h3>4. Hypotheses</h3>
+      <div class="formula">
+        <div class="expr">H₀ : μ₁ = μ₂ = … = μ<sub>I</sub> &nbsp;&nbsp;vs&nbsp;&nbsp; H₁ : two or more μ<sub>i</sub> are different</div>
+        <div class="note">H₁ does not say which means differ, or by how much. A significant F only justifies follow-up comparisons.</div>
+      </div>
+
+      <h3>5. The idea: two sources of variation</h3>
+      <p>ANOVA compares:</p>
+      <ol class="steps">
+        <li><strong>Between treatments</strong> — how far the group means sit from the grand mean. Large ⇒ treatments differ.</li>
+        <li><strong>Within treatments</strong> — how far individual observations sit from their own group mean. This is pure random noise.</li>
+      </ol>
+      <div class="formula">
+        <span class="label">Treatment (between) sum of squares</span>
+        <div class="expr">SS<sub>between</sub> = Σ<sub>i=1</sub><sup>I</sup> J<sub>i</sub> (x̄<sub>i</sub> − x̄)²</div>
+        <div class="note">Each squared distance is weighted by sample size, so larger samples count more.</div>
+      </div>
+      <div class="formula">
+        <span class="label">Error (within) sum of squares</span>
+        <div class="expr">SS<sub>within</sub> = Σ<sub>i=1</sub><sup>I</sup> Σ<sub>j=1</sub><sup>J<sub>i</sub></sup> (X<sub>ij</sub> − x̄<sub>i</sub>)² = Σ<sub>i=1</sub><sup>I</sup> (J<sub>i</sub> − 1) s<sub>i</sub>²</div>
+        <div class="note">The terms (X<sub>ij</sub> − x̄<sub>i</sub>) are <strong>residuals</strong>; SS<sub>within</sub> is their sum of squares. It reflects only random variation and is unaffected by how far apart the treatment means are.</div>
+      </div>
+      <div class="formula">
+        <span class="label">Total sum of squares — the ANOVA identity</span>
+        <div class="expr">SS<sub>T</sub> = Σ<sub>i</sub> Σ<sub>j</sub> (X<sub>ij</sub> − x̄)² = SS<sub>between</sub> + SS<sub>within</sub></div>
+        <div class="note">Total variation = variation explained by treatments + unexplained variation.</div>
+      </div>
+
+      <h3>6. Assumptions</h3>
+      <div class="box warn">
+        <span class="label">The F test is valid when</span>
+        <ol>
+          <li>Each treatment population is <strong>normally distributed</strong>.</li>
+          <li>All treatment populations have the <strong>same variance σ²</strong> (homoscedasticity).</li>
+          <li>Observations are independent (guaranteed by random assignment).</li>
+        </ol>
+      </div>
+
+      <h3>7. Mean squares and the F statistic</h3>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Between mean square</span><div class="expr">MS<sub>between</sub> = SS<sub>between</sub> / (I − 1)</div></div>
+        <div class="formula"><span class="label">Within mean square</span><div class="expr">MS<sub>within</sub> = SS<sub>within</sub> / (N − I)</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <caption>Expected values — the logic of the test.</caption>
+          <thead><tr><th>Quantity</th><th>E(value) if H₀ true</th><th>E(value) if H₀ false</th></tr></thead>
+          <tbody>
+            <tr><td>MS<sub>between</sub></td><td>σ²</td><td>&gt; σ²</td></tr>
+            <tr><td>MS<sub>within</sub></td><td>σ²</td><td>σ² (unchanged)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>So their ratio is near 1 when H₀ holds, and larger than 1 when it fails.</p>
+      <div class="formula">
+        <span class="label">ANOVA F statistic</span>
+        <div class="expr">F = MS<sub>between</sub> / MS<sub>within</sub>, &nbsp; df = (I − 1, N − I)</div>
+        <div class="note">Under H₀, F ~ F(I − 1, N − I). The test is inherently right-tailed: only a large F is evidence against H₀.</div>
+      </div>
+      <p><strong>Decision rule:</strong> P ≤ α ⇒ reject H₀; P &gt; α ⇒ do not reject.</p>
+
+      <h3>8. The ANOVA table</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead>
+          <tbody>
+            <tr><td>Factor (between)</td><td>SS<sub>between</sub></td><td>I − 1</td><td>MS<sub>between</sub></td><td>MS<sub>between</sub>/MS<sub>within</sub></td></tr>
+            <tr><td>Error (within)</td><td>SS<sub>within</sub></td><td>N − I</td><td>MS<sub>within</sub></td><td>—</td></tr>
+            <tr><td>Total</td><td>SS<sub>T</sub></td><td>N − 1</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>9. Related statistics</h3>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Pooled standard deviation</span><div class="expr">S = √MS<sub>within</sub></div><div class="note">Estimates the common within-group σ.</div></div>
+        <div class="formula"><span class="label">R²</span><div class="expr">R² = SS<sub>between</sub> / SS<sub>T</sub></div><div class="note">Proportion of total variation explained by treatments.</div></div>
+        <div class="formula"><span class="label">Adjusted R²</span><div class="expr">R²<sub>adj</sub> = R² − [(I−1)/(N−I)](1 − R²) = 1 − MS<sub>within</sub>/MS<sub>total</sub></div><div class="note">Penalises adding useless groups; plain R² can only stay the same or rise.</div></div>
+      </div>
+
+      <h3>10. Full worked example</h3>
+      <div class="box example">
+        <span class="label">Three fertilizers, four plots each</span>
+        <p>Yields (kg/plot): A = 20, 22, 19, 23; B = 25, 27, 24, 26; C = 18, 20, 17, 21. Assume normality and equal variances.</p>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p><strong>(a) Describe the data.</strong> I = 3, J₁ = J₂ = J₃ = 4, N = 12.</p>
+          <p>x̄<sub>A</sub> = 84/4 = 21; x̄<sub>B</sub> = 102/4 = 25.5; x̄<sub>C</sub> = 76/4 = 19.</p>
+          <div class="formula"><div class="expr">x̄ = [4(21) + 4(25.5) + 4(19)]/12 = 262/12 = 21.83</div></div>
+          <p><strong>(b) Sums of squares.</strong></p>
+          <div class="formula"><div class="expr">SS<sub>between</sub> = 4(21 − 21.83)² + 4(25.5 − 21.83)² + 4(19 − 21.83)²<br>= 4(0.694) + 4(13.444) + 4(8.028) = 88.67</div></div>
+          <p>Within A: (20−21)² + (22−21)² + (19−21)² + (23−21)² = 1 + 1 + 4 + 4 = 10.<br>
+             Within B: (25−25.5)² + (27−25.5)² + (24−25.5)² + (26−25.5)² = 0.25 + 2.25 + 2.25 + 0.25 = 5.<br>
+             Within C: (18−19)² + (20−19)² + (17−19)² + (21−19)² = 1 + 1 + 4 + 4 = 10.</p>
+          <div class="formula"><div class="expr">SS<sub>within</sub> = 10 + 5 + 10 = 25 &nbsp;⇒&nbsp; SS<sub>T</sub> = 113.67</div></div>
+          <p><strong>(c) Mean squares and F.</strong> df<sub>between</sub> = 2, df<sub>within</sub> = 9.</p>
+          <div class="formula"><div class="expr">MS<sub>between</sub> = 88.67/2 = 44.33; &nbsp; MS<sub>within</sub> = 25/9 = 2.78<br>F = 44.33/2.78 = 15.96</div></div>
+          <p><strong>(d) Conclusion.</strong> From the F table, F<sub>2,9,0.05</sub> = 4.26. Since 15.96 &gt; 4.26, P &lt; 0.05 ⇒ <strong>reject H₀</strong>. At least one fertilizer differs.</p>
+          <p><strong>(e) Summary statistics.</strong></p>
+          <div class="formula"><div class="expr">S = √2.78 = 1.67; &nbsp; R² = 88.67/113.67 = 0.78<br>R²<sub>adj</sub> = 0.78 − (2/9)(0.22) = 0.7311</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th></tr></thead>
+              <tbody>
+                <tr><td>Factor (between)</td><td>88.67</td><td>2</td><td>44.33</td><td>15.96</td></tr>
+                <tr><td>Error (within)</td><td>25</td><td>9</td><td>2.78</td><td></td></tr>
+                <tr><td>Total</td><td>113.67</td><td>11</td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>Interpretation.</strong> Fertilizer explains about 78% of the variation in yield, and the differences are statistically significant.</p>
+        </div></details>
+      </div>
+
+      <h3>11. Key takeaways</h3>
+      <ul class="keylist">
+        <li>ANOVA compares I means with one test, preserving the overall α.</li>
+        <li>F is a ratio of between-group to within-group variance; under H₀ it should be near 1.</li>
+        <li>df are (I − 1, N − I) — get these wrong and every table lookup is wrong.</li>
+        <li>A significant F says "some means differ", not which ones. Follow up with pairwise comparisons.</li>
+        <li>Normality and equal variances are conditions, not decoration.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L5.</p>
+      </section>
+
+      <section class="topic" id="u4l6" data-title="Chi-Square Goodness-of-Fit Test — Multinomial Trials">
+        <div class="kicker">Unit 4 · Lesson L6 — Chi-square</div>
+        <h2>Chi-square goodness of fit</h2>
+        <p class="dek">When there are more than two possible outcomes: does the whole set of probabilities match what was claimed?</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> compare observed counts with the counts expected under H₀, scaled so that every category contributes fairly.</p>
+
+      <h3>1. From Bernoulli to multinomial</h3>
+      <p>Earlier tests handled <strong>Bernoulli trials</strong>: two outcomes, success or failure, with probability p. A <strong>multinomial trial</strong> has k ≥ 2 possible outcomes with probabilities p₁, p₂, …, p<sub>k</sub>. Rolling a die is a multinomial trial with k = 6.</p>
+      <div class="box">
+        <span class="label">What the test does</span>
+        <p>The chi-square goodness-of-fit test checks whether a full set of multinomial probabilities equals a <strong>prespecified</strong> set p₀₁, …, p₀<sub>k</sub>.</p>
+      </div>
+
+      <h3>2. Hypotheses</h3>
+      <div class="formula">
+        <div class="expr">H₀ : p₁ = p₀₁, p₂ = p₀₂, …, p<sub>k</sub> = p₀<sub>k</sub></div>
+        <div class="expr">H₁ : at least one p<sub>i</sub> ≠ p₀<sub>i</sub></div>
+        <div class="note">H₁ does not say which probability differs, only that the claimed distribution is not the whole truth.</div>
+      </div>
+
+      <h3>3. Observed versus expected</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Quantity</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>O<sub>i</sub></td><td>Observed count in category i after N trials</td></tr>
+            <tr><td>E<sub>i</sub> = N · p₀<sub>i</sub></td><td>Expected count if H₀ were true</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>If H₀ holds, O<sub>i</sub> should be close to E<sub>i</sub>. If H₀ fails, at least some categories should deviate noticeably.</p>
+
+      <h3>4. The test statistic</h3>
+      <div class="formula">
+        <span class="label">Chi-square goodness-of-fit statistic</span>
+        <div class="expr">χ² = Σ<sub>i=1</sub><sup>k</sup> (O<sub>i</sub> − E<sub>i</sub>)² / E<sub>i</sub></div>
+        <div class="note">Each squared discrepancy is divided by its expected count. This standardisation prevents large categories from dominating and keeps small categories from being unfairly noisy.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>χ² value</th><th>Interpretation</th></tr></thead>
+          <tbody>
+            <tr><td>Near 0</td><td>Observed ≈ expected — consistent with H₀</td></tr>
+            <tr><td>Large</td><td>Observed deviates strongly — evidence against H₀</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>5. The chi-square distribution and its condition</h3>
+      <div class="box">
+        <span class="label">Null distribution</span>
+        <p>When all expected counts are sufficiently large, χ² approximately follows a <strong>chi-square distribution with k − 1 degrees of freedom</strong>, written χ²<sub>k−1</sub>.</p>
+        <p><strong>Validity condition: every E<sub>i</sub> ≥ 5.</strong> If any expected count is too small, combine categories before testing.</p>
+      </div>
+      <p>Degrees of freedom are k − 1 because the k counts must add to N, so once k − 1 of them are known the last is determined.</p>
+
+      <h3>6. Steps</h3>
+      <ol class="steps">
+        <li>State H₀ (with the p₀<sub>i</sub>) and H₁.</li>
+        <li>Compute each E<sub>i</sub> = N p₀<sub>i</sub>.</li>
+        <li>Check all E<sub>i</sub> ≥ 5; combine categories if needed.</li>
+        <li>Compute χ².</li>
+        <li>Set df = k − 1.</li>
+        <li>Find the P-value as the area to the <strong>right</strong> of χ².</li>
+        <li>P ≤ α ⇒ reject H₀; P &gt; α ⇒ do not reject.</li>
+      </ol>
+      <div class="box warn">
+        <span class="label">Reading the chi-square table</span>
+        <p>The table gives <strong>upper percentage points</strong>. To find the point cutting off the upper 5%, look in column α = 0.05 at the required df. Because exact values are usually not listed, report P as a range, e.g. "0.05 &lt; P &lt; 0.10", unless software is available.</p>
+      </div>
+
+      <h3>7. Full worked example</h3>
+      <div class="box example">
+        <span class="label">Candy colours</span>
+        <p>Claimed proportions: 30% brown, 20% red, 20% yellow, 15% green, 15% blue. A sample of 200 candies gives brown 52, red 48, yellow 36, green 33, blue 31. Test at α = 0.05.</p>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p><strong>(a) Hypotheses.</strong></p>
+          <p>H₀ : p<sub>B</sub> = 0.30, p<sub>R</sub> = 0.20, p<sub>Y</sub> = 0.20, p<sub>G</sub> = 0.15, p<sub>Bl</sub> = 0.15.<br>
+             H₁ : at least one proportion is not as claimed.</p>
+          <p><strong>(b) Expected counts.</strong> E<sub>i</sub> = 200 p₀<sub>i</sub>:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Colour</th><th>Brown</th><th>Red</th><th>Yellow</th><th>Green</th><th>Blue</th></tr></thead>
+              <tbody>
+                <tr><td>Observed</td><td class="num">52</td><td class="num">48</td><td class="num">36</td><td class="num">33</td><td class="num">31</td></tr>
+                <tr><td>Expected</td><td class="num">60</td><td class="num">40</td><td class="num">40</td><td class="num">30</td><td class="num">30</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>All E<sub>i</sub> ≥ 5, so the approximation is valid.</p>
+          <p><strong>(c) Contributions.</strong></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Colour</th><th>O</th><th>E</th><th>(O − E)²</th><th>(O − E)²/E</th></tr></thead>
+              <tbody>
+                <tr><td>Brown</td><td class="num">52</td><td class="num">60</td><td class="num">64</td><td class="num">1.07</td></tr>
+                <tr><td>Red</td><td class="num">48</td><td class="num">40</td><td class="num">64</td><td class="num">1.60</td></tr>
+                <tr><td>Yellow</td><td class="num">36</td><td class="num">40</td><td class="num">16</td><td class="num">0.40</td></tr>
+                <tr><td>Green</td><td class="num">33</td><td class="num">30</td><td class="num">9</td><td class="num">0.30</td></tr>
+                <tr><td>Blue</td><td class="num">31</td><td class="num">30</td><td class="num">1</td><td class="num">0.03</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="formula"><div class="expr">χ² = 1.07 + 1.60 + 0.40 + 0.30 + 0.03 = 3.40</div></div>
+          <p><strong>(d) Degrees of freedom and P-value.</strong> df = k − 1 = 4. The table gives χ²<sub>4,0.05</sub> = 9.488. Since 3.40 &lt; 9.488, <strong>P &gt; 0.05</strong>.</p>
+          <p><strong>(e) Conclusion.</strong> Do not reject H₀. There is no significant evidence that the true colour proportions differ from the claimed 30/20/20/15/15 split.</p>
+          <p><strong>(f) Largest contributor.</strong> Red contributes 1.60, the largest — its observed 48 is furthest from the expected 40 relative to expectation. But on its own it is not large enough to make the overall test significant.</p>
+        </div></details>
+      </div>
+
+      <h3>8. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Goodness of fit compares one observed distribution with a fully specified claimed distribution.</li>
+        <li>Every expected count must be ≥ 5; combine sparse categories otherwise.</li>
+        <li>df = k − 1; the test is always right-tailed.</li>
+        <li>Cell contributions diagnose <em>where</em> the deviation lies, but only after the overall test rejects.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L6.</p>
+      </section>
+
+      <section class="topic" id="u4l7" data-title="Chi-Square Tests for Homogeneity and Independence — Contingency Tables">
+        <div class="kicker">Unit 4 · Lesson L7 — Contingency tables</div>
+        <h2>Homogeneity and independence</h2>
+        <p class="dek">Two tests with identical arithmetic and different sampling designs. The distinction is entirely about how the data were collected.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> are the row distributions the same (homogeneity), or are the two classifications unrelated (independence)?</p>
+
+      <h3>1. Contingency tables</h3>
+      <ul class="keylist">
+        <li><strong>Rows</strong> = categories of one criterion (machine, group, shift).</li>
+        <li><strong>Columns</strong> = categories of a second criterion (outcome: too thin / OK / too thick).</li>
+        <li>Each <strong>cell</strong> holds the observed count in that row–column combination.</li>
+        <li><strong>Marginal totals</strong> are the row totals and column totals.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>I, J</td><td>Number of rows, number of columns</td></tr>
+            <tr><td>O<sub>ij</sub></td><td>Observed count in cell (i, j)</td></tr>
+            <tr><td>O<sub>i·</sub></td><td>Row i total</td></tr>
+            <tr><td>O<sub>·j</sub></td><td>Column j total</td></tr>
+            <tr><td>O</td><td>Grand total</td></tr>
+            <tr><td>p<sub>ij</sub></td><td>Probability of column j given row i</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2. The test for homogeneity</h3>
+      <p>Several multinomial trials are conducted — one per row — each with the same set of possible outcomes. We ask whether all rows share the same outcome probabilities.</p>
+      <div class="formula">
+        <div class="expr">H₀ : for each column j, p₁ⱼ = p₂ⱼ = … = p<sub>Ij</sub></div>
+        <div class="expr">H₁ : for at least one column j, p<sub>ij</sub> ≠ p<sub>kj</sub> for some i ≠ k</div>
+        <div class="note">H₀ says the outcome distribution is the same regardless of group; H₁ says at least one group differs.</div>
+      </div>
+      <div class="formula">
+        <span class="label">Expected count under homogeneity</span>
+        <div class="expr">E<sub>ij</sub> = (O<sub>i·</sub> × O<sub>·j</sub>) / O</div>
+        <div class="note">Under H₀ the best estimate of column j's probability is its overall proportion O<sub>·j</sub>/O; multiply by the row total.</div>
+      </div>
+      <div class="formula">
+        <span class="label">Chi-square statistic and df</span>
+        <div class="expr">χ² = Σ<sub>i=1</sub><sup>I</sup> Σ<sub>j=1</sub><sup>J</sup> (O<sub>ij</sub> − E<sub>ij</sub>)² / E<sub>ij</sub></div>
+        <div class="expr">df = (I − 1)(J − 1), &nbsp; valid when all E<sub>ij</sub> ≥ 5</div>
+      </div>
+      <div class="use">
+        <span class="label">Arithmetic check</span>
+        <p>The expected row and column totals always equal the observed ones exactly. Use this to catch arithmetic slips before computing χ².</p>
+      </div>
+
+      <h3>3. The test for independence</h3>
+      <p>A <strong>single sample</strong> is drawn, and each item is classified on two criteria at once. Both row and column totals are random.</p>
+      <div class="formula">
+        <div class="expr">H₀ : the row and column classifications are independent</div>
+        <div class="expr">H₁ : the row and column classifications are not independent</div>
+        <div class="note">The statistic, expected counts, df = (I − 1)(J − 1), E ≥ 5 condition and procedure are <strong>identical</strong> to homogeneity. Only the sampling design and the interpretation differ.</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>Homogeneity</th><th>Independence</th></tr></thead>
+          <tbody>
+            <tr><td>Sampling</td><td>Separate samples per row group; row totals fixed in advance</td><td>One sample; each item classified on both criteria; both totals random</td></tr>
+            <tr><td>Question</td><td>Do the groups share the same distribution?</td><td>Are the two criteria related?</td></tr>
+            <tr><td>H₀</td><td>Row probability distributions are identical</td><td>Row and column classifications are independent</td></tr>
+            <tr><td>Statistics</td><td colspan="2">Same χ², same E<sub>ij</sub>, same df</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4. Worked example — homogeneity</h3>
+      <div class="box example">
+        <span class="label">Three delivery hubs</span>
+        <p>A company samples a fixed 150 packages from each of three hubs and classifies each as on-time, delayed or lost:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Hub</th><th>On-time</th><th>Delayed</th><th>Lost</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td class="num">120</td><td class="num">25</td><td class="num">5</td><td class="num">150</td></tr>
+              <tr><td>B</td><td class="num">100</td><td class="num">40</td><td class="num">10</td><td class="num">150</td></tr>
+              <tr><td>C</td><td class="num">135</td><td class="num">13</td><td class="num">2</td><td class="num">150</td></tr>
+              <tr><td><strong>Total</strong></td><td class="num">355</td><td class="num">78</td><td class="num">17</td><td class="num">450</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p><strong>(a) Why homogeneity?</strong> The 150 per hub were fixed by the design, so the row totals are predetermined. We are asking whether the three hubs share the same outcome distribution.</p>
+          <p><strong>(b) Hypotheses.</strong> H₀: on-time/delayed/lost distribution is the same for all hubs. H₁: at least one hub differs.</p>
+          <p><strong>(c) Expected counts.</strong> Since every row total is 150, each hub has the same expectations:</p>
+          <div class="formula"><div class="expr">E<sub>on-time</sub> = 150(355)/450 = 118.33<br>E<sub>delayed</sub> = 150(78)/450 = 26<br>E<sub>lost</sub> = 150(17)/450 = 5.67</div></div>
+          <p>All exceed 5.</p>
+          <p><strong>(d) Contributions.</strong></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Hub</th><th>On-time</th><th>Delayed</th><th>Lost</th></tr></thead>
+              <tbody>
+                <tr><td>A</td><td class="num">0.023</td><td class="num">0.038</td><td class="num">0.078</td></tr>
+                <tr><td>B</td><td class="num">2.840</td><td class="num">7.538</td><td class="num">3.314</td></tr>
+                <tr><td>C</td><td class="num">2.347</td><td class="num">6.500</td><td class="num">2.373</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="formula"><div class="expr">χ² = 0.023 + 0.038 + 0.078 + 2.840 + 7.538 + 3.314 + 2.347 + 6.500 + 2.373 = 25.05</div></div>
+          <p><strong>(e) Conclusion.</strong> df = (3−1)(3−1) = 4. The table gives χ²<sub>4,0.05</sub> = 9.488. Since 25.05 &gt; 9.488, P &lt; 0.05 ⇒ <strong>reject H₀</strong>. The hubs do not perform equally well.</p>
+          <p>Delayed shipments drive the result: hub B has far more delays than expected, hub C far fewer.</p>
+        </div></details>
+      </div>
+
+      <h3>5. Worked example — independence</h3>
+      <div class="box example">
+        <span class="label">Department and work mode</span>
+        <p>A single random sample of 300 employees is cross-classified:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Department</th><th>Remote</th><th>Hybrid</th><th>Onsite</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>Engineering</td><td class="num">35</td><td class="num">45</td><td class="num">15</td><td class="num">95</td></tr>
+              <tr><td>Sales</td><td class="num">10</td><td class="num">50</td><td class="num">45</td><td class="num">105</td></tr>
+              <tr><td>Support</td><td class="num">25</td><td class="num">35</td><td class="num">40</td><td class="num">100</td></tr>
+              <tr><td><strong>Total</strong></td><td class="num">70</td><td class="num">130</td><td class="num">100</td><td class="num">300</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p><strong>(a) Why independence?</strong> One sample of 300 was drawn and each employee classified on two criteria. Neither set of totals was fixed; both arose from sampling.</p>
+          <p><strong>(b) Hypotheses.</strong> H₀: department and preferred work mode are independent. H₁: they are not independent.</p>
+          <p><strong>(c) Expected counts.</strong> E<sub>ij</sub> = (row total × column total)/300:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Department</th><th>Remote</th><th>Hybrid</th><th>Onsite</th></tr></thead>
+              <tbody>
+                <tr><td>Engineering</td><td class="num">22.17</td><td class="num">41.17</td><td class="num">31.67</td></tr>
+                <tr><td>Sales</td><td class="num">24.50</td><td class="num">45.50</td><td class="num">35.00</td></tr>
+                <tr><td>Support</td><td class="num">23.33</td><td class="num">43.33</td><td class="num">33.33</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>All are ≥ 5.</p>
+          <p><strong>(d) Contributions.</strong></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Department</th><th>Remote</th><th>Hybrid</th><th>Onsite</th></tr></thead>
+              <tbody>
+                <tr><td>Engineering</td><td class="num">7.43</td><td class="num">0.36</td><td class="num">8.77</td></tr>
+                <tr><td>Sales</td><td class="num">8.58</td><td class="num">0.45</td><td class="num">2.86</td></tr>
+                <tr><td>Support</td><td class="num">0.12</td><td class="num">1.60</td><td class="num">1.33</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="formula"><div class="expr">χ² = 7.43 + 0.36 + 8.77 + 8.58 + 0.45 + 2.86 + 0.12 + 1.60 + 1.33 = 31.5</div></div>
+          <p><strong>(e) Conclusion.</strong> df = 4, χ²<sub>4,0.05</sub> = 9.488. Since 31.5 &gt; 9.488, P &lt; 0.05 ⇒ <strong>reject H₀</strong>. Department and work-mode preference are associated.</p>
+          <p>Engineering skews remote and away from onsite; Sales skews away from remote and toward onsite.</p>
+        </div></details>
+      </div>
+
+      <h3>6. Key takeaways</h3>
+      <ul class="keylist">
+        <li>The arithmetic is identical for homogeneity and independence; the sampling design decides which name applies.</li>
+        <li>Fixed row totals ⇒ homogeneity. One sample, both totals random ⇒ independence.</li>
+        <li>E<sub>ij</sub> = row total × column total / grand total; always check E ≥ 5.</li>
+        <li>df = (I − 1)(J − 1), not IJ − 1.</li>
+        <li>Cell contributions locate the source of a significant result.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L7.</p>
+      </section>
+
+      <section class="topic" id="u4l8" data-title="Fixed-Level Testing, Critical Points, Type I and Type II Errors">
+        <div class="kicker">Unit 4 · Lesson L8 — Decision theory</div>
+        <h2>Fixed-level tests and the two errors</h2>
+        <p class="dek">When a decision cannot be deferred, fix α in advance, define a rejection region, and accept that either kind of mistake is possible.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> P(Type I) ≤ α by construction; P(Type II) depends on the true value and can only be reduced by better design.</p>
+
+      <h3>1. Why fix a level?</h3>
+      <p>In ordinary testing we report a P-value and let the reader judge. But sometimes a firm decision is unavoidable — recalibrate the process or not, accept or return the shipment. A <strong>fixed-level test</strong> chooses the cutoff before seeing the data.</p>
+      <ol class="steps">
+        <li>Choose α, with 0 &lt; α &lt; 1, <strong>before</strong> looking at the data. This is the <strong>significance level</strong>.</li>
+        <li>Compute the P-value in the usual way.</li>
+        <li>P ≤ α ⇒ reject H₀; P &gt; α ⇒ do not reject.</li>
+      </ol>
+
+      <h3>2. Critical points and rejection regions</h3>
+      <div class="box">
+        <span class="label">Definitions</span>
+        <p>A <strong>critical point</strong> is the value of the <em>test statistic</em> that produces a P-value exactly equal to α — the dividing line on the statistic scale, mirroring α on the P-value scale.</p>
+        <p>The <strong>rejection region</strong> is the set of statistic values that lead to rejecting H₀. The critical point is included in it.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Test type</th><th>Rejection region</th><th>Critical points</th></tr></thead>
+          <tbody>
+            <tr><td>Right-tailed, H₁ : μ &gt; μ₀</td><td>Upper tail; statistic large</td><td>One, at the α upper quantile</td></tr>
+            <tr><td>Left-tailed, H₁ : μ &lt; μ₀</td><td>Lower tail; statistic small</td><td>One, at the α lower quantile</td></tr>
+            <tr><td>Two-tailed, H₁ : μ ≠ μ₀</td><td>Both tails, α/2 each</td><td>Two, symmetric</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3. Type I and Type II errors</h3>
+      <div class="table-wrap">
+        <table>
+          <caption>The four possible outcomes of a fixed-level decision.</caption>
+          <thead><tr><th>Reality →<br>Decision ↓</th><th>H₀ true</th><th>H₀ false</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Reject H₀</strong></td><td><strong>Type I error</strong> (false positive)</td><td>Correct ✓</td></tr>
+            <tr><td><strong>Do not reject H₀</strong></td><td>Correct ✓</td><td><strong>Type II error</strong> (false negative)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="box">
+        <span class="label">Key result</span>
+        <p>If the significance level is α, then <strong>P(Type I error) ≤ α</strong>.</p>
+        <p>When H₀ specifies an exact value (μ = μ₀, on the boundary), the probability of landing in the rejection region is exactly α. When the true value lies strictly inside H₀'s region, the null distribution shifts away from the rejection region and the probability is even smaller.</p>
+      </div>
+
+      <h3>4. Controlling both errors</h3>
+      <div class="box warn">
+        <span class="label">The trade-off</span>
+        <p>Reducing α reduces Type I risk but generally <strong>increases Type II risk</strong>, for a fixed sample size. The two probabilities move in opposite directions.</p>
+        <p><strong>Standard strategy:</strong></p>
+        <ol>
+          <li>Choose α so the Type I error probability is acceptably small.</li>
+          <li>Compute or estimate the Type II error probability at that α.</li>
+          <li>If it is too large, <strong>redesign the experiment</strong> — most often by increasing n.</li>
+        </ol>
+        <p>Type II is harder to control because it depends on the unknown true value of the parameter, not just on α.</p>
+      </div>
+
+      <h3>5. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Dissolved oxygen — rejection regions at different levels</span>
+        <p>A new filtration system should raise mean DO above 6 mg/L. σ = 0.5 is known, n = 50, and H₀ : μ ≤ 6 vs H₁ : μ &gt; 6. (a) Find the 5% rejection region. (b) Is x̄ = 6.15 significant at 10%? (c) At 1%? (d) If the critical point is 6.10, what level is the test?</p>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p>Standard error = σ/√n = 0.5/√50 = 0.0707.</p>
+          <p><strong>(a)</strong> Right-tailed at α = 0.05 ⇒ z<sub>0.05</sub> = 1.645.</p>
+          <div class="formula"><div class="expr">critical x̄ = 6 + 1.645(0.0707) = 6.116 &nbsp;⇒&nbsp; reject if x̄ ≥ 6.116</div></div>
+          <p><strong>(b)</strong> z = (6.15 − 6)/0.0707 = <strong>2.12</strong>. At 10%, z<sub>0.10</sub> = 1.282. Since 2.12 ≥ 1.282, <strong>reject</strong>.</p>
+          <p><strong>(c)</strong> At 1%, z<sub>0.01</sub> = 2.326. Since 2.12 &lt; 2.326, <strong>do not reject</strong>.</p>
+          <p class="small">The same data give different decisions at different α — which is exactly why reporting the P-value is more informative than a bare verdict.</p>
+          <p><strong>(d)</strong> With critical point 6.10: z = (6.10 − 6)/0.0707 = 1.414. Level = P(Z ≥ 1.414) = <strong>0.0786</strong>, about 7.9%. Moving the cutoff closer to μ₀ necessarily raises α.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">API response time — classify each outcome</span>
+        <p>H₀ : μ ≤ 100 vs H₁ : μ &gt; 100 (rejecting means response time has worsened). Classify each case.</p>
+        <details class="solution"><summary>Show solution</summary><div class="dbody">
+          <ul>
+            <li><strong>(a) True μ = 95, reject.</strong> H₀ true and rejected ⇒ <strong>Type I error</strong>.</li>
+            <li><strong>(b) True μ = 100, do not reject.</strong> H₀ true and not rejected ⇒ correct decision.</li>
+            <li><strong>(c) True μ = 112, do not reject.</strong> H₀ false and not rejected ⇒ <strong>Type II error</strong>.</li>
+            <li><strong>(d) True μ = 106, reject.</strong> H₀ false and rejected ⇒ correct decision.</li>
+          </ul>
+        </div></details>
+      </div>
+
+      <h3>6. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Fix α before seeing data; that is what makes it a fixed-level test.</li>
+        <li>The critical point lives on the statistic scale; α lives on the P-value scale. They correspond one-to-one.</li>
+        <li>P(Type I) ≤ α always, with equality on the boundary of H₀.</li>
+        <li>Smaller α ⇒ larger Type II risk at fixed n. Increase n to improve both.</li>
+        <li>Type II probability depends on the true parameter value, so it is inherently harder to pin down.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L8.</p>
+      </section>
+
+      <section class="topic" id="u4l9" data-title="Power of a Test — Definition, Computation and Sample Size">
+        <div class="kicker">Unit 4 · Lesson L9 — Power</div>
+        <h2>Power of a test</h2>
+        <p class="dek">The probability of catching a real effect — and how to plan a study that has enough of it.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> power = 1 − P(Type II) = the chance of rejecting H₀ when it is false, evaluated at one specific alternative value.</p>
+
+      <h3>1. Definition</h3>
+      <div class="formula">
+        <span class="label">Power</span>
+        <div class="expr">Power = P(reject H₀ | H₀ is false) = 1 − P(Type II error)</div>
+        <div class="note">A useful test needs small probabilities of <em>both</em> error types. α controls Type I directly; once α is fixed, power tells you whether Type II risk is acceptable.</div>
+      </div>
+
+      <h3>2. When power is calculated</h3>
+      <ul class="keylist">
+        <li><strong>Before</strong> data collection — at the planning stage.</li>
+        <li>Purpose: check whether the proposed test is likely to detect a real effect before spending time and money.</li>
+        <li>There is little value in running an experiment with a poor chance of succeeding even when an effect exists.</li>
+      </ul>
+
+      <h3>3. Power requires a specific alternative</h3>
+      <p>Power is <strong>not one number</strong> for a test. It depends on which particular value under H₁ is assumed true, because different values are separated from H₀ by different amounts.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>True value</th><th>Separation from H₀</th><th>Power</th></tr></thead>
+          <tbody>
+            <tr><td>Close to μ₀</td><td>Small</td><td>Low — hard to distinguish</td></tr>
+            <tr><td>Far from μ₀</td><td>Large</td><td>High — easy to detect</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>So power must always be stated as "the power to detect a difference of ___".</p>
+
+      <h3>4. How to compute power</h3>
+      <ol class="steps">
+        <li>Compute the rejection region exactly as in a fixed-level test, using the null distribution and α.</li>
+        <li>Assume the specific alternative value μ₁ is true.</li>
+        <li>Compute the probability that the statistic falls in that same rejection region under the alternative distribution.</li>
+      </ol>
+      <div class="formula">
+        <span class="label">One-tailed, large-sample mean</span>
+        <div class="expr">Power = P( x̄ in rejection region | μ = μ₁ )</div>
+        <div class="note">The alternative distribution is the null distribution shifted to μ₁, with the same spread σ/√n. The farther μ₁ is from μ₀, the more of it lies beyond the critical point.</div>
+      </div>
+
+      <h3>5. How large should power be?</h3>
+      <p>There is no scientific cutoff. By convention, power above <strong>0.80</strong>, sometimes 0.90, is considered acceptable. If power is too low, the experiment is unlikely to detect a real effect and may waste resources.</p>
+
+      <h3>6. Increasing power and planning sample size</h3>
+      <p>The usual fix is a larger sample. In planning, work backward: specify a target power and the smallest effect worth detecting, then solve for n.</p>
+      <div class="formula">
+        <span class="label">Sample size for target power 1 − β (one-tailed mean test)</span>
+        <div class="expr">n = [ (z<sub>α</sub> + z<sub>β</sub>) σ / (μ₁ − μ₀) ]²</div>
+        <div class="note">z<sub>β</sub> is the upper-tail z for β = 1 − power (e.g. z<sub>0.10</sub> = 1.282 for 90% power). Always round <strong>up</strong>; the achieved power will then be slightly above target.</div>
+      </div>
+
+      <h3>7. Worked examples</h3>
+      <div class="box example">
+        <span class="label">Fitness tracker — power at a specific alternative</span>
+        <p>Step-count error has σ = 1.2, n = 40. Test H₀ : μ ≥ 5 vs H₁ : μ &lt; 5 at α = 0.05. (a) Find the rejection region. (b) Find power if the true mean is 4.5.</p>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p>Standard error = 1.2/√40 = 0.1897.</p>
+          <p><strong>(a)</strong> Left-tailed at 5% ⇒ z<sub>0.05</sub> = 1.645.</p>
+          <div class="formula"><div class="expr">critical x̄ = 5 − 1.645(0.1897) = 4.688 &nbsp;⇒&nbsp; reject if x̄ ≤ 4.688</div></div>
+          <p><strong>(b)</strong> Under μ = 4.5:</p>
+          <div class="formula"><div class="expr">z = (4.688 − 4.5)/0.1897 = 0.99<br>Power = P(Z ≤ 0.99) = 0.839</div></div>
+          <p>There is about an <strong>84% chance</strong> of correctly detecting that the true mean has dropped to 4.5, with this n and α.</p>
+        </div></details>
+      </div>
+      <div class="box example">
+        <span class="label">Manufacturing yield — required sample size</span>
+        <p>σ = 15, H₀ : μ ≤ 200 vs H₁ : μ &gt; 200 at α = 0.05. Find n so that power is at least 0.90 to detect μ₁ = 206.</p>
+        <details class="solution"><summary>Show full solution</summary><div class="dbody">
+          <p>z<sub>α</sub> = z<sub>0.05</sub> = 1.645; power 0.90 ⇒ β = 0.10 ⇒ z<sub>β</sub> = 1.282; μ₁ − μ₀ = 6.</p>
+          <div class="formula"><div class="expr">n = [ (1.645 + 1.282)(15)/6 ]² = (43.905/6)² = (7.318)² = 53.55</div></div>
+          <p>Round up ⇒ <strong>n = 54</strong>.</p>
+        </div></details>
+      </div>
+
+      <h3>8. Power for other tests</h3>
+      <p>The direct "shift the distribution" method is simplest for one-tailed, large-sample mean tests. It extends to two-tailed tests and proportions with more algebra. For t, F and chi-square tests, power is almost always computed with software.</p>
+
+      <h3>9. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Power is the complement of Type II error probability.</li>
+        <li>It is always conditional on a specific alternative value.</li>
+        <li>Compute it before collecting data, to avoid a doomed experiment.</li>
+        <li>0.80–0.90 is the conventional target; the only general way to raise it is more data.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L9.</p>
+      </section>
+
+      <section class="topic" id="u4l10" data-title="Factors Affecting the Power of a Test">
+        <div class="kicker">Unit 4 · Lesson L10 — Design levers</div>
+        <h2>What changes the power</h2>
+        <p class="dek">Four levers: α, n, the distance from H₀, and σ. Only two of them are genuinely yours to pull.</p>
+      
+
+      <p class="lead-in"><strong>In one line:</strong> power rises with α, n and effect size, and falls with σ.</p>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Summary — memorise this table.</caption>
+          <thead><tr><th>Factor</th><th>Change</th><th>Effect on power</th><th>Cost or comment</th></tr></thead>
+          <tbody>
+            <tr><td>Significance level α</td><td>Increase</td><td><strong>Increases</strong></td><td>Raises Type I error risk too</td></tr>
+            <tr><td>Sample size n</td><td>Increase</td><td><strong>Increases</strong></td><td>Costs data/time; the preferred lever</td></tr>
+            <tr><td>Distance |μ₁ − μ₀|</td><td>Increase</td><td><strong>Increases</strong></td><td>Not controllable — a property of reality</td></tr>
+            <tr><td>Population σ</td><td>Increase</td><td><strong>Decreases</strong></td><td>Only reducible by improving measurement/process</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>1. Significance level α</h3>
+      <p>Increasing α widens the rejection region: a larger slice of the null tail counts as "reject". A larger slice of the alternative distribution then falls inside it, so power rises.</p>
+      <div class="box warn">
+        <span class="label">The catch</span>
+        <p>A larger α also raises P(Type I error), which is capped at α. In practice α is fixed first (commonly 0.05) according to how much false-positive risk is tolerable, and power is evaluated afterward. α is rarely adjusted just to buy power.</p>
+      </div>
+
+      <h3>2. Sample size n</h3>
+      <p>Larger n shrinks the standard error σ/√n, making both the null and alternative distributions narrower and more concentrated around their centres. They overlap less, so less of the alternative distribution falls on the "do not reject" side of the critical point.</p>
+      <div class="box">
+        <span class="label">The practical lever</span>
+        <p>If a planned experiment lacks power, the standard remedy is <strong>more data</strong>, not a looser α. Sample-size calculation is done in reverse: fix target power and the smallest effect worth detecting, then solve for n.</p>
+      </div>
+
+      <h3>3. Distance from the null value (effect size)</h3>
+      <p>The farther the true value sits from μ₀, the more of the alternative distribution lies beyond the critical point. A test can have low power for a small effect even with a large sample, and high power for a large effect even with a modest one.</p>
+      <p>This is precisely why power has no single value: it must be quoted for a stated difference.</p>
+
+      <h3>4. Population standard deviation σ</h3>
+      <p>Larger σ widens both distributions and increases their overlap, so less of the alternative falls in the rejection region. Power falls.</p>
+      <p>σ is usually not under the experimenter's control — it belongs to the population and the measurement process. It can sometimes be reduced by improving measurement precision. More often, its effect is offset by increasing n, since σ/√n shrinks with n.</p>
+
+      <h3>5. Putting the levers together</h3>
+      <div class="use">
+        <span class="label">Design checklist</span>
+        <ol>
+          <li>Fix α from the tolerable Type I risk (usually 0.05).</li>
+          <li>State the smallest effect that would matter practically — that fixes μ₁ − μ₀.</li>
+          <li>Estimate σ from pilot data or prior knowledge.</li>
+          <li>Choose a target power (usually 0.80 or 0.90) and solve for n.</li>
+          <li>If n is infeasible, the honest options are: accept lower power, accept a larger detectable effect, or improve measurement precision.</li>
+        </ol>
+      </div>
+
+      <h3>6. Key takeaways</h3>
+      <ul class="keylist">
+        <li>Power and Type II error are complements: Power = 1 − β.</li>
+        <li>Raising α buys power at the price of Type I risk.</li>
+        <li>Raising n buys power with no statistical price — only a practical one.</li>
+        <li>Bigger effects are easier to detect; that is not a property of the test.</li>
+        <li>High variability masks real effects; more data is the usual compensation.</li>
+      </ul>
+      <p class="footnote">Source: Navidi 3e, Unit 4 L10.</p>
+      </section>
+
+      <section class="topic" id="appendix-formulas" data-title="Master Formula Sheet — Unit 3 and Unit 4">
+        <div class="kicker">Reference · A1 — Formula sheet</div>
+        <h2>Master formula sheet</h2>
+        <p class="dek">The Unit 4 formulas — tests, ANOVA, chi-square, errors and power — grouped by purpose.</p>
+      
+
+      <h3>Unit 4 · Hypothesis tests for means</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Situation</th><th>Statistic</th><th>Reference distribution</th></tr></thead>
+          <tbody>
+            <tr><td>Large sample, σ unknown</td><td>z = (x̄ − μ₀)/(s/√n)</td><td>Standard normal</td></tr>
+            <tr><td>Small sample, σ unknown</td><td>t = (x̄ − μ₀)/(s/√n)</td><td>t with n − 1 df</td></tr>
+            <tr><td>Small sample, σ known</td><td>z = (x̄ − μ₀)/(σ/√n)</td><td>Standard normal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>H₁</th><th>P-value</th></tr></thead>
+          <tbody>
+            <tr><td>μ &gt; μ₀</td><td>Area right of the statistic</td></tr>
+            <tr><td>μ &lt; μ₀</td><td>Area left of the statistic</td></tr>
+            <tr><td>μ ≠ μ₀</td><td>2 × smaller tail area</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Unit 4 · ANOVA</h3>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Between</span><div class="expr">SS<sub>B</sub> = Σ J<sub>i</sub>(x̄<sub>i</sub> − x̄)², df = I − 1</div></div>
+        <div class="formula"><span class="label">Within</span><div class="expr">SS<sub>W</sub> = ΣΣ(X<sub>ij</sub> − x̄<sub>i</sub>)², df = N − I</div></div>
+        <div class="formula"><span class="label">Identity</span><div class="expr">SS<sub>T</sub> = SS<sub>B</sub> + SS<sub>W</sub>, df = N − 1</div></div>
+        <div class="formula"><span class="label">F statistic</span><div class="expr">F = (SS<sub>B</sub>/(I−1)) / (SS<sub>W</sub>/(N−I))</div></div>
+        <div class="formula"><span class="label">Pooled SD</span><div class="expr">S = √MS<sub>W</sub></div></div>
+        <div class="formula"><span class="label">R² and adjusted R²</span><div class="expr">R² = SS<sub>B</sub>/SS<sub>T</sub>; R²<sub>adj</sub> = 1 − MS<sub>W</sub>/MS<sub>T</sub></div></div>
+      </div>
+
+      <h3>Unit 4 · Chi-square</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Test</th><th>Statistic</th><th>df</th><th>E condition</th></tr></thead>
+          <tbody>
+            <tr><td>Goodness of fit</td><td>χ² = Σ(O<sub>i</sub> − E<sub>i</sub>)²/E<sub>i</sub>, E<sub>i</sub> = Np₀<sub>i</sub></td><td>k − 1</td><td>all E<sub>i</sub> ≥ 5</td></tr>
+            <tr><td>Homogeneity</td><td>χ² = ΣΣ(O<sub>ij</sub> − E<sub>ij</sub>)²/E<sub>ij</sub></td><td>(I − 1)(J − 1)</td><td>all E<sub>ij</sub> ≥ 5</td></tr>
+            <tr><td>Independence</td><td>same as homogeneity</td><td>(I − 1)(J − 1)</td><td>all E<sub>ij</sub> ≥ 5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="formula"><span class="label">Expected count in a contingency table</span><div class="expr">E<sub>ij</sub> = (row i total × column j total) / grand total</div></div>
+
+      <h3>Unit 4 · Errors and power</h3>
+      <div class="formula-grid">
+        <div class="formula"><span class="label">Power</span><div class="expr">Power = 1 − P(Type II) = P(reject H₀ | H₀ false)</div></div>
+        <div class="formula"><span class="label">Sample size for power 1 − β</span><div class="expr">n = [(z<sub>α</sub> + z<sub>β</sub>)σ/(μ₁ − μ₀)]²</div></div>
+        <div class="formula"><span class="label">Type I probability</span><div class="expr">P(Type I) ≤ α</div></div>
+      </div>
+
+      <p class="small">Critical values you should recognise: z<sub>0.05</sub> = 1.645, z<sub>0.025</sub> = 1.96, z<sub>0.01</sub> = 2.326, z<sub>0.005</sub> = 2.58, z<sub>0.10</sub> = 1.282. For t, always check the df row.</p>
+      </section>
+
+      <section class="topic" id="appendix-decision" data-title="Which Test or Interval Do I Use? — Decision Guide">
+        <div class="kicker">Reference · A2 — Test chooser</div>
+        <h2>Which procedure do I use?</h2>
+        <p class="dek">A decision guide for every question type in Units 3 and 4.</p>
+      
+
+      <h3>1. Estimating a mean (confidence interval)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Sample size</th><th>σ known?</th><th>Population normal?</th><th>Procedure</th></tr></thead>
+          <tbody>
+            <tr><td>n &gt; 30</td><td>No</td><td>Not required</td><td>x̄ ± z<sub>α/2</sub> s/√n</td></tr>
+            <tr><td>n &gt; 30</td><td>Yes</td><td>Not required</td><td>x̄ ± z<sub>α/2</sub> σ/√n</td></tr>
+            <tr><td>n ≤ 30</td><td>No</td><td><strong>Yes</strong></td><td>x̄ ± t<sub>n−1,α/2</sub> s/√n</td></tr>
+            <tr><td>n ≤ 30</td><td>Yes</td><td><strong>Yes</strong></td><td>x̄ ± z<sub>α/2</sub> σ/√n</td></tr>
+            <tr><td>n = 1</td><td>Yes</td><td><strong>Yes</strong></td><td>x ± z<sub>α/2</sub> σ</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2. Testing one mean</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Condition</th><th>Statistic</th><th>Distribution</th></tr></thead>
+          <tbody>
+            <tr><td>n ≥ 30</td><td>z = (x̄ − μ₀)/(s/√n)</td><td>Normal</td></tr>
+            <tr><td>n &lt; 30, σ unknown, normal population</td><td>t = (x̄ − μ₀)/(s/√n)</td><td>t<sub>n−1</sub></td></tr>
+            <tr><td>n &lt; 30, σ known, normal population</td><td>z = (x̄ − μ₀)/(σ/√n)</td><td>Normal</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3. Comparing means</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Number of groups</th><th>Design</th><th>Procedure</th></tr></thead>
+          <tbody>
+            <tr><td>Two</td><td>Independent or paired</td><td>Two-sample or paired t test (beyond these notes)</td></tr>
+            <tr><td>Three or more</td><td>Completely randomised, normal, equal variances</td><td>One-way ANOVA F test</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>4. Categorical data</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Question</th><th>Design</th><th>Test</th><th>df</th></tr></thead>
+          <tbody>
+            <tr><td>Does one distribution match a claimed set of probabilities?</td><td>One multinomial sample</td><td>Goodness of fit</td><td>k − 1</td></tr>
+            <tr><td>Do several groups share the same distribution?</td><td>Fixed sample per group (row totals fixed)</td><td>Homogeneity</td><td>(I−1)(J−1)</td></tr>
+            <tr><td>Are two classifications related?</td><td>One sample, both criteria recorded</td><td>Independence</td><td>(I−1)(J−1)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>5. Choosing the alternative hypothesis</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Wording in the question</th><th>H₁</th><th>Tail</th></tr></thead>
+          <tbody>
+            <tr><td>"more than", "exceeds", "improved", "increased"</td><td>μ &gt; μ₀</td><td>Right</td></tr>
+            <tr><td>"less than", "below", "reduced", "cheaper/safer"</td><td>μ &lt; μ₀</td><td>Left</td></tr>
+            <tr><td>"differs from", "exactly", "either direction", "out of spec"</td><td>μ ≠ μ₀</td><td>Two</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="use">
+        <span class="label">The three-question checklist</span>
+        <ol>
+          <li>Is this an <strong>interval</strong> or a <strong>test</strong>?</li>
+          <li>Is n large or small, and is σ known?</li>
+          <li>Is the parameter a <strong>mean</strong> (z/t/F) or a set of <strong>probabilities/counts</strong> (χ²)?</li>
+        </ol>
+      </div>
+      </section>
+
+      <section class="topic" id="appendix-mistakes" data-title="Common Mistakes and Exam Traps">
+        <div class="kicker">Reference · A3 — Traps</div>
+        <h2>Common mistakes</h2>
+        <p class="dek">The test, ANOVA, chi-square and power errors that lose marks most often.</p>
+      
+
+      <h3>Hypothesis tests</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mistake</th><th>Correction</th></tr></thead>
+          <tbody>
+            <tr><td>Putting the equality in H₁.</td><td>The equality always belongs to H₀; H₁ is the claim requiring evidence.</td></tr>
+            <tr><td>Testing against the wrong μ₀.</td><td>Use the value in H₀ closest to H₁ — the boundary.</td></tr>
+            <tr><td>Doubling the P-value for a one-tailed test.</td><td>Double only for a two-tailed H₁.</td></tr>
+            <tr><td>Saying "H₀ is true" after a large P-value.</td><td>Say "do not reject" or "insufficient evidence".</td></tr>
+            <tr><td>Interpreting the P-value as P(H₀ true).</td><td>It is P(data at least this extreme | H₀ true).</td></tr>
+            <tr><td>Treating statistical significance as practical importance.</td><td>Check the actual size of the effect, not just the P-value.</td></tr>
+            <tr><td>Using a t table without computing df.</td><td>df = n − 1; wrong df gives the wrong critical value.</td></tr>
+            <tr><td>Reporting an exact P from a t table.</td><td>Report a range unless software provides an exact value.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>ANOVA</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mistake</th><th>Correction</th></tr></thead>
+          <tbody>
+            <tr><td>Using df = N − 1 for both sources.</td><td>Between: I − 1. Within: N − I. Total: N − 1.</td></tr>
+            <tr><td>Concluding which means differ from a significant F.</td><td>F only says "some differ"; follow up with pairwise comparisons.</td></tr>
+            <tr><td>Ignoring unequal sample sizes.</td><td>Weight each group mean by J<sub>i</sub> in SS<sub>between</sub> and the grand mean.</td></tr>
+            <tr><td>Using ANOVA with unequal variances.</td><td>The F test assumes a common σ²; check or use an alternative.</td></tr>
+            <tr><td>Reporting R² as if it proves causation.</td><td>R² is the proportion of variation explained, nothing more.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Chi-square</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mistake</th><th>Correction</th></tr></thead>
+          <tbody>
+            <tr><td>Using df = k for goodness of fit.</td><td>df = k − 1.</td></tr>
+            <tr><td>Using df = IJ − 1 for a contingency table.</td><td>df = (I − 1)(J − 1).</td></tr>
+            <tr><td>Checking observed counts against 5.</td><td>The condition is on <strong>expected</strong> counts.</td></tr>
+            <tr><td>Using a two-tailed P-value.</td><td>Chi-square tests are right-tailed: only large χ² is evidence.</td></tr>
+            <tr><td>Calling a fixed-row-total design "independence".</td><td>Fixed row totals ⇒ homogeneity.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Errors and power</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Mistake</th><th>Correction</th></tr></thead>
+          <tbody>
+            <tr><td>Swapping Type I and Type II.</td><td>Type I = false positive (reject a true H₀). Type II = false negative (fail to reject a false H₀).</td></tr>
+            <tr><td>Saying power is a fixed property of a test.</td><td>Power depends on the specific alternative value.</td></tr>
+            <tr><td>Thinking a smaller α always improves a test.</td><td>Smaller α raises Type II risk at fixed n.</td></tr>
+            <tr><td>Computing power after seeing the data.</td><td>Power is a planning calculation, before data collection.</td></tr>
+            <tr><td>Using z<sub>α/2</sub> in the power sample-size formula for a one-tailed test.</td><td>Use z<sub>α</sub>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </section>
+
+      <section class="topic" id="appendix-glossary" data-title="Glossary of Symbols and Terms">
+        <div class="kicker">Reference · A4 — Glossary</div>
+        <h2>Glossary</h2>
+        <p class="dek">Symbols and terms used throughout these notes, with the ones most often confused.</p>
+      
+
+      <h3>Symbols</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>μ</td><td>Population mean (unknown parameter)</td></tr>
+            <tr><td>μ₀</td><td>Null value of the mean, used in a test</td></tr>
+            <tr><td>x̄</td><td>Sample mean (statistic)</td></tr>
+            <tr><td>σ</td><td>Population standard deviation</td></tr>
+            <tr><td>s</td><td>Sample standard deviation</td></tr>
+            <tr><td>σ<sub>x̄</sub></td><td>Standard deviation of the sample mean = σ/√n</td></tr>
+            <tr><td>n</td><td>Sample size</td></tr>
+            <tr><td>N</td><td>Total observations in ANOVA or a multinomial experiment</td></tr>
+            <tr><td>α</td><td>Significance level; tail area for a one-sided bound</td></tr>
+            <tr><td>1 − α</td><td>Confidence level as a proportion</td></tr>
+            <tr><td>z<sub>α/2</sub></td><td>Normal multiplier cutting off α/2 in the right tail</td></tr>
+            <tr><td>t<sub>n−1,α/2</sub></td><td>t multiplier with n − 1 df cutting off α/2 in the right tail</td></tr>
+            <tr><td>P-value</td><td>Probability of a result at least as extreme as observed, assuming H₀</td></tr>
+            <tr><td>β</td><td>P(Type II error); power = 1 − β</td></tr>
+            <tr><td>I, J</td><td>Rows, columns in a contingency table; I also = number of treatments in ANOVA</td></tr>
+            <tr><td>O<sub>i</sub>, E<sub>i</sub></td><td>Observed and expected counts</td></tr>
+            <tr><td>SS, MS</td><td>Sum of squares, mean square</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Terms</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td>Parameter</td><td>A fixed but unknown population quantity, e.g. μ, σ, p</td></tr>
+            <tr><td>Statistic</td><td>A quantity computed from sample data, e.g. x̄, s, p̂</td></tr>
+            <tr><td>Estimator / estimate</td><td>The rule / the numerical value it produces</td></tr>
+            <tr><td>Unbiased</td><td>E(θ̂) = θ</td></tr>
+            <tr><td>Standard error</td><td>Standard deviation of an estimator's sampling distribution</td></tr>
+            <tr><td>Sampling distribution</td><td>Distribution of a statistic over repeated samples</td></tr>
+            <tr><td>Central Limit Theorem</td><td>For large n, x̄ is approximately normal regardless of population shape</td></tr>
+            <tr><td>Confidence level</td><td>Long-run coverage rate of the interval method</td></tr>
+            <tr><td>Precision / width</td><td>How tightly an interval pins down the parameter</td></tr>
+            <tr><td>Null distribution</td><td>Distribution of the test statistic when H₀ is true</td></tr>
+            <tr><td>Critical value</td><td>Statistic value corresponding exactly to P = α</td></tr>
+            <tr><td>Rejection region</td><td>Set of statistic values leading to rejecting H₀</td></tr>
+            <tr><td>Power</td><td>Probability of rejecting a false H₀ at a specified alternative</td></tr>
+            <tr><td>Effect size</td><td>Distance between the true value and the null value</td></tr>
+            <tr><td>Homoscedasticity</td><td>Equal variances across groups — an ANOVA assumption</td></tr>
+            <tr><td>Residual</td><td>X<sub>ij</sub> − x̄<sub>i</sub>, an observation's deviation from its group mean</td></tr>
+            <tr><td>Contingency table</td><td>Cross-tabulation of counts by two categorical criteria</td></tr>
+            <tr><td>Marginal total</td><td>A row or column total in a contingency table</td></tr>
+            <tr><td>Multinomial trial</td><td>An experiment with k ≥ 2 possible outcomes</td></tr>
+            <tr><td>Likelihood</td><td>The joint density of the data viewed as a function of the parameter</td></tr>
+            <tr><td>Prior / posterior</td><td>Belief before / after observing data</td></tr>
+            <tr><td>MAP</td><td>Posterior mode; MLE with a prior</td></tr>
+          </tbody>
+        </table>
+      </div>
+      </section>
+
+      <section class="topic" id="appendix-practice" data-title="Self-Check Questions and Exam Strategy">
+        <div class="kicker">Reference · A5 — Practice</div>
+        <h2>Self-check &amp; exam strategy</h2>
+        <p class="dek">Recall questions for Unit 4, numerical drills and a timing plan.</p>
+      
+
+      <h3>1. Rapid recall</h3>
+      <details><summary>State the P-value definition precisely.</summary><div class="dbody"><p>The probability, assuming H₀ is true, of a test statistic at least as far from H₀ as the observed value.</p></div></details>
+      <details><summary>What are the only two conclusions of a test?</summary><div class="dbody"><p>Reject H₀, or do not reject H₀. Never "accept" or "prove" H₀.</p></div></details>
+      <details><summary>How does a CI relate to a two-tailed test?</summary><div class="dbody"><p>A level 100(1 − α)% CI contains exactly the μ₀ values for which the two-tailed test at α gives P &gt; α.</p></div></details>
+      <details><summary>What does a significant ANOVA F tell you — and not tell you?</summary><div class="dbody"><p>It tells you at least one treatment mean differs. It does not identify which ones or by how much.</p></div></details>
+      <details><summary>Give the df for each chi-square test.</summary><div class="dbody"><p>Goodness of fit: k − 1. Homogeneity or independence: (I − 1)(J − 1).</p></div></details>
+      <details><summary>State the chi-square validity condition.</summary><div class="dbody"><p>All expected counts must be at least 5; combine categories otherwise.</p></div></details>
+      <details><summary>Define Type I and Type II errors.</summary><div class="dbody"><p>Type I: reject a true H₀ (false positive). Type II: fail to reject a false H₀ (false negative).</p></div></details>
+      <details><summary>Define power and state the four factors that affect it.</summary><div class="dbody"><p>Power = P(reject H₀ | H₀ false). It rises with α, n and effect size, and falls with σ.</p></div></details>
+      <details><summary>Why is power not a single number?</summary><div class="dbody"><p>It depends on the specific alternative value assumed true; different alternatives are separated from H₀ by different amounts.</p></div></details>
+
+      <h3>2. Numerical drills</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Drill</th><th>Answer</th></tr></thead>
+          <tbody>
+            <tr><td>t for n = 16, x̄ = 42, s = 8, μ₀ = 40</td><td>t = 2/(2) = 1.00, df = 15</td></tr>
+            <tr><td>z for n = 49, x̄ = 103, s = 14, μ₀ = 100</td><td>z = 3/2 = 1.50</td></tr>
+            <tr><td>Power sample size: α = 0.05, power 0.80, σ = 10, Δ = 4</td><td>[(1.645 + 0.842)10/4]² = 38.7 ⇒ 39</td></tr>
+            <tr><td>χ² GOF, k = 4, χ² = 7.2</td><td>df = 3; compare with χ²<sub>3,0.05</sub> = 7.815 ⇒ P &gt; 0.05</td></tr>
+            <tr><td>Contingency 3×4, χ² = 21.0</td><td>df = 6; χ²<sub>6,0.05</sub> = 12.592 ⇒ reject H₀</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3. Exam strategy</h3>
+      <ol class="steps">
+        <li><strong>Read the verb.</strong> "Estimate" ⇒ interval. "Test / is there evidence" ⇒ hypothesis test. "How many" ⇒ sample size. "Compare three groups" ⇒ ANOVA. "Counts / categories" ⇒ chi-square.</li>
+        <li><strong>Write the hypotheses before touching numbers</strong>, and put the equality in H₀. This earns method marks even if arithmetic slips.</li>
+        <li><strong>List given values with symbols</strong> (n, x̄, s, α, σ). It prevents mixing s and σ.</li>
+        <li><strong>State the distribution and df explicitly</strong> before looking up a table.</li>
+        <li><strong>Draw the curve and shade the tail.</strong> It takes ten seconds and prevents one-tailed/two-tailed errors.</li>
+        <li><strong>Keep 4 significant figures</strong> in intermediate steps; round only the final answer.</li>
+        <li><strong>Write the conclusion in context</strong> — mention the variable and units, not just "reject H₀".</li>
+        <li><strong>Check plausibility.</strong> A CI should contain x̄. A t multiplier should exceed the corresponding z. F and χ² must be non-negative.</li>
+      </ol>
+
+      <h3>4. Time allocation (3-hour paper, indicative)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Phase</th><th>Time</th><th>Task</th></tr></thead>
+          <tbody>
+            <tr><td>Scan</td><td>5 min</td><td>Read all questions; mark the ones you can do immediately</td></tr>
+            <tr><td>Short answers</td><td>40 min</td><td>Definitions, interpretations, one-line conceptual questions</td></tr>
+            <tr><td>Computational</td><td>105 min</td><td>Intervals, tests, ANOVA, chi-square — roughly 15 min each</td></tr>
+            <tr><td>Long / design</td><td>20 min</td><td>Power, sample size, discussion of assumptions</td></tr>
+            <tr><td>Review</td><td>10 min</td><td>Units, conclusions, df, tail direction</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box">
+        <span class="label">Final reminder</span>
+        <p>Statistics marks are won on <strong>interpretation</strong>, not arithmetic. A correct number with a wrong conclusion scores less than a slightly imperfect number with a correct, well-justified conclusion.</p>
+      </div>
+      </section>
+
+      <footer class="footnote">MFAD Unit 4 · Revision Super Notes · Lessons L1–L10</footer>
+    </div>
+  </main>
+</div>
+
+<div class="backtotop" id="backTop" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</div>
+
+<script>
+const root = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+const iconSun = document.getElementById('iconSun');
+function setTheme(dark){
+  root.classList.toggle('dark', dark);
+  root.setAttribute('data-theme', dark ? 'dark' : 'light');
+  if (iconSun) {
+    iconSun.innerHTML = dark
+      ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+      : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+  }
+}
+let isDark = (() => {
+  const saved = localStorage.getItem('theme');
+  return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+})();
+setTheme(isDark);
+document.body.appendChild(themeBtn);
+themeBtn.addEventListener('click', () => {
+  isDark = !root.classList.contains('dark');
+  setTheme(isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
+
+const sidebar = document.getElementById('sidebar');
+const menuBtn = document.getElementById('menuBtn');
+if (menuBtn) menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+
+document.querySelectorAll('.toc-group-title').forEach(t => {
+  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
+});
+
+const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = '#' + entry.target.id;
+    const link = navLinks.find(a => a.getAttribute('href') === id);
+    if (!link) return;
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => s && io.observe(s));
+
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+let marks = [];
+function clearMarks(){
+  marks.forEach(m => { const p = m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); });
+  marks = [];
+}
+function highlightInContent(term){
+  clearMarks();
+  if (!term) return 0;
+  const lower = term.toLowerCase();
+  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node){
+      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets = []; let n;
+  while (n = walker.nextNode()) targets.push(n);
+  let count = 0;
+  targets.forEach(node => {
+    const text = node.nodeValue;
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+    if (!regex.test(text)) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(regex, (match, p1, offset) => {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement('mark');
+      mark.textContent = match;
+      frag.appendChild(mark);
+      marks.push(mark);
+      count++;
+      lastIndex = offset + match.length;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  return count;
+}
+function filterNav(term){
+  const lower = term.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.toc-group').forEach(group => {
+    let groupHas = false;
+    group.querySelectorAll('.toc-list li').forEach(li => {
+      const a = li.querySelector('a');
+      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+      const match = !lower || hay.includes(lower);
+      li.classList.toggle('hidden', !match);
+      if (match){ groupHas = true; visible++; }
+    });
+    group.style.display = groupHas || !lower ? '' : 'none';
+    if (lower && groupHas) group.classList.remove('collapsed');
+  });
+  return visible;
+}
+let searchTimer;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const term = e.target.value.trim();
+  searchTimer = setTimeout(() => {
+    const navVisible = filterNav(term);
+    const contentMatches = highlightInContent(term);
+    if (!term) { searchCount.textContent = ''; return; }
+    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es');
+  }, 150);
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && marks.length){ marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  if (e.key === 'Escape'){ searchInput.value = ''; filterNav(''); highlightInContent(''); searchCount.textContent = ''; searchInput.blur(); }
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
+});
+
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+  backTop.classList.toggle('show', h.scrollTop > 600);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
