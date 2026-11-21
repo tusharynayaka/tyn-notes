@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function(){
+    try{
+      const saved = localStorage.getItem('dlcd-theme');
+      const dark = saved ? saved === 'dark'
+        : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (dark) document.documentElement.classList.add('dark');
+    }catch(e){}
+  })();
+</script>
+<title>Computer Architecture · Unit 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f6;
+  --surface:#ffffff;
+  --surface-2:#f2f0ea;
+  --text:#1c1f1d;
+  --text-soft:#565f5a;
+  --text-faint:#8a9089;
+  --border:#e3e0d6;
+  --accent:#2c5f52;
+  --accent-soft:#dfe9e4;
+  --accent-text:#1f4238;
+  --formula-bg:#f4ecd8;
+  --formula-border:#c9a95c;
+  --code-bg:#eef0ec;
+  --mark-bg:#f6d989;
+  --use-bg:#e7eef2;
+  --use-border:#7fa8bd;
+  --shadow: none;
+  --radius: 3px;
+  --sidebar-w: 300px;
+  color-scheme: light;
+}
+html.dark{
+  --bg:#070b14;
+  --surface:#0d1524;
+  --surface-2:#101d33;
+  --text:#eaf3ff;
+  --text-soft:#a9bbd8;
+  --text-faint:#7d8eaf;
+  --border:#1d2d47;
+  --accent:#60a5fa;
+  --accent-soft:#10213d;
+  --accent-text:#dceeff;
+  --formula-bg:#101a2d;
+  --formula-border:#8ab4ff;
+  --code-bg:#101b2d;
+  --mark-bg:#3b5d9c;
+  --use-bg:#0d2130;
+  --use-border:#4a90b8;
+  color-scheme: dark;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'IBM Plex Sans', sans-serif;
+  line-height:1.5;
+  transition:background .25s ease, color .25s ease;
+}
+::selection{background:var(--mark-bg); color:#1c1f1d;}
+
+#progress{
+  position:fixed; top:0; left:0; height:2px; width:0%;
+  background:var(--accent); z-index:500; transition:width .1s linear;
+}
+
+.app{ display:flex; min-height:100vh; }
+
+.sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  border-right:1px solid var(--border);
+  background:var(--surface);
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+  padding:22px 16px 60px;
+}
+.sidebar-head{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:8px; margin-bottom:18px;
+}
+.brand{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px; letter-spacing:.02em; color:var(--text-faint);
+}
+.brand strong{ display:block; font-family:'IBM Plex Sans',sans-serif; font-size:16px; color:var(--text); font-weight:600; margin-top:2px;}
+#themeToggle{
+  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  width:34px; height:34px; border-radius:var(--radius); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition: background .15s ease;
+}
+#themeToggle:hover{ background:var(--accent-soft); }
+#themeToggle svg{ width:16px; height:16px; }
+
+.search-wrap{ position:relative; margin-bottom:18px; }
+#searchInput{
+  width:100%; padding:9px 12px 9px 32px; border-radius:var(--radius);
+  border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; outline:none;
+}
+#searchInput:focus{ border-color:var(--accent); }
+.search-wrap svg{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  width:14px; height:14px; color:var(--text-faint); pointer-events:none;
+}
+#searchCount{ font-size:11.5px; color:var(--text-faint); margin:6px 2px 0; min-height:14px; }
+
+nav.toc{ font-size:13.5px; }
+.toc-group{ margin-bottom:4px; }
+.toc-group-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px; letter-spacing:.06em; color:var(--text-faint);
+  padding:14px 8px 6px; cursor:pointer; user-select:none;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.toc-group-title:hover{ color:var(--text-soft); }
+.toc-group-title .chev{ transition:transform .15s ease; width:9px; height:9px; }
+.toc-group.collapsed .chev{ transform:rotate(-90deg); }
+.toc-group.collapsed .toc-list{ display:none; }
+.toc-list{ list-style:none; margin:0; padding:0; }
+.toc-list li a{
+  display:block; padding:6px 10px 6px 16px; margin:1px 0; border-radius:var(--radius);
+  color:var(--text-soft); text-decoration:none; border-left:2px solid transparent;
+  font-size:13px;
+}
+.toc-list li a:hover{ background:var(--surface-2); color:var(--text); }
+.toc-list li a.active{
+  color:var(--accent-text); border-left-color:var(--accent); background:var(--accent-soft);
+  font-weight:500;
+}
+.toc-list li.hidden{ display:none; }
+
+main{
+  flex:1; min-width:0;
+  padding:56px clamp(20px, 6vw, 90px) 140px;
+  display:flex; justify-content:center;
+}
+.content{ max-width:700px; width:100%; }
+
+.masthead{ margin-bottom:52px; }
+.masthead .kicker{
+  font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--accent-text);
+  letter-spacing:.04em;
+}
+.masthead h1{
+  font-family:'Newsreader', serif; font-weight:500; font-size:clamp(34px,4.4vw,48px);
+  margin:8px 0 14px; line-height:1.08; letter-spacing:-0.01em;
+}
+.masthead p{ color:var(--text-soft); font-size:15.5px; max-width:56ch; }
+
+section.topic{ margin-bottom:64px; scroll-margin-top:28px; }
+section.topic > h2{
+  font-family:'Newsreader', serif; font-weight:500; font-size:27px;
+  border-bottom:1px solid var(--border); padding-bottom:12px; margin:0 0 20px;
+  letter-spacing:-0.01em;
+}
+section.topic h3{
+  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:16.5px;
+  margin:30px 0 10px; color:var(--text);
+}
+section.topic h4{
+  font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:14px;
+  margin:20px 0 8px; color:var(--accent-text);
+}
+section.topic p{ font-family:'Newsreader', serif; font-size:16.5px; color:var(--text); margin:0 0 14px; }
+section.topic p, section.topic li{ font-size:16.5px; }
+section.topic ul, section.topic ol{ font-family:'Newsreader', serif; padding-left:22px; margin:0 0 14px;}
+section.topic ul li, section.topic ol li{ margin-bottom:6px; }
+section.topic ul ul, section.topic ol ul{ margin:6px 0 6px; }
+strong{ font-weight:600; }
+code{
+  font-family:'IBM Plex Mono',monospace; font-size:.86em; background:var(--code-bg);
+  padding:1.5px 5px; border-radius:3px; color:var(--accent-text);
+}
+pre{
+  font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--code-bg);
+  border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;
+  overflow-x:auto; margin:0 0 16px; line-height:1.6;
+}
+pre code{ background:none; padding:0; color:var(--text); }
+
+.box{ border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:var(--radius);
+  padding:12px 16px; margin:0 0 16px; background:var(--surface-2); }
+.box p:last-child{ margin-bottom:0; }
+.box .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
+  color:var(--accent-text); margin-bottom:5px; display:block; }
+
+.formula{
+  border:1px solid var(--formula-border); background:var(--formula-bg);
+  border-radius:var(--radius); padding:16px 20px; margin:18px 0;
+}
+.formula .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
+  color:#8a6d1f; display:block; margin-bottom:8px; }
+html.dark .formula .label{ color:#d8b25b; }
+html.dark ::selection{ color:#eaf3ff; }
+html.dark mark{ color:#eaf3ff; }
+.formula .expr{ font-family:'IBM Plex Mono',monospace; font-size:17px; text-align:center; margin:6px 0; }
+.formula .note{ font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text-soft); margin-top:8px;}
+
+table{ width:100%; border-collapse:collapse; margin:0 0 18px; font-size:14.5px; font-family:'IBM Plex Sans',sans-serif;}
+th{ text-align:left; font-weight:600; font-size:12px; letter-spacing:.03em; color:var(--text-faint);
+  border-bottom:1px solid var(--border); padding:8px 12px; }
+td{ padding:8px 12px; border-bottom:1px solid var(--border); }
+tr:last-child td{ border-bottom:none; }
+
+figure{ margin:0 0 20px; }
+figure figcaption{ font-size:12.5px; color:var(--text-faint); margin-top:8px; font-family:'IBM Plex Mono',monospace;}
+
+.diagram{
+  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface-2);
+  padding:22px; display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:16px;
+}
+.stack{ display:flex; flex-direction:column; width:100%; max-width:420px; }
+.stack .layer{
+  border:1px solid var(--border); background:var(--surface); text-align:center; padding:10px;
+  font-size:13px; font-family:'IBM Plex Mono',monospace;
+}
+.stack .layer.accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
+.stack .layer + .layer{ border-top:none; }
+
+.pyramid{ display:flex; flex-direction:column; align-items:center; gap:0; width:100%; }
+.pyramid .tier{
+  border:1px solid var(--border); text-align:center; padding:9px; font-size:12.5px;
+  font-family:'IBM Plex Mono',monospace; background:var(--surface); margin-top:-1px;
+}
+
+.flow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; width:100%; }
+.flow .step{
+  border:1px solid var(--border); background:var(--surface); border-radius:var(--radius);
+  padding:8px 14px; font-size:13px; font-family:'IBM Plex Mono',monospace; text-align:center;
+}
+.flow .arrow{ color:var(--text-faint); font-size:14px; }
+
+.gantt-wrap{ margin:14px 0 26px; }
+.gantt-title{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); margin-bottom:8px;}
+.gantt-bar{ display:flex; width:100%; height:42px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
+.g-block{
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px;
+  border-right:1px solid var(--border); color:var(--accent-text); background:var(--accent-soft);
+  min-width:2px;
+}
+.g-block:nth-child(odd){ background:var(--surface-2); }
+.g-block:last-child{ border-right:none; }
+.gantt-axis{ position:relative; height:18px; margin-top:2px; }
+.gantt-axis span{ position:absolute; transform:translateX(-50%); font-size:11px; color:var(--text-faint); font-family:'IBM Plex Mono',monospace;}
+.gantt-axis span:first-child{ transform:translateX(0); }
+.gantt-axis span:last-child{ transform:translateX(-100%); }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
+
+.footnote{ font-size:13px; color:var(--text-faint); border-top:1px solid var(--border); padding-top:16px; margin-top:46px;}
+
+mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px; }
+
+.backtotop{
+  position:fixed; bottom:24px; right:28px; width:38px; height:38px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--border); color:var(--text-soft);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0;
+  pointer-events:none; transition:opacity .2s ease; z-index:400;
+}
+.backtotop.show{ opacity:1; pointer-events:auto; }
+.backtotop svg{ width:15px; height:15px; }
+
+.menu-btn{ display:none; }
+@media (max-width:880px){
+  .sidebar{
+    position:fixed; left:0; top:0; z-index:600; transform:translateX(-100%);
+    transition:transform .2s ease; box-shadow:0 0 40px rgba(0,0,0,.25);
+  }
+  .sidebar.open{ transform:translateX(0); }
+  main{ padding:56px 20px 120px; }
+  .menu-btn{
+    display:flex; position:fixed; top:16px; left:16px; z-index:601;
+    width:38px; height:38px; border-radius:var(--radius); border:1px solid var(--border);
+    background:var(--surface); align-items:center; justify-content:center; cursor:pointer;
+  }
+  .menu-btn svg{ width:17px; height:17px; }
+  .masthead{ padding-top:26px; }
+}
+
+/* Unit 3 additions (same visual language as the reference) */
+.chip{
+  display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+  padding:2px 8px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
+  color:var(--text-soft); margin:2px 4px 2px 0;
+}
+.small{ font-size:13.5px; }
+.center{ text-align:center; }
+.mono{ font-family:'IBM Plex Mono',monospace; }
+.formula .expr{ white-space:normal; }
+table.compact td, table.compact th{ padding:6px 9px; font-size:13.5px; }
+.bit-row{ display:flex; width:100%; max-width:520px; margin:0 auto; }
+.bit-row div{
+  border:1px solid var(--border); background:var(--surface); padding:8px 4px; text-align:center;
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; flex:1;
+}
+.bit-row div + div{ border-left:none; }
+.bit-row .b-accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <div class="brand">UE25CS251A<strong>Digital Logic &amp; Computer Design</strong></div>
+      <button id="themeToggle" aria-label="Toggle theme">
+        <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search topics…" autocomplete="off">
+    </div>
+    <div id="searchCount"></div>
+
+    <nav class="toc" id="toc">
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Sequential Building Blocks</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#counters" data-title="Counters ripple asynchronous synchronous ring Johnson decade binary counter MOD states">Counters</a></li>
+          <li><a href="#shift-registers" data-title="Shift Registers serial parallel load Sin Sout HDL">Shift registers</a></li>
+          <li><a href="#scan-chains" data-title="Scan Chains Testing scannable flip flop 65 cycles">Scan chains &amp; testing</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Memory Arrays</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#memory-organization" data-title="Memory Arrays Organization wordline bitline decoder depth width size ports register file">Organization &amp; operation</a></li>
+          <li><a href="#ram" data-title="DRAM SRAM SDRAM DDR RAM volatile refresh capacitor cross coupled inverters">DRAM &amp; SRAM</a></li>
+          <li><a href="#rom" data-title="ROM Mask PROM EPROM EEPROM Flash dot notation types">ROM &amp; its types</a></li>
+          <li><a href="#memory-logic" data-title="Memory as Logic LUT lookup table ROM combinational function">Memory as logic &amp; LUTs</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Architecture Introduction</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#arch-intro" data-title="Introduction Architecture ISA programmer view architectural state MIPS">What architecture is</a></li>
+          <li><a href="#design-principles" data-title="Design Principles simplicity regularity common case fast smaller faster compromises">Four design principles</a></li>
+          <li><a href="#risc-cisc" data-title="RISC CISC MIPS x86 instruction set comparison">RISC vs CISC</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Assembly Language</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#assembly-basics" data-title="Assembly Language Instructions operands mnemonic add sub">Instructions &amp; operands</a></li>
+          <li><a href="#registers" data-title="MIPS Register Set 32 registers zero saved temporary argument value gp sp fp ra">The register file</a></li>
+          <li><a href="#memory-operands" data-title="Memory byte addressable word addressable endian big little lw sw effective address">Memory &amp; endianness</a></li>
+          <li><a href="#immediates" data-title="Immediate constants addi andi ori xori lui sign extension zero extension">Constants &amp; immediates</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Machine Language</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#machine-formats" data-title="Machine Language R-type I-type J-type instruction formats opcode funct shamt">R, I and J formats</a></li>
+          <li><a href="#encoding" data-title="Encoding machine code add lw sw hexadecimal fields">Encoding instructions</a></li>
+          <li><a href="#decoding" data-title="Decoding machine code opcode funct sign extension interpreting">Decoding instructions</a></li>
+          <li><a href="#stored-program" data-title="Stored Program Concept PC program counter instruction memory">Stored-program concept</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Programming in MIPS</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#arithmetic-logical" data-title="Arithmetic Logical Instructions and or xor nor shift sll srl sra mult div hi lo">Arithmetic, logic &amp; shifts</a></li>
+          <li><a href="#branches" data-title="Branching beq bne j jr jal conditional statements if else">Branches &amp; conditionals</a></li>
+          <li><a href="#loops" data-title="Loops while for slt set less than">Loops</a></li>
+          <li><a href="#arrays" data-title="Arrays indexing base address byte arrays characters lb lbu sb">Arrays &amp; characters</a></li>
+          <li><a href="#functions" data-title="Function Calls jal jr ra arguments stack frame preserved registers">Functions &amp; the stack</a></li>
+          <li><a href="#recursion" data-title="Recursion factorial nonleaf stack frames">Recursion</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Addressing Modes</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#addressing-modes" data-title="Addressing Modes register only immediate base PC relative pseudo direct BTA JTA">Five MIPS addressing modes</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Compiling &amp; Loading</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#memory-map" data-title="MIPS Memory Map text global data dynamic stack heap reserved gp sp">The MIPS memory map</a></li>
+          <li><a href="#compile-assemble" data-title="Compiler Assembler two passes symbol table object file">Compile &amp; assemble</a></li>
+          <li><a href="#link-load" data-title="Linker Loader executable relocation loading">Link &amp; load</a></li>
+        </ul>
+      </div>
+      <div class="toc-group">
+        <div class="toc-group-title"><span>Parallelism</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <ul class="toc-list">
+          <li><a href="#parallelism" data-title="Parallelism latency throughput spatial temporal cookie example">Latency, throughput &amp; types</a></li>
+          <li><a href="#pipeline-parallelism" data-title="Pipelining stages clock period throughput numerical examples">Pipelining as temporal parallelism</a></li>
+          <li><a href="#hazards" data-title="Pipeline Hazards data control structural stalls bubbles">Pipeline hazards</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="content">
+      <header class="masthead">
+        <div class="kicker">UE25CS251A — Unit 3</div>
+        <h1>Computer Architecture</h1>
+        <p>From the sequential building blocks that hold state, through memory arrays and the MIPS instruction set, to assembly and machine language, programming constructs, addressing modes, the compile–assemble–link–load toolchain, and the two forms of parallelism that make modern processors fast.</p>
+      </header>
+
+      <section class="topic" id="counters">
+        <h2>Sequential Building Blocks: Counters</h2>
+        <p>A <strong>combinational circuit</strong> has no memory: its outputs depend only on the present inputs. A <strong>sequential circuit</strong> also remembers something. It stores state in flip-flops and changes that state only at clock edges. Two sequential blocks appear everywhere in digital design: <strong>counters</strong>, which move through a fixed sequence of binary values, and <strong>shift registers</strong>, which move bits from one flip-flop to the next.</p>
+
+        <h3>Binary counters</h3>
+        <p>An <em>N</em>-bit binary counter has a clock, a reset, and an <em>N</em>-bit output <code>Q</code>. Reset forces <code>Q = 0</code>. After reset is released, every active clock edge adds one to the stored value. The counter is simply a resettable register feeding an adder whose second input is 1.</p>
+
+        <div class="formula">
+          <span class="label">NEXT-STATE EQUATION</span>
+          <div class="expr">Q<sub>next</sub> = (Q + 1) mod 2<sup>N</sup></div>
+          <div class="note">Adding 1 to the largest value wraps the counter back to zero. Reset is usually given priority over counting.</div>
+        </div>
+
+        <p>An <em>N</em>-bit register can hold <strong>2<sup>N</sup></strong> distinct patterns, so the counter passes through <strong>2<sup>N</sup> states</strong>, from 0 to 2<sup>N</sup> − 1, before repeating. A 3-bit counter therefore has 8 states; an 8-bit counter counts from 0 to 255. The least-significant bit toggles on every clock, the next bit on every second clock, and so on: bit <em>i</em> changes at one-half the rate of bit <em>i</em> − 1. This is why a counter also acts as a <strong>frequency divider</strong>.</p>
+
+        <div class="diagram">
+          <div class="flow">
+            <span class="step">000</span><span class="arrow">→</span>
+            <span class="step">001</span><span class="arrow">→</span>
+            <span class="step">010</span><span class="arrow">→</span>
+            <span class="step">011</span><span class="arrow">→</span>
+            <span class="step">100</span><span class="arrow">→</span>
+            <span class="step">101</span><span class="arrow">→</span>
+            <span class="step">110</span><span class="arrow">→</span>
+            <span class="step">111</span><span class="arrow">→</span>
+            <span class="step">000</span>
+          </div>
+          <div class="small" style="color:var(--text-faint)">A 3-bit up-counter: 2<sup>3</sup> = 8 states, then wrap-around.</div>
+        </div>
+
+        <h3>Asynchronous (ripple) counters</h3>
+        <p>In an asynchronous counter only the first flip-flop receives the external clock. Its output clocks the second flip-flop, that output clocks the third, and so on. The count therefore <em>ripples</em> through the chain instead of changing everywhere at once. Each stage divides the frequency by two, so <em>n</em> flip-flops give a <strong>MOD-2<sup>n</sup></strong> counter: one flip-flop is MOD-2 (output frequency <code>f/2</code>), two are MOD-4 (<code>f/4</code>), three are MOD-8, and four are MOD-16.</p>
+
+        <table>
+          <tr><th>Clock pulse</th><th>Q<sub>3</sub></th><th>Q<sub>2</sub></th><th>Q<sub>1</sub></th><th>Q<sub>0</sub></th><th>Decimal</th></tr>
+          <tr><td>Reset</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+          <tr><td>2</td><td>0</td><td>0</td><td>1</td><td>0</td><td>2</td></tr>
+          <tr><td>3</td><td>0</td><td>0</td><td>1</td><td>1</td><td>3</td></tr>
+          <tr><td>4</td><td>0</td><td>1</td><td>0</td><td>0</td><td>4</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+          <tr><td>15</td><td>1</td><td>1</td><td>1</td><td>1</td><td>15</td></tr>
+          <tr><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0 (wraps)</td></tr>
+        </table>
+
+        <p>Because the later stages wait for the earlier ones, the outputs settle one after another. The accumulated propagation delay limits the maximum clock frequency and can produce brief wrong codes (glitches) while the chain settles. The advantage is extreme simplicity. A <strong>decade counter</strong> (MOD-10) is a four-bit ripple counter that is cleared as soon as it reaches 10: a NAND gate watches Q<sub>3</sub> and Q<sub>1</sub> (binary 1010) and drives the clear input low, so the sequence is 0–9 and then 0 again.</p>
+
+        <p>A ripple counter can count down as well as up. With a mode input <code>M</code>, the clock fed to each later stage is <code>Y = Q</code> when <code>M = 0</code> (up-counting) and <code>Y = Q'</code> when <code>M = 1</code> (down-counting). A small combinational circuit selects the true or complemented output between every pair of flip-flops. The same idea gives a 3-bit up sequence 000→001→…→111 and a down sequence 111→110→…→000.</p>
+
+        <h3>Synchronous counters</h3>
+        <p>A synchronous counter drives <strong>every flip-flop from one common clock</strong>. All outputs change in parallel, so there is no cumulative ripple delay and the circuit can run much faster. The price is a little combinational logic that decides, for each flip-flop, whether it should toggle on the next edge.</p>
+
+        <div class="box">
+          <span class="label">DESIGN RECIPE</span>
+          <p>1. Choose the number of flip-flops: <code>n</code> such that 2<sup>n</sup> ≥ modulus. 2. Write the flip-flop excitation table. 3. Draw the state diagram and the circuit excitation table. 4. Solve for each input with K-maps. 5. Draw the logic diagram. 6. Check unused states return to the intended sequence.</p>
+        </div>
+
+        <p>For a T flip-flop, <code>T = 0</code> holds the state and <code>T = 1</code> toggles it, so the excitation table is simply <code>T = Q<sub>n</sub> ⊕ Q<sub>n+1</sub></code>. For a JK flip-flop, <code>J = K = 1</code> toggles, <code>J = K = 0</code> holds, and the other combinations set or clear. Designing a <strong>3-bit synchronous up-counter with T flip-flops</strong> gives:</p>
+
+        <div class="box">
+          <span class="label">WHY T AND JK FLIP-FLOPS ARE PREFERRED</span>
+          <p>A T flip-flop has one input and toggles when it is 1, so it directly divides the clock by two and needs the least logic per counter stage. A JK flip-flop is more flexible—it can set, clear, hold or toggle—and with <code>J = K = 1</code> it behaves exactly like a T flip-flop. It also removes the invalid state of an SR flip-flop, which is why JK and T devices dominate counter design.</p>
+        </div>
+
+        <div class="formula">
+          <span class="label">3-BIT SYNCHRONOUS UP-COUNTER (T FLIP-FLOPS)</span>
+          <div class="expr">T<sub>0</sub> = 1 &nbsp;&nbsp;&nbsp; T<sub>1</sub> = Q<sub>0</sub> &nbsp;&nbsp;&nbsp; T<sub>2</sub> = Q<sub>1</sub>Q<sub>0</sub></div>
+          <div class="note">The lowest bit toggles every cycle; each higher bit toggles only when all lower bits are 1 (a carry).</div>
+        </div>
+
+        <p>With JK flip-flops the same 3-bit counter uses <code>J<sub>0</sub> = K<sub>0</sub> = 1</code>, <code>J<sub>1</sub> = K<sub>1</sub> = Q<sub>0</sub></code>, and <code>J<sub>2</sub> = K<sub>2</sub> = Q<sub>1</sub>Q<sub>0</sub></code>. A 2-bit synchronous up-counter with JK flip-flops reduces to <code>J<sub>0</sub> = K<sub>0</sub> = 1</code> and <code>J<sub>1</sub> = K<sub>1</sub> = Q<sub>0</sub></code>. This carry-chain structure is exactly how binary incrementers are built.</p>
+
+        <h3>Ring and Johnson counters</h3>
+        <p>A <strong>ring counter</strong> is a shift register whose last output feeds the first input. It is initialized with a single 1, and that 1 circulates: <code>1000 → 0100 → 0010 → 0001 → 1000</code>. With <em>n</em> flip-flops there are exactly <em>n</em> valid states, so it is a <strong>MOD-n</strong> counter. Each state is already one-hot, so no decoder is needed. The all-zero state is invalid and the counter would stay stuck there, so a preset/override input is used to inject the initial 1.</p>
+
+        <p>A <strong>Johnson counter</strong> (twisted-ring or switch-tail counter) feeds back the <em>complement</em> of the last output. The inversion doubles the number of states: <em>n</em> flip-flops give <strong>2n</strong> states. Starting from 0000, a 4-bit Johnson counter runs:</p>
+
+        <div class="diagram">
+          <div class="flow">
+            <span class="step">0000</span><span class="arrow">→</span>
+            <span class="step">1000</span><span class="arrow">→</span>
+            <span class="step">1100</span><span class="arrow">→</span>
+            <span class="step">1110</span><span class="arrow">→</span>
+            <span class="step">1111</span><span class="arrow">→</span>
+            <span class="step">0111</span><span class="arrow">→</span>
+            <span class="step">0011</span><span class="arrow">→</span>
+            <span class="step">0001</span><span class="arrow">→</span>
+            <span class="step">0000</span>
+          </div>
+          <div class="small" style="color:var(--text-faint)">4-bit Johnson counter: 2 × 4 = 8 states, then repeat.</div>
+        </div>
+
+        <table>
+          <tr><th>Counter</th><th>Feedback / clocking</th><th>States (n flip-flops)</th><th>Main use</th></tr>
+          <tr><td>Binary ripple</td><td>Each Q clocks the next stage</td><td>2<sup>n</sup></td><td>Cheap frequency division and counting</td></tr>
+          <tr><td>Binary synchronous</td><td>One clock; carry logic</td><td>2<sup>n</sup></td><td>Fast, glitch-free counting</td></tr>
+          <tr><td>Ring</td><td>Q<sub>last</sub> → D<sub>first</sub></td><td>n</td><td>One-hot sequencing, timing/control</td></tr>
+          <tr><td>Johnson</td><td>Q'<sub>last</sub> → D<sub>first</sub></td><td>2n</td><td>Sequencing with simple decoding</td></tr>
+        </table>
+      </section>
+
+      <section class="topic" id="shift-registers">
+        <h2>Shift Registers</h2>
+        <p>A <strong>shift register</strong> is a chain of flip-flops sharing one clock. On every active edge a new bit enters at the serial input <code>Sin</code>, every stored bit moves one position toward the output, and the oldest bit leaves at <code>Sout</code>. After <em>N</em> clocks, <em>N</em> serial bits have been assembled into one <em>N</em>-bit word on the parallel outputs <code>Q<sub>0</sub>…Q<sub>N−1</sub></code>. The block therefore performs <strong>serial-to-parallel conversion</strong>; run in reverse it performs parallel-to-serial conversion.</p>
+
+        <div class="diagram">
+          <div class="flow">
+            <span class="step">Sin</span><span class="arrow">→</span>
+            <span class="step">FF<sub>0</sub></span><span class="arrow">→</span>
+            <span class="step">FF<sub>1</sub></span><span class="arrow">→</span>
+            <span class="step">FF<sub>2</sub></span><span class="arrow">→</span>
+            <span class="step">…</span><span class="arrow">→</span>
+            <span class="step">FF<sub>N−1</sub></span><span class="arrow">→</span>
+            <span class="step">Sout</span>
+          </div>
+          <div class="small" style="color:var(--text-faint)">All flip-flops share CLK; Q<sub>0</sub>…Q<sub>N−1</sub> are available in parallel.</div>
+        </div>
+
+        <h3>Parallel load</h3>
+        <p>A plain shift register can only shift. Adding a parallel data input <code>D<sub>N−1:0</sub></code> and a control signal <code>Load</code> turns it into a general-purpose register. A multiplexer in front of each flip-flop chooses between the shifted bit and the corresponding parallel data bit. When <code>Load = 1</code> the whole word is captured in one clock; when <code>Load = 0</code> the register shifts normally. Reset has the highest priority.</p>
+
+        <pre><code>always @(posedge clk or posedge rst)
+  if (rst)          q &lt;= 0;
+  else if (load)    q &lt;= data_in;        // parallel load
+  else              q &lt;= {q[N-2:0], sin}; // shift in sin
+
+assign sout = q[N-1];</code></pre>
+
+        <p>The concatenation <code>{q[N-2:0], sin}</code> drops the oldest bit, moves every remaining bit one place toward the high end, and inserts <code>sin</code> at the bottom. <code>sout</code> is simply the top bit. Shift registers are used for serial communication, serial/parallel conversion, delay lines, pattern generation, and—combined with feedback—the ring and Johnson counters above.</p>
+
+      </section>
+
+      <section class="topic" id="scan-chains">
+        <h2>Scan Chains and Testability</h2>
+        <h3>Why sequential circuits need special testing</h3>
+        <p>Testing a combinational circuit is straightforward: apply an input and compare the output with the truth table. A sequential circuit is different because its output depends on the internal state reached after many cycles. To prove that bit 31 of a 32-bit counter really flips from 0 to 1, the naive approach is to reset the counter and apply about two billion clock pulses. It is also impractical to bring out a separate test pin for every flip-flop.</p>
+
+        <p>The solution is a <strong>scan chain</strong>. Every flip-flop is replaced by a <em>scannable flip-flop</em> containing a multiplexer that selects either the normal <code>D</code> input or a scan input <code>Sin</code>. In <strong>normal mode</strong> the flip-flops behave exactly as before and the scan path is ignored. In <strong>test mode</strong> all flip-flops are connected into one long shift register: an arbitrary state can be shifted in, the circuit is clocked normally for one or more cycles, and the resulting state is shifted out and inspected.</p>
+
+        <div class="box">
+          <span class="label">SCAN-CHAIN TEST OF A 32-BIT COUNTER</span>
+          <p>Shift in the pattern <code>0111…111</code> (32 cycles) → switch to normal mode and allow one count (1 cycle) → shift the new state out (32 cycles) and check for <code>1000…000</code>. Total = 32 + 1 + 32 = <strong>65 cycles</strong> instead of roughly 2<sup>31</sup> cycles. The same mechanism gives controllability and observability of every internal state bit.</p>
+        </div>
+      </section>
+
+      <section class="topic" id="memory-organization">
+        <h2>Memory Arrays: Organization and Operation</h2>
+        <p>A memory array stores many words in a two-dimensional grid of one-bit <strong>bit cells</strong>. Rows are words and columns are bit positions. An <strong>N-bit address</strong> selects one of <strong>2<sup>N</sup></strong> rows; each row contains <strong>M</strong> data bits. A decoder converts the address into a single active <strong>wordline</strong>, and the vertical <strong>bitlines</strong> carry data into or out of the selected cells.</p>
+
+        <div class="formula">
+          <span class="label">MEMORY SIZE</span>
+          <div class="expr">Size = depth × width = 2<sup>N</sup> × M bits</div>
+          <div class="note">Depth = number of words (addresses); width = bits per word. Address bits N = log<sub>2</sub>(depth).</div>
+        </div>
+
+        <p>For example, 10 address bits and 32 data bits give 2<sup>10</sup> = 1024 words of 32 bits, or 1024 × 32 = 32 Kb (4 KB). The total number of stored bits is always the product of depth and width, not the sum.</p>
+
+        <div class="diagram">
+          <div class="flow">
+            <span class="step">Address</span><span class="arrow">→</span>
+            <span class="step">Decoder</span><span class="arrow">→</span>
+            <span class="step">one wordline HIGH</span><span class="arrow">→</span>
+            <span class="step">selected row of cells</span><span class="arrow">→</span>
+            <span class="step">bitlines / data</span>
+          </div>
+          <div class="small" style="color:var(--text-faint)">Only the row whose wordline is asserted participates in the access.</div>
+        </div>
+
+        <h3>Reading and writing a bit cell</h3>
+        <p>A <strong>read</strong> is non-destructive in the logical sense: the bitlines are first left floating (high impedance, Z), the wordline is turned on, and the selected cell drives each bitline to 0 or 1. The values on the bitlines are the word. A <strong>write</strong> is the reverse: the bitlines are driven strongly to the desired values, the wordline is turned on, and the strong bitline signal overpowers the cell's stored value. In DRAM the read actually disturbs the capacitor, so the value must be restored afterwards.</p>
+
+        <p>Consider a 4 × 3 memory (four words, three bits each, two address bits). Reading address <code>10</code> asserts wordline 2; if that row stores 100, the data bitlines show 100. Writing <code>001</code> to address <code>11</code> drives the data lines to 001, asserts wordline 3, and stores the word in row 3. The same array has 4 × 3 = 12 bit cells.</p>
+
+        <h3>Ports and register files</h3>
+        <p>A <strong>port</strong> is an independent access point with its own address and data. A single-ported memory can perform one access per cycle; a multi-ported memory can perform several. A processor's <strong>register file</strong> is a small, fast, multi-ported SRAM: the classic MIPS register file has <strong>two read ports</strong> and <strong>one write port</strong>, so two source registers can be read while a destination register is written in the same cycle.</p>
+
+        <div class="two-col">
+          <div class="box">
+            <span class="label">32 × 32 REGISTER FILE</span>
+            <p>32 registers × 32 bits = <strong>1024 bits</strong>. Each address is <code>log<sub>2</sub>32 = 5</code> bits. Ports: A1→RD1, A2→RD2 (read); A3/WD3 (write, clocked).</p>
+          </div>
+          <div class="box">
+            <span class="label">WHY NOT FLIP-FLOPS?</span>
+            <p>A register file built from a multi-ported SRAM array is far more compact than 32 separate 32-bit flip-flop registers with multiplexers, and it scales better as the number of registers grows.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="topic" id="ram">
+        <h2>RAM: DRAM and SRAM</h2>
+        <p>Memory is first divided into <strong>RAM</strong> (random-access memory, normally volatile and read/write) and <strong>ROM</strong> (read-only memory, nonvolatile). Both allow random access—any location can be reached in roughly the same time—but they store a bit in very different ways.</p>
+
+        <h3>Dynamic RAM (DRAM)</h3>
+        <p>A DRAM cell stores one bit as <strong>charge on a capacitor</strong>. A charged capacitor represents 1 and a discharged capacitor represents 0. The cell needs only about <strong>one transistor</strong>, so DRAM is extremely dense and cheap per bit. The charge leaks away, however, so every row must be <strong>refreshed</strong> periodically. A read moves charge from the capacitor onto the bitline, which disturbs the stored value, so the value must be sensed and written back. Sensing a small charge through a relatively long bitline is slow, which is why DRAM has higher latency and lower throughput than SRAM.</p>
+
+        <h3>Static RAM (SRAM)</h3>
+        <p>An SRAM cell stores a bit with <strong>cross-coupled inverters</strong>. The two inverters continuously reinforce each other: if Q is 1, the feedback holds Q at 1 and Q' at 0; if Q is 0, the feedback holds the opposite. As long as power is applied, no refresh is needed—hence “static.” A typical SRAM cell uses <strong>six transistors</strong>, so it is larger than DRAM but faster and simpler to use. A flip-flop is even larger (roughly 20 transistors per bit) but presents its value immediately at an output.</p>
+
+        <table>
+          <tr><th>Property</th><th>DRAM</th><th>SRAM</th></tr>
+          <tr><td>Storage element</td><td>Capacitor charge</td><td>Cross-coupled inverters</td></tr>
+          <tr><td>Transistors per bit</td><td>≈ 1</td><td>≈ 6</td></tr>
+          <tr><td>Refresh</td><td>Required periodically and after a read</td><td>Not required while powered</td></tr>
+          <tr><td>Speed</td><td>Slower latency, lower throughput</td><td>Faster</td></tr>
+          <tr><td>Density / cost</td><td>Highest density, lowest cost per bit</td><td>Lower density, higher cost per bit</td></tr>
+          <tr><td>Typical use</td><td>Main memory</td><td>Caches, register files, small buffers</td></tr>
+        </table>
+
+        <h3>Improving DRAM throughput</h3>
+        <p><strong>SDRAM</strong> (synchronous DRAM) adds a clock and pipelines accesses, so the memory can accept a new request before the previous one has fully completed. <strong>DDR SDRAM</strong> (double data rate) transfers data on both the rising and falling edges of the clock, roughly doubling throughput at the same clock frequency. DDR was standardized around 2000 at 100–200 MHz; DDR2, DDR3 and DDR4 subsequently raised clock rates. None of these changes remove the fundamental capacitor-refresh cost—they improve how efficiently the interface is used.</p>
+
+        <table>
+          <tr><th>Memory</th><th>Transistors / bit</th><th>Relative latency</th><th>Key characteristic</th></tr>
+          <tr><td>Flip-flop</td><td>≈ 20</td><td>Fastest</td><td>Output available immediately; largest area</td></tr>
+          <tr><td>SRAM</td><td>6</td><td>Medium</td><td>No refresh; faster than DRAM</td></tr>
+          <tr><td>DRAM</td><td>1</td><td>Slowest</td><td>Densest; needs refresh and restore</td></tr>
+        </table>
+
+        <div class="box">
+          <span class="label">TRADE-OFF TO REMEMBER</span>
+          <p>More transistors per bit means more area, more power and higher cost, but also faster access. Larger memories are generally slower than smaller memories built from the same technology. A good design chooses the smallest, fastest memory that fits the required capacity and access pattern.</p>
+        </div>
+      </section>
+
+      <section class="topic" id="rom">
+        <h2>Read-Only Memory (ROM)</h2>
+        <p>A ROM stores a bit by the <strong>presence or absence of a transistor</strong> at the intersection of a wordline and a bitline. The bitline is weakly pulled high; when the wordline turns on a transistor, the transistor pulls the bitline low, storing 0. If no transistor is present, the bitline stays high, storing 1. Because the cell is a combinational connection rather than a stored charge or feedback loop, ROM is <strong>nonvolatile</strong>: removing power does not erase it.</p>
+
+        <h3>Dot notation</h3>
+        <p>ROM contents are drawn as a grid. Rows are wordlines (addresses), columns are bitlines (data bits), a <strong>dot</strong> at an intersection means a stored 1, and the absence of a dot means 0. A 4 × 3 ROM has 2<sup>2</sup> = 4 words of 3 bits, or 12 stored bits. If the top row has a dot only in the Data1 column, that word is 010.</p>
+
+        <h3>Types of ROM</h3>
+        <table>
+          <tr><th>Type</th><th>Programmed by</th><th>Erasable?</th><th>Erase method</th></tr>
+          <tr><td>Mask ROM</td><td>Manufacturer, during fabrication</td><td>No</td><td>—</td></tr>
+          <tr><td>PROM</td><td>User, once (fuses blown)</td><td>No</td><td>— (one-time programmable)</td></tr>
+          <tr><td>EPROM</td><td>User, electrically</td><td>Yes</td><td>Intense ultraviolet light</td></tr>
+          <tr><td>EEPROM</td><td>User, electrically</td><td>Yes</td><td>Electrical, per byte/cell</td></tr>
+          <tr><td>Flash</td><td>User, electrically</td><td>Yes</td><td>Electrical, in blocks</td></tr>
+        </table>
+
+        <p>A <strong>PROM</strong> starts with all transistors present (all fuses intact). Programming applies a high voltage to blow selected fuses, disconnecting those transistors and changing the stored bit. A blown fuse cannot be repaired, so PROM is one-time programmable. An <strong>EPROM</strong> uses a floating-gate transistor: a high voltage places charge on the floating gate, and intense UV light removes it. <strong>EEPROM</strong> can be erased electrically, cell by cell. <strong>Flash</strong> is similar but erases whole blocks, which needs fewer erase circuits and makes it cheaper than EEPROM.</p>
+      </section>
+
+      <section class="topic" id="memory-logic">
+        <h2>Memory Arrays as Logic and Lookup Tables</h2>
+        <p>A memory is normally thought of as storage, but a <strong>2<sup>N</sup>-word × M-bit</strong> memory can also implement <em>any</em> combinational function of <strong>N inputs</strong> with <strong>M outputs</strong>. The N inputs are the address, each input combination selects one row, and the M bits stored in that row are the outputs. The memory contents are literally the truth table of the function.</p>
+
+        <div class="formula">
+          <span class="label">LOOKUP TABLE (LUT) SIZE</span>
+          <div class="expr">LUT size = 2<sup>N</sup> × M bits</div>
+          <div class="note">N = number of inputs (address bits); M = number of outputs (data bits).</div>
+        </div>
+
+        <p>A ROM viewed as logic is a two-level circuit: the row decoder is a set of <strong>AND gates</strong> that generate all minterms, and the bitline connections are <strong>OR gates</strong> that combine the selected minterms into each output. Real ROMs replace the gates with transistors to save area. This is the same structure used in programmable logic: a memory array used to evaluate logic is called a <strong>lookup table (LUT)</strong>.</p>
+
+        <h3>Worked example: Y = AB</h3>
+        <p>Two inputs need 2<sup>2</sup> = 4 rows and one output needs one bit, so a 4 × 1 memory is enough. Store the truth table in address order:</p>
+
+        <table>
+          <tr><th>A</th><th>B</th><th>Address</th><th>Y = AB</th></tr>
+          <tr><td>0</td><td>0</td><td>00</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>01</td><td>0</td></tr>
+          <tr><td>1</td><td>0</td><td>10</td><td>0</td></tr>
+          <tr><td>1</td><td>1</td><td>11</td><td>1</td></tr>
+        </table>
+
+        <p>The LUT simply stores <code>0, 0, 0, 1</code>. Applying A and B as an address selects the row and returns the function value. The same idea generalizes: a 4 × 3 ROM implements three functions of two inputs; a 2<sup>N</sup> × M ROM implements M functions of N inputs. This is exactly how FPGAs implement arbitrary logic—small LUTs loaded with a truth table.</p>
+
+        <h3>Memory HDL</h3>
+        <p>A synchronous memory is described by a clocked write and a read that may be combinational or registered. The essential behavior is: on a clock edge with write enable, store the data at the address; otherwise, drive the read data from the addressed word.</p>
+
+        <pre><code>// synchronous write, asynchronous read
+always @(posedge clk)
+  if (we) mem[addr] &lt;= wd;
+
+assign rd = mem[addr];</code></pre>
+
+        <p>In a processor, the instruction and data memories are often modeled this way. The read path determines the memory latency; the write path determines the setup requirement. When the same memory serves both instructions and data (a von Neumann organization), the designer must either use a single port carefully or provide separate instruction/data ports to avoid a structural conflict.</p>
+      </section>
+
+      <section class="topic" id="arch-intro">
+        <h2>Introduction to Computer Architecture</h2>
+        <p><strong>Computer architecture</strong> is the programmer's view of a computer. It is the contract between software and hardware: which instructions exist, what they mean, where operands live, how many registers there are, how data is represented, and how instructions are encoded. The concrete realization of that contract in gates, memories and control logic is the <strong>microarchitecture</strong>. One architecture can have many microarchitectures—for example, several generations of x86 chips with very different internal pipelines all execute the same x86 instruction set.</p>
+
+        <div class="box">
+          <span class="label">ARCHITECTURAL STATE</span>
+          <p>The state a program can observe: the <strong>program counter (PC)</strong>, the <strong>32 registers</strong>, and <strong>memory</strong>. The ISA defines the instruction formats, register set, data types, addressing modes and memory model; the microarchitecture decides how those state elements are built and sequenced.</p>
+        </div>
+
+        <p>The instruction set architecture (ISA) includes the instruction formats, the register set, the data types, the addressing modes, and the memory model. Well-known ISAs include <strong>x86</strong>, <strong>MIPS</strong>, <strong>ARM</strong>, <strong>SPARC</strong> and <strong>PowerPC</strong>. Instruction sets are like dialects: once one is learned, another is mostly a change of vocabulary. Even large applications ultimately compile into simple operations such as add, subtract, load, store, compare and jump.</p>
+
+        <h3>Where architecture sits</h3>
+        <div class="diagram">
+          <div class="stack">
+            <div class="layer">Application programs</div>
+            <div class="layer">Operating system / device drivers</div>
+            <div class="layer accent">Architecture — instructions, registers</div>
+            <div class="layer">Microarchitecture — datapaths, controllers</div>
+            <div class="layer">Logic — adders, memories, gates</div>
+            <div class="layer">Digital circuits — AND, NOT, flip-flops</div>
+            <div class="layer">Analog circuits — amplifiers, filters</div>
+            <div class="layer">Devices — transistors, diodes</div>
+            <div class="layer">Physics — electrons</div>
+          </div>
+          <div class="small" style="color:var(--text-faint)">Each level hides the details of the level below it.</div>
+        </div>
+
+        <h3>MIPS</h3>
+        <p><strong>MIPS</strong> stands for <em>Microprocessor without Interlocked Pipeline Stages</em>. It is a family of reduced instruction set computer (RISC) instruction set architectures developed by John Hennessy and colleagues at Stanford in the 1980s and commercialized by MIPS Computer Systems (later MIPS Technologies). MIPS powered Silicon Graphics workstations and appeared in Nintendo and Cisco products. It is an excellent teaching architecture because its instruction formats are regular, its register file is uniform, and its load/store model is clean.</p>
+
+        <p>MIPS is a <strong>32-bit architecture</strong>: registers are 32 bits wide, the ALU operates on 32-bit values, addresses are 32 bits, and instructions are 32 bits. It provides <strong>32 general-purpose registers</strong>. Keeping the register file small is deliberate: a smaller structure has shorter wires and lower access latency.</p>
+      </section>
+
+      <section class="topic" id="design-principles">
+        <h2>Four Design Principles</h2>
+        <p>Computer architectures are shaped by a small set of principles that trade performance against simplicity, cost and power. Every one of them appears in MIPS.</p>
+
+        <h3>1. Simplicity favors regularity</h3>
+        <p>Uniform instruction formats make decoding simple, fast and reliable. Most MIPS arithmetic instructions use exactly the same shape: two source registers and one destination register, as in <code>add $s0, $s1, $s2</code> and <code>sub $t0, $t1, $t2</code>. Because the fields are always in the same place, the hardware does not need a complicated decoder that varies with the instruction. Regularity also makes it easier to test and optimize the design.</p>
+
+        <h3>2. Make the common case fast</h3>
+        <p>Performance is dominated by the operations that execute most often. MIPS keeps a small set of simple, frequently used instructions that decode and execute quickly. Complex operations are synthesized from several simple instructions instead of being implemented as one slow instruction. This is the RISC philosophy: move complexity into the compiler, where it can be optimized once, rather than into the hardware, where it slows every instruction.</p>
+
+        <h3>3. Smaller is faster</h3>
+        <p>Smaller hardware structures have shorter wires, lower capacitance and lower access time. That is why MIPS has 32 registers rather than hundreds, and why a register file is faster than main memory. The compiler's job is to keep the hottest variables in registers and spill the rest to memory. A larger register file would reduce spills but would also increase access latency and area.</p>
+
+        <h3>4. Good design demands good compromises</h3>
+        <p>Performance, cost, power and complexity pull in different directions. A deeper pipeline raises clock frequency but adds hazard and forwarding complexity; a bigger cache reduces misses but costs area and power; a richer instruction set reduces program size but complicates decode. A good architecture chooses the balance that is best for its intended workload rather than maximizing a single number.</p>
+
+        <div class="box">
+          <span class="label">EXAMPLE: ENCODING COST</span>
+          <p>An instruction set with 64 simple instructions needs <code>log<sub>2</sub>64 = 6</code> bits to encode the operation; 256 instructions need <code>log<sub>2</sub>256 = 8</code> bits. In a CISC machine, rarely used complex instructions still consume encoding space and decoder complexity that affects every instruction.</p>
+        </div>
+      </section>
+
+      <section class="topic" id="risc-cisc">
+        <h2>RISC versus CISC</h2>
+        <p><strong>RISC</strong> (reduced instruction set computer) keeps instructions simple, fixed-length and register-oriented. <strong>CISC</strong> (complex instruction set computer) provides many powerful, variable-length instructions that may combine several operations, including memory access. MIPS, ARM and RISC-V are RISC; Intel x86 and VAX are CISC.</p>
+
+        <table>
+          <tr><th>Feature</th><th>RISC (MIPS, ARM, RISC-V)</th><th>CISC (x86, VAX)</th></tr>
+          <tr><td>Instruction set size</td><td>Small (roughly 30–100 instructions)</td><td>Large (hundreds to thousands)</td></tr>
+          <tr><td>Instruction length</td><td>Fixed, commonly 32 bits</td><td>Variable, 1–15 bytes in x86</td></tr>
+          <tr><td>Execution time</td><td>Most instructions complete in one cycle</td><td>Instructions may take multiple cycles</td></tr>
+          <tr><td>Complexity location</td><td>Compiler/software</td><td>Hardware/microcode</td></tr>
+          <tr><td>Memory access</td><td>Load/store only; ALU works on registers</td><td>ALU operations can access memory directly</td></tr>
+          <tr><td>Registers</td><td>Many general-purpose registers (32 in MIPS)</td><td>Fewer architectural registers (16 in x86-64)</td></tr>
+          <tr><td>Pipelining</td><td>Easy because instructions are uniform</td><td>Harder because lengths and formats vary</td></tr>
+          <tr><td>Code density</td><td>Larger programs (more instructions)</td><td>Smaller programs (one instruction does more)</td></tr>
+          <tr><td>Decoding</td><td>Simple and fast</td><td>Complex and slower</td></tr>
+          <tr><td>Hardware</td><td>Simpler control, fewer transistors</td><td>Wide decoders, microcode, more transistors</td></tr>
+          <tr><td>Performance strategy</td><td>Reduce cycles per instruction (CPI)</td><td>Reduce instructions per program</td></tr>
+          <tr><td>Power</td><td>Generally lower</td><td>Generally higher</td></tr>
+        </table>
+
+        <p>The boundary is not absolute. Modern x86 processors decode complex instructions into simple internal micro-operations that look very RISC-like, while RISC processors add instructions for common specialized tasks. The useful takeaway is the trade-off: RISC spends instruction bits and program size to buy regular, fast hardware; CISC spends hardware complexity to buy compact programs.</p>
+      </section>
+
+      <section class="topic" id="assembly-basics">
+        <h2>Assembly Language: Instructions and Operands</h2>
+        <p>An <strong>instruction</strong> is a command in the computer's language. <strong>Assembly language</strong> is its human-readable form; <strong>machine language</strong> is the binary form the processor actually executes. A typical assembly statement has a <em>mnemonic</em> (the operation), one <em>destination</em>, and one or more <em>sources</em>:</p>
+
+        <pre><code>add a, b, c      # a = b + c
+sub a, b, c      # a = b - c</code></pre>
+
+        <p>In MIPS the destination is written first, then the sources. The mnemonic names the operation; the operands say where the data comes from and where the result goes. A complete program is just a sequence of such instructions plus labels that mark branch targets.</p>
+
+        <p>Instructions can use operands in exactly three places: <strong>registers</strong> (fast storage inside the CPU), <strong>memory</strong> (large storage outside the CPU), and <strong>constants</strong> encoded directly in the instruction (immediates). MIPS is a <em>load/store architecture</em>: arithmetic instructions only touch registers, and only <code>lw</code>/<code>sw</code> move data between registers and memory.</p>
+
+        <div class="box">
+          <span class="label">TRANSLATING HIGH-LEVEL CODE (EXAMPLE 6.1)</span>
+          <p>Assume <code>a–c</code> are in <code>$s0–$s2</code> and <code>f–j</code> are in <code>$s3–$s7</code>. Translate <code>a = b − c;</code> and <code>f = (g + h) − (i + j);</code></p>
+          <pre><code>sub $s0, $s1, $s2        # a = b - c
+add $t0, $s3, $s4        # t0 = g + h
+add $t1, $s5, $s6        # t1 = i + j
+sub $s7, $t0, $t1        # f = t0 - t1</code></pre>
+        </div>
+
+        <p>Note how a single high-level expression becomes several simple instructions. This is the RISC bargain: the compiler breaks complex operations into a regular sequence that the hardware can decode and pipeline efficiently. A left shift by three, for example, can be done with three adds (<code>add t, s, s</code> doubles, repeated three times multiplies by 8) even before shift instructions are introduced.</p>
+      </section>
+
+      <section class="topic" id="registers">
+        <h2>The MIPS Register File</h2>
+        <p>MIPS provides <strong>32 general-purpose registers</strong>, each <strong>32 bits</strong> wide. Because 2<sup>5</sup> = 32, every register is named by a <strong>5-bit</strong> number in an instruction. The names are conventions agreed by programmers and compilers; the hardware only sees register numbers, but the conventions make separate compilation and function calls possible.</p>
+
+        <table>
+          <tr><th>Name</th><th>Number</th><th>Conventional use</th></tr>
+          <tr><td><code>$0</code></td><td>0</td><td>Constant value 0 (hardwired; writes are ignored)</td></tr>
+          <tr><td><code>$at</code></td><td>1</td><td>Assembler temporary</td></tr>
+          <tr><td><code>$v0–$v1</code></td><td>2–3</td><td>Function return values</td></tr>
+          <tr><td><code>$a0–$a3</code></td><td>4–7</td><td>First four function arguments</td></tr>
+          <tr><td><code>$t0–$t7</code></td><td>8–15</td><td>Temporaries (not preserved across calls)</td></tr>
+          <tr><td><code>$s0–$s7</code></td><td>16–23</td><td>Saved variables (preserved across calls)</td></tr>
+          <tr><td><code>$t8–$t9</code></td><td>24–25</td><td>More temporaries</td></tr>
+          <tr><td><code>$k0–$k1</code></td><td>26–27</td><td>Reserved for the operating system</td></tr>
+          <tr><td><code>$gp</code></td><td>28</td><td>Global pointer</td></tr>
+          <tr><td><code>$sp</code></td><td>29</td><td>Stack pointer</td></tr>
+          <tr><td><code>$fp</code></td><td>30</td><td>Frame pointer</td></tr>
+          <tr><td><code>$ra</code></td><td>31</td><td>Return address</td></tr>
+        </table>
+
+        <p>The register file is written by the instruction on a clock edge and read combinationally. Register 0 is special: it always reads as zero and cannot be changed, which gives the assembler a convenient source of zero and a way to turn an operation into a copy or a comparison. For example, <code>sub $t8, $s1, $0</code> copies <code>$s1</code> into <code>$t8</code>.</p>
+
+        <p>The split between <strong>preserved</strong> (<code>$s0–$s7</code>, <code>$ra</code>, <code>$sp</code>) and <strong>nonpreserved</strong> (<code>$t0–$t9</code>, <code>$a0–$a3</code>, <code>$v0–$v1</code>) registers is the key to independent functions. A callee may freely overwrite temporaries and argument registers, but if it uses a saved register it must save the old value on the stack and restore it before returning.</p>
+      </section>
+
+      <section class="topic" id="memory-operands">
+        <h2>Memory Operands, Byte Addressing and Endianness</h2>
+        <p>Thirty-two registers cannot hold a whole program, so larger data lives in <strong>memory</strong>. MIPS uses a <strong>byte-addressable</strong> memory with <strong>32-bit addresses</strong>: every byte has its own address, and 2<sup>32</sup> addresses cover 4 GB. A 32-bit word occupies four consecutive byte addresses, so aligned word addresses are always multiples of 4 (0, 4, 8, 12, …).</p>
+
+        <div class="formula">
+          <span class="label">EFFECTIVE ADDRESS (LOAD/STORE)</span>
+          <div class="expr">EA = Base register + Sign-extended offset</div>
+          <div class="note">The 16-bit offset in <code>lw</code>/<code>sw</code> is measured in bytes and may be positive or negative.</div>
+        </div>
+
+        <p>Data moves with <strong>load word</strong> and <strong>store word</strong>:</p>
+        <pre><code>lw $s3, 4($0)     # $s3 = Memory[0 + 4]; reads bytes 4,5,6,7
+sw $t4, 0x7($0)   # Memory[0 + 7] = $t4</code></pre>
+
+        <p>A word-addressable memory would give each whole word one address, so address 2 would mean the third word. MIPS instead gives every byte an address, so word <em>i</em> starts at byte <code>4i</code>. For an integer array with base address <code>Base</code>, element <code>i</code> is at <code>Base + 4i</code>; for a character array it is at <code>Base + i</code>.</p>
+
+        <h3>Big-endian and little-endian</h3>
+        <p>Within a 32-bit word, the bytes can be numbered from either end. <strong>Big-endian</strong> puts the most-significant byte at the lowest address; <strong>little-endian</strong> puts the least-significant byte there. The word address is the same either way; only the byte order differs.</p>
+
+        <div class="box">
+          <span class="label">WORKED EXAMPLE</span>
+          <p>Let <code>$t0 = 0x23456789</code>, then execute <code>sw $t0, 0($0)</code> and <code>lb $s0, 1($0)</code>.</p>
+          <p>Big-endian layout: <code>23 45 67 89</code> at addresses 0–3 → byte 1 is <code>0x45</code>, so <code>$s0 = 0x00000045</code>.<br>
+          Little-endian layout: <code>89 67 45 23</code> at addresses 0–3 → byte 1 is <code>0x67</code>, so <code>$s0 = 0x00000067</code>.</p>
+        </div>
+
+        <p>Endianness is invisible until data is shared between machines or inspected byte by byte. MIPS itself is <em>bi-endian</em>: a particular implementation can be configured either way, but a program must know which convention the system uses. The byte load <code>lb</code> sign-extends the loaded byte; <code>lbu</code> zero-extends it; <code>sb</code> stores only the low byte of a register.</p>
+      </section>
+
+      <section class="topic" id="immediates">
+        <h2>Constants and Immediate Operands</h2>
+        <p>Many operations use a small constant: incrementing a loop counter, adding an offset, masking a field. Fetching that constant from memory would be wasteful, so MIPS encodes it directly in the instruction. The I-type immediate field is <strong>16 bits</strong>, interpreted as a signed two's-complement number for arithmetic and memory instructions.</p>
+
+        <pre><code>addi $s0, $s0, 4       # a = a + 4
+addi $s1, $s0, -12     # b = a - 12
+andi $s2, $s1, 0xFA34  # bitwise AND with a zero-extended constant
+ori  $s3, $s1, 0xFA34  # bitwise OR
+xori $s4, $s1, 0xFA34  # bitwise XOR</code></pre>
+
+        <p>There is no <code>subi</code> instruction: subtracting a constant is the same as adding its negative, so <code>addi $s1, $s0, -12</code> implements <code>b = a − 12</code>. This is another example of regularity—one instruction covers both addition and subtraction of constants.</p>
+
+        <h3>Sign extension versus zero extension</h3>
+        <p>Arithmetic and memory instructions (<code>addi</code>, <code>lw</code>, <code>sw</code>, branches) <strong>sign-extend</strong> the 16-bit field: bit 15 is copied into the upper 16 bits, so a negative offset stays negative. Logical immediates (<code>andi</code>, <code>ori</code>, <code>xori</code>) <strong>zero-extend</strong> the field, because a logical operation should not turn a bit pattern into a negative number. This distinction is a common source of exam errors.</p>
+
+        <div class="formula">
+          <span class="label">SIGN EXTENSION</span>
+          <div class="expr">imm<sub>31:16</sub> = imm<sub>15</sub> &nbsp;&nbsp;(copy the sign bit 16 times)</div>
+          <div class="note">0x8000 (−32768) sign-extends to 0xFFFF8000; the same 16 bits zero-extend to 0x00008000.</div>
+        </div>
+
+        <h3>Building a 32-bit constant</h3>
+        <p>A single 16-bit immediate cannot hold a 32-bit constant. MIPS uses <strong>load upper immediate</strong> followed by <strong>or immediate</strong>. <code>lui</code> places the upper 16 bits in the top half of the register and clears the lower half; <code>ori</code> inserts the lower 16 bits.</p>
+
+        <pre><code># int a = 0x6D5E4F3C;
+lui $s0, 0x6D5E      # $s0 = 0x6D5E0000
+ori $s0, $s0, 0x4F3C # $s0 = 0x6D5E4F3C</code></pre>
+
+        <p>The same pair of instructions can form any 32-bit constant (or address). Compilers use it constantly when materializing large addresses and constants.</p>
+      </section>
+
+      <section class="topic" id="machine-formats">
+        <h2>Machine Language: R, I and J Formats</h2>
+        <p>Every MIPS instruction is exactly <strong>32 bits</strong>. The processor does not see <code>add</code> or <code>lw</code>; it sees a 32-bit pattern whose fields tell it what to do. The first six bits are always the <strong>opcode</strong>. The opcode determines the format, and the remaining bits are interpreted according to that format.</p>
+
+        <table>
+          <tr><th>Format</th><th>Used for</th><th>Important fields</th><th>Memory rule</th></tr>
+          <tr><td><strong>R-type</strong></td><td>Register–register ALU operations</td><td>rs, rt, rd, shamt, funct</td><td>No immediate; <code>funct</code> selects the exact operation</td></tr>
+          <tr><td><strong>I-type</strong></td><td>Immediate, load/store, branch</td><td>rs, rt, imm</td><td>16-bit immediate or offset is present</td></tr>
+          <tr><td><strong>J-type</strong></td><td>Jump instructions</td><td>addr</td><td>26-bit jump target</td></tr>
+        </table>
+
+        <h3>R-type format (6 + 5 + 5 + 5 + 5 + 6 = 32 bits)</h3>
+        <div class="bit-row">
+          <div>op<br>6</div><div>rs<br>5</div><div>rt<br>5</div><div class="b-accent">rd<br>5</div><div>shamt<br>5</div><div>funct<br>6</div>
+        </div>
+        <p>For R-type instructions the opcode is <code>000000</code>. The <strong>rs</strong> and <strong>rt</strong> fields are the source registers, <strong>rd</strong> is the destination, <strong>shamt</strong> is the shift amount (0 when the instruction does not shift), and <strong>funct</strong> identifies the operation. The destination is written first in assembly but is the third register field in the encoding.</p>
+
+        <h3>I-type format (6 + 5 + 5 + 16 = 32 bits)</h3>
+        <div class="bit-row">
+          <div>op<br>6</div><div>rs<br>5</div><div>rt<br>5</div><div class="b-accent">imm<br>16</div>
+        </div>
+        <p>The opcode alone determines the operation. <strong>rs</strong> is usually a source (the base register for loads/stores), <strong>rt</strong> is a destination for <code>addi</code>/<code>lw</code> but a source for <code>sw</code>, and <strong>imm</strong> is a 16-bit constant or offset. Arithmetic and memory instructions sign-extend it; logical immediates zero-extend it.</p>
+
+        <h3>J-type format (6 + 26 = 32 bits)</h3>
+        <div class="bit-row">
+          <div>op<br>6</div><div class="b-accent">addr<br>26</div>
+        </div>
+        <p>Jump instructions store part of the target address in the 26-bit <strong>addr</strong> field. The remaining address bits are taken from the program counter (see addressing modes).</p>
+
+        <h3>Opcode and function fields to know</h3>
+        <table class="compact">
+          <tr><th>Instruction</th><th>Format</th><th>op (decimal)</th><th>funct (decimal)</th><th>Meaning</th></tr>
+          <tr><td><code>add</code></td><td>R</td><td>0</td><td>32</td><td>rd = rs + rt</td></tr>
+          <tr><td><code>sub</code></td><td>R</td><td>0</td><td>34</td><td>rd = rs − rt</td></tr>
+          <tr><td><code>and</code></td><td>R</td><td>0</td><td>36</td><td>rd = rs AND rt</td></tr>
+          <tr><td><code>or</code></td><td>R</td><td>0</td><td>37</td><td>rd = rs OR rt</td></tr>
+          <tr><td><code>xor</code></td><td>R</td><td>0</td><td>38</td><td>rd = rs XOR rt</td></tr>
+          <tr><td><code>nor</code></td><td>R</td><td>0</td><td>39</td><td>rd = NOT (rs OR rt)</td></tr>
+          <tr><td><code>slt</code></td><td>R</td><td>0</td><td>42</td><td>rd = 1 if rs &lt; rt, else 0</td></tr>
+          <tr><td><code>sll</code></td><td>R</td><td>0</td><td>0</td><td>rd = rt &lt;&lt; shamt</td></tr>
+          <tr><td><code>srl</code></td><td>R</td><td>0</td><td>2</td><td>logical right shift</td></tr>
+          <tr><td><code>sra</code></td><td>R</td><td>0</td><td>3</td><td>arithmetic right shift</td></tr>
+          <tr><td><code>jr</code></td><td>R</td><td>0</td><td>8</td><td>PC = rs</td></tr>
+          <tr><td><code>addi</code></td><td>I</td><td>8</td><td>—</td><td>rt = rs + imm</td></tr>
+          <tr><td><code>lw</code></td><td>I</td><td>35</td><td>—</td><td>rt = Memory[rs + imm]</td></tr>
+          <tr><td><code>sw</code></td><td>I</td><td>43</td><td>—</td><td>Memory[rs + imm] = rt</td></tr>
+          <tr><td><code>beq</code></td><td>I</td><td>4</td><td>—</td><td>branch if rs == rt</td></tr>
+          <tr><td><code>bne</code></td><td>I</td><td>5</td><td>—</td><td>branch if rs != rt</td></tr>
+          <tr><td><code>andi</code></td><td>I</td><td>12</td><td>—</td><td>rt = rs AND zero-extended imm</td></tr>
+          <tr><td><code>ori</code></td><td>I</td><td>13</td><td>—</td><td>rt = rs OR zero-extended imm</td></tr>
+          <tr><td><code>xori</code></td><td>I</td><td>14</td><td>—</td><td>rt = rs XOR zero-extended imm</td></tr>
+          <tr><td><code>lui</code></td><td>I</td><td>15</td><td>—</td><td>rt = imm &lt;&lt; 16</td></tr>
+          <tr><td><code>j</code></td><td>J</td><td>2</td><td>—</td><td>PC = jump target</td></tr>
+          <tr><td><code>jal</code></td><td>J</td><td>3</td><td>—</td><td>$ra = PC + 4; PC = target</td></tr>
+        </table>
+      </section>
+
+      <section class="topic" id="encoding">
+        <h2>Encoding Instructions into Machine Code</h2>
+        <p>Encoding is mechanical once the fields are known: write each field in binary, concatenate them into 32 bits, then group the result into four-bit hexadecimal digits. Two worked examples cover the two most important formats.</p>
+
+        <h3>Example 1: <code>add $t0, $s4, $s5</code></h3>
+        <p>The registers are <code>$t0 = 8</code>, <code>$s4 = 20</code>, <code>$s5 = 21</code>. The instruction is R-type (<code>op = 0</code>) with <code>funct = 32</code>, <code>shamt = 0</code>. Assembly places the destination first, so <code>rd = 8</code>, <code>rs = 20</code>, <code>rt = 21</code>.</p>
+
+        <pre><code>op      rs      rt      rd      shamt   funct
+000000  10100   10101   01000   00000   100000
+0000 0010 1001 0101 0100 0000 0010 0000
+  0    2    9    5    4    0    2    0
+Result: 0x02954020</code></pre>
+
+        <h3>Example 2: <code>lw $s3, −24($s4)</code></h3>
+        <p><code>lw</code> is I-type with opcode 35 (<code>100011</code>). <code>rs = $s4 = 20</code> is the base address, <code>rt = $s3 = 19</code> is the destination, and the offset is −24. In 16-bit two's complement, −24 = <code>0xFFE8</code>.</p>
+
+        <pre><code>op      rs      rt      imm
+100011  10100   10011   1111111111101000
+1000 1110 1001 0011 1111 1111 1110 1000
+  8    E    9    3    F    F    E    8
+Result: 0x8E93FFE8</code></pre>
+
+        <div class="box">
+          <span class="label">ENCODING CHECKLIST</span>
+          <p>1. Identify the format from the mnemonic. 2. Look up the opcode (and funct for R-type). 3. Convert register names to numbers. 4. Convert the immediate to 16-bit two's complement (or the jump target to 26 bits). 5. Place fields in the correct order. 6. Group bits by four and write hexadecimal.</p>
+        </div>
+      </section>
+
+      <section class="topic" id="decoding">
+        <h2>Decoding Machine Code</h2>
+        <p>Decoding reverses the process. Because every format begins with a 6-bit opcode, the opcode is always the first thing to inspect. If it is zero, the instruction is R-type and the <strong>funct</strong> field selects the operation. Otherwise the opcode itself identifies an I-type or J-type instruction, and the remaining fields are interpreted accordingly.</p>
+
+        <div class="box">
+          <span class="label">DECODING STRATEGY</span>
+          <p>1. Read the opcode. 2. If opcode = 0, treat the instruction as R-type and read funct. 3. Otherwise use the opcode to identify the instruction and format. 4. Convert register numbers to names. 5. Interpret the immediate as signed or unsigned according to the instruction. 6. Write the assembly statement.</p>
+        </div>
+
+        <h3>Worked example</h3>
+        <p>Decode <code>001000 10001 10111 1111111111110001</code>.</p>
+
+        <table>
+          <tr><th>Field</th><th>Binary</th><th>Value</th><th>Meaning</th></tr>
+          <tr><td>opcode</td><td>001000</td><td>8</td><td><code>addi</code> (I-type)</td></tr>
+          <tr><td>rs</td><td>10001</td><td>17</td><td><code>$s1</code></td></tr>
+          <tr><td>rt</td><td>10111</td><td>23</td><td><code>$s7</code></td></tr>
+          <tr><td>imm</td><td>1111…0001</td><td>−15</td><td>signed 16-bit constant</td></tr>
+        </table>
+
+        <p>The instruction is <code>addi $s7, $s1, −15</code>. Notice that the immediate is not interpreted as 65521; because <code>addi</code> sign-extends, the bit pattern is −15. For <code>andi</code> the same bits would have been zero-extended to 65521. Always let the instruction decide the interpretation.</p>
+      </section>
+
+      <section class="topic" id="stored-program">
+        <h2>The Stored-Program Concept and the Program Counter</h2>
+        <p>A <strong>stored-program computer</strong> keeps both instructions and data in the same memory. Each instruction occupies a unique address, and the processor fetches and executes instructions one after another. This is the idea that separates a general-purpose computer from a fixed-function machine: changing the program means changing memory contents, not rewiring the hardware.</p>
+
+        <p>The <strong>program counter (PC)</strong> holds the address of the next instruction to execute. After a normal instruction is fetched, the PC advances by <strong>4 bytes</strong> because every MIPS instruction is 32 bits. Branch and jump instructions write a different value into the PC, redirecting execution. At the hardware level the PC is just a 32-bit register whose next value is selected by a multiplexer.</p>
+
+        <table>
+          <tr><th>Representation</th><th>Example</th><th>Readable by</th></tr>
+          <tr><td>High-level language</td><td><code>a = b + c;</code></td><td>Humans, compiler</td></tr>
+          <tr><td>Assembly language</td><td><code>add $s0, $s1, $s2</code></td><td>Humans, assembler</td></tr>
+          <tr><td>Machine language</td><td><code>0x02324020</code></td><td>Processor</td></tr>
+        </table>
+
+        <p>The three representations are successive translations of the same program. The processor executes only the binary form, but the binary form is just a structured encoding of the assembly statement, and the assembly statement is a structured encoding of the high-level operation.</p>
+      </section>
+
+      <section class="topic" id="arithmetic-logical">
+        <h2>Arithmetic, Logical and Shift Instructions</h2>
+        <p>High-level constructs are built from a small set of arithmetic and logical instructions. Most operate on two register values and write a third; immediate versions replace one source with a 16-bit constant.</p>
+
+        <pre><code>add  $t0, $s1, $s2     # $t0 = $s1 + $s2
+sub  $t0, $t3, $t5     # $t0 = $t3 - $t5
+addi $t0, $s3, -12     # $t0 = $s3 - 12</code></pre>
+
+        <h3>Bitwise logic</h3>
+        <p>MIPS provides AND, OR, XOR and NOR on registers, plus immediate versions of AND, OR and XOR. They operate bit by bit. AND is useful for <strong>masking</strong> (forcing selected bits to zero), OR for <strong>combining</strong> fields, XOR for <strong>comparing</strong> bits or toggling, and NOR for inversion. There is no separate NOT instruction: <code>nor rd, rs, $0</code> computes <code>NOT rs</code>.</p>
+
+        <div class="box">
+          <span class="label">WORKED BITWISE EXAMPLE</span>
+          <p>Let <code>$s1 = 0xFFFF0000</code> and <code>$s2 = 0x46A1F0B7</code>.</p>
+          <pre><code>and $s3, $s1, $s2   # 0x46A10000
+or  $s4, $s1, $s2   # 0xFFFFF0B7
+xor $s5, $s1, $s2   # 0xB95EF0B7
+nor $s6, $s1, $s2   # 0x00000F48</code></pre>
+        </div>
+
+        <p>Immediate logical instructions zero-extend the 16-bit constant before operating. If <code>$s1 = 0x000000FF</code> and the immediate is <code>0xFA34</code>, then <code>andi</code> gives <code>0x00000034</code>, <code>ori</code> gives <code>0x0000FAFF</code>, and <code>xori</code> gives <code>0x0000FACB</code>. There is no <code>nori</code> because <code>ori</code> followed by <code>nor</code> with <code>$0</code> produces the same result in two instructions; adding a dedicated instruction would complicate the decoder for little benefit.</p>
+
+        <h3>Shifts</h3>
+        <p>Shifts move bits within a register by up to 31 positions. <code>sll</code> shifts left and fills with zeros; <code>srl</code> shifts right and fills with zeros; <code>sra</code> shifts right and replicates the sign bit. A left shift by <em>N</em> multiplies by 2<sup>N</sup>; an arithmetic right shift by <em>N</em> divides by 2<sup>N</sup> with sign preservation. The shift amount can be a constant in <code>shamt</code> or a register value: <code>sllv rd, rt, rs</code>, <code>srlv</code> and <code>srav</code> take the shift amount from the low five bits of <code>rs</code>.</p>
+
+        <p>Variable shifts look as if <code>rs</code> and <code>rt</code> are reversed. In <code>sllv rd, rt, rs</code> the value being shifted is <code>rt</code> and the shift count is <code>rs</code>, because the format keeps the shifted data in the <code>rt</code> field and uses the <code>rs</code> field for the second source. The assembler syntax follows that encoding, so the count is written last even though it is logically the second operand.</p>
+
+        <div class="formula">
+          <span class="label">SHIFT AS MULTIPLY / DIVIDE</span>
+          <div class="expr">x &lt;&lt; N = x × 2<sup>N</sup> &nbsp;&nbsp;&nbsp; x &gt;&gt; N (arithmetic) = x ÷ 2<sup>N</sup></div>
+          <div class="note">Compilers replace multiplication and division by powers of two with shifts because a shift is a single fast operation.</div>
+        </div>
+
+        <h3>Multiplication and division</h3>
+        <p>Multiplying two 32-bit numbers produces a 64-bit product, and dividing produces a quotient and a remainder. MIPS keeps these extra results in two special registers: <strong>HI</strong> and <strong>LO</strong>. For <code>mult</code>, HI:LO holds the 64-bit product. For <code>div</code>, LO holds the quotient and HI holds the remainder. The results move to general registers with <code>mflo</code> and <code>mfhi</code>.</p>
+
+        <pre><code># $s0 = 20, $s1 = 6
+div  $s0, $s1
+mflo $t0          # $t0 = 3  (quotient)
+mfhi $t1          # $t1 = 2  (remainder)
+
+mult $s0, $s1
+mflo $t0          # low 32 bits of the product
+mfhi $t1          # high 32 bits of the product
+
+mul  $s1, $s2, $s3  # 32-bit product directly in a general register</code></pre>
+
+        <h3>Worked numerical</h3>
+        <p>Let <code>$s0 = 0x0000000F</code> (15) and <code>$s1 = 0xFFFFFFF1</code> (−15). Then <code>mult $s0, $s1</code> produces −225. In 64-bit two's complement, −225 = <code>0xFFFFFFFFFFFFFF1F</code>, so <code>mfhi</code> returns <code>0xFFFFFFFF</code> and <code>mflo</code> returns <code>0xFFFFFF1F</code>. For <code>div $s0, $s1</code>, 15 ÷ (−15) gives quotient −1 (<code>0xFFFFFFFF</code> in LO) and remainder 0 (in HI). Division truncates toward zero; the sign of the remainder follows the dividend, which is why reading HI and LO separately matters.</p>
+      </section>
+
+      <section class="topic" id="branches">
+        <h2>Branching and Conditional Statements</h2>
+        <p>By default the PC advances by four bytes. A <strong>branch</strong> changes that flow. Conditional branches test registers; unconditional branches always transfer control. MIPS provides <code>beq</code> (branch if equal) and <code>bne</code> (branch if not equal) for conditional transfer, and <code>j</code>, <code>jr</code> and <code>jal</code> for unconditional transfer.</p>
+
+        <table>
+          <tr><th>Instruction</th><th>Meaning</th><th>Typical use</th></tr>
+          <tr><td><code>beq rs, rt, label</code></td><td>PC = label if rs == rt</td><td>Exit a loop, take an if-branch</td></tr>
+          <tr><td><code>bne rs, rt, label</code></td><td>PC = label if rs != rt</td><td>Skip a block when the condition is false</td></tr>
+          <tr><td><code>j label</code></td><td>Unconditional jump</td><td>Skip the else block, repeat a loop</td></tr>
+          <tr><td><code>jr rs</code></td><td>PC = value in rs</td><td>Function return (<code>jr $ra</code>)</td></tr>
+          <tr><td><code>jal label</code></td><td>$ra = PC + 4; PC = label</td><td>Function call</td></tr>
+        </table>
+
+        <p>A <strong>label</strong> names an instruction address. It ends with a colon and is resolved by the assembler. Assembly programmers usually test the <em>opposite</em> of the high-level condition so that the branch skips the block when the block should not run.</p>
+
+        <h3>if and if/else</h3>
+        <pre><code># if (i == j) f = g + h;
+bne $s3, $s4, L1     # if i != j, skip the body
+add $s0, $s1, $s2    # f = g + h
+L1: ...
+
+# if (i == j) f = g + h; else f = f - i;
+bne $s3, $s4, L1
+add $s0, $s1, $s2
+j done
+L1: sub $s0, $s0, $s3
+done: ...</code></pre>
+
+        <p>The <code>j done</code> is essential: without it, execution would fall through into the else block after completing the if block. A <code>switch/case</code> is implemented as a chain of comparisons—equivalent to nested if/else—with a final default case when no match occurs.</p>
+
+        <h3>switch/case</h3>
+        <p>A switch compares one value against several constants and runs the matching block. The compiler emits one comparison and branch per case, and a final jump to <code>default</code> when nothing matches. Because the cases are independent, each block must end with a jump past the remaining comparisons.</p>
+        <pre><code># switch (k) { case 0: f = f + 1; break; case 1: f = f - 1; break; default: f = 0; }
+# assume k = $s3, f = $s0
+      addi $t0, $0, 0        # t0 = 0
+      beq  $s3, $t0, C0      # k == 0?
+      addi $t0, $0, 1        # t0 = 1
+      beq  $s3, $t0, C1      # k == 1?
+      add  $s0, $0, $0       # default: f = 0
+      j    done
+C0:   addi $s0, $s0, 1      # f = f + 1
+      j    done
+C1:   addi $s0, $s0, -1     # f = f - 1
+done:</code></pre>
+      </section>
+
+      <section class="topic" id="loops">
+        <h2>Loops</h2>
+        <p>A loop repeats a block while a condition holds. In assembly there is no loop instruction; the compiler emits a condition test, a conditional exit, the body, an update, and an unconditional jump back to the test.</p>
+
+        <h3>while loop</h3>
+        <pre><code># while (pow != 128) { pow = pow * 2; x = x + 1; }
+while: beq  $s0, $t0, done   # exit when pow == 128
+       sll  $s0, $s0, 1      # pow = pow * 2
+       addi $s1, $s1, 1      # x = x + 1
+       j    while
+done:</code></pre>
+
+        <p>The original condition is <code>pow != 128</code>, but the branch tests <code>pow == 128</code> to decide when to leave. Testing the exit condition directly avoids an extra jump inside the body.</p>
+
+        <h3>for loop</h3>
+        <pre><code># for (i = 0; i != 10; i++) sum = sum + i;
+      addi $s1, $0, 0     # sum = 0
+      add  $s0, $0, $0    # i = 0
+      addi $t0, $0, 10    # limit = 10
+for:  beq  $s0, $t0, done
+      add  $s1, $s1, $s0
+      addi $s0, $s0, 1
+      j    for
+done:</code></pre>
+
+        <h3>Magnitude comparisons with slt</h3>
+        <p><code>beq</code> and <code>bne</code> only test equality. For “less than” and “greater than” conditions, MIPS provides <strong>set less than</strong>: <code>slt rd, rs, rt</code> writes 1 if <code>rs &lt; rt</code> and 0 otherwise. The result can then be tested with <code>beq</code> or <code>bne</code>.</p>
+
+        <pre><code>$s0 = 5, $s1 = 8
+slt $t1, $s0, $s1     # $t1 = 1 because 5 &lt; 8
+
+# for (i = 1; i &lt; 101; i = i * 2) sum = sum + i;
+      addi $s1, $0, 0      # sum = 0
+      addi $s0, $0, 1      # i = 1
+      addi $t0, $0, 101    # limit = 101
+loop: slt  $t1, $s0, $t0   # $t1 = (i &lt; 101)
+      beq  $t1, $0, done   # exit if i >= 101
+      add  $s1, $s1, $s0   # sum += i
+      sll  $s0, $s0, 1     # i = i * 2
+      j    loop
+done:</code></pre>
+
+        <p>The values added are 1 + 2 + 4 + 8 + 16 + 32 + 64 = 127, so <code>sum = 127</code> at the end. The <code>slt</code> instruction turns a magnitude comparison into a 0/1 value that a branch can consume, which is exactly how “less than”, “greater than or equal”, and similar conditions are synthesized.</p>
+      </section>
+
+      <section class="topic" id="arrays">
+        <h2>Arrays and Character Data</h2>
+        <p>An array stores elements of the same type in consecutive memory locations. Element 0 is at the <strong>base address</strong>; element <em>i</em> is offset by the element size. For 32-bit integers the offset is 4<em>i</em>; for characters it is <em>i</em>.</p>
+
+        <div class="formula">
+          <span class="label">ARRAY ADDRESSING</span>
+          <div class="expr">int array: &nbsp; address(i) = Base + 4i</div>
+          <div class="expr">char array: &nbsp; address(i) = Base + i</div>
+          <div class="note">The base address is held in a register; the index is scaled by the element size and added.</div>
+        </div>
+
+        <p>For a small array the offsets can be written directly. If <code>$s0 = 0x10007000</code> is the base, then <code>lw $t1, 4($s0)</code> loads <code>array[1]</code> and <code>sw $t1, 8($s0)</code> stores <code>array[2]</code>. For a large array, the index must be scaled at run time:</p>
+
+        <pre><code># for (i = 0; i &lt; 1000; i++) array[i] = array[i] * 8;
+      sll $t0, $s1, 2      # t0 = i * 4 (byte offset)
+      add $t0, $t0, $s0    # t0 = &amp;array[i]
+      lw  $t1, 0($t0)      # t1 = array[i]
+      sll $t1, $t1, 3      # t1 = array[i] * 8
+      sw  $t1, 0($t0)      # array[i] = t1</code></pre>
+
+        <p>The shift <code>sll $t0, $s1, 2</code> multiplies by four because each integer occupies four bytes. This is why the base-plus-offset addressing mode is so useful: one base register can reach every element by changing the offset.</p>
+
+        <h3>Byte arrays and characters</h3>
+        <p>Characters use one byte each. MIPS provides <code>lb</code> (load byte, sign-extended), <code>lbu</code> (load byte, zero-extended) and <code>sb</code> (store byte). The following loop converts a lowercase character array to uppercase by subtracting 32 (0x20), because ASCII 'a' is 0x61 and 'A' is 0x41.</p>
+
+        <pre><code># char chararray[10]; for (i=0; i!=10; i++) chararray[i] -= 32;
+      addi $s1, $0, 0      # i = 0
+      addi $t0, $0, 10     # limit = 10
+loop: beq  $t0, $s1, done
+      add  $t1, $s1, $s0   # address = base + i (1 byte each)
+      lb   $t2, 0($t1)
+      addi $t2, $t2, -32   # lowercase -> uppercase
+      sb   $t2, 0($t1)
+      addi $s1, $s1, 1
+      j    loop
+done:</code></pre>
+      </section>
+
+      <section class="topic" id="functions">
+        <h2>Functions, the Stack and Register Preservation</h2>
+        <p>A function makes code reusable. The caller and callee follow a convention so that independently compiled code can cooperate: arguments go in <code>$a0–$a3</code>, the return value comes back in <code>$v0–$v1</code>, the call uses <code>jal</code>, and the return uses <code>jr $ra</code>. <code>jal</code> stores the address of the following instruction (PC + 4) in <code>$ra</code> before jumping.</p>
+
+        <div class="box">
+          <span class="label">CALL AND RETURN</span>
+          <p>If <code>jal simple</code> is at <code>0x00400200</code>, the next instruction is at <code>0x00400204</code>, so <code>$ra = 0x00400204</code>. The callee finishes with <code>jr $ra</code>, which writes that address into the PC.</p>
+        </div>
+
+        <h3>Example: diffofsums</h3>
+        <pre><code>int diffofsums(int f, int g, int h, int i) {
+    return (f + g) - (h + i);
+}
+
+# caller
+addi $a0, $0, 2
+addi $a1, $0, 3
+addi $a2, $0, 4
+addi $a3, $0, 5
+jal  diffofsums
+add  $s0, $v0, $0
+
+# callee
+add $t0, $a0, $a1
+add $t1, $a2, $a3
+sub $s0, $t0, $t1
+add $v0, $s0, $0
+jr  $ra</code></pre>
+
+        <p>The computation is (2 + 3) − (4 + 5) = 5 − 9 = <strong>−4</strong>, so <code>$v0 = −4</code> on return.</p>
+
+        <h3>The stack and stack frames</h3>
+        <p>The <strong>stack</strong> is a LIFO region of memory used for saved registers, local variables, and arguments that do not fit in the four argument registers. The MIPS stack <strong>grows toward lower addresses</strong>. <code>$sp</code> points to the top, so allocating space means subtracting from <code>$sp</code>.</p>
+
+        <p>If <code>$sp = 0x7FFFFFFC</code> and a function needs two words, <code>addi $sp, $sp, -8</code> makes <code>$sp = 0x7FFFFFF4</code>. The area a function allocates is its <strong>stack frame</strong>. The standard sequence is: allocate space, save registers, execute, restore registers, deallocate.</p>
+
+        <pre><code>addi $sp, $sp, -12    # 3 words = 12 bytes
+sw   $s0, 8($sp)
+sw   $t0, 4($sp)
+sw   $t1, 0($sp)
+# ... function body ...
+lw   $t1, 0($sp)
+lw   $t0, 4($sp)
+lw   $s0, 8($sp)
+addi $sp, $sp, 12
+jr   $ra</code></pre>
+
+        <p>Only <strong>preserved</strong> registers (<code>$s0–$s7</code>, <code>$ra</code>, <code>$sp</code>) must be saved if the callee changes them. Temporaries, argument registers and value registers are <strong>nonpreserved</strong>: the callee may overwrite them freely. In the optimized <code>diffofsums</code>, only <code>$s0</code> needs saving, so the frame is just four bytes.</p>
+
+        <div class="box">
+          <span class="label">STACK FRAME CONTENTS</span>
+          <p>Local variables and arrays, saved <code>$s</code> registers, saved argument registers when needed, the return address, and additional arguments beyond the first four. The caller allocates space for extra arguments; the callee can read them from the caller's frame.</p>
+        </div>
+
+        <p>When a function has more than four arguments, the first four still travel in <code>$a0–$a3</code> and the caller places the rest in its own stack frame at fixed offsets before the call. Local variables that do not fit in registers are also kept in the frame. The frame pointer <code>$fp</code> can point to a fixed place in the frame so that offsets remain stable even while <code>$sp</code> changes during expression evaluation; a compiler may omit <code>$fp</code> and address everything relative to <code>$sp</code> when the frame size is known. On return the callee restores <code>$sp</code>, and the caller removes any outgoing argument space.</p>
+      </section>
+
+      <section class="topic" id="recursion">
+        <h2>Recursion</h2>
+        <p>A <strong>leaf</strong> function calls no other function. A <strong>nonleaf</strong> function does; a recursive function is a nonleaf function that calls itself. Each invocation needs its own stack frame because the old argument and the old return address must survive while the new call runs.</p>
+
+        <pre><code>int factorial(int n) {
+    if (n &lt;= 1) return 1;
+    else return n * factorial(n - 1);
+}</code></pre>
+
+        <pre><code>factorial:
+    addi $sp, $sp, -8      # frame for $a0 and $ra
+    sw   $a0, 4($sp)
+    sw   $ra, 0($sp)
+
+    addi $t0, $0, 2
+    slt  $t0, $a0, $t0     # t0 = (n &lt; 2)
+    beq  $t0, $0, else
+    addi $v0, $0, 1        # base case: return 1
+    addi $sp, $sp, 8
+    jr   $ra
+
+else:
+    addi $a0, $a0, -1      # n - 1
+    jal  factorial         # recursive call
+    lw   $ra, 0($sp)
+    lw   $a0, 4($sp)
+    addi $sp, $sp, 8
+    mul  $v0, $a0, $v0     # n * factorial(n-1)
+    jr   $ra</code></pre>
+
+        <p>For <code>factorial(3)</code> the calls descend 3 → 2 → 1. The base case returns 1, then the pending multiplications unwind: 2 × 1 = 2, then 3 × 2 = 6. Each frame is 8 bytes, so three nested calls use 24 bytes of stack. If the recursion were unbounded, the stack would eventually collide with the heap or the data segment—the hardware does not prevent it, so the programmer must ensure a base case is reached.</p>
+      </section>
+
+      <section class="topic" id="addressing-modes">
+        <h2>Addressing Modes</h2>
+        <p>An <strong>addressing mode</strong> specifies how an instruction finds its operands. The mode determines whether an operand is in a register, in memory, or inside the instruction itself, and therefore influences instruction size, execution speed and programming flexibility. MIPS uses five modes, one for each natural kind of access.</p>
+
+        <table>
+          <tr><th>Mode</th><th>Where the operand is</th><th>Used by</th><th>Example</th></tr>
+          <tr><td>Register-only</td><td>CPU registers</td><td>All R-type instructions</td><td><code>add $s0, $t2, $t3</code></td></tr>
+          <tr><td>Immediate</td><td>Constant encoded in the instruction</td><td><code>addi</code>, <code>andi</code>, <code>ori</code>, <code>xori</code>, <code>lui</code></td><td><code>addi $s0, $s0, 10</code></td></tr>
+          <tr><td>Base</td><td>Memory at base register + offset</td><td><code>lw</code>, <code>sw</code></td><td><code>lw $t0, 8($sp)</code></td></tr>
+          <tr><td>PC-relative</td><td>Memory relative to PC + 4</td><td><code>beq</code>, <code>bne</code></td><td><code>beq $t0, $0, Loop</code></td></tr>
+          <tr><td>Pseudo-direct</td><td>Jump target formed from PC and a 26-bit field</td><td><code>j</code>, <code>jal</code></td><td><code>j main</code></td></tr>
+        </table>
+
+        <h3>Register-only addressing</h3>
+        <p>Both sources and the destination are registers. The ALU reads the register file, computes, and writes the result back. No memory access occurs, so this is the fastest mode. <code>add $s0, $t2, $t3</code> performs <code>$s0 = $t2 + $t3</code>; <code>sub $t8, $s1, $0</code> copies <code>$s1</code> because <code>$0</code> is always zero.</p>
+
+        <h3>Immediate addressing</h3>
+        <p>One operand is a 16-bit constant inside the instruction; the other is a register. Because no memory fetch is needed, immediates are ideal for initializing registers, updating counters, and applying small offsets. Examples include <code>addi $s4, $t5, −73</code> and <code>ori $t3, $t7, 0xFF</code>. Arithmetic and memory immediates are sign-extended; logical immediates are zero-extended.</p>
+
+        <h3>Base addressing</h3>
+        <p>The operand is in memory. Its address is a base register plus a 16-bit signed offset. This is the mode used by loads and stores, and it is what makes arrays, structures, stack frames and dynamically allocated memory practical: keep the base fixed and change the offset, or change the base and keep the offset.</p>
+
+        <div class="formula">
+          <span class="label">BASE ADDRESSING</span>
+          <div class="expr">Effective Address = Base register + Sign-extended offset</div>
+          <div class="note">The offset is in bytes. It may be positive or negative, so one base register can reach data on either side of it.</div>
+        </div>
+
+        <pre><code>lw $s4, 72($0)     # EA = 0 + 72 = 72; load word at address 72
+sw $t2, -25($t1)   # EA = $t1 - 25; store $t2 there</code></pre>
+
+        <h3>PC-relative addressing</h3>
+        <p>Branch instructions do not store a full destination address. They store a 16-bit signed <strong>offset in instructions</strong> relative to the next instruction. The hardware sign-extends the offset, multiplies by four (each instruction is four bytes), and adds it to <code>PC + 4</code>. This keeps branches compact and lets the same code run after being relocated, because the branch distance does not change.</p>
+
+        <div class="formula">
+          <span class="label">BRANCH TARGET ADDRESS</span>
+          <div class="expr">BTA = (PC + 4) + (Sign-extended offset × 4)</div>
+          <div class="note">The offset counts instructions, not bytes. A negative offset branches backward; a positive offset branches forward.</div>
+        </div>
+
+        <div class="box">
+          <span class="label">BRANCH OFFSET EXAMPLE</span>
+          <p>At <code>0x10</code>: <code>beq $t0, $0, else</code>. The next instruction is at <code>0x14</code> and the target <code>else</code> is at <code>0x20</code>. The distance is (0x20 − 0x14) / 4 = 3 instructions, so the immediate field is 3. The processor computes 0x14 + (3 × 4) = 0x20.</p>
+        </div>
+
+        <h3>Pseudo-direct addressing</h3>
+        <p>Jump instructions use a 26-bit address field. The processor forms the full 32-bit target by taking the upper four bits of <code>PC + 4</code>, appending the 26-bit field, and appending two zero bits because instructions are word-aligned. Only part of the destination is stored, which is why the mode is called <em>pseudo</em>-direct.</p>
+
+        <div class="formula">
+          <span class="label">JUMP TARGET ADDRESS</span>
+          <div class="expr">JTA = {(PC + 4)[31:28], addr[25:0], 2'b00}</div>
+          <div class="note">The low two bits are always 00. A jump can reach any word within the same 256 MB region selected by the top four PC bits.</div>
+        </div>
+
+        <p>For example, a <code>j sum</code> at <code>0x0040005C</code> targeting <code>0x004000A0</code> has a 26-bit field of <code>0x0100028</code> (the target shifted right by two), opcode 2, and machine code <code>0x08100028</code>. The top four bits of <code>PC + 4</code> are zero, which is why the text segment is placed at <code>0x00400000</code>: a jump can then reach any instruction in the program directly.</p>
+      </section>
+
+      <section class="topic" id="memory-map">
+        <h2>The MIPS Memory Map</h2>
+        <p>A 32-bit address space contains 2<sup>32</sup> bytes = 4 GB. MIPS divides it into regions with different purposes. Word addresses are multiples of four, so the highest word address is <code>0xFFFFFFFC</code>.</p>
+
+        <table>
+          <tr><th>Address range</th><th>Segment</th><th>Purpose</th></tr>
+          <tr><td><code>0x00000000 – 0x003FFFFC</code></td><td>Reserved</td><td>Operating system, interrupts, memory-mapped I/O</td></tr>
+          <tr><td><code>0x00400000 – 0x0FFFFFFC</code></td><td>Text</td><td>Machine-language program; PC starts at <code>0x00400000</code></td></tr>
+          <tr><td><code>0x10000000 – 0x1000FFFC</code></td><td>Global data</td><td>Global variables; <code>$gp = 0x10008000</code></td></tr>
+          <tr><td><code>0x10010000 – 0x7FFFFFFC</code></td><td>Dynamic data</td><td>Heap (grows up from bottom) and stack (grows down from top)</td></tr>
+          <tr><td><code>0x80000000 – 0xFFFFFFFC</code></td><td>Reserved</td><td>Operating system</td></tr>
+        </table>
+
+        <p>The <strong>text segment</strong> is large enough for almost 256 MB of code. Its top four address bits are zero, so a J-type jump can reach any instruction in it. The <strong>global data segment</strong> holds variables declared outside functions; it is 64 KB because a 16-bit signed offset from <code>$gp</code> can reach ±32 KB around the fixed middle address <code>0x10008000</code>. The offset is known at assembly time, so a global access is one base-addressed load or store.</p>
+
+        <p>The <strong>dynamic data segment</strong> is the largest, spanning almost 2 GB. The <strong>stack</strong> starts at <code>0x7FFFFFFC</code> and grows downward as functions are called. The <strong>heap</strong> starts at the bottom and grows upward as <code>malloc</code>/<code>new</code> allocates memory. They grow toward each other; if they collide, the allocator reports an out-of-memory error. The stack is LIFO and holds stack frames; the heap is used and freed in arbitrary order.</p>
+
+        <div class="box">
+          <span class="label">SEGMENT ANALOGY</span>
+          <p>Text is the recipe book—read-only instructions. Global data is the shared noticeboard—everyone can see it. The stack is your own desk—local notes pushed and popped as you work. The heap is a storage room—space requested and released as needed.</p>
+        </div>
+      </section>
+
+      <section class="topic" id="compile-assemble">
+        <h2>Compiling and Assembling</h2>
+        <p>A complete program passes through four tools: <strong>compiler → assembler → linker → loader</strong>. The compiler turns high-level code into assembly; the assembler turns assembly into an object file of machine code; the linker combines object files and libraries into an executable; the loader places the executable in memory and starts it. In practice a single command often runs all four.</p>
+
+        <div class="flow" style="margin-bottom:18px">
+          <span class="step">High-level code</span><span class="arrow">→</span>
+          <span class="step">Compiler</span><span class="arrow">→</span>
+          <span class="step">Assembly</span><span class="arrow">→</span>
+          <span class="step">Assembler</span><span class="arrow">→</span>
+          <span class="step">Object file</span><span class="arrow">→</span>
+          <span class="step">Linker</span><span class="arrow">→</span>
+          <span class="step">Executable</span><span class="arrow">→</span>
+          <span class="step">Loader</span><span class="arrow">→</span>
+          <span class="step">Memory</span>
+        </div>
+
+        <h3>Step 1: compilation</h3>
+        <p>The compiler translates statements into instructions and emits assembler directives. <code>.data</code> marks the beginning of data, <code>.text</code> marks the beginning of code, and labels such as <code>f:</code>, <code>g:</code>, <code>y:</code> name global variables. At this stage the addresses are still symbolic; the assembler will assign them.</p>
+
+        <pre><code>int f, g, y;
+int main(void) { f = 2; g = 3; y = sum(f, g); return y; }
+int sum(int a, int b) { return a + b; }
+
+        .data
+f:      g:      y:
+        .text
+main:   addi $sp, $sp, -4
+        sw   $ra, 0($sp)
+        addi $a0, $0, 2
+        sw   $a0, f
+        addi $a1, $0, 3
+        sw   $a1, g
+        jal  sum
+        sw   $v0, y
+        lw   $ra, 0($sp)
+        addi $sp, $sp, 4
+        jr   $ra
+sum:    add  $v0, $a0, $a1
+        jr   $ra</code></pre>
+
+        <h3>Step 2: assembly (two passes)</h3>
+        <p>The assembler must resolve labels that may be defined later, so it makes two passes. <strong>Pass 1</strong> walks the program assigning an address to every instruction and recording every label and global in a <strong>symbol table</strong>. <strong>Pass 2</strong> emits the machine code, looking up symbol addresses and filling in branch/jump fields.</p>
+
+        <table class="compact">
+          <tr><th>Address</th><th>Instruction</th></tr>
+          <tr><td><code>0x00400000</code></td><td><code>main: addi $sp, $sp, -4</code></td></tr>
+          <tr><td><code>0x00400004</code></td><td><code>sw $ra, 0($sp)</code></td></tr>
+          <tr><td><code>0x00400008</code></td><td><code>addi $a0, $0, 2</code></td></tr>
+          <tr><td><code>0x0040000C</code></td><td><code>sw $a0, f</code></td></tr>
+          <tr><td><code>0x00400010</code></td><td><code>addi $a1, $0, 3</code></td></tr>
+          <tr><td><code>0x00400014</code></td><td><code>sw $a1, g</code></td></tr>
+          <tr><td><code>0x00400018</code></td><td><code>jal sum</code></td></tr>
+          <tr><td><code>0x0040001C</code></td><td><code>sw $v0, y</code></td></tr>
+          <tr><td><code>0x00400020</code></td><td><code>lw $ra, 0($sp)</code></td></tr>
+          <tr><td><code>0x00400024</code></td><td><code>addi $sp, $sp, 4</code></td></tr>
+          <tr><td><code>0x00400028</code></td><td><code>jr $ra</code></td></tr>
+          <tr><td><code>0x0040002C</code></td><td><code>sum: add $v0, $a0, $a1</code></td></tr>
+          <tr><td><code>0x00400030</code></td><td><code>jr $ra</code></td></tr>
+        </table>
+
+        <p>Globals are assigned storage starting at <code>0x10000000</code>: <code>f</code> at <code>0x10000000</code>, <code>g</code> at <code>0x10000004</code>, <code>y</code> at <code>0x10000008</code>. The symbol table records these addresses alongside the text labels. In this example there are 13 instructions, so the text size is 13 × 4 = 52 bytes (<code>0x34</code>), and three globals occupy 12 bytes (<code>0xC</code>).</p>
+      </section>
+
+      <section class="topic" id="link-load">
+        <h2>Linking, Loading and Starting the Program</h2>
+        <p><strong>Linking</strong> combines several object files and library files into one executable. It relocates code and data so that different modules do not overlap, and it patches symbol references using each object file's symbol table. Linking exists because recompiling every file whenever one changes would be wasteful; if a high-level file is unchanged, its object file can be reused. Library files almost never change.</p>
+
+        <p>The resulting <strong>executable</strong> has three parts: a <strong>header</strong> giving the text and data sizes, a <strong>text segment</strong> containing the instructions in memory order, and a <strong>data segment</strong> containing the initial values of global variables. In the example the text size is <code>0x34</code> and the data size is <code>0xC</code>.</p>
+
+        <h3>Relocation and $gp</h3>
+        <p>The linker converts a global access such as <code>sw $a0, f</code> into <code>sw $a0, 0x8000($gp)</code>. The offset <code>0x8000</code> is a 16-bit signed value; sign-extending it gives <code>0xFFFF8000</code>. Since <code>$gp = 0x10008000</code>:</p>
+
+        <div class="formula">
+          <span class="label">GLOBAL DATA ADDRESS</span>
+          <div class="expr">$gp + 0xFFFF8000 = 0x10008000 + 0xFFFF8000 = 0x10000000</div>
+          <div class="note">0x10000000 is the address of <code>f</code>. A negative 16-bit offset reaches globals below $gp.</div>
+        </div>
+
+        <h3>Step 4: loading</h3>
+        <p>The operating system's <strong>loader</strong> reads the executable's text segment from disk into the text region of memory, initializes the data segment, and sets up the machine state:</p>
+        <ul>
+          <li>Read the text segment into memory starting at <code>0x00400000</code>.</li>
+          <li>Set <code>$gp = 0x10008000</code>, the middle of the global data segment.</li>
+          <li>Set <code>$sp = 0x7FFFFFFC</code>, the top of the dynamic data segment.</li>
+          <li>Set the PC to <code>0x00400000</code> (often via <code>jal 0x00400000</code>) and begin execution.</li>
+        </ul>
+
+        <p>At the first instruction, the text holds the 13 instructions, the globals <code>f</code>, <code>g</code>, <code>y</code> sit at <code>0x10000000–0x10000008</code>, the stack is at the top of the dynamic segment, and the heap begins at the bottom. From that point the processor simply fetches, decodes and executes—the toolchain has done its job.</p>
+      </section>
+
+      <section class="topic" id="parallelism">
+        <h2>Parallelism: Latency and Throughput</h2>
+        <p><strong>Parallelism</strong> means performing multiple operations at the same time or overlapping their execution. Its main goal is to increase <strong>throughput</strong>—the amount of work completed per unit time—without necessarily reducing the <strong>latency</strong> of a single task. Raising clock frequency alone is no longer enough: it increases power and heat, so modern systems add hardware and overlap work instead.</p>
+
+        <div class="formula">
+          <span class="label">LATENCY AND THROUGHPUT</span>
+          <div class="expr">Latency = time for one task &nbsp;&nbsp;&nbsp; Throughput = tasks completed / unit time</div>
+          <div class="expr">Non-parallel system: &nbsp; Throughput = 1 / Latency</div>
+          <div class="note">High throughput does not imply low latency: many tasks can finish per hour while each one still takes a long time.</div>
+        </div>
+
+        <h3>The cookie example</h3>
+        <p>Ben rolls a tray of cookies in 5 minutes and bakes it in 15 minutes. If he waits for one tray to finish before starting the next, one tray takes 5 + 15 = 20 minutes and he completes three trays per hour. Latency is 20 minutes; throughput is 3 trays/hour.</p>
+
+        <table>
+          <tr><th>Arrangement</th><th>Latency</th><th>Throughput</th><th>Why</th></tr>
+          <tr><td>No parallelism</td><td>20 min</td><td>3 trays/hour</td><td>One tray at a time</td></tr>
+          <tr><td>Spatial: Alyssa helps</td><td>20 min</td><td>6 trays/hour</td><td>Two independent workers</td></tr>
+          <tr><td>Temporal: prepare while baking</td><td>20 min</td><td>4 trays/hour</td><td>A new tray enters the oven every 15 min</td></tr>
+          <tr><td>Both</td><td>20 min</td><td>8 trays/hour</td><td>Two workers, each overlapping stages</td></tr>
+        </table>
+
+        <p>The lesson is exact: parallelism multiplies throughput but leaves the latency of one tray unchanged. Spatial parallelism buys throughput with duplicate hardware; temporal parallelism buys throughput by overlapping stages of the same hardware.</p>
+
+        <div class="formula">
+          <span class="label">MATHEMATICAL MODEL OF PARALLELISM</span>
+          <div class="expr">No parallelism: &nbsp; Throughput = 1 / L &nbsp;&nbsp;&nbsp; (L = latency of one task)</div>
+          <div class="expr">Spatial, N units: &nbsp; Throughput = N / L</div>
+          <div class="expr">Temporal, N equal stages: &nbsp; Throughput = N / L</div>
+          <div class="expr">Unequal stages, longest stage L<sub>1</sub>: &nbsp; Throughput = 1 / L<sub>1</sub></div>
+          <div class="note">Latency stays L in every case. Adding stages raises throughput only when the stages are balanced; the slowest stage sets the rate.</div>
+        </div>
+
+        <h3>Spatial versus temporal parallelism</h3>
+        <div class="two-col">
+          <div class="box">
+            <span class="label">SPATIAL PARALLELISM</span>
+            <p>Add copies of hardware so different tasks run literally at the same time: multiple processors, multiple ALUs, multicore CPUs, GPUs. High performance, but higher cost, area and power.</p>
+          </div>
+          <div class="box">
+            <span class="label">TEMPORAL PARALLELISM</span>
+            <p>Split one task into stages and let different tasks occupy different stages at the same time—an assembly line. Reuses the same hardware, so it is cheaper, but adds pipeline registers and control complexity.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="topic" id="pipeline-parallelism">
+        <h2>Pipelining as Temporal Parallelism</h2>
+        <p>A <strong>pipeline</strong> divides a long combinational path into shorter stages separated by registers. One task moves through the stages while the next task enters the first stage, exactly like an assembly line. The clock period is set by the <strong>slowest stage</strong>, not by the sum of all stages, so throughput rises sharply. The latency of one task is still the sum of all stage delays (plus register overhead).</p>
+
+        <div class="formula">
+          <span class="label">PIPELINE TIMING</span>
+          <div class="expr">Tc = max(stage delays) &nbsp;&nbsp;&nbsp; Throughput = 1 / Tc</div>
+          <div class="expr">Latency of one task = k × Tc &nbsp;&nbsp; (k stages)</div>
+          <div class="note">Unequal stages waste time: the slowest stage determines the clock, and faster stages sit idle part of each cycle.</div>
+        </div>
+
+        <h3>Numerical example 1: two-stage pipeline</h3>
+        <p>A circuit has clock-to-Q delay 0.3 ns, logic blocks of 3 ns, 2 ns and 4 ns, and setup time 0.2 ns. Without pipelining the whole path must settle in one cycle:</p>
+
+        <div class="formula">
+          <span class="label">NO PIPELINE</span>
+          <div class="expr">Tc = 0.3 + 3 + 2 + 4 + 0.2 = 9.5 ns</div>
+          <div class="expr">Throughput = 1 / 9.5 ns ≈ 105 MHz</div>
+        </div>
+
+        <p>Insert one register after the 3 ns and 2 ns blocks. Stage 1 is 0.3 + 3 + 2 + 0.2 = 5.5 ns; stage 2 is 0.3 + 4 + 0.2 = 4.5 ns. The clock must satisfy the slower stage, so <code>Tc = 5.5 ns</code> and throughput is <code>1/5.5 ns ≈ 182 MHz</code>. The individual task still takes about the same total time, but the system completes more tasks per second.</p>
+
+        <h3>Numerical example 2: three-stage pipeline</h3>
+        <p>Stages of 3.5 ns, 2.5 ns and 4.5 ns give <code>Tc = max(3.5, 2.5, 4.5) = 4.5 ns</code>. Latency = 3 × 4.5 = 13.5 ns. Throughput = 1/4.5 ns ≈ 222 MHz. The 3.5 ns and 2.5 ns stages are underutilized; balancing the stages would raise throughput further.</p>
+
+        <div class="box">
+          <span class="label">SPEEDUP</span>
+          <p>Speedup = old execution time / new execution time. If the original circuit runs at 9.5 ns per task and the two-stage pipeline runs at 5.5 ns per task, the ideal throughput speedup is 9.5/5.5 ≈ 1.73×. In a processor, pipeline overhead (register setup, clock-to-Q, hazards) reduces this below the ideal number of stages.</p>
+        </div>
+
+        <p>Pipelining is attractive because it does not duplicate the datapath: it inserts registers into the existing logic. Shorter combinational paths allow a higher clock, and the hardware is reused every cycle. The costs are pipeline registers, control complexity, and the hazards discussed next.</p>
+      </section>
+
+      <section class="topic" id="hazards">
+        <h2>Pipeline Hazards</h2>
+        <p>A <strong>hazard</strong> is a situation that prevents the next instruction from executing in its intended cycle. The pipeline must <em>stall</em> (insert a bubble) or <em>forward</em> data, and either response reduces throughput below the ideal one instruction per cycle.</p>
+
+        <table>
+          <tr><th>Hazard</th><th>Cause</th><th>Typical remedy</th></tr>
+          <tr><td>Data hazard</td><td>An instruction needs a value still being produced by an earlier instruction (read-after-write).</td><td>Forwarding/bypassing; stall for load-use; register-file write/read timing.</td></tr>
+          <tr><td>Control hazard</td><td>A branch or jump changes the PC, but the next instructions have already been fetched.</td><td>Flush wrong-path instructions; branch prediction; delayed branch; move branch decision earlier.</td></tr>
+          <tr><td>Structural hazard</td><td>Two instructions need the same hardware resource in the same cycle.</td><td>Duplicate resources (separate instruction/data memories, multiple ports) or schedule around the conflict.</td></tr>
+        </table>
+
+        <p><strong>Data hazards</strong> are the most common. If <code>add $s0, $s1, $s2</code> is followed immediately by <code>sub $t0, $s0, $s3</code>, the subtract needs <code>$s0</code> before the add has written it back. Forwarding routes the ALU result directly from the pipeline register to the next instruction's ALU input, avoiding a stall. A load followed immediately by a use of the loaded register cannot always be forwarded in time, so the pipeline stalls one cycle—the <em>load-use</em> hazard.</p>
+
+        <p><strong>Control hazards</strong> arise because the processor does not know whether a branch is taken until the branch is evaluated. Instructions fetched after the branch may be wrong and must be flushed. Moving the branch decision to an earlier stage, predicting the direction, or defining a delayed branch slot reduces the penalty.</p>
+
+        <p><strong>Structural hazards</strong> arise when the datapath has only one memory or one write port. MIPS avoids the worst case by using separate instruction and data memories and a register file that writes in the first half of the cycle and reads in the second half.</p>
+
+        <div class="box">
+          <span class="label">IDEAL VERSUS REAL</span>
+          <p>An ideal <em>k</em>-stage pipeline completes one instruction per cycle after filling, so <code>CPI ≈ 1</code> and <code>throughput ≈ 1/Tc</code>. Hazards, stalls and flushes raise the effective CPI; the performance equation <code>Time = IC × CPI × Tc</code> still applies, with CPI now including pipeline penalties.</p>
+        </div>
+
+        <p>Parallelism at the instruction level (pipelining, multiple issue), at the data level (SIMD, GPUs) and at the task level (multicore) all follow the same trade-off: spend hardware or overlap time to raise throughput, while keeping latency and correctness under control.</p>
+      </section>
+
+
+      <footer class="footnote">Compiled from the Unit 3 lecture notes (UE25CS251A, Digital Logic and Computer Design) — Team DLCD, Department of CSE and CSE (AI &amp; ML).</footer>
+    </div>
+  </main>
+</div>
+
+<div class="backtotop" id="backTop" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</div>
+
+<script>
+const root = document.documentElement;
+const themeBtn = document.getElementById('themeToggle');
+const iconSun = document.getElementById('iconSun');
+function setTheme(dark){
+  root.classList.toggle('dark', dark);
+  iconSun.innerHTML = dark
+    ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+    : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+}
+let isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+try {
+  const saved = localStorage.getItem('dlcd-theme');
+  if (saved === 'dark') isDark = true;
+  if (saved === 'light') isDark = false;
+} catch(e){}
+setTheme(isDark);
+themeBtn.addEventListener('click', () => {
+  isDark = !isDark;
+  setTheme(isDark);
+  try { localStorage.setItem('dlcd-theme', isDark ? 'dark' : 'light'); } catch(e){}
+});
+
+const sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
+document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+
+document.querySelectorAll('.toc-group-title').forEach(t => {
+  t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
+});
+
+const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = '#' + entry.target.id;
+    const link = navLinks.find(a => a.getAttribute('href') === id);
+    if (!link) return;
+    if (entry.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+sections.forEach(s => s && io.observe(s));
+
+const searchInput = document.getElementById('searchInput');
+const searchCount = document.getElementById('searchCount');
+let marks = [];
+
+function clearMarks(){
+  marks.forEach(m => {
+    const parent = m.parentNode;
+    parent.replaceChild(document.createTextNode(m.textContent), m);
+    parent.normalize();
+  });
+  marks = [];
+}
+
+function highlightInContent(term){
+  clearMarks();
+  if (!term) return 0;
+  const lower = term.toLowerCase();
+  const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+    acceptNode(node){
+      if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+      if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  const targets = [];
+  let n;
+  while (n = walker.nextNode()) targets.push(n);
+  let count = 0;
+  targets.forEach(node => {
+    const text = node.nodeValue;
+    const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+    if (!regex.test(text)) return;
+    const frag = document.createDocumentFragment();
+    let lastIndex = 0;
+    text.replace(regex, (match, p1, offset) => {
+      frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+      const mark = document.createElement('mark');
+      mark.textContent = match;
+      frag.appendChild(mark);
+      marks.push(mark);
+      count++;
+      lastIndex = offset + match.length;
+    });
+    frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+    node.parentNode.replaceChild(frag, node);
+  });
+  return count;
+}
+
+function filterNav(term){
+  const lower = term.toLowerCase();
+  let visible = 0;
+  document.querySelectorAll('.toc-group').forEach(group => {
+    let groupHas = false;
+    group.querySelectorAll('.toc-list li').forEach(li => {
+      const a = li.querySelector('a');
+      const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+      const match = !lower || hay.includes(lower);
+      li.classList.toggle('hidden', !match);
+      if (match){ groupHas = true; visible++; }
+    });
+    group.style.display = groupHas || !lower ? '' : 'none';
+    if (lower && groupHas) group.classList.remove('collapsed');
+  });
+  return visible;
+}
+
+let searchTimer;
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const term = e.target.value.trim();
+  searchTimer = setTimeout(() => {
+    const navVisible = filterNav(term);
+    const contentMatches = highlightInContent(term);
+    if (!term) { searchCount.textContent = ''; return; }
+    searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es') + ' in text';
+  }, 150);
+});
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && marks.length){
+    marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  if (e.key === 'Escape'){
+    searchInput.value = '';
+    searchInput.dispatchEvent(new Event('input'));
+    searchInput.blur();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    searchInput.focus();
+  }
+});
+
+const progress = document.getElementById('progress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = scrolled + '%';
+  backTop.classList.toggle('show', h.scrollTop > 600);
+}, { passive: true });
+backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+</body>
+</html>
