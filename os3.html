@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const saved = localStorage.getItem('theme');
+      const isDark = saved
+        ? saved === 'dark'
+        : window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        root.classList.add('dark');
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.classList.remove('dark');
+        root.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+  <title>Operating Systems · Unit 3 — Memory Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap"
+    rel="stylesheet">
+  <style>
+
+    :root {
+      --bg: #f3f3f1;
+      --surface: #f8f8f6;
+      --surface-2: #eceae5;
+      --text: #1c1f1d;
+      --text-soft: #565f5a;
+      --text-faint: #8a9089;
+      --border: #dfe1dc;
+      --accent: #2c5f52;
+      --accent-soft: #dfe9e4;
+      --accent-text: #1f4238;
+      --formula-bg: #f3ecdc;
+      --formula-border: #c9a95c;
+      --code-bg: #eef0ec;
+      --mark-bg: #f6d989;
+      --shadow: none;
+      --radius: 3px;
+      --sidebar-w: 300px;
+      color-scheme: light;
+    }
+
+    html.dark {
+      --bg: #070b14;
+      --surface: #0d1524;
+      --surface-2: #101d33;
+      --text: #eaf3ff;
+      --text-soft: #a9bbd8;
+      --text-faint: #7d8eaf;
+      --border: #1d2d47;
+      --accent: #60a5fa;
+      --accent-soft: #10213d;
+      --accent-text: #dceeff;
+      --formula-bg: #101a2d;
+      --formula-border: #8ab4ff;
+      --code-bg: #101b2d;
+      --mark-bg: #3b5d9c;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      line-height: 1.5;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    ::selection {
+      background: var(--mark-bg);
+      color: #1c1f1d;
+    }
+
+    /* ---------- Progress bar ---------- */
+    #progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: var(--accent);
+      z-index: 500;
+      transition: width .1s linear;
+    }
+
+    /* ---------- Layout ---------- */
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 22px 16px 60px;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      letter-spacing: .02em;
+      color: var(--text-faint);
+    }
+
+    .brand strong {
+      display: block;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    #themeToggle {
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s ease;
+    }
+
+    #themeToggle:hover {
+      background: var(--accent-soft);
+    }
+
+    #themeToggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 9px 12px 9px 32px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13.5px;
+      outline: none;
+    }
+
+    #searchInput:focus {
+      border-color: var(--accent);
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-faint);
+      pointer-events: none;
+    }
+
+    #searchCount {
+      font-size: 11.5px;
+      color: var(--text-faint);
+      margin: 6px 2px 0;
+      min-height: 14px;
+    }
+
+    nav.toc {
+      font-size: 13.5px;
+    }
+
+    .toc-group {
+      margin-bottom: 4px;
+    }
+
+    .toc-group-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      color: var(--text-faint);
+      padding: 14px 8px 6px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toc-group-title:hover {
+      color: var(--text-soft);
+    }
+
+    .toc-group-title .chev {
+      transition: transform .15s ease;
+      width: 9px;
+      height: 9px;
+    }
+
+    .toc-group.collapsed .chev {
+      transform: rotate(-90deg);
+    }
+
+    .toc-group.collapsed .toc-list {
+      display: none;
+    }
+
+    .toc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .toc-list li a {
+      display: block;
+      padding: 6px 10px 6px 16px;
+      margin: 1px 0;
+      border-radius: var(--radius);
+      color: var(--text-soft);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      font-size: 13px;
+    }
+
+    .toc-list li a:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .toc-list li a.active {
+      color: var(--accent-text);
+      border-left-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 500;
+    }
+
+    .toc-list li.hidden {
+      display: none;
+    }
+
+    /* ---------- Main ---------- */
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 56px clamp(20px, 6vw, 90px) 140px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .content {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .masthead {
+      margin-bottom: 52px;
+    }
+
+    .masthead .kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--accent-text);
+      letter-spacing: .04em;
+    }
+
+    .masthead h1 {
+      font-family: 'Newsreader', serif;
+      font-weight: 500;
+      font-size: clamp(34px, 4.4vw, 48px);
+      margin: 8px 0 14px;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+    }
+
+    .masthead p {
+      color: var(--text-soft);
+      font-size: 15.5px;
+      max-width: 56ch;
+    }
+
+    section.topic {
+      margin-bottom: 64px;
+      scroll-margin-top: 28px;
+    }
+
+    section.topic>h2 {
+      font-family: 'Newsreader', serif;
+      font-weight: 500;
+      font-size: 27px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin: 0 0 20px;
+      letter-spacing: -0.01em;
+    }
+
+    section.topic h3 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 600;
+      font-size: 16.5px;
+      margin: 30px 0 10px;
+      color: var(--text);
+    }
+
+    section.topic h4 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      margin: 20px 0 8px;
+      color: var(--accent-text);
+    }
+
+    section.topic p {
+      font-family: 'Newsreader', serif;
+      font-size: 16.5px;
+      color: var(--text);
+      margin: 0 0 14px;
+    }
+
+    section.topic p,
+    section.topic li {
+      font-size: 16.5px;
+    }
+
+    section.topic ul,
+    section.topic ol {
+      font-family: 'Newsreader', serif;
+      padding-left: 22px;
+      margin: 0 0 14px;
+    }
+
+    section.topic ul li,
+    section.topic ol li {
+      margin-bottom: 6px;
+    }
+
+    section.topic ul ul,
+    section.topic ol ul {
+      margin: 6px 0 6px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .86em;
+      background: var(--code-bg);
+      padding: 1.5px 5px;
+      border-radius: 3px;
+      color: var(--accent-text);
+    }
+
+    pre {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      overflow-x: auto;
+      margin: 0 0 16px;
+      line-height: 1.6;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text);
+    }
+
+    /* callouts */
+    .box {
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin: 0 0 16px;
+      background: var(--surface-2);
+    }
+
+    .box p:last-child {
+      margin-bottom: 0;
+    }
+
+    .box .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      color: var(--accent-text);
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .formula {
+      border: 1px solid var(--formula-border);
+      background: var(--formula-bg);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin: 18px 0;
+    }
+
+    .formula .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      color: #8a6d1f;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    html.dark .formula .label {
+      color: #d8b25b;
+    }
+
+    .formula .expr {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 17px;
+      text-align: center;
+      margin: 6px 0;
+    }
+
+    .formula .note {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px;
+      color: var(--text-soft);
+      margin-top: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 0 18px;
+      font-size: 14.5px;
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+
+    th {
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: .03em;
+      color: var(--text-faint);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 12px;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    figure {
+      margin: 0 0 20px;
+    }
+
+    figure figcaption {
+      font-size: 12.5px;
+      color: var(--text-faint);
+      margin-top: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* diagram helpers */
+    .diagram {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .stack .layer {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      text-align: center;
+      padding: 10px;
+      font-size: 13px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .stack .layer.accent {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      font-weight: 600;
+    }
+
+    .stack .layer+.layer {
+      border-top: none;
+    }
+
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 100%;
+    }
+
+    .pyramid .tier {
+      border: 1px solid var(--border);
+      text-align: center;
+      padding: 9px;
+      font-size: 12.5px;
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--surface);
+      margin-top: -1px;
+    }
+
+    .pyramid .tier:nth-child(1) {
+      width: 34%;
+    }
+
+    .pyramid .tier:nth-child(2) {
+      width: 44%;
+    }
+
+    .pyramid .tier:nth-child(3) {
+      width: 56%;
+    }
+
+    .pyramid .tier:nth-child(4) {
+      width: 70%;
+    }
+
+    .pyramid .tier:nth-child(5) {
+      width: 84%;
+    }
+
+    .pyramid .tier:nth-child(6) {
+      width: 100%;
+      background: var(--accent-soft);
+      color: var(--accent-text);
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .flow .step {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: 'IBM Plex Mono', monospace;
+      text-align: center;
+    }
+
+    .flow .arrow {
+      color: var(--text-faint);
+      font-size: 14px;
+    }
+
+    /* Gantt charts */
+    .gantt-wrap {
+      margin: 14px 0 26px;
+    }
+
+    .gantt-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--text-faint);
+      margin-bottom: 8px;
+    }
+
+    .gantt-bar {
+      display: flex;
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .g-block {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 13px;
+      border-right: 1px solid var(--border);
+      color: var(--accent-text);
+      background: var(--accent-soft);
+      min-width: 2px;
+    }
+
+    .g-block:nth-child(odd) {
+      background: var(--surface-2);
+    }
+
+    .g-block:last-child {
+      border-right: none;
+    }
+
+    .gantt-axis {
+      position: relative;
+      height: 18px;
+      margin-top: 2px;
+    }
+
+    .gantt-axis span {
+      position: absolute;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--text-faint);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .gantt-axis span:first-child {
+      transform: translateX(0);
+    }
+
+    .gantt-axis span:last-child {
+      transform: translateX(-100%);
+    }
+
+    /* wide table for scheduling data */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width:640px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .footnote {
+      font-size: 13px;
+      color: var(--text-faint);
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      margin-top: 46px;
+    }
+
+    mark {
+      background: var(--mark-bg);
+      color: #1c1f1d;
+      padding: 0 1px;
+      border-radius: 2px;
+    }
+
+    .backtotop {
+      position: fixed;
+      bottom: 66px;
+      right: 18px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 400;
+    }
+
+    .backtotop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .backtotop svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* mobile */
+    .menu-btn {
+      display: none;
+    }
+
+    @media (max-width:880px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 600;
+        transform: translateX(-100%);
+        transition: transform .2s ease;
+        box-shadow: 0 0 40px rgba(0, 0, 0, .25);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      main {
+        padding: 56px 20px 120px;
+      }
+
+      .menu-btn {
+        display: flex;
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 601;
+        width: 38px;
+        height: 38px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .menu-btn svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .masthead {
+        padding-top: 26px;
+      }
+    }
+
+    @media (max-width:600px) {
+      main {
+        padding: 52px 14px 100px;
+      }
+
+      section.topic>h2 {
+        font-size: 22px;
+      }
+
+      section.topic h3 {
+        font-size: 15px;
+      }
+
+      section.topic p,
+      section.topic li {
+        font-size: 15px;
+      }
+
+      .formula .expr {
+        font-size: clamp(13px, 4vw, 16.5px);
+        overflow-x: auto;
+        display: block;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      pre {
+        font-size: 12px;
+        padding: 10px 12px;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr !important;
+      }
+
+      .masthead h1 {
+        font-size: clamp(26px, 7vw, 34px);
+      }
+    }
+  
+    /* ---------- Extensions (minimal, flat) ---------- */
+    .box.warn {
+      border-left-color: #a1503f;
+    }
+
+    .box.warn .label {
+      color: #8a3f30;
+    }
+
+    html.dark .box.warn {
+      border-left-color: #e08a76;
+    }
+
+    html.dark .box.warn .label {
+      color: #f0a894;
+    }
+
+    .box.quiet {
+      border-left-color: var(--text-faint);
+      background: var(--surface);
+    }
+
+    .box.quiet .label {
+      color: var(--text-faint);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 14px;
+    }
+
+    .pill {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 9px;
+      color: var(--text-soft);
+      background: var(--surface);
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0 0 16px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 10px 13px;
+      font-size: 13.5px;
+    }
+
+    .card b {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .03em;
+      color: var(--accent-text);
+      margin-bottom: 4px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 0 0 18px;
+    }
+
+    .table-wrap table {
+      margin: 0;
+    }
+
+    .small {
+      font-size: 14px !important;
+    }
+
+    .muted {
+      color: var(--text-soft);
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+    }
+
+    .kbd {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      border: 1px solid var(--border);
+      border-bottom-width: 2px;
+      border-radius: 3px;
+      padding: 1px 5px;
+      background: var(--surface-2);
+    }
+
+    .diagram .row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .diagram .node {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .diagram .node.accent {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .diagram .note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-faint);
+      text-align: center;
+    }
+
+    .diagram pre {
+      margin: 0;
+      border: none;
+      background: none;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      width: 100%;
+      text-align: left;
+    }
+
+    .formula .expr.left {
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .formula .expr.small {
+      font-size: 14px;
+    }
+
+    .formula .sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12.5px;
+      color: var(--text-soft);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .toc-footer {
+      border-top: 1px solid var(--border);
+      margin-top: 18px;
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+    }
+
+    .toc-footer a {
+      color: var(--text-soft);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+    }
+
+    .toc-footer a:hover {
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .toc-footer span {
+      color: var(--text-faint);
+    }
+
+    .unit-tag {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      color: var(--accent-text);
+      background: var(--accent-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2px 7px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .worked {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin: 0 0 18px;
+      background: var(--surface);
+    }
+
+    .worked .label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      letter-spacing: .06em;
+      color: var(--accent-text);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .worked p:last-child {
+      margin-bottom: 0;
+    }
+
+    .two-col.tight {
+      gap: 14px;
+    }
+
+    @media (max-width:720px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      .sidebar, .menu-btn, .backtotop, .home-link, #themeToggle, #progress {
+        display: none !important;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .content {
+        max-width: 100%;
+      }
+
+      section.topic {
+        margin-bottom: 30px;
+      }
+
+      .box, .formula, pre, table, figure {
+        break-inside: avoid;
+      }
+    }
+
+  </style>
+  <style>
+    .home-link {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 700;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font: 500 12px 'IBM Plex Mono', monospace;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+
+    .home-link:hover {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+    }
+
+    @media (max-width:600px) {
+      .home-link {
+        right: 12px;
+        bottom: 12px;
+        padding: 7px 10px;
+      }
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 18px;
+      right: 88px;
+      z-index: 700;
+    }
+
+    .home-link {
+      top: 18px;
+      bottom: auto;
+    }
+
+    @media (max-width:600px) {
+      .home-link {
+        top: 12px;
+        right: 12px;
+        padding: 7px 10px;
+      }
+
+      #themeToggle {
+        top: 12px;
+        right: 76px;
+      }
+    }
+  </style>
+  <style>
+    .site-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 46px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--text-faint);
+      font: 12px 'IBM Plex Mono', monospace;
+    }
+
+    .site-footer a {
+      color: var(--accent-text);
+      text-decoration: none;
+    }
+
+    .site-footer a:hover {
+      color: var(--accent);
+    }
+
+    .site-header.masthead {
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-header.sidebar-head {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    @media (max-width:600px) {
+      .site-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+
+    .code-block-wrapper {
+      position: relative;
+      margin: 0 0 20px;
+    }
+
+    .code-block-wrapper pre {
+      margin: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .code-block-toolbar button {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3px 10px;
+      background: var(--surface);
+      color: var(--text-soft);
+      font: 500 11px 'IBM Plex Mono', monospace;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .code-block-toolbar button:hover {
+      background: var(--accent-soft);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    .code-block-toolbar button.copied {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
+  <div id="progress"></div>
+
+  <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <line x1="3" y1="12" x2="21" y2="12" />
+      <line x1="3" y1="18" x2="21" y2="18" />
+    </svg>
+  </button>
+
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <div class="brand">UE25CS242A · UNIT 3<strong>Memory Management</strong></div>
+        <button id="themeToggle" aria-label="Toggle theme">
+          <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search topics…  ( / )" autocomplete="off">
+      </div>
+      <div id="searchCount"></div>
+
+      <nav class="toc" id="toc">
+<div class="toc-group"><div class="toc-group-title"><span>Main Memory</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9" /></svg></div><ul class="toc-list"><li><a href="#hw-control" data-title="hardware base limit registers control structures protection MMU address binding logical physical">Hardware &amp; control structures</a></li><li><a href="#os-support" data-title="os support contiguous allocation first fit best fit worst fit hole">OS support &amp; contiguous allocation</a></li><li><a href="#fragmentation" data-title="fragmentation internal external compaction 50 percent rule">Fragmentation</a></li><li><a href="#dyn-load-link" data-title="dynamic loading dynamic linking shared libraries stub dll so static linking">Dynamic loading, linking &amp; shared libraries</a></li><li><a href="#mmap" data-title="memory mapped files mmap munmap shared mapping anonymous">Memory-mapped files &amp; mmap()</a></li><li><a href="#swapping" data-title="swapping backing store roll out roll in swap space">Swapping</a></li><li><a href="#segmentation" data-title="segmentation segment table base limit logical address s d">Segmentation</a></li><li><a href="#paging" data-title="paging page frame page table page number offset internal fragmentation">Paging</a></li><li><a href="#page-tables" data-title="structure of page tables hierarchical two level hashed inverted page table 64 bit">Structure of page tables</a></li></ul></div>
+<div class="toc-group"><div class="toc-group-title"><span>TLB &amp; EAT</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9" /></svg></div><ul class="toc-list"><li><a href="#tlb" data-title="tlb translation lookaside buffer hit miss asid associative memory">Translation Lookaside Buffer (TLB)</a></li><li><a href="#eat" data-title="effective access time eat hit ratio formula tlb page fault">Effective Access Time (EAT)</a></li></ul></div>
+<div class="toc-group"><div class="toc-group-title"><span>Virtual Memory</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9" /></svg></div><ul class="toc-list"><li><a href="#demand-paging" data-title="demand paging virtual memory lazy swapper valid invalid bit pure demand paging">Virtual memory &amp; demand paging</a></li><li><a href="#page-fault" data-title="page fault handling steps trap free frame restart">Page-fault handling</a></li><li><a href="#cow" data-title="copy on write fork vfork zero fill">Copy-on-Write (COW)</a></li><li><a href="#page-replacement" data-title="page replacement fifo optimal lru belady anomaly modified dirty bit second chance lfu mfu">Page replacement</a></li><li><a href="#clock" data-title="clock second chance page replacement reference bit enhanced nru">Clock (second-chance) replacement</a></li><li><a href="#frames" data-title="allocation of frames equal proportional priority global local minimum frames">Allocation of frames</a></li><li><a href="#thrashing" data-title="thrashing working set model page fault frequency locality degree of multiprogramming">Thrashing</a></li><li><a href="#numa" data-title="numa non uniform memory access locality affinity">NUMA basics &amp; memory locality</a></li></ul></div>
+<div class="toc-footer"><a href="unit4.html"><span>Next</span>Unit 4 · File, Storage →</a><a href="index.html"><span>Home</span>← Home</a><a href="#top"><span>Back</span>Back to start ↑</a></div>
+</nav>
+    </aside>
+
+    <main>
+      <div class="content">
+        <header class="masthead site-header" id="top">
+          <div class="kicker">UE25CS242A — Operating Systems · Unit 3</div><h1>Memory Management</h1><p>Main memory hardware and control structures, address translation, dynamic loading/linking, mmap(), swapping, fragmentation, segmentation, paging, page-table structures, TLB and EAT; virtual memory, demand paging, page faults, copy-on-write, page replacement (incl. clock), frame allocation, thrashing and NUMA.</p>
+        </header>
+
+<section class="topic" id="hw-control"><h2>Hardware &amp; control structures</h2>
+<p>The CPU can directly access only <strong>registers</strong> (1 cycle) and <strong>main memory</strong> (many cycles, so a <strong>cache</strong> sits between). Programs must be loaded into memory to run. The OS must protect itself from users and users from each other.</p>
+<h3>Base and limit registers</h3>
+<p>Each process gets a contiguous legal range: the <strong>base</strong> register holds the smallest legal physical address and the <strong>limit</strong> register the size of the range. Every user-mode address is checked in hardware; a violation traps to the OS (addressing error). Only the OS, in kernel mode, can load these registers.</p>
+<div class="formula"><span class="label">Legal address check</span><div class="expr">base ≤ address &lt; base + limit</div></div>
+<h3>Address binding</h3>
+<table><tr><th>When</th><th>Result</th><th>Note</th></tr>
+<tr><td>Compile time</td><td>Absolute code</td><td>Location known in advance; must recompile if it changes</td></tr>
+<tr><td>Load time</td><td>Relocatable code</td><td>Final binding when loaded; must reload to move</td></tr>
+<tr><td>Execution time</td><td>Logical ≠ physical</td><td>Needs MMU hardware; used by modern OSes; process can move in memory</td></tr></table>
+<h3>Logical vs physical address</h3>
+<p>A <strong>logical (virtual) address</strong> is generated by the CPU; a <strong>physical address</strong> is what the memory unit sees. The <strong>Memory-Management Unit (MMU)</strong> maps one to the other at run time. In the simplest scheme the <strong>relocation register</strong> (= base) is added to every logical address. The user program only ever sees logical addresses.</p>
+<div class="formula"><span class="label">Dynamic relocation</span><div class="expr">physical = logical + relocation register</div></div></section>
+
+<section class="topic" id="os-support"><h2>OS support &amp; contiguous allocation</h2>
+<p>The OS keeps a table of which memory is free (<strong>holes</strong>) and used. In <strong>variable-partition</strong> allocation each process gets one contiguous block; freed blocks merge with adjacent holes. A hole is chosen by:</p>
+<ul><li><strong>First fit</strong> — first hole big enough; fast.</li><li><strong>Best fit</strong> — smallest adequate hole; must search the whole list; leaves tiny leftovers.</li><li><strong>Worst fit</strong> — largest hole; leaves the largest leftover; usually worst.</li></ul>
+<p>First fit and best fit are better than worst fit in time and utilisation. The OS also provides protection (limit check), relocation, sharing, and memory for its own kernel (usually in low memory with the interrupt vector).</p></section>
+
+<section class="topic" id="fragmentation"><h2>Fragmentation</h2>
+<table><tr><th></th><th>External</th><th>Internal</th></tr>
+<tr><td>Meaning</td><td>Total free space is enough but not contiguous</td><td>Allocated block is larger than requested; waste is inside the block</td></tr>
+<tr><td>Occurs in</td><td>Variable partitions, segmentation</td><td>Fixed partitions, paging (last page)</td></tr>
+<tr><td>Fix</td><td><strong>Compaction</strong> (needs execution-time binding), or paging/segmentation</td><td>Smaller units; choose block size well</td></tr></table>
+<div class="formula"><span class="label">50-percent rule (first fit)</span><div class="expr">for N allocated blocks, ≈ 0.5 N more blocks are lost to fragmentation → ⅓ of memory unusable</div></div></section>
+
+<section class="topic" id="dyn-load-link"><h2>Dynamic loading, linking &amp; shared libraries</h2>
+<p><strong>Dynamic loading:</strong> a routine is not loaded until it is called; it sits on disk in relocatable form. Better memory use (unused code never loaded), no special OS support needed — it is the programmer's job.</p>
+<p><strong>Static linking:</strong> libraries are copied into the binary (large, self-contained). <strong>Dynamic linking:</strong> linking is postponed until run time; the image holds a <strong>stub</strong> that finds (or loads) the library routine and replaces itself with its address. Needs OS help to check that the library is in the process's address space.</p>
+<p><strong>Shared libraries</strong> (<code>.so</code> on Linux, <code>.dll</code> on Windows) are dynamically linked libraries whose code pages are shared by all processes (one physical copy), saving memory and allowing library updates without relinking; versioning avoids incompatibility.</p></section>
+
+<section class="topic" id="mmap"><h2>Memory-mapped files &amp; mmap()</h2>
+<p>A file is mapped to part of the virtual address space; reads and writes become ordinary memory accesses. Pages are loaded <strong>on demand</strong> (page fault reads a page-sized piece of the file) and written back later. No <code>read()/write()</code> system calls, no extra copy.</p>
+<pre><code>void *p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+p[0] = 'A';          /* modifies the file */
+munmap(p, len);      /* unmap; msync() forces write-back */</code></pre>
+<ul><li><code>MAP_SHARED</code> — changes visible to other mappers and written to the file; used for shared memory/IPC.</li><li><code>MAP_PRIVATE</code> — copy-on-write; changes are not written to the file.</li><li><code>MAP_ANONYMOUS</code> — no file; zero-filled memory (how <code>malloc</code> gets big blocks).</li></ul></section>
+
+<section class="topic" id="swapping"><h2>Swapping</h2>
+<p>A process can be <strong>swapped out</strong> to a <strong>backing store</strong> (fast disk) and later swapped back in, so total process memory can exceed physical memory. Needs execution-time binding if it returns to a different place. A process with pending I/O cannot be swapped (or I/O uses OS buffers). Standard swapping moves whole processes and is slow (transfer time dominates); modern systems swap <strong>pages</strong>, and mobile OSes avoid swapping and kill/ask apps to release memory.</p>
+<div class="formula"><span class="label">Swap time</span><div class="expr">time = latency + size ÷ transfer rate (×2 for out + in)</div></div></section>
+
+<section class="topic" id="segmentation"><h2>Segmentation</h2>
+<p>Memory is viewed as a set of <strong>segments</strong> (main, functions, stack, heap, symbol table, arrays) — the user's view. Logical address = <code>&lt;segment-number s, offset d&gt;</code>. The <strong>segment table</strong> has a <strong>base</strong> and <strong>limit</strong> per segment; STBR/STLR locate the table.</p>
+<div class="formula"><span class="label">Translation</span><div class="expr">if d &lt; limit[s] → physical = base[s] + d, else trap (addressing error)</div></div>
+<p>Pros: matches user view, easy sharing/protection per segment. Cons: segments are variable size → <strong>external fragmentation</strong>.</p></section>
+
+<section class="topic" id="paging"><h2>Paging</h2>
+<p>Physical memory is split into fixed <strong>frames</strong>, logical memory into equal <strong>pages</strong> (power of 2, 512 B–1 GB). A <strong>page table</strong> maps page → frame. No external fragmentation; some internal fragmentation (avg ½ page per process).</p>
+<div class="formula"><span class="label">Address split (logical space 2<sup>m</sup>, page size 2<sup>n</sup>)</span><div class="expr">page number p = high (m − n) bits; offset d = low n bits<br>physical = frame(p) × page size + d</div></div>
+<div class="formula"><span class="label">Sizes</span><div class="expr">pages = logical space ÷ page size · frames = physical memory ÷ page size<br>page table size = entries × entry size</div></div>
+<p>The page table is in memory; <strong>PTBR</strong> points to it (<strong>PTLR</strong> gives its length). PTEs hold frame number plus <strong>valid/invalid</strong>, read/write/execute protection, dirty and referenced bits. Pages can be <strong>shared</strong> (e.g. reentrant code) by mapping the same frame. Every access costs two memory accesses unless a TLB is used.</p></section>
+
+<section class="topic" id="page-tables"><h2>Structure of page tables</h2>
+<h3>Hierarchical (multilevel)</h3>
+<p>The page table is itself paged. Two-level (32-bit, 4 KB pages): <code>p1 (10) | p2 (10) | d (12)</code>; p1 indexes the outer table, p2 the inner table. Unused regions need no inner tables. 64-bit addresses need more levels (x86-64 uses 4–5), each adding a memory access.</p>
+<h3>Hashed page table</h3>
+<p>Virtual page number is hashed; each bucket is a chain of <code>(vpn, frame, next)</code>. Common for &gt;32-bit spaces; <em>clustered</em> variants store several pages per entry (sparse spaces).</p>
+<h3>Inverted page table</h3>
+<p>One entry per <strong>physical frame</strong> holding <code>(pid, page number)</code>. Table size depends on RAM, not on the number of processes, but lookup is a search (use a hash table) and shared pages are hard.</p></section>
+
+
+<section class="topic" id="tlb"><h2>Translation Lookaside Buffer (TLB)</h2>
+<p>A small, fast <strong>associative cache</strong> of recent (page → frame) translations (64–1024 entries). Searched in parallel. <strong>Hit:</strong> frame obtained at once. <strong>Miss:</strong> page table is read from memory and the entry is loaded into the TLB (replacing an old one, e.g. LRU); some entries are <em>wired down</em>. An <strong>ASID</strong> in each entry identifies the process so the TLB need not be flushed on a context switch; without ASIDs it must be flushed.</p></section>
+
+<section class="topic" id="eat"><h2>Effective Access Time (EAT)</h2>
+<div class="formula"><span class="label">Paging with TLB (hit ratio α, TLB time ε, memory time m)</span><div class="expr">EAT = α(ε + m) + (1 − α)(ε + 2m)</div></div>
+<div class="worked"><span class="label">Worked example</span>
+<p>m = 100 ns, ε = 20 ns, α = 80%: EAT = 0.8(120) + 0.2(220) = 96 + 44 = <strong>140 ns</strong> (40% slowdown). With α = 99%: 0.99(120) + 0.01(220) = <strong>121 ns</strong>.</p></div>
+<div class="formula"><span class="label">With demand paging (page-fault rate p)</span><div class="expr">EAT = (1 − p) × memory access + p × page-fault service time</div></div>
+<div class="worked"><span class="label">Worked example</span>
+<p>Memory = 200 ns, fault service = 8 ms: EAT = 200 + p × 7,999,800 ns. For &lt;10% slowdown need 220 &gt; 200 + 8,000,000p → p &lt; 0.0000025 (1 fault in 400,000 accesses).</p></div></section>
+
+
+<section class="topic" id="demand-paging"><h2>Virtual memory &amp; demand paging</h2>
+<p><strong>Virtual memory</strong> separates logical from physical memory: a program need not be entirely in memory, the virtual space can exceed physical RAM, more processes fit, and less I/O is needed. Implemented by demand paging (or demand segmentation).</p>
+<p><strong>Demand paging:</strong> a page is brought in only when referenced, by a <strong>lazy pager</strong>. The valid/invalid bit shows whether the page is in memory (v) or not (i). <strong>Pure demand paging</strong> starts a process with no pages in memory. Needs hardware support: page table with valid bit, secondary memory (swap space), and the ability to restart an instruction after a fault. Locality of reference makes it practical.</p></section>
+
+<section class="topic" id="page-fault"><h2>Page-fault handling</h2>
+<ol><li>Reference to a page marked invalid → <strong>trap</strong> to the OS.</li><li>OS checks an internal table: invalid reference → terminate; just not in memory → continue.</li><li>Find a <strong>free frame</strong> (if none, run page replacement).</li><li>Schedule a disk read of the page into the frame.</li><li>On completion, update the page table (frame, valid = v) and OS tables.</li><li><strong>Restart the instruction</strong> that caused the fault.</li></ol>
+<p>Fault service = trap + disk read (≈ 8 ms) + restart, so the fault rate must be tiny. Pre-paging and a pool of free frames reduce cost.</p></section>
+
+<section class="topic" id="cow"><h2>Copy-on-Write (COW)</h2>
+<p>After <code>fork()</code>, parent and child <strong>share the same pages</strong> marked copy-on-write. Only when either <strong>writes</strong> to a shared page is that page copied, so only modified pages are duplicated. This makes <code>fork()</code> cheap, especially when followed by <code>exec()</code>. Free frames for the copy come from a <strong>zero-fill-on-demand</strong> pool. <code>vfork()</code> lets the child use the parent's address space directly (parent suspended) — very fast but dangerous.</p></section>
+
+<section class="topic" id="page-replacement"><h2>Page replacement</h2>
+<p>When there is no free frame, choose a <strong>victim</strong>: find the page on disk, pick a victim frame, write it out only if its <strong>modify (dirty) bit</strong> is set, read the new page, update tables, restart. Goal: lowest page-fault rate on a <strong>reference string</strong>.</p>
+<table><tr><th>Algorithm</th><th>Idea</th><th>Notes</th></tr>
+<tr><td>FIFO</td><td>Replace oldest page</td><td>Simple; suffers <strong>Belady's anomaly</strong> (more frames → more faults)</td></tr>
+<tr><td>Optimal (OPT)</td><td>Replace page not used for longest future time</td><td>Lowest faults; needs future knowledge — yardstick only</td></tr>
+<tr><td>LRU</td><td>Replace least recently used</td><td>Good; stack algorithm (no Belady); needs counter or stack</td></tr>
+<tr><td>LRU approximations</td><td>Reference bit, additional-reference-bits, second chance</td><td>Hardware gives only a reference bit</td></tr>
+<tr><td>LFU / MFU</td><td>Least / most frequently used count</td><td>Rarely used</td></tr></table>
+<div class="worked"><span class="label">Worked example — 3 frames</span>
+<p>Reference string 7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1: FIFO = 15 faults, LRU = 12, OPT = 9.</p></div>
+<div class="note"><span class="label">Stack property</span> Algorithms whose set of pages in n frames is always a subset of those in n + 1 frames (OPT, LRU) never show Belady's anomaly.</div></section>
+
+<section class="topic" id="clock"><h2>Clock (second-chance) replacement</h2>
+<p>Pages are on a <strong>circular list</strong> with a pointer (the clock hand) and a <strong>reference bit</strong>. To pick a victim: if the page under the hand has ref = 0 → replace it; if ref = 1 → set it to 0 (second chance), leave it, and advance the hand. If all bits are 1 it degenerates to FIFO after one full sweep. <strong>Enhanced</strong> clock uses the pair <code>(reference, modify)</code>: prefer (0,0) best, then (0,1), (1,0), (1,1) — it favours pages that need no write-back.</p></section>
+
+<section class="topic" id="frames"><h2>Allocation of frames</h2>
+<ul><li><strong>Minimum frames</strong> per process come from the instruction set architecture (the instruction plus all its indirect operands must fit); the maximum is total frames.</li><li><strong>Equal allocation:</strong> m frames ÷ n processes each.</li><li><strong>Proportional allocation:</strong> by process size.</li><li><strong>Priority allocation:</strong> proportional by priority, or priority-plus-size.</li></ul>
+<div class="formula"><span class="label">Proportional</span><div class="expr">aᵢ = (sᵢ ÷ S) × m,   S = Σ sᵢ</div></div>
+<p><strong>Global replacement:</strong> victim from any process (better throughput, but a process's fault rate depends on others). <strong>Local replacement:</strong> victim only from the process's own frames (more consistent behaviour, possibly underused memory).</p></section>
+
+<section class="topic" id="thrashing"><h2>Thrashing</h2>
+<p>A process is <strong>thrashing</strong> when it spends more time paging than executing. Cause: it has fewer frames than its active <strong>locality</strong> needs, so faults replace pages that are needed immediately → CPU utilisation drops → the OS (wrongly) raises the degree of multiprogramming → worse.</p>
+<ul><li><strong>Working-set model:</strong> WSSᵢ = pages referenced in the last Δ references. If D = Σ WSSᵢ &gt; m, thrashing; suspend a process. Choose Δ well.</li><li><strong>Page-fault frequency (PFF):</strong> set upper and lower fault-rate bounds; above upper → give more frames; below lower → remove frames; no frames free → suspend a process.</li></ul>
+<div class="formula"><span class="label">Thrashing condition</span><div class="expr">D = Σ WSSᵢ &gt; m (total frames)</div></div></section>
+
+<section class="topic" id="numa"><h2>NUMA basics &amp; memory locality</h2>
+<p>In <strong>NUMA</strong> multiprocessors each CPU (or board) has fast <strong>local memory</strong> and slower <strong>remote memory</strong> reached over an interconnect, so access time depends on location. The OS should schedule a thread on the CPU nearest its memory (<strong>processor affinity</strong>) and allocate memory from the local node; Linux/Solaris use <strong>locality groups (lgroups)</strong>. <strong>Locality of reference</strong> (temporal: reuse soon; spatial: nearby addresses) is why caches, TLBs and demand paging work.</p></section>
+
+<footer class="site-footer"><span>Operating Systems · UE25CS242A · Unit 3 — Memory Management</span><a href="unit4.html">Unit 4 · File, Storage &amp; Security →</a></footer>
+      </div>
+    </main>
+  </div>
+
+
+  <div class="backtotop" id="backTop" title="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="5 12 12 5 19 12" />
+    </svg>
+  </div>
+
+  <script>
+    /* ---------------- Theme toggle ---------------- */
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+    const iconSun = document.getElementById('iconSun');
+    function setTheme(dark) {
+      root.classList.toggle('dark', dark);
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+      iconSun.innerHTML = dark
+        ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
+        : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+    }
+    let isDark = (() => {
+      const saved = localStorage.getItem('theme');
+      return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    })();
+    setTheme(isDark);
+    themeBtn.addEventListener('click', () => {
+      isDark = !isDark;
+      setTheme(isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    /* ---------------- Mobile sidebar ---------------- */
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('menuBtn').addEventListener('click', () => sidebar.classList.toggle('open'));
+    document.querySelectorAll('.toc-list a').forEach(a => a.addEventListener('click', () => sidebar.classList.remove('open')));
+
+    /* ---------------- Collapsible groups ---------------- */
+    document.querySelectorAll('.toc-group-title').forEach(t => {
+      t.addEventListener('click', () => t.parentElement.classList.toggle('collapsed'));
+    });
+
+    /* ---------------- Active section highlighting ---------------- */
+    const navLinks = Array.from(document.querySelectorAll('.toc-list a'));
+    const sections = navLinks.map(a => document.querySelector(a.getAttribute('href')));
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const id = '#' + entry.target.id;
+        const link = navLinks.find(a => a.getAttribute('href') === id);
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navLinks.forEach(a => a.classList.remove('active'));
+          link.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+    sections.forEach(s => s && io.observe(s));
+
+    /* ---------------- Search ---------------- */
+    const searchInput = document.getElementById('searchInput');
+    const searchCount = document.getElementById('searchCount');
+    let marks = [];
+
+    function clearMarks() {
+      marks.forEach(m => {
+        const parent = m.parentNode;
+        parent.replaceChild(document.createTextNode(m.textContent), m);
+        parent.normalize();
+      });
+      marks = [];
+    }
+
+    function highlightInContent(term) {
+      clearMarks();
+      if (!term) return 0;
+      const lower = term.toLowerCase();
+      const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
+        acceptNode: function (node) {
+          if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
+          if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const targets = [];
+      let n;
+      while (n = walker.nextNode()) targets.push(n);
+      let count = 0;
+      targets.forEach(node => {
+        const text = node.nodeValue;
+        const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
+        if (!regex.test(text)) return;
+        const frag = document.createDocumentFragment();
+        let lastIndex = 0;
+        text.replace(regex, (match, p1, offset) => {
+          frag.appendChild(document.createTextNode(text.slice(lastIndex, offset)));
+          const mark = document.createElement('mark');
+          mark.textContent = match;
+          frag.appendChild(mark);
+          marks.push(mark);
+          count++;
+          lastIndex = offset + match.length;
+        });
+        frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+        node.parentNode.replaceChild(frag, node);
+      });
+      return count;
+    }
+
+    function filterNav(term) {
+      const lower = term.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('.toc-group').forEach(group => {
+        let groupHas = false;
+        group.querySelectorAll('.toc-list li').forEach(li => {
+          const a = li.querySelector('a');
+          const hay = (a.dataset.title + ' ' + a.textContent).toLowerCase();
+          const match = !lower || hay.includes(lower);
+          li.classList.toggle('hidden', !match);
+          if (match) { groupHas = true; visible++; }
+        });
+        group.style.display = groupHas || !lower ? '' : 'none';
+        if (lower && groupHas) group.classList.remove('collapsed');
+      });
+      return visible;
+    }
+
+    let searchTimer;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimer);
+      const term = e.target.value.trim();
+      searchTimer = setTimeout(() => {
+        const navVisible = filterNav(term);
+        const contentMatches = highlightInContent(term);
+        if (!term) { searchCount.textContent = ''; return; }
+        searchCount.textContent = navVisible + ' topic' + (navVisible === 1 ? '' : 's') + ' · ' + contentMatches + ' match' + (contentMatches === 1 ? '' : 'es') + ' in text';
+      }, 150);
+    });
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && marks.length) {
+        marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.blur();
+      }
+    });
+
+    /* ---------------- Keyboard shortcut: / focuses search ---------------- */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.select();
+      }
+    });
+
+    /* ---------------- Progress bar + back to top ---------------- */
+    const progress = document.getElementById('progress');
+    const backTop = document.getElementById('backTop');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+      progress.style.width = scrolled + '%';
+      backTop.classList.toggle('show', h.scrollTop > 600);
+    }, { passive: true });
+    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  </script>
+  <script>document.body.appendChild(document.getElementById('themeToggle'));</script>
+  <script>
+    (function () {
+      document.querySelectorAll('pre > code').forEach(function (code) {
+        var pre = code.parentElement;
+        if (pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrapper';
+        var toolbar = document.createElement('div');
+        toolbar.className = 'code-block-toolbar';
+        var copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = function () {
+          navigator.clipboard.writeText(code.textContent).then(function () {
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            setTimeout(function () { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
+          });
+        };
+        toolbar.appendChild(copyBtn);
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(toolbar);
+        wrapper.appendChild(pre);
+      });
+    })();
+  </script>
+</body>
+
+</html>
