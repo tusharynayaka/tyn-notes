@@ -4,36 +4,35 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-  (function(){
-    try{
-      const saved = localStorage.getItem('dlcd-theme');
-      const dark = saved ? saved === 'dark'
-        : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-      if (dark) document.documentElement.classList.add('dark');
-    }catch(e){}
+  // Apply saved theme instantly (no flash)
+  (function() {
+    const root = document.documentElement;
+    const saved = localStorage.getItem('theme');
+    const isDark = saved
+      ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (isDark) root.classList.add('dark');
   })();
 </script>
-<title>Microarchitecture · Unit 4</title>
+<title>Digital Logic &amp; Computer Design · Unit 4 Reference</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#faf9f6;
-  --surface:#ffffff;
-  --surface-2:#f2f0ea;
+  --bg:#f3f3f1;
+  --surface:#f8f8f6;
+  --surface-2:#eceae5;
   --text:#1c1f1d;
   --text-soft:#565f5a;
   --text-faint:#8a9089;
-  --border:#e3e0d6;
+  --border:#dfe1dc;
   --accent:#2c5f52;
   --accent-soft:#dfe9e4;
   --accent-text:#1f4238;
-  --formula-bg:#f4ecd8;
+  --formula-bg:#f3ecdc;
   --formula-border:#c9a95c;
   --code-bg:#eef0ec;
   --mark-bg:#f6d989;
-  --use-bg:#e7eef2;
-  --use-border:#7fa8bd;
   --shadow: none;
   --radius: 3px;
   --sidebar-w: 300px;
@@ -54,8 +53,6 @@ html.dark{
   --formula-border:#8ab4ff;
   --code-bg:#101b2d;
   --mark-bg:#3b5d9c;
-  --use-bg:#0d2130;
-  --use-border:#4a90b8;
   color-scheme: dark;
 }
 *{box-sizing:border-box;}
@@ -203,8 +200,6 @@ pre code{ background:none; padding:0; color:var(--text); }
 .formula .label{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em;
   color:#8a6d1f; display:block; margin-bottom:8px; }
 html.dark .formula .label{ color:#d8b25b; }
-html.dark ::selection{ color:#eaf3ff; }
-html.dark mark{ color:#eaf3ff; }
 .formula .expr{ font-family:'IBM Plex Mono',monospace; font-size:17px; text-align:center; margin:6px 0; }
 .formula .note{ font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--text-soft); margin-top:8px;}
 
@@ -229,34 +224,12 @@ figure figcaption{ font-size:12.5px; color:var(--text-faint); margin-top:8px; fo
 .stack .layer.accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
 .stack .layer + .layer{ border-top:none; }
 
-.pyramid{ display:flex; flex-direction:column; align-items:center; gap:0; width:100%; }
-.pyramid .tier{
-  border:1px solid var(--border); text-align:center; padding:9px; font-size:12.5px;
-  font-family:'IBM Plex Mono',monospace; background:var(--surface); margin-top:-1px;
-}
-
 .flow{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; width:100%; }
 .flow .step{
   border:1px solid var(--border); background:var(--surface); border-radius:var(--radius);
   padding:8px 14px; font-size:13px; font-family:'IBM Plex Mono',monospace; text-align:center;
 }
 .flow .arrow{ color:var(--text-faint); font-size:14px; }
-
-.gantt-wrap{ margin:14px 0 26px; }
-.gantt-title{ font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint); margin-bottom:8px;}
-.gantt-bar{ display:flex; width:100%; height:42px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;}
-.g-block{
-  display:flex; align-items:center; justify-content:center;
-  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px;
-  border-right:1px solid var(--border); color:var(--accent-text); background:var(--accent-soft);
-  min-width:2px;
-}
-.g-block:nth-child(odd){ background:var(--surface-2); }
-.g-block:last-child{ border-right:none; }
-.gantt-axis{ position:relative; height:18px; margin-top:2px; }
-.gantt-axis span{ position:absolute; transform:translateX(-50%); font-size:11px; color:var(--text-faint); font-family:'IBM Plex Mono',monospace;}
-.gantt-axis span:first-child{ transform:translateX(0); }
-.gantt-axis span:last-child{ transform:translateX(-100%); }
 
 .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
 @media (max-width:640px){ .two-col{ grid-template-columns:1fr; } }
@@ -266,7 +239,7 @@ figure figcaption{ font-size:12.5px; color:var(--text-faint); margin-top:8px; fo
 mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px; }
 
 .backtotop{
-  position:fixed; bottom:24px; right:28px; width:38px; height:38px; border-radius:50%;
+  position:fixed; bottom:66px; right:18px; width:38px; height:38px; border-radius:50%;
   background:var(--surface); border:1px solid var(--border); color:var(--text-soft);
   display:flex; align-items:center; justify-content:center; cursor:pointer; opacity:0;
   pointer-events:none; transition:opacity .2s ease; z-index:400;
@@ -290,28 +263,66 @@ mark{ background:var(--mark-bg); color:#1c1f1d; padding:0 1px; border-radius:2px
   .menu-btn svg{ width:17px; height:17px; }
   .masthead{ padding-top:26px; }
 }
+@media (max-width:600px){
+  main{ padding:52px 14px 100px; }
+  section.topic > h2{ font-size:22px; }
+  section.topic h3{ font-size:15px; }
+  section.topic p, section.topic li{ font-size:15px; }
+  .formula .expr{ font-size:clamp(13px,4vw,16.5px); overflow-x:auto; display:block; }
+  table{ display:block; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  pre{ font-size:12px; padding:10px 12px; }
+  .masthead h1{ font-size:clamp(26px,7vw,34px); }
+}
 
-/* Unit 4 additions (same visual language as the reference) */
 .chip{
   display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
   padding:2px 8px; border-radius:12px; border:1px solid var(--border); background:var(--surface);
   color:var(--text-soft); margin:2px 4px 2px 0;
 }
-.small{ font-size:13.5px; }
-.center{ text-align:center; }
-.mono{ font-family:'IBM Plex Mono',monospace; }
-.formula .expr{ white-space:normal; }
-table.compact td, table.compact th{ padding:6px 9px; font-size:13.5px; }
-.bit-row{ display:flex; width:100%; max-width:520px; margin:0 auto; }
-.bit-row div{
-  border:1px solid var(--border); background:var(--surface); padding:8px 4px; text-align:center;
-  font-family:'IBM Plex Mono',monospace; font-size:11.5px; flex:1;
+.solved{
+  border:1px solid var(--border); border-radius:var(--radius); background:var(--surface);
+  padding:16px 18px; margin:0 0 22px;
 }
-.bit-row div + div{ border-left:none; }
-.bit-row .b-accent{ background:var(--accent-soft); color:var(--accent-text); font-weight:600; }
+.solved h4{ margin-top:0; }
+.solved .qtag{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--surface);
+  background:var(--accent); padding:2px 8px; border-radius:12px; margin-right:8px;
+}
+</style>
+<style>
+:root{--bg:#f3f3f1;--surface:#f8f8f6;--surface-2:#eceae5;--text:#1c1f1d;--text-soft:#565f5a;--text-faint:#8a9089;--border:#dfe1dc;--accent:#2c5f52;--accent-soft:#dfe9e4;--accent-text:#1f4238;}
+html.dark{--bg:#070b14;--surface:#0d1524;--surface-2:#101d33;--text:#eaf3ff;--text-soft:#a9bbd8;--text-faint:#7d8eaf;--border:#1d2d47;--accent:#60a5fa;--accent-soft:#10213d;--accent-text:#dceeff;}
+.home-link{position:fixed;right:18px;bottom:18px;z-index:700;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font:500 12px 'IBM Plex Mono',monospace;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.home-link:hover{background:var(--accent-soft);color:var(--accent-text);}
+@media (max-width:600px){.home-link{right:12px;bottom:12px;padding:7px 10px;}}
+</style>
+<style>
+.site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:46px;padding-top:14px;border-top:1px solid var(--border);color:var(--text-faint);font:12px 'IBM Plex Mono',monospace;}
+.site-footer a{color:var(--accent-text);text-decoration:none;}
+.site-footer a:hover{color:var(--accent);}
+@media (max-width:600px){.site-footer{align-items:flex-start;flex-direction:column;gap:6px;}}
+.site-header{border-color:var(--border);color:var(--text);}
+.site-header.masthead{padding-bottom:20px;border-bottom:1px solid var(--border);}
+.site-header.topbar{background:var(--bg-elevated, var(--surface));border-bottom:1px solid var(--border);}
+.site-header.sidebar-head{border-bottom:1px solid var(--border);padding-bottom:14px;}
+</style>
+<style>
+#themeToggle{position:fixed;top:18px;right:88px;z-index:700;}
+.home-link{top:18px;bottom:auto;}
+@media (max-width:600px){.home-link{top:12px;right:12px;padding:7px 10px;}#themeToggle{top:12px;right:76px;}}
+</style>
+<style>
+.scroll-x{ overflow-x:auto; margin-bottom:16px; }
+.scroll-x table{ margin-bottom:0; min-width:520px; display:table; }
+td.c, th.c{ text-align:center; }
+table.tight td, table.tight th{ padding:6px 9px; font-size:13.5px; }
+.formula .expr.small{ font-size:15px; }
+.formula .expr div{ margin:3px 0; }
+.diagram svg{ max-width:100%; height:auto; }
 </style>
 </head>
 <body>
+<a class="home-link" href="index.html" aria-label="Back to home">&larr; Home</a>
 <div id="progress"></div>
 
 <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">
@@ -321,7 +332,7 @@ table.compact td, table.compact th{ padding:6px 9px; font-size:13.5px; }
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head">
-      <div class="brand">UE25CS251A<strong>Digital Logic &amp; Computer Design</strong></div>
+      <div class="brand">UE25CS251A<strong>Unit 4 Reference</strong></div>
       <button id="themeToggle" aria-label="Toggle theme">
         <svg id="iconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       </button>
@@ -335,41 +346,35 @@ table.compact td, table.compact th{ padding:6px 9px; font-size:13.5px; }
 
     <nav class="toc" id="toc">
       <div class="toc-group">
-        <div class="toc-group-title"><span>Foundations</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="toc-group-title"><span>Introduction</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
-          <li><a href="#intro" data-title="Introduction Architecture Microarchitecture Datapath Control ISA architectural state">Architecture vs microarchitecture</a></li>
-          <li><a href="#performance" data-title="Performance Analysis execution time CPI IPC clock period speedup Amdahl">Performance analysis</a></li>
-          <li><a href="#state-elements" data-title="State Elements PC instruction memory register file data memory ALU timing tpcq tsetup">State elements &amp; timing</a></li>
+          <li><a href="#uarch-intro" data-title="Microarchitecture: Introduction microarchitecture architectural state PC 32 registers memory datapath control unit single-cycle multicycle pipelined abstraction levels MIPS subset">Microarchitecture: Introduction</a></li>
+          <li><a href="#perf-analysis" data-title="Performance Analysis performance analysis execution time CPI IPC clock period cycle time frequency speedup Amdahl law instruction count average CPI">Performance Analysis</a></li>
         </ul>
       </div>
       <div class="toc-group">
         <div class="toc-group-title"><span>Single-Cycle Processor</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
-          <li><a href="#single-datapath" data-title="Single Cycle Datapath lw sw R-type beq fetch decode execute memory writeback">Datapath</a></li>
-          <li><a href="#single-control" data-title="Control Signals RegWrite RegDst ALUSrc Branch MemRead MemWrite MemtoReg ALUOp PCSrc">Control signals</a></li>
-          <li><a href="#single-performance" data-title="Single Cycle Performance critical path 925 ps 92.5 seconds">Performance &amp; limitations</a></li>
+          <li><a href="#sc-datapath" data-title="Single-Cycle Datapath single-cycle datapath lw sw R-type beq fetch register read sign extend ALU data memory PC+4 PCSrc RegDst ALUSrc MemtoReg RegWrite MemWrite">Single-Cycle Datapath</a></li>
+          <li><a href="#sc-control" data-title="Single-Cycle Control Unit single-cycle control unit main decoder ALU decoder ALUOp ALUControl funct truth table control signals RegWrite RegDst ALUSrc Branch MemWrite MemtoReg addi j jump">Single-Cycle Control Unit</a></li>
+          <li><a href="#sc-performance" data-title="Single-Cycle Performance single-cycle performance critical path Tc lw 925 ps 92.5 seconds 100 billion instructions delays">Single-Cycle Performance</a></li>
         </ul>
       </div>
       <div class="toc-group">
         <div class="toc-group-title"><span>Multicycle Processor</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
-          <li><a href="#multi-datapath" data-title="Multicycle Datapath IR A B ALUOut reuse memory steps">Datapath &amp; steps</a></li>
-          <li><a href="#multi-fsm" data-title="Multicycle Control FSM S0 S1 S2 S3 S4 S5 S6 S7 S8 finite state machine">FSM control</a></li>
-          <li><a href="#multi-performance" data-title="Multicycle Performance 325 ps CPI 4.12 133.9 seconds">Performance</a></li>
+          <li><a href="#mc-datapath" data-title="Multicycle Datapath multicycle datapath unified memory instruction register IR MDR data register A B ALUOut IRWrite IorD ALUSrcA ALUSrcB PCEn lw sw R-type beq steps one ALU">Multicycle Datapath</a></li>
+          <li><a href="#mc-control" data-title="Multicycle Control: Main Controller FSM multicycle control FSM main controller states S0 S1 S2 S3 S4 S5 S6 S7 S8 fetch decode MemAdr MemRead writeback execute branch ALU decoder control signals table">Multicycle Control: Main Controller FSM</a></li>
+          <li><a href="#mc-performance" data-title="Multicycle Performance multicycle performance CPI weighted average SPECINT2000 Tc 325 ps 133.9 seconds slower than single-cycle sequencing overhead">Multicycle Performance</a></li>
         </ul>
       </div>
       <div class="toc-group">
         <div class="toc-group-title"><span>Pipelined Processor</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
         <ul class="toc-list">
-          <li><a href="#pipeline-datapath" data-title="Pipelined Datapath IF ID EX MEM WB pipeline registers stages">Datapath &amp; stages</a></li>
-          <li><a href="#pipeline-hazards" data-title="Pipeline Hazards structural data control forwarding stall flush load use">Hazards</a></li>
-          <li><a href="#pipeline-performance" data-title="Pipelined Performance 250 ps 1250 ps 4 billion instructions speedup">Performance</a></li>
-        </ul>
-      </div>
-      <div class="toc-group">
-        <div class="toc-group-title"><span>Putting It Together</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <ul class="toc-list">
-          <li><a href="#comparison" data-title="Comparison single cycle multicycle pipelined CPI clock period tradeoffs">Comparing the three processors</a></li>
+          <li><a href="#pipe-intro" data-title="Pipelined Processor: Introduction pipelined processor pipeline stages IF ID EX MEM WB throughput latency single-cycle comparison timing diagram 950 ps 250 ps">Pipelined Processor: Introduction</a></li>
+          <li><a href="#pipe-datapath" data-title="Pipelined Datapath &amp;amp; Control pipelined datapath pipeline registers IF/ID ID/EX EX/MEM MEM/WB WriteRegW ResultW pipelined control control signals unison">Pipelined Datapath &amp; Control</a></li>
+          <li><a href="#pipe-hazards" data-title="Hazards: Data, Control &amp;amp; Structural hazards data hazard RAW read after write forwarding bypassing hazard detection unit lw dependency load-use stall bubble control hazard branch misprediction flush equality comparator ForwardAE StallF FlushE">Hazards: Data, Control &amp; Structural</a></li>
+          <li><a href="#pipe-performance" data-title="Pipelined Performance Analysis pipelined performance analysis cycle time critical path five stages Tc fetch decode execute memory writeback comparison">Pipelined Performance Analysis</a></li>
         </ul>
       </div>
     </nav>
@@ -377,586 +382,487 @@ table.compact td, table.compact th{ padding:6px 9px; font-size:13.5px; }
 
   <main>
     <div class="content">
-            <header class="masthead">
-        <div class="kicker">UE25CS251A — Unit 4</div>
-        <h1>Microarchitecture</h1>
-        <p>How the MIPS instruction set is actually built: architectural state and performance analysis, the single-cycle datapath and its control, the multicycle processor with its finite-state controller, and the five-stage pipeline with forwarding, stalls, flushes and its own performance equation.</p>
+      <header class="masthead site-header">
+        <div class="kicker">UE25CS251A — DIGITAL LOGIC &amp; COMPUTER DESIGN · UNIT 4</div>
+        <h1>Unit 4: Microarchitecture</h1>
+        <p>Microarchitecture introduction, performance analysis, and the single-cycle, multicycle and pipelined processors — datapaths, control, hazards, and every numerical.</p>
       </header>
 
-      <section class="topic" id="intro">
-        <h2>Architecture versus Microarchitecture</h2>
-        <p><strong>Architecture</strong> is the programmer's view: the instruction set specification plus the <em>architectural state</em> that a program can observe. In MIPS that state is the <strong>program counter (PC)</strong>, the <strong>32 registers</strong>, and <strong>memory</strong>. <strong>Microarchitecture</strong> is how that state and instruction set are realized in hardware. One architecture can have many microarchitectures: the same MIPS binary can run on a single-cycle, a multicycle, or a pipelined implementation, and each will have a different cost and performance.</p>
 
-        <div class="box">
-          <span class="label">PROCESSOR = DATAPATH + CONTROL</span>
-          <p>The <strong>datapath</strong> is the collection of functional blocks that hold and transform data: PC, instruction memory, register file, ALU, data memory and multiplexers. The <strong>control</strong> unit reads the instruction and decides which datapath elements act in each cycle by asserting control signals.</p>
+      <section class="topic" id="uarch-intro">
+        <h2>1. Microarchitecture: Introduction</h2>
+        <p><strong>Microarchitecture</strong> is the specific arrangement of registers, ALUs, finite state machines, memories, multiplexers and other logic blocks used to <strong>implement an architecture in hardware</strong>. It connects the programmer-visible architecture (instructions, registers, memory) with the underlying digital logic and determines how those features are physically implemented. Different microarchitectures can implement the same architecture, differing in performance, cost and complexity while executing the same programs.</p>
+        <div class="stack" style="margin:14px 0">
+          <div class="layer">Application programs · Software</div>
+          <div class="layer">Operating systems · device drivers</div>
+          <div class="layer accent">Architecture · instructions, registers</div>
+          <div class="layer accent">Microarchitecture · datapaths, controllers</div>
+          <div class="layer">Logic · adders, memories</div>
+          <div class="layer">Digital circuits · AND gates, NOT gates</div>
+          <div class="layer">Analog circuits · amplifiers, filters</div>
+          <div class="layer">Devices · transistors, diodes</div>
+          <div class="layer">Physics · electrons</div>
         </div>
-
-        <div class="diagram">
-          <div class="stack">
-            <div class="layer">Application programs</div>
-            <div class="layer">Operating system / device drivers</div>
-            <div class="layer accent">Architecture — instructions, registers</div>
-            <div class="layer">Microarchitecture — datapaths, controllers</div>
-            <div class="layer">Logic — adders, memories, gates</div>
-            <div class="layer">Digital circuits — AND, NOT, flip-flops</div>
-            <div class="layer">Analog circuits — amplifiers, filters</div>
-            <div class="layer">Devices — transistors, diodes</div>
-            <div class="layer">Physics — electrons</div>
+        <h3>1.1 Architectural state</h3>
+        <ul>
+          <li>Architectural state determines everything about a processor: the <strong>PC</strong>, the <strong>32 registers</strong> and <strong>memory</strong> (architecture = instruction set specification + architectural state).</li>
+          <li>Based on the current architectural state, the processor executes an instruction with its operands and produces a new architectural state.</li>
+          <li>Any MIPS microarchitecture must contain all of this state. It may also contain <strong>nonarchitectural state</strong> (temporary or pipeline registers) used to simplify the design or improve performance, not visible to the programmer.</li>
+        </ul>
+        <h3>1.2 Processor = datapath + control</h3>
+        <ul>
+          <li><strong>Datapath</strong> — functional blocks (memories, registers, ALUs, multiplexers) operating on 32-bit words (MIPS is a 32-bit architecture).</li>
+          <li><strong>Control unit</strong> — receives the current instruction from the datapath and generates control signals (mux selects, register enables, memory write signals).</li>
+        </ul>
+        <h3>1.3 Three implementations of one architecture</h3>
+        <table>
+          <tr><th>Microarchitecture</th><th>Idea</th></tr>
+          <tr><td>Single-cycle</td><td>Each instruction executes in a single cycle</td></tr>
+          <tr><td>Multicycle</td><td>Each instruction is broken into a series of shorter steps</td></tr>
+          <tr><td>Pipelined</td><td>Each instruction is broken into steps and multiple instructions execute at once</td></tr>
+        </table>
+        <h3>1.4 MIPS subset implemented</h3>
+        <p>R-type: <code>and, or, add, sub, slt</code>; memory: <code>lw, sw</code>; branch: <code>beq</code> (later extended with <code>addi</code> and <code>j</code>).</p>
+        <h3>1.5 Design process</h3>
+        <ol>
+          <li>Begin with the <strong>state elements</strong>: PC, register file, instruction memory, data memory.</li>
+          <li>Add <strong>combinational logic</strong> (ALU, adders, muxes) between them to compute the next state.</li>
+          <li>Organise memory (separate instruction and data memories for the basic designs).</li>
+          <li>Design the datapath by connecting the blocks so every instruction can execute.</li>
+          <li>Design the control that generates the select/enable signals.</li>
+        </ol>
+        <div class="two-col">
+          <div>
+            <h4>Architectural state elements</h4>
+            <ul>
+              <li><strong>PC</strong> — 32-bit register, input PC′</li>
+              <li><strong>Register file</strong> — 32 × 32, ports A1/RD1, A2/RD2 (read), A3/WD3/WE3 (write), 5-bit addresses</li>
+              <li><strong>Instruction memory</strong> — address A → RD (32-bit instruction)</li>
+              <li><strong>Data memory</strong> — A, RD, WD, WE</li>
+            </ul>
           </div>
-          <div class="small" style="color:var(--text-faint)">Microarchitecture is the bridge between the instruction set and the gates that implement it.</div>
-        </div>
-
-        <h3>Three implementations of one architecture</h3>
-        <table>
-          <tr><th>Implementation</th><th>Idea</th><th>CPI</th><th>Clock period</th><th>Hardware</th></tr>
-          <tr><td>Single-cycle</td><td>Every instruction completes in one clock cycle</td><td>1</td><td>Long (slowest instruction)</td><td>Duplicated functional units</td></tr>
-          <tr><td>Multicycle</td><td>Break each instruction into shorter steps, reuse units</td><td>&gt; 1</td><td>Short</td><td>One ALU, one memory, extra registers</td></tr>
-          <tr><td>Pipelined</td><td>Overlap steps of different instructions</td><td>≈ 1</td><td>Short</td><td>Pipeline registers, hazard logic</td></tr>
-        </table>
-
-        <h3>The MIPS subset used in this unit</h3>
-        <p>To keep the datapath readable, the designs implement a representative subset: R-type instructions (<code>and</code>, <code>or</code>, <code>add</code>, <code>sub</code>, <code>slt</code>), memory instructions (<code>lw</code>, <code>sw</code>), and the branch <code>beq</code>. The multicycle design adds <code>addi</code> and <code>j</code>. Every idea generalizes to the full instruction set; the subset merely removes instructions that would add multiplexers without adding a new concept.</p>
-
-        <p>Design always balances three constraints: <strong>cost</strong> (area and manufacturing), <strong>power</strong> (energy per operation and cooling), and <strong>performance</strong> (execution time). The fastest design is not automatically the best design if it is too large, too hot, or too expensive.</p>
-      </section>
-
-      <section class="topic" id="performance">
-        <h2>Performance Analysis</h2>
-        <p>Program execution time is the product of three quantities: how many instructions the program executes, how many cycles each instruction takes on average, and how long one cycle lasts.</p>
-
-        <div class="formula">
-          <span class="label">THE PERFORMANCE EQUATION</span>
-          <div class="expr">Execution Time = IC × CPI × T<sub>c</sub></div>
-          <div class="expr">IC = instruction count &nbsp;&nbsp; CPI = cycles per instruction &nbsp;&nbsp; T<sub>c</sub> = clock period</div>
-          <div class="note">T<sub>c</sub> = 1 / f, where f is the clock frequency. IPC = instructions per cycle = 1 / CPI.</div>
-        </div>
-
-        <p>The instruction count is fixed by the program and the compiler. CPI is a property of the microarchitecture and the instruction mix. The clock period is set by the critical path through the datapath plus register overhead. Improving any one factor helps, but the factors interact: a design that shortens the clock may raise CPI, and a design that lowers CPI may lengthen the clock. The right comparison is always the product.</p>
-
-        <div class="formula">
-          <span class="label">SPEEDUP</span>
-          <div class="expr">Speedup = T<sub>old</sub> / T<sub>new</sub> = (IC × CPI × T<sub>c</sub>)<sub>old</sub> / (IC × CPI × T<sub>c</sub>)<sub>new</sub></div>
-          <div class="note">With the same program and instruction count, speedup is the ratio of CPI × T<sub>c</sub> products.</div>
-        </div>
-
-        <p><strong>Amdahl's law</strong> limits the benefit of optimizing only one part of a system. If a fraction <em>f</em> of the work is sped up by a factor <em>S</em>, the overall speedup is bounded by the unchanged remainder:</p>
-
-        <div class="formula">
-          <span class="label">AMDAHL'S LAW</span>
-          <div class="expr">Speedup = 1 / [(1 − f) + f / S]</div>
-          <div class="note">Even an infinite speedup of the optimized part leaves 1/(1 − f) as the maximum overall speedup.</div>
-        </div>
-
-        <h3>Worked comparison</h3>
-        <p>Suppose a program executes 100 billion instructions. A single-cycle processor has CPI = 1 and a 925 ps clock, so:</p>
-
-        <div class="formula">
-          <span class="label">SINGLE-CYCLE EXECUTION TIME</span>
-          <div class="expr">T = 100 × 10<sup>9</sup> × 1 × 925 × 10<sup>−12</sup> s = 92.5 s</div>
-        </div>
-
-        <p>A multicycle processor has a much shorter 325 ps clock but needs an average of 4.12 cycles per instruction, so:</p>
-
-        <div class="formula">
-          <span class="label">MULTICYCLE EXECUTION TIME</span>
-          <div class="expr">T = 100 × 10<sup>9</sup> × 4.12 × 325 × 10<sup>−12</sup> s = 133.9 s</div>
-        </div>
-
-        <p>The multicycle design has the faster clock yet the slower program, because the extra cycles outweigh the shorter period. This is the central lesson of performance analysis: never judge a processor by clock frequency alone. A pipelined design tries to keep CPI near 1 <em>and</em> the clock short, which is why it wins when hazards are controlled.</p>
-
-        <div class="box">
-          <span class="label">BENCHMARKS AND MIX</span>
-          <p>Real programs do not execute each instruction equally often. A benchmark's <strong>instruction mix</strong> (percentage of loads, stores, branches, jumps, R-type operations) determines the average CPI. Multicycle CPI is a weighted average of the cycles required by each instruction class.</p>
+          <div>
+            <h4>Why clock frequency is not everything</h4>
+            <ul>
+              <li>Intel advertised Pentium III/4 by clock frequency, but AMD Athlon chips ran programs faster at the same frequency</li>
+              <li>Reason: lower CPI (more instructions per cycle) — performance = instruction count × CPI × clock period, not frequency alone</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      <section class="topic" id="state-elements">
-        <h2>State Elements and Timing</h2>
-        <p>A processor is built from a handful of state elements and combinational blocks. The <strong>PC</strong> is a 32-bit register whose output addresses the <strong>instruction memory</strong>. The <strong>register file</strong> has two read ports and one write port. The <strong>ALU</strong> performs arithmetic and logic and produces a <strong>Zero</strong> flag. <strong>Data memory</strong> is read or written under control signals. Multiplexers select among alternative sources.</p>
-
-        <table>
-          <tr><th>Element</th><th>Inputs</th><th>Outputs</th><th>Control</th></tr>
-          <tr><td>PC</td><td>PC' (next address)</td><td>PC (current address)</td><td>Clock; PCWrite enable</td></tr>
-          <tr><td>Instruction memory</td><td>Address</td><td>32-bit instruction</td><td>None (read-only)</td></tr>
-          <tr><td>Register file</td><td>A1, A2, A3, WD3</td><td>RD1, RD2</td><td>WE3 (write enable), clock</td></tr>
-          <tr><td>ALU</td><td>SrcA, SrcB</td><td>ALUResult, Zero</td><td>ALUControl (3 bits)</td></tr>
-          <tr><td>Data memory</td><td>Address, WD</td><td>RD</td><td>MemRead, MemWrite, clock</td></tr>
-        </table>
-
-        <p>Registers are edge-triggered. On a rising clock edge a register captures its input; the output then becomes valid after a small <strong>clock-to-Q delay</strong> <code>t<sub>pcq</sub></code>. The combinational logic that follows must settle before the next edge, leaving a <strong>setup time</strong> <code>t<sub>setup</sub></code> before the edge. The minimum clock period for a path is therefore:</p>
-
+      <section class="topic" id="perf-analysis">
+        <h2>2. Performance Analysis</h2>
+        <p>Processor <strong>performance</strong> is how quickly a computer completes a task; it is measured by execution time (lower time = better). The design challenge is to satisfy the constraints of cost, power and performance.</p>
         <div class="formula">
-          <span class="label">GENERAL PATH TIMING</span>
-          <div class="expr">T<sub>c</sub> ≥ t<sub>pcq</sub> + t<sub>combinational</sub> + t<sub>setup</sub></div>
-          <div class="note">The critical path is the slowest such path in the design. Every other path has slack.</div>
+          <span class="label">PROGRAM EXECUTION TIME</span>
+          <div class="expr">Execution Time = (# instructions)(cycles/instruction)(seconds/cycle) = # instructions × CPI × T<sub>c</sub></div>
+          <div class="note">CPI = cycles per instruction; clock period T<sub>c</sub> = seconds per cycle; IPC = instructions per cycle = 1/CPI.</div>
         </div>
-
-        <h3>Timing parameters used in the examples</h3>
-        <table>
-          <tr><th>Parameter</th><th>Meaning</th><th>Value</th></tr>
-          <tr><td><code>t<sub>pcq</sub></code></td><td>Register clock-to-Q delay</td><td>30 ps</td></tr>
-          <tr><td><code>t<sub>setup</sub></code></td><td>Register setup time</td><td>20 ps</td></tr>
-          <tr><td><code>t<sub>mux</sub></code></td><td>Multiplexer delay</td><td>25 ps</td></tr>
-          <tr><td><code>t<sub>ALU</sub></code></td><td>ALU delay</td><td>200 ps</td></tr>
-          <tr><td><code>t<sub>mem</sub></code></td><td>Memory read delay</td><td>250 ps</td></tr>
-          <tr><td><code>t<sub>RFread</sub></code></td><td>Register file read delay</td><td>150 ps</td></tr>
-          <tr><td><code>t<sub>RFsetup</sub></code></td><td>Register file setup time</td><td>20 ps</td></tr>
-        </table>
-
-        <p>These numbers are deliberately simple but realistic in proportion: a memory access is slower than an ALU operation, and a register file read is faster than either. They let us compare the three microarchitectures with the same technology.</p>
+        <ul>
+          <li><strong>Instruction count</strong> depends on the program and the instruction set; <strong>CPI</strong> on the processor implementation and instruction mix; <strong>T<sub>c</sub></strong> on the clock frequency. Reducing any factor (others constant) reduces execution time.</li>
+          <li>Clock frequency alone is not a sufficient measure — a faster clock with much higher CPI can still be slower.</li>
+        </ul>
+        <div class="formula">
+          <span class="label">RELATED FORMULAE</span>
+          <div class="expr"><div>clock cycles = instruction count × CPI</div><div>T<sub>c</sub> = 1 / clock frequency</div><div>average CPI = Σ (fraction<sub>i</sub> × CPI<sub>i</sub>)</div><div>Speedup = old execution time / new execution time</div><div>Amdahl:  Speedup = 1 / [ (1 − f) + f / S ]</div></div>
+          <div class="note">f = fraction of execution time improved; S = speedup of that fraction. Overall speedup is limited by the portion that cannot be improved.</div>
+        </div>
+        <h3>2.1 Numerical examples</h3>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>Problem</th><th>Solution</th></tr>
+          <tr><td>2 × 10⁹ instructions, CPI 1.5 — cycles?</td><td>2 × 10⁹ × 1.5 = 3 × 10⁹ cycles</td></tr>
+          <tr><td>2 GHz clock — cycle time?</td><td>1/(2 × 10⁹) = 0.5 ns</td></tr>
+          <tr><td>10 s → 5 s: speedup?</td><td>10/5 = 2</td></tr>
+          <tr><td>40% of time improved 4×</td><td>1/[0.6 + 0.4/4] = 1/0.7 ≈ 1.43</td></tr>
+          <tr><td>1.5 × 10⁹ instr, CPI 2, 3 GHz</td><td>(1.5 × 10⁹)(2)/(3 × 10⁹) = 1 s</td></tr>
+          <tr><td>A: 2 GHz, CPI 1.5; B: 3 GHz, CPI 2; 10⁹ instr each</td><td>A = 0.75 s; B ≈ 0.667 s → B is ≈ 1.125× faster</td></tr>
+          <tr><td>40% CPI 1, 30% CPI 3, 30% CPI 2</td><td>0.4 + 0.9 + 0.6 = 1.9</td></tr>
+          <tr><td>Compiler: instructions −20%, CPI +10%</td><td>0.8 × 1.1 = 0.88 → time 88% (12% reduction)</td></tr>
+          <tr><td>12 s program, 75% improved 3×</td><td>1/[0.25 + 0.75/3] = 1/0.5 = 2 → new time 6 s</td></tr>
+          <tr><td>A: 2×10⁹, CPI 1.2, 2.4 GHz; B: 1.8×10⁹, CPI 1.5, 3 GHz</td><td>A = 1.0 s; B = 0.9 s → B faster, speedup ≈ 1.11</td></tr>
+          <tr><td>CPI 2.0 → 1.6, 2 GHz, 5 × 10⁸ instr</td><td>0.5 s → 0.4 s, reduction 0.1 s = 20%</td></tr>
+          <tr><td>60% CPI 1, 40% CPI 4; new CPI of type B = 2</td><td>old 2.2, new 1.4 → 36.36% reduction</td></tr>
+          <tr><td>8 s vs 5 s</td><td>speedup 1.6; reduction 37.5%</td></tr>
+        </table></div>
+        <p><strong>Amdahl's law:</strong> improving a small portion of a program gives only limited overall speedup because the unchanged portion still consumes most of the execution time, so even an extremely fast improvement cannot produce unlimited speedup.</p>
       </section>
 
-      <section class="topic" id="single-datapath">
-        <h2>Single-Cycle Datapath</h2>
-        <p>In a <strong>single-cycle</strong> processor, every instruction completes in exactly one clock cycle. All the functional units needed by an instruction are placed in the datapath and connected by multiplexers; the control unit selects the path for the current instruction. The design is conceptually simple, but the clock must be long enough for the slowest instruction, and hardware cannot be reused across cycles.</p>
-
-        <h3>Step 1: fetch the instruction</h3>
-        <p>The PC holds the address of the instruction to execute. Its output drives the address input of the instruction memory, which reads out the 32-bit instruction. At the same time the PC's next value is computed: normally <code>PC + 4</code>, or the branch target when a branch is taken. A multiplexer controlled by <code>PCSrc</code> chooses between them.</p>
-
-        <h3>Step 2: read the source registers</h3>
-        <p>The instruction fields <code>rs</code> (bits 25:21) and <code>rt</code> (bits 20:16) address the register file. The two read ports produce <code>RD1</code> and <code>RD2</code>. For <code>lw</code>, <code>rs</code> is the base-address register; for an R-type instruction, both <code>rs</code> and <code>rt</code> are ALU sources.</p>
-
-        <h3>Step 3: sign-extend the immediate</h3>
-        <p>The 16-bit immediate (bits 15:0) is sign-extended to 32 bits to form <code>SignImm</code>. Memory offsets and branch displacements may be negative, so the sign bit must be replicated into the upper 16 bits.</p>
-
-        <h3>Step 4: compute the address or ALU result</h3>
-        <p>Source A of the ALU normally comes from <code>RD1</code>. Source B is selected by <code>ALUSrc</code>: it is either <code>RD2</code> (for R-type operations) or <code>SignImm</code> (for <code>lw</code>, <code>sw</code>, <code>addi</code>). For a load or store, the ALU adds the base and offset to produce the memory address. For an R-type instruction, it performs the requested operation. The ALU also produces a <strong>Zero</strong> flag indicating whether the result is zero.</p>
-
-        <h3>Step 5: access memory and write back</h3>
-        <p>For <code>lw</code>, the ALU result addresses data memory, and the read data is written back to the register file through the <code>MemtoReg</code> multiplexer. For <code>sw</code>, the value from <code>RD2</code> is written to memory and no register write occurs. For an R-type instruction, the ALU result is written to <code>rd</code>. For <code>beq</code>, the ALU subtracts the two registers; if <code>Zero</code> is asserted and <code>Branch</code> is enabled, <code>PCSrc</code> selects the branch target.</p>
-
+      <section class="topic" id="sc-datapath">
+        <h2>3. Single-Cycle Datapath</h2>
+        <p>A single-cycle processor completes each instruction in <strong>exactly one clock cycle</strong>; the clock period must be long enough for the slowest instruction. The PC holds the address of the instruction to be fetched; the datapath is built up one instruction at a time.</p>
         <div class="diagram">
           <div class="flow">
-            <span class="step">PC</span><span class="arrow">→</span>
-            <span class="step">Instruction memory</span><span class="arrow">→</span>
-            <span class="step">Register file</span><span class="arrow">→</span>
-            <span class="step">ALU</span><span class="arrow">→</span>
-            <span class="step">Data memory</span><span class="arrow">→</span>
-            <span class="step">Register write-back</span>
+            <div class="step">PC</div><span class="arrow">→</span>
+            <div class="step">Instruction memory</div><span class="arrow">→</span>
+            <div class="step">Register file (A1, A2)</div><span class="arrow">→</span>
+            <div class="step">ALU (SrcA, SrcB)</div><span class="arrow">→</span>
+            <div class="step">Data memory</div><span class="arrow">→</span>
+            <div class="step">Write back (A3, WD3)</div>
           </div>
-          <div class="small" style="color:var(--text-faint)">The load path is the longest: instruction fetch, register read, ALU, data memory, register setup.</div>
-        </div>
-
-        <h3>Instruction-specific paths</h3>
-        <table>
-          <tr><th>Instruction</th><th>ALU operation</th><th>Memory</th><th>Write-back</th></tr>
-          <tr><td><code>lw rt, imm(rs)</code></td><td>rs + SignImm (address)</td><td>Read data</td><td><code>rt ← Mem[address]</code></td></tr>
-          <tr><td><code>sw rt, imm(rs)</code></td><td>rs + SignImm (address)</td><td>Write <code>rt</code></td><td>None</td></tr>
-          <tr><td><code>add rd, rs, rt</code></td><td>rs + rt</td><td>None</td><td><code>rd ← ALUResult</code></td></tr>
-          <tr><td><code>sub rd, rs, rt</code></td><td>rs − rt</td><td>None</td><td><code>rd ← ALUResult</code></td></tr>
-          <tr><td><code>beq rs, rt, label</code></td><td>rs − rt (set Zero)</td><td>None</td><td>None; may update PC</td></tr>
-        </table>
-
-        <p>The branch target is computed by shifting <code>SignImm</code> left by two (converting a word offset to a byte offset) and adding it to <code>PC + 4</code>. A separate adder is used for this so that the main ALU remains free for the comparison. The result feeds the <code>PCSrc</code> multiplexer.</p>
-
-        <h3>The branch path in detail</h3>
-        <p>For <code>beq</code>, the two source registers are read in the same way as for an R-type instruction. The main ALU subtracts them and asserts <code>Zero</code> when they are equal. In parallel, the sign-extended immediate is shifted left by two and added to <code>PC + 4</code> to form the branch target. The final PC input is selected by <code>PCSrc = Branch AND Zero</code>: if the instruction is a branch and the values are equal, the target is taken; otherwise the sequential <code>PC + 4</code> is used. The branch does not write a register or access data memory.</p>
-      </section>
-
-      <section class="topic" id="single-control">
-        <h2>Single-Cycle Control</h2>
-        <p>The control unit is combinational logic whose inputs are the <strong>opcode</strong> (bits 31:26), the <strong>funct</strong> field (bits 5:0, for R-type), and the ALU's <strong>Zero</strong> flag (for branches). Its outputs are the control signals that configure the datapath for the current instruction.</p>
-
-        <table>
-          <tr><th>Signal</th><th>Effect when 1</th><th>Typical use</th></tr>
-          <tr><td><code>RegWrite</code></td><td>Write the register file</td><td>R-type, <code>lw</code>, <code>addi</code></td></tr>
-          <tr><td><code>RegDst</code></td><td>Destination is <code>rd</code> rather than <code>rt</code></td><td>R-type = 1; <code>lw</code> = 0</td></tr>
-          <tr><td><code>ALUSrc</code></td><td>ALU B input is the immediate rather than <code>RD2</code></td><td><code>lw</code>, <code>sw</code>, <code>addi</code></td></tr>
-          <tr><td><code>Branch</code></td><td>Allow a taken branch to change the PC</td><td><code>beq</code></td></tr>
-          <tr><td><code>MemRead</code></td><td>Read data memory</td><td><code>lw</code></td></tr>
-          <tr><td><code>MemWrite</code></td><td>Write data memory</td><td><code>sw</code></td></tr>
-          <tr><td><code>MemtoReg</code></td><td>Write-back value comes from memory</td><td><code>lw</code> = 1; R-type = 0</td></tr>
-          <tr><td><code>ALUOp</code></td><td>Coarse ALU operation class</td><td>00 add, 01 subtract, 10 use funct</td></tr>
-          <tr><td><code>PCSrc</code></td><td>Next PC is the branch target</td><td>Branch taken</td></tr>
-        </table>
-
-        <p><code>PCSrc</code> is usually formed as <code>Branch AND Zero</code>: the branch target is selected only when the instruction is a branch <em>and</em> the two registers are equal. For a jump, a separate multiplexer selects the jump target. In the single-cycle subset used here, <code>PCSrc = Branch &amp; Zero</code>.</p>
-
-        <h3>ALU control</h3>
-        <p>The main control produces a 2-bit <code>ALUOp</code>; a smaller ALU decoder combines it with the R-type <code>funct</code> field to produce the 3-bit <code>ALUControl</code>.</p>
-
-        <table>
-          <tr><th>ALUOp</th><th>Meaning</th><th>funct</th><th>ALUControl</th><th>Operation</th></tr>
-          <tr><td>00</td><td>Add (load/store)</td><td>—</td><td>010</td><td>ADD</td></tr>
-          <tr><td>01</td><td>Subtract (branch)</td><td>—</td><td>110</td><td>SUB</td></tr>
-          <tr><td>10</td><td>Use funct</td><td>100000 (add)</td><td>010</td><td>ADD</td></tr>
-          <tr><td>10</td><td>Use funct</td><td>100010 (sub)</td><td>110</td><td>SUB</td></tr>
-          <tr><td>10</td><td>Use funct</td><td>100100 (and)</td><td>000</td><td>AND</td></tr>
-          <tr><td>10</td><td>Use funct</td><td>100101 (or)</td><td>001</td><td>OR</td></tr>
-          <tr><td>10</td><td>Use funct</td><td>101010 (slt)</td><td>111</td><td>SLT</td></tr>
-        </table>
-
-        <h3>Control signal values by instruction</h3>
-        <table class="compact">
-          <tr><th>Instruction</th><th>RegWrite</th><th>RegDst</th><th>ALUSrc</th><th>Branch</th><th>MemRead</th><th>MemWrite</th><th>MemtoReg</th><th>ALUOp</th></tr>
-          <tr><td>R-type</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>10</td></tr>
-          <tr><td><code>lw</code></td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td><td>00</td></tr>
-          <tr><td><code>sw</code></td><td>0</td><td>X</td><td>1</td><td>0</td><td>0</td><td>1</td><td>X</td><td>00</td></tr>
-          <tr><td><code>beq</code></td><td>0</td><td>X</td><td>0</td><td>1</td><td>0</td><td>0</td><td>X</td><td>01</td></tr>
-        </table>
-
-        <p>The “X” entries are don't-cares: the corresponding element is not written, so its input does not matter. Good control design exploits these don't-cares to simplify the logic. The control unit can be synthesized directly from this truth table, or implemented as a small ROM/PLA.</p>
-
-        <h3>Extending the datapath: <code>addi</code> and <code>j</code></h3>
-        <p><code>addi</code> needs no new datapath hardware. It uses the same immediate path as <code>lw</code>, but writes the ALU result to <code>rt</code> instead of writing memory data. Its control signals are <code>RegWrite = 1</code>, <code>RegDst = 0</code>, <code>ALUSrc = 1</code>, <code>Branch = 0</code>, <code>MemRead = 0</code>, <code>MemWrite = 0</code>, <code>MemtoReg = 0</code>, and <code>ALUOp = 00</code> (add).</p>
-
-        <p><code>j</code> does need one extra multiplexer. The jump target is formed from the upper four bits of <code>PC + 4</code>, the 26-bit instruction field, and two zero bits. A <code>Jump</code> control signal selects this target at the PC input:</p>
-
-        <div class="formula">
-          <span class="label">SINGLE-CYCLE JUMP TARGET</span>
-          <div class="expr">PC' = {(PC + 4)[31:28], Instr[25:0], 2'b00}</div>
-          <div class="note">Jump = 1 selects this value; otherwise PCSrc selects PC + 4 or the branch target.</div>
-        </div>
-
-        <table class="compact">
-          <tr><th>Instruction</th><th>RegWrite</th><th>RegDst</th><th>ALUSrc</th><th>Branch</th><th>MemWrite</th><th>MemtoReg</th><th>ALUOp</th><th>Jump</th></tr>
-          <tr><td><code>addi</code></td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>00</td><td>0</td></tr>
-          <tr><td><code>j</code></td><td>0</td><td>X</td><td>X</td><td>X</td><td>0</td><td>X</td><td>XX</td><td>1</td></tr>
-        </table>
-
-        <p>With these additions the single-cycle processor covers the full subset used by the multicycle design, so the two can be compared fairly.</p>
-      </section>
-
-      <section class="topic" id="single-performance">
-        <h2>Single-Cycle Performance and Limitations</h2>
-        <p>The clock period must cover the longest path through the datapath. For a load, the path is: PC clock-to-Q → instruction memory → register file read → ALU → data memory → write-back multiplexer → register file setup. This gives:</p>
-
-        <div class="formula">
-          <span class="label">SINGLE-CYCLE CRITICAL PATH</span>
-          <div class="expr">T<sub>c</sub> = t<sub>pcq_PC</sub> + 2t<sub>mem</sub> + t<sub>RFread</sub> + t<sub>ALU</sub> + t<sub>mux</sub> + t<sub>RFsetup</sub></div>
-          <div class="note">The factor 2 is for instruction memory plus data memory. The load path is slower than an R-type path because it includes the data memory.</div>
-        </div>
-
-        <p>Substituting the timing values:</p>
-
-        <div class="formula">
-          <span class="label">NUMERICAL</span>
-          <div class="expr">T<sub>c</sub> = 30 + 2(250) + 150 + 200 + 25 + 20 = 925 ps</div>
-          <div class="expr">f<sub>max</sub> = 1 / 925 ps ≈ 1.08 GHz</div>
-        </div>
-
-        <p>With CPI = 1, a program of 100 billion instructions takes <code>100 × 10<sup>9</sup> × 925 ps = 92.5 s</code>. This is the baseline against which the other designs are measured.</p>
-
-        <h3>Why single-cycle is not the final answer</h3>
-        <ul>
-          <li><strong>Every instruction pays for the slowest one.</strong> A simple R-type operation could finish much sooner than a load, but it must wait for the full 925 ps clock.</li>
-          <li><strong>Hardware is duplicated.</strong> Separate instruction and data memories, a separate branch adder, and many multiplexers are needed because everything happens in one cycle.</li>
-          <li><strong>No resource reuse.</strong> The ALU and memory sit idle for parts of the cycle, yet cannot be used by another instruction.</li>
-          <li><strong>CPI is fixed at 1</strong>, so the only way to improve performance is to shorten the critical path — which is difficult once the load path dominates.</li>
-        </ul>
-
-        <p>The multicycle design attacks the first and third problems by breaking the instruction into steps and reusing hardware. The pipelined design attacks all of them by overlapping instructions while keeping each stage short.</p>
-      </section>
-
-      <section class="topic" id="multi-datapath">
-        <h2>Multicycle Datapath</h2>
-        <p>The single-cycle processor uses a separate adder, memory and multiplexer for every instruction because everything must happen in one clock. A <strong>multicycle</strong> processor takes the opposite approach: it breaks each instruction into a sequence of shorter steps and <strong>reuses the same functional units</strong> in different cycles. The clock can then be much shorter, because no step has to traverse the entire load path.</p>
-
-        <h3>Additional state elements</h3>
-        <p>Reusing hardware requires registers to hold intermediate values between steps:</p>
-        <ul>
-          <li><strong>IR</strong> — the instruction register, holding the fetched instruction for the whole instruction.</li>
-          <li><strong>A</strong> and <strong>B</strong> — latches for the two register-file outputs, so the values survive while the ALU is reused.</li>
-          <li><strong>ALUOut</strong> — holds an ALU result (a memory address or an arithmetic result) for the next cycle.</li>
-          <li><strong>PC</strong>, <strong>instruction/data memory</strong>, <strong>register file</strong> and one <strong>ALU</strong> — shared across all steps.</li>
-        </ul>
-
-        <p>Because the same memory serves instructions and data, an <code>IorD</code> multiplexer selects whether the memory address comes from the PC (instruction fetch) or from <code>ALUOut</code> (data access). The register file's write address is selected by <code>RegDst</code>, and its write data by <code>MemtoReg</code>.</p>
-
-        <h3>The five canonical steps</h3>
-        <table>
-          <tr><th>Step</th><th>Action</th><th>Reused units</th></tr>
-          <tr><td>1. Fetch</td><td>IR ← Memory[PC]; PC ← PC + 4</td><td>PC, memory, ALU</td></tr>
-          <tr><td>2. Decode / register read</td><td>A ← rs; B ← rt; compute branch target in ALUOut</td><td>Register file, ALU</td></tr>
-          <tr><td>3. Execute / address</td><td>ALUOut ← A + SignImm (load/store) or A op B (R-type) or A − B (branch)</td><td>ALU</td></tr>
-          <tr><td>4. Memory</td><td>Load: read Memory[ALUOut]; store: write B to Memory[ALUOut]</td><td>Memory</td></tr>
-          <tr><td>5. Write-back</td><td>Register ← memory data or ALUOut</td><td>Register file</td></tr>
-        </table>
-
-        <p>Not every instruction uses all five steps. A branch finishes after the execute step, a store finishes after the memory step, and only a load needs the final write-back. This is the source of the varying CPI: the hardware is shared, but different instructions consume different numbers of cycles.</p>
-      </section>
-
-      <section class="topic" id="multi-fsm">
-        <h2>Multicycle Control: The Finite-State Machine</h2>
-        <p>In a multicycle processor the control unit cannot be a simple truth table of the opcode, because the same opcode requires different control signals in different cycles. The control must remember <em>where it is</em> in the instruction. It is therefore a <strong>finite-state machine (FSM)</strong>: a state register plus combinational next-state and output logic. The FSM enters <strong>S0</strong> on reset and returns to S0 at the end of every instruction.</p>
-
-        <h3>State summary</h3>
-        <table class="compact">
-          <tr><th>State</th><th>Name</th><th>Key control signals</th><th>Next state</th></tr>
-          <tr><td><strong>S0</strong></td><td>Fetch</td><td>IorD=0, ALUSrcA=0, ALUSrcB=01, ALUOp=00, PCSrc=0, IRWrite, PCWrite</td><td>S1</td></tr>
-          <tr><td><strong>S1</strong></td><td>Decode</td><td>ALUSrcA=0, ALUSrcB=11, ALUOp=00</td><td>S2 / S6 / S8 / S9</td></tr>
-          <tr><td><strong>S2</strong></td><td>MemAdr</td><td>ALUSrcA=1, ALUSrcB=10, ALUOp=00</td><td>S3 (lw) / S5 (sw)</td></tr>
-          <tr><td><strong>S3</strong></td><td>MemRead</td><td>IorD=1</td><td>S4</td></tr>
-          <tr><td><strong>S4</strong></td><td>Mem Writeback</td><td>RegDst=0, MemtoReg=1, RegWrite</td><td>S0</td></tr>
-          <tr><td><strong>S5</strong></td><td>MemWrite</td><td>IorD=1, MemWrite</td><td>S0</td></tr>
-          <tr><td><strong>S6</strong></td><td>Execute</td><td>ALUSrcA=1, ALUSrcB=00, ALUOp=10</td><td>S7</td></tr>
-          <tr><td><strong>S7</strong></td><td>ALU Writeback</td><td>RegDst=1, MemtoReg=0, RegWrite</td><td>S0</td></tr>
-          <tr><td><strong>S8</strong></td><td>Branch</td><td>ALUSrcA=1, ALUSrcB=00, ALUOp=01, PCSrc=1, Branch</td><td>S0</td></tr>
-          <tr><td><strong>S9</strong></td><td>Jump</td><td>Jump=1 (jump target selected), PCWrite</td><td>S0</td></tr>
-        </table>
-
-        <h3>Instruction paths through the FSM</h3>
-        <div class="diagram">
           <div class="flow">
-            <span class="step">S0 Fetch</span><span class="arrow">→</span>
-            <span class="step">S1 Decode</span>
-          </div>
-          <div class="flow" style="margin-top:6px">
-            <span class="step">lw: S2 → S3 → S4 → S0</span>
-            <span class="step">sw: S2 → S5 → S0</span>
-          </div>
-          <div class="flow" style="margin-top:6px">
-            <span class="step">R-type: S6 → S7 → S0</span>
-            <span class="step">beq: S8 → S0</span>
-            <span class="step">j / addi: own short path</span>
+            <div class="step">PC + 4 adder → PC′</div><span class="arrow">·</span>
+            <div class="step">Sign extend → SignImm</div><span class="arrow">·</span>
+            <div class="step">&lt;&lt;2 + PC+4 → PCBranch</div>
           </div>
         </div>
-
-        <p>Notice the elegance of <strong>S1</strong>: it always reads the registers and computes the branch target in parallel, because every instruction might need either. The opcode then selects the next state: S2 for memory instructions, S6 for R-type arithmetic, S8 for a branch. Decoding does not itself need control signals beyond the register read; the FSM simply spends one cycle letting the register file and ALU settle.</p>
-
-        <p>For <code>beq</code> the ALU is used twice: in S1 it adds <code>PC</code> to the shifted immediate and stores the branch target in <code>ALUOut</code>; in S8 it subtracts the two source registers to set the <code>Zero</code> flag. <code>PCSrc = 1</code> then chooses <code>ALUOut</code> as the next PC only when <code>Branch</code> and <code>Zero</code> are both asserted. Reusing one ALU for two different jobs is the essence of the multicycle trade-off.</p>
-
-        <h3>Control signal meanings</h3>
-        <table>
-          <tr><th>Signal</th><th>Function</th></tr>
-          <tr><td><code>IorD</code></td><td>0: memory address = PC (fetch); 1: address = ALUOut (data)</td></tr>
-          <tr><td><code>MemRead</code> / <code>MemWrite</code></td><td>Enable a data-memory read or write</td></tr>
-          <tr><td><code>IRWrite</code></td><td>Latch the fetched instruction into IR</td></tr>
-          <tr><td><code>PCWrite</code></td><td>Update the PC with PC'</td></tr>
-          <tr><td><code>RegDst</code></td><td>0: write <code>rt</code>; 1: write <code>rd</code></td></tr>
-          <tr><td><code>MemtoReg</code></td><td>0: write ALUOut; 1: write memory data</td></tr>
-          <tr><td><code>ALUSrcA</code></td><td>0: A input = PC; 1: A input = register A</td></tr>
-          <tr><td><code>ALUSrcB</code></td><td>00: B; 01: 4; 10: SignImm; 11: SignImm shifted left 2</td></tr>
-          <tr><td><code>PCSrc</code></td><td>0: PC' = ALUResult; 1: PC' = ALUOut</td></tr>
-          <tr><td><code>Branch</code></td><td>Qualify a branch with the ALU Zero flag</td></tr>
-        </table>
-
-        <p>The main FSM produces the coarse operation class <code>ALUOp</code>; a separate ALU decoder expands it (and the R-type <code>funct</code> field) into the 3-bit ALU control. This split keeps the FSM small and lets the ALU decoder handle the many R-type operations.</p>
-
-        <h3>Cycles per instruction</h3>
-        <table>
-          <tr><th>Instruction</th><th>States used</th><th>Cycles</th></tr>
-          <tr><td><code>beq</code></td><td>S0, S1, S8</td><td>3</td></tr>
-          <tr><td><code>j</code></td><td>S0, S1, S9</td><td>3</td></tr>
-          <tr><td>R-type</td><td>S0, S1, S6, S7</td><td>4</td></tr>
-          <tr><td><code>addi</code></td><td>S0, S1, S6, S7 (RegDst = 0)</td><td>4</td></tr>
-          <tr><td><code>sw</code></td><td>S0, S1, S2, S5</td><td>4</td></tr>
-          <tr><td><code>lw</code></td><td>S0, S1, S2, S3, S4</td><td>5</td></tr>
-        </table>
-
-        <p>The FSM approach is sometimes replaced by <strong>microprogramming</strong>: each state's control signals are stored as a microinstruction in a small control ROM, and a microprogram counter sequences through them. That is more flexible but adds a ROM and a microsequencer; a hardwired FSM is faster and is what the datapath above uses.</p>
-      </section>
-
-      <section class="topic" id="multi-performance">
-        <h2>Multicycle Performance</h2>
-        <p>Because the datapath is reused, the critical path is no longer the full load path. The longest step is either the ALU operation plus a multiplexer or a memory access, whichever is slower. The clock period is:</p>
-
-        <div class="formula">
-          <span class="label">MULTICYCLE CRITICAL PATH</span>
-          <div class="expr">T<sub>c</sub> = t<sub>pcq</sub> + t<sub>mux</sub> + max(t<sub>ALU</sub> + t<sub>mux</sub>, t<sub>mem</sub>) + t<sub>setup</sub></div>
-          <div class="note">One ALU, one memory, and the registers that separate steps; the max chooses the slower of the ALU and memory paths.</div>
-        </div>
-
-        <div class="formula">
-          <span class="label">NUMERICAL</span>
-          <div class="expr">T<sub>c</sub> = 30 + 25 + max(200 + 25, 250) + 20 = 325 ps</div>
-          <div class="expr">f<sub>max</sub> = 1 / 325 ps ≈ 3.08 GHz</div>
-        </div>
-
-        <p>The clock is almost three times faster than the single-cycle 925 ps. But each instruction now takes several cycles, so average CPI must be computed from the instruction mix. Using the SPECINT2000 mix (25% loads, 10% stores, 11% branches, 2% jumps, 52% R-type):</p>
-
-        <div class="formula">
-          <span class="label">AVERAGE CPI</span>
-          <div class="expr">CPI = (0.11 + 0.02)(3) + (0.52 + 0.10)(4) + (0.25)(5)</div>
-          <div class="expr">CPI = 0.39 + 2.48 + 1.25 = 4.12</div>
-          <div class="note">Branches and jumps take 3 cycles; R-type and stores take 4; loads take 5.</div>
-        </div>
-
-        <p>For 100 billion instructions the execution time is:</p>
-
-        <div class="formula">
-          <span class="label">MULTICYCLE EXECUTION TIME</span>
-          <div class="expr">T = 100 × 10<sup>9</sup> × 4.12 × 325 × 10<sup>−12</sup> s = 133.9 s</div>
-        </div>
-
-        <p>This is <em>slower</em> than the single-cycle 92.5 s, even though the clock is much faster. The reason is that CPI grew from 1 to 4.12, and 4.12 × 325 ps = 1339 ps per instruction, compared with 925 ps for the single-cycle design. The multicycle processor wins on hardware cost and clock frequency, but loses on this particular mix because it pays several cycles of sequencing overhead for every instruction.</p>
-
-        <div class="box">
-          <span class="label">WHY BUILD IT THEN?</span>
-          <p>The multicycle design uses far less hardware (one ALU, one memory, no duplicated adders) and is the natural stepping stone to a pipeline. Its variable cycle count also matches instructions of different complexity. The performance comparison depends on the instruction mix and on how much the single-cycle clock is penalized by its slowest path.</p>
-        </div>
-      </section>
-
-      <section class="topic" id="pipeline-datapath">
-        <h2>Pipelined Datapath</h2>
-        <p>A <strong>pipelined</strong> processor takes the multicycle idea one step further: instead of one instruction using the whole datapath for several cycles, <strong>several instructions occupy different stages at the same time</strong>. The datapath is divided into five stages separated by pipeline registers, so each stage works on a different instruction in every cycle. The result is one instruction completed per cycle after the pipeline fills, while each individual instruction still takes five cycles.</p>
-
-        <h3>The five stages</h3>
-        <table>
-          <tr><th>Stage</th><th>Name</th><th>What happens</th></tr>
-          <tr><td><strong>IF</strong></td><td>Instruction fetch</td><td>Read the instruction at PC; compute PC + 4</td></tr>
-          <tr><td><strong>ID</strong></td><td>Instruction decode / register read</td><td>Decode opcode; read rs and rt; sign-extend the immediate</td></tr>
-          <tr><td><strong>EX</strong></td><td>Execute / address calculation</td><td>ALU operation, branch comparison, or memory address</td></tr>
-          <tr><td><strong>MEM</strong></td><td>Memory access</td><td>Read data memory for <code>lw</code>; write for <code>sw</code></td></tr>
-          <tr><td><strong>WB</strong></td><td>Write-back</td><td>Write the result to the register file</td></tr>
-        </table>
-
-        <h3>Pipeline registers</h3>
-        <p>Four register banks separate the stages and carry both data and control from one stage to the next:</p>
-
-        <div class="diagram">
-          <div class="flow">
-            <span class="step">IF</span><span class="arrow">→</span>
-            <span class="step">IF/ID</span><span class="arrow">→</span>
-            <span class="step">ID</span><span class="arrow">→</span>
-            <span class="step">ID/EX</span><span class="arrow">→</span>
-            <span class="step">EX</span><span class="arrow">→</span>
-            <span class="step">EX/MEM</span><span class="arrow">→</span>
-            <span class="step">MEM</span><span class="arrow">→</span>
-            <span class="step">MEM/WB</span><span class="arrow">→</span>
-            <span class="step">WB</span>
-          </div>
-          <div class="small" style="color:var(--text-faint)">Each register bank is clocked; it holds the results of one stage for use by the next.</div>
-        </div>
-
-        <p>The <code>IF/ID</code> register holds the fetched instruction and PC + 4. <code>ID/EX</code> holds the register values, the sign-extended immediate, the register numbers and the control signals. <code>EX/MEM</code> holds the ALU result, the store data and the destination register. <code>MEM/WB</code> holds the memory read data or ALU result plus the destination register. Control signals are generated in ID and travel down the pipeline with their instruction, so each stage knows what to do without re-decoding the opcode.</p>
-
-        <h3>Pipeline occupancy</h3>
-        <table class="compact center">
-          <tr><th>Instruction</th><th>C1</th><th>C2</th><th>C3</th><th>C4</th><th>C5</th><th>C6</th><th>C7</th><th>C8</th><th>C9</th></tr>
-          <tr><td><code>i1</code></td><td>IF</td><td>ID</td><td>EX</td><td>MEM</td><td>WB</td><td></td><td></td><td></td><td></td></tr>
-          <tr><td><code>i2</code></td><td></td><td>IF</td><td>ID</td><td>EX</td><td>MEM</td><td>WB</td><td></td><td></td><td></td></tr>
-          <tr><td><code>i3</code></td><td></td><td></td><td>IF</td><td>ID</td><td>EX</td><td>MEM</td><td>WB</td><td></td><td></td></tr>
-          <tr><td><code>i4</code></td><td></td><td></td><td></td><td>IF</td><td>ID</td><td>EX</td><td>MEM</td><td>WB</td><td></td></tr>
-          <tr><td><code>i5</code></td><td></td><td></td><td></td><td></td><td>IF</td><td>ID</td><td>EX</td><td>MEM</td><td>WB</td></tr>
-        </table>
-
-        <p>After the first instruction fills the pipeline, one instruction finishes every cycle. The <strong>latency</strong> of one instruction is five cycles, but the <strong>throughput</strong> is one instruction per cycle. This is the same distinction as the cookie example: pipelining improves throughput without shortening the time one task spends in the system.</p>
-
-        <h3>Control in the pipeline</h3>
-        <p>The control unit is similar to the single-cycle control, but its outputs are latched into the pipeline registers and used in the stage where they are needed. <code>RegWrite</code> is needed in WB, <code>MemRead</code>/<code>MemWrite</code> in MEM, <code>ALUSrc</code>/<code>ALUOp</code> in EX, and <code>RegDst</code> in WB. Carrying control bits alongside data is simpler and faster than decoding the instruction again in every stage.</p>
-
-        <p>A crucial detail is the <strong>register file write/read timing</strong>: the register file writes on the first half of the clock and reads on the second half. This allows an instruction to read a register written by an instruction in WB in the same cycle, reducing the need for forwarding in the simplest cases.</p>
-      </section>
-
-      <section class="topic" id="pipeline-hazards">
-        <h2>Pipeline Hazards</h2>
-        <p>Pipelining assumes that instructions can execute independently, but real programs violate that assumption. A <strong>hazard</strong> is any condition that prevents the next instruction from executing in its scheduled cycle. The pipeline must stall (insert a bubble), forward data, or flush wrong instructions. Every such event raises the effective CPI above the ideal 1.</p>
-
-        <h3>Structural hazards</h3>
-        <p>A structural hazard occurs when two instructions need the same hardware resource in the same cycle. A single memory used for both instruction fetch and data access would conflict when a load is in MEM while another instruction is in IF. MIPS avoids this with <strong>separate instruction and data memories</strong> (or separate ports). The register file also needs enough ports: two reads and one write per cycle.</p>
-
-        <h3>Data hazards</h3>
-        <p>A data hazard occurs when an instruction needs a value that an earlier instruction has not yet written. The classic read-after-write (RAW) case is:</p>
-
-        <pre><code>add $s0, $s1, $s2   # produces $s0 in EX/MEM
-sub $t0, $s0, $s3   # needs $s0 in EX, one cycle later</code></pre>
-
-        <p>Without help, the subtract would read the old <code>$s0</code> in ID before the add has reached WB. Two techniques fix this:</p>
+        <h3>3.1 lw — step by step</h3>
+        <ol>
+          <li><strong>Fetch:</strong> PC is connected to the address input of instruction memory, which reads out the 32-bit <code>Instr</code>.</li>
+          <li><strong>Read source operand:</strong> the base register is in <code>rs</code> = Instr[25:21], connected to register-file address A1; RD1 outputs its value.</li>
+          <li><strong>Sign-extend the immediate:</strong> offset in Instr[15:0] is sign-extended to 32 bits: SignImm[15:0] = Instr[15:0], SignImm[31:16] = Instr[15].</li>
+          <li><strong>Compute the address:</strong> the ALU adds SrcA (from the register file) and SrcB (SignImm); 3-bit <code>ALUControl = 010</code> (add). It produces a 32-bit <code>ALUResult</code> and a <code>Zero</code> flag (ALUResult == 0); ALUResult is the data-memory address.</li>
+          <li><strong>Read memory and write back:</strong> data goes onto <code>ReadData</code> and is written to the register file through port 3 (WD3). The destination is <code>rt</code> = Instr[20:16] connected to A3; <code>RegWrite</code> = 1 (to WE3) and the write happens on the rising clock edge at the end of the cycle.</li>
+          <li><strong>PC increment:</strong> an adder computes PCPlus4 (instructions are 4 bytes); the new address is written to the PC on the next rising edge.</li>
+        </ol>
+        <h3>3.2 sw</h3>
+        <p>Same as lw (base register read, sign-extended immediate, ALU add for the address), plus the second register <code>rt</code> = Instr[20:16] goes to A2, and RD2 → <code>WriteData</code> of data memory. <code>MemWrite = 1</code>, <code>ALUControl = 010</code>, <code>RegWrite = 0</code> (nothing written to the register file; ReadData is ignored).</p>
+        <h3>3.3 R-type (add, sub, and, or, slt)</h3>
+        <p>All read two registers (rs, rt), perform an ALU operation, and write the result to a third register; they differ only in ALUControl, so the same hardware is used. Additional muxes: <strong>ALUSrc = 0</strong> selects RD2 (not SignImm) as SrcB; <strong>RegDst = 1</strong> selects <code>rd</code> = Instr[15:11] (instead of rt) as the write register; <strong>MemtoReg = 0</strong> selects ALUResult (not ReadData) for write-back; RegWrite = 1; MemWrite = 0.</p>
+        <h3>3.4 beq</h3>
         <ul>
-          <li><strong>Forwarding (bypassing):</strong> route the result directly from the EX/MEM or MEM/WB pipeline register to the ALU input of the dependent instruction. The value exists in the pipeline even though it has not been written to the register file.</li>
-          <li><strong>Stalling:</strong> freeze the dependent instruction in ID and insert a bubble into EX until the value is available in the register file.</li>
+          <li>Two registers are read and compared with the ALU (subtract, ALUControl = 110). If Zero = 1 they are equal.</li>
+          <li>Offset = number of instructions to branch past, so SignImm is shifted left by 2 (×4) and added to PC + 4.</li>
         </ul>
+        <div class="formula">
+          <span class="label">BRANCH TARGET &amp; PC SELECT</span>
+          <div class="expr"><div>BTA = (SignImm &lt;&lt; 2) + (PC + 4)</div><div>PCSrc = Branch · Zero</div></div>
+          <div class="note">PCSrc = 1 selects PCBranch as the next PC; otherwise PCPlus4. RegWrite = 0, MemWrite = 0, Branch = 1, ALUSrc = 0.</div>
+        </div>
+        <div class="box"><span class="label">MUXES ARE ESSENTIAL</span>
+          <p>They let one datapath serve many instruction types: ALUSrc chooses register vs sign-extended immediate for SrcB; RegDst chooses rt vs rd as destination; MemtoReg chooses ALUResult vs ReadData for write-back; PCSrc chooses PC+4 vs branch target. The <strong>sign-extender</strong> widens the 16-bit signed immediate to 32 bits preserving sign.</p>
+        </div>
+      </section>
 
-        <p>Forwarding handles most ALU-to-ALU dependencies with no penalty. A <strong>load-use</strong> hazard is the important exception: the loaded value is only available after MEM, so an instruction immediately using the loaded register cannot get it in time even with forwarding. The pipeline stalls one cycle:</p>
-
-        <pre><code>lw  $s0, 0($t0)    # value available at end of MEM
-add $t1, $s0, $s2  # needs it in EX, one cycle too early -> stall 1 cycle</code></pre>
-
-        <p>The hazard unit compares the destination register of the instruction in EX/MEM and MEM/WB with the source registers of the instruction in ID/EX, and asserts the forwarding mux selects. It detects a load-use hazard when the instruction in ID/EX is a load and its destination matches a source of the instruction about to enter EX; it then stalls the PC and IF/ID and clears the control signals in ID/EX.</p>
-
-        <p>Forwarding priority matters when two older instructions both write the same register: the <strong>youngest</strong> producer must win. The usual conditions are: forward from <code>EX/MEM</code> if <code>EX/MEM.RegWrite</code> is set, <code>EX/MEM.rd ≠ 0</code>, and <code>EX/MEM.rd</code> matches either source of the instruction in EX; otherwise forward from <code>MEM/WB</code> under the analogous conditions. Register 0 is excluded because it must always read as zero. The forwarding multiplexers sit directly before the ALU inputs, so the dependent instruction receives the value in the same cycle it needs it.</p>
-
-        <h3>Control hazards</h3>
-        <p>A control hazard occurs because the processor does not know the outcome of a branch until the branch is evaluated. By then it has already fetched the next sequential instruction, which may be wrong. The responses are:</p>
+      <section class="topic" id="sc-control">
+        <h2>4. Single-Cycle Control Unit</h2>
+        <p>The control unit computes the control signals from the <strong>opcode</strong> (Instr[31:26]) and <strong>funct</strong> (Instr[5:0]). Most information comes from the opcode; R-type instructions also use funct to choose the ALU operation. The control unit is factored into two combinational blocks:</p>
         <ul>
-          <li><strong>Flush:</strong> discard the wrongly fetched instructions by clearing their control signals (turning them into bubbles).</li>
-          <li><strong>Move the decision earlier:</strong> evaluate the branch in ID rather than EX, so fewer wrong instructions are fetched.</li>
-          <li><strong>Predict:</strong> guess taken or not-taken and fetch along the predicted path; flush only on a misprediction.</li>
-          <li><strong>Delayed branch:</strong> define the instruction after the branch as always executed (the delay slot), so it does useful work regardless of the outcome.</li>
+          <li><strong>Main decoder</strong> — computes most outputs from the opcode and a 2-bit <code>ALUOp</code>.</li>
+          <li><strong>ALU decoder</strong> — uses ALUOp together with funct to compute <code>ALUControl[2:0]</code>.</li>
         </ul>
-
-        <p>A taken branch typically costs one or more cycles of lost work. The exact penalty depends on how many stages are flushed and when the branch is resolved. Jumps are similar but their target is known earlier.</p>
-
-        <div class="box">
-          <span class="label">HARDWARE SUMMARY</span>
-          <p>Forwarding muxes sit at the ALU inputs; the hazard detection unit controls PCWrite, IF/ID write, and the ID/EX control clear; the flush logic clears control bits for wrong-path instructions. These are the price of overlapping execution, and they are why real pipelines rarely achieve CPI exactly 1.</p>
-        </div>
-      </section>
-
-      <section class="topic" id="pipeline-performance">
-        <h2>Pipelined Performance</h2>
-        <p>The pipeline clock is set by the slowest stage, not by the sum of all stages. If the slowest stage (including register clock-to-Q and setup) takes 250 ps, then:</p>
-
-        <div class="formula">
-          <span class="label">PIPELINE CLOCK AND THROUGHPUT</span>
-          <div class="expr">T<sub>c</sub> = max(stage delays) = 250 ps</div>
-          <div class="expr">Throughput = 1 / T<sub>c</sub> = 1 / 250 ps = 4 × 10<sup>9</sup> instructions/s</div>
-          <div class="note">In general T<sub>c</sub> = t<sub>pcq</sub> + max(combinational stage delay) + t<sub>setup</sub>; the 250 ps figure already represents the limiting stage with that overhead.</div>
-        </div>
-
-        <p>One instruction still spends five stages in the pipeline, so its <strong>latency</strong> is:</p>
-
-        <div class="formula">
-          <span class="label">PIPELINE LATENCY (ONE INSTRUCTION)</span>
-          <div class="expr">Latency = k × T<sub>c</sub> = 5 × 250 ps = 1250 ps</div>
-          <div class="note">Latency is longer than the single-cycle 925 ps, but throughput is far higher because five instructions overlap.</div>
-        </div>
-
-        <p>Compare the three designs on the same 100-billion-instruction program:</p>
-
-        <table>
-          <tr><th>Design</th><th>CPI</th><th>T<sub>c</sub></th><th>Time per instruction</th><th>Execution time (100 × 10<sup>9</sup>)</th></tr>
-          <tr><td>Single-cycle</td><td>1</td><td>925 ps</td><td>925 ps</td><td>92.5 s</td></tr>
-          <tr><td>Multicycle</td><td>4.12</td><td>325 ps</td><td>1339 ps</td><td>133.9 s</td></tr>
-          <tr><td>Pipelined (ideal)</td><td>1</td><td>250 ps</td><td>250 ps</td><td>25.0 s</td></tr>
+        <h3>4.1 ALU function codes</h3>
+        <table class="tight">
+          <tr><th class="c">F2:0</th><th>Function</th></tr>
+          <tr><td class="c">000</td><td>A &amp; B</td></tr>
+          <tr><td class="c">001</td><td>A | B</td></tr>
+          <tr><td class="c">010</td><td>A + B</td></tr>
+          <tr><td class="c">011</td><td>not used</td></tr>
+          <tr><td class="c">100</td><td>A &amp; ~B</td></tr>
+          <tr><td class="c">101</td><td>A | ~B</td></tr>
+          <tr><td class="c">110</td><td>A − B</td></tr>
+          <tr><td class="c">111</td><td>SLT</td></tr>
         </table>
-
-        <div class="formula">
-          <span class="label">SPEEDUP OF THE PIPELINE</span>
-          <div class="expr">vs single-cycle: 925 / 250 ≈ 3.7×</div>
-          <div class="expr">vs multicycle: (4.12 × 325) / 250 ≈ 5.36×</div>
-          <div class="note">Ideal speedup of a k-stage pipeline is k, but unbalanced stages, register overhead and hazards reduce it.</div>
-        </div>
-
-        <h3>Where the ideal is lost</h3>
+        <p>ALU structure: F2 selects B or ~B (and is the adder carry-in); F1:0 selects the output via a 4:1 mux (AND, OR, sum, zero-extended sign bit of the sum for SLT); Zero is detected on the result.</p>
+        <h3>4.2 ALU decoder truth table</h3>
+        <table>
+          <tr><th>ALUOp</th><th>Meaning</th></tr>
+          <tr><td>00</td><td>Add (lw, sw, address and PC + 4)</td></tr>
+          <tr><td>01</td><td>Subtract (beq compare)</td></tr>
+          <tr><td>10</td><td>Look at funct</td></tr>
+          <tr><td>11</td><td>Not used</td></tr>
+        </table>
+        <div class="scroll-x"><table class="tight">
+          <tr><th class="c">ALUOp1:0</th><th class="c">Funct</th><th class="c">ALUControl2:0</th></tr>
+          <tr><td class="c">00</td><td class="c">X</td><td class="c">010 (add)</td></tr>
+          <tr><td class="c">X1</td><td class="c">X</td><td class="c">110 (subtract)</td></tr>
+          <tr><td class="c">1X</td><td class="c">100000 (add)</td><td class="c">010 (add)</td></tr>
+          <tr><td class="c">1X</td><td class="c">100010 (sub)</td><td class="c">110 (subtract)</td></tr>
+          <tr><td class="c">1X</td><td class="c">100100 (and)</td><td class="c">000 (and)</td></tr>
+          <tr><td class="c">1X</td><td class="c">100101 (or)</td><td class="c">001 (or)</td></tr>
+          <tr><td class="c">1X</td><td class="c">101010 (slt)</td><td class="c">111 (SLT)</td></tr>
+        </table></div>
+        <p>Because ALUOp is never 11, don't-cares X1 and 1X replace 01 and 10. For R-type the first two bits of funct are always 10, so they may be ignored.</p>
+        <h3>4.3 Main decoder truth table</h3>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>Instruction</th><th class="c">Op5:0</th><th class="c">RegWrite</th><th class="c">RegDst</th><th class="c">ALUSrc</th><th class="c">Branch</th><th class="c">MemWrite</th><th class="c">MemtoReg</th><th class="c">ALUOp1:0</th><th class="c">Jump</th></tr>
+          <tr><td>R-type</td><td class="c">000000</td><td class="c">1</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">10</td><td class="c">0</td></tr>
+          <tr><td>lw</td><td class="c">100011</td><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">1</td><td class="c">00</td><td class="c">0</td></tr>
+          <tr><td>sw</td><td class="c">101011</td><td class="c">0</td><td class="c">X</td><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">X</td><td class="c">00</td><td class="c">0</td></tr>
+          <tr><td>beq</td><td class="c">000100</td><td class="c">0</td><td class="c">X</td><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c">X</td><td class="c">01</td><td class="c">0</td></tr>
+          <tr><td>addi</td><td class="c">001000</td><td class="c">1</td><td class="c">0</td><td class="c">1</td><td class="c">0</td><td class="c">0</td><td class="c">0</td><td class="c">00</td><td class="c">0</td></tr>
+          <tr><td>j</td><td class="c">000010</td><td class="c">0</td><td class="c">X</td><td class="c">X</td><td class="c">X</td><td class="c">0</td><td class="c">X</td><td class="c">XX</td><td class="c">1</td></tr>
+        </table></div>
         <ul>
-          <li><strong>Unbalanced stages:</strong> the clock is set by the slowest stage; faster stages sit idle, so the effective speedup is less than the number of stages.</li>
-          <li><strong>Pipeline register overhead:</strong> <code>t<sub>pcq</sub></code> and <code>t<sub>setup</sub></code> are paid in every stage, so splitting a path into more stages has diminishing returns.</li>
-          <li><strong>Hazards:</strong> data stalls, load-use stalls and branch flushes insert bubbles. If the average number of stall cycles per instruction is <em>s</em>, then <code>CPI = 1 + s</code> and execution time becomes <code>IC × (1 + s) × T<sub>c</sub></code>.</li>
-          <li><strong>Fill and drain:</strong> at the start and end of a program the pipeline is not full, so very short programs see less benefit.</li>
+          <li>All R-type instructions share the same main-decoder values; they differ only in the ALU decoder output.</li>
+          <li>For instructions that do not write the register file (sw, beq) RegDst and MemtoReg are don't cares (RegWrite is not asserted).</li>
+          <li><strong>lw has MemtoReg = 1</strong> (ReadData selected for write-back); the earlier-slide first table shows 0, which is superseded by the later tables.</li>
+          <li>The decoder logic can be designed with any combinational design technique.</li>
         </ul>
-
-        <p>The pipeline is nevertheless the dominant organization in modern processors because it keeps CPI close to 1 while allowing a short clock. Deeper pipelines raise the clock further but increase hazard penalties and the cost of a misprediction; this is one of the central trade-offs in processor design.</p>
+        <h3>4.4 Control values by instruction</h3>
+        <ul>
+          <li><strong>R-type:</strong> RegWrite 1, RegDst 1, ALUSrc 0, MemWrite 0, MemtoReg 0, Branch 0.</li>
+          <li><strong>lw:</strong> RegWrite 1, RegDst 0, ALUSrc 1, MemWrite 0, MemtoReg 1, Branch 0; ALUControl 010.</li>
+          <li><strong>sw:</strong> RegWrite 0, ALUSrc 1, MemWrite 1, Branch 0; ALUControl 010.</li>
+          <li><strong>beq:</strong> RegWrite 0, ALUSrc 0, MemWrite 0, Branch 1; ALUControl 110.</li>
+          <li>Example — <code>or</code>: ALUControl = 001, RegDst = 1, ALUSrc = 0, RegWrite = 1, MemtoReg = 0.</li>
+        </ul>
+        <h3>4.5 Extended functionality</h3>
+        <ul>
+          <li><strong>addi:</strong> no change to the datapath; it needs only a new main-decoder row (RegWrite 1, RegDst 0, ALUSrc 1, Branch 0, MemWrite 0, MemtoReg 0, ALUOp 00 → add).</li>
+          <li><strong>j:</strong> adds a <code>Jump</code> control signal and a mux selecting PCJump as the next PC. <code>PCJump = {PCPlus4[31:28], Instr[25:0], 00}</code> (the 26-bit field shifted left by 2 → 28 bits, plus the upper 4 bits of PC+4).</li>
+        </ul>
       </section>
 
-      <section class="topic" id="comparison">
-        <h2>Comparing the Three Processors</h2>
-        <p>All three designs implement the same architecture and the same instruction set. They differ only in how the datapath is scheduled, which changes CPI, clock period, hardware cost and control complexity.</p>
-
+      <section class="topic" id="sc-performance">
+        <h2>5. Single-Cycle Performance</h2>
+        <p>Every instruction must finish in one cycle, so T<sub>c</sub> must cover the longest path — a <strong>load word</strong> passes through instruction memory, register file, ALU, data memory and register write-back — even though other instructions could finish faster. CPI = 1.</p>
+        <div class="formula">
+          <span class="label">SINGLE-CYCLE CLOCK PERIOD</span>
+          <div class="expr small"><div>T<sub>c</sub> = t<sub>pcq_PC</sub> + t<sub>mem</sub> + max(t<sub>RFread</sub>, t<sub>sext</sub> + t<sub>mux</sub>) + t<sub>ALU</sub> + t<sub>mem</sub> + t<sub>mux</sub> + t<sub>RFsetup</sub></div><div>limiting paths ⇒ T<sub>c</sub> = t<sub>pcq_PC</sub> + 2t<sub>mem</sub> + t<sub>RFread</sub> + t<sub>ALU</sub> + t<sub>mux</sub> + t<sub>RFsetup</sub></div></div>
+        </div>
         <table>
-          <tr><th>Aspect</th><th>Single-cycle</th><th>Multicycle</th><th>Pipelined</th></tr>
-          <tr><td>Instruction completion</td><td>One per cycle</td><td>Several cycles per instruction</td><td>One per cycle after fill</td></tr>
-          <tr><td>CPI</td><td>1</td><td>Varies (4.12 in the example)</td><td>≈ 1, plus stalls</td></tr>
-          <tr><td>Clock period</td><td>925 ps (slowest path)</td><td>325 ps</td><td>250 ps (slowest stage)</td></tr>
-          <tr><td>Hardware</td><td>Duplicated units; large</td><td>One ALU and memory; small</td><td>One datapath plus pipeline registers</td></tr>
-          <tr><td>Control</td><td>Combinational truth table</td><td>FSM or microcode</td><td>Pipelined control + hazard unit</td></tr>
-          <tr><td>Main advantage</td><td>Simplest to understand</td><td>Low hardware cost, short clock</td><td>High throughput</td></tr>
-          <tr><td>Main disadvantage</td><td>Long clock; wasted hardware</td><td>High CPI</td><td>Hazards and control complexity</td></tr>
-          <tr><td>Execution time (100B instr.)</td><td>92.5 s</td><td>133.9 s</td><td>25.0 s ideal</td></tr>
+          <tr><th>Element</th><th>Parameter</th><th>Delay (ps)</th></tr>
+          <tr><td>Register clock-to-Q</td><td>t<sub>pcq_PC</sub></td><td>30</td></tr>
+          <tr><td>Register setup</td><td>t<sub>setup</sub></td><td>20</td></tr>
+          <tr><td>Multiplexer</td><td>t<sub>mux</sub></td><td>25</td></tr>
+          <tr><td>ALU</td><td>t<sub>ALU</sub></td><td>200</td></tr>
+          <tr><td>Memory read</td><td>t<sub>mem</sub></td><td>250</td></tr>
+          <tr><td>Register file read</td><td>t<sub>RFread</sub></td><td>150</td></tr>
+          <tr><td>Register file setup</td><td>t<sub>RFsetup</sub></td><td>20</td></tr>
         </table>
+        <pre><code>Tc = 30 + 2(250) + 150 + 200 + 25 + 20 = 925 ps
 
-        <p>The single-cycle design is the conceptual baseline: every instruction follows the same long path. The multicycle design trades CPI for a shorter clock and much less hardware. The pipelined design recovers CPI while keeping the short clock, at the cost of forwarding, stalls, flushes and a more complex control path. In practice, real processors combine pipelining with multiple issue, caches, branch prediction and speculation—but the performance equation and the hazard trade-offs remain the same.</p>
+100 billion instructions:
+Execution time = (100 × 10^9)(1)(925 × 10^-12 s) = 92.5 seconds</code></pre>
+      </section>
 
-        <div class="box">
-          <span class="label">THE ONE-SENTENCE SUMMARY</span>
-          <p>Performance is <code>IC × CPI × T<sub>c</sub></code>; the single-cycle design minimizes CPI at the cost of T<sub>c</sub>, the multicycle design minimizes T<sub>c</sub> at the cost of CPI, and the pipeline tries to minimize both while paying for hazards.</p>
+      <section class="topic" id="mc-datapath">
+        <h2>6. Multicycle Datapath</h2>
+        <p>A multicycle processor breaks each instruction into a <strong>series of shorter steps</strong>, each taking one (shorter) clock cycle. Different instructions use only the cycles they need, a single hardware unit is <strong>reused</strong> in different cycles (only one ALU, which also computes PC + 4 and branch targets), and the clock period is shorter. The architecture is unchanged.</p>
+        <div class="two-col">
+          <div>
+            <h4>Advantages</h4>
+            <ul>
+              <li>Shorter clock period</li>
+              <li>Hardware reuse (one ALU/adder, one memory)</li>
+              <li>Different instructions take different numbers of cycles</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Disadvantages</h4>
+            <ul>
+              <li>More complex control (FSM sequencing)</li>
+              <li>Additional temporary (nonarchitectural) registers</li>
+              <li>Only one instruction executes at a time</li>
+            </ul>
+          </div>
+        </div>
+        <h3>6.1 State elements and new registers</h3>
+        <ul>
+          <li>Program counter, register file and main memory remain; the separate instruction and data memories are replaced by a <strong>single unified memory</strong> — more realistic, and possible because instruction fetch and data access occur in <em>different</em> cycles.</li>
+          <li><strong>IR</strong> (instruction register) holds the fetched instruction (<code>IRWrite</code>) so it stays available through later cycles.</li>
+          <li><strong>MDR / Data register</strong> holds data read from memory (written to the register file on a load).</li>
+          <li><strong>A and B</strong> hold the register-file outputs (RD1, RD2) so operands stay available in later cycles.</li>
+          <li><strong>ALUOut</strong> holds the ALU result at the end of a cycle for use in a later cycle (memory address, branch target).</li>
+          <li>Multiplexers: <code>IorD</code> (memory address = PC or ALUOut), <code>ALUSrcA</code> (PC or A), <code>ALUSrcB</code> (B, constant 4, SignImm, SignImm &lt;&lt; 2), <code>PCSrc</code> (ALUResult or ALUOut).</li>
+        </ul>
+        <h3>6.2 lw, step by step</h3>
+        <ol start="0">
+          <li><strong>Fetch:</strong> IorD = 0; memory read; IRWrite asserted, instruction → IR.</li>
+          <li><strong>Register read:</strong> rs (Instr[25:21]) read into A; rt into B.</li>
+          <li><strong>Immediate:</strong> Instr[15:0] sign-extended to SignImm.</li>
+          <li><strong>Address:</strong> ALUSrcA = 1 (A), ALUSrcB = 10 (SignImm), ALUControl = 010 → ALUResult saved in ALUOut.</li>
+          <li><strong>Memory read:</strong> IorD = 1 selects ALUOut as the address; data saved in the Data register.</li>
+          <li><strong>Write register:</strong> MemtoReg = 1 selects Data, destination rt (Instr[20:16], RegDst = 0), RegWrite asserted.</li>
+          <li><strong>Increment PC:</strong> the ALU is idle during fetch, so ALUSrcA = 0 (PC), ALUSrcB = 01 (constant 4), ALUControl = 010, PCSrc = 0, PCWrite → PC ← PC + 4 (done in the fetch cycle).</li>
+        </ol>
+        <p><strong>Only one adder</strong> (inside the ALU) is used; the lab datapath uses a separate adder for the PC. Using two adders would not change the architecture.</p>
+        <h3>6.3 sw, R-type, beq</h3>
+        <ul>
+          <li><strong>sw:</strong> after fetch and decode, the ALU computes base + SignImm into ALUOut; then B supplies the data and <code>MemWrite</code> is asserted with IorD = 1.</li>
+          <li><strong>R-type:</strong> read rs, rt into A, B; ALU operates (ALUSrcB = 00); result written to the register file with <code>RegDst = 1</code> (rd) and MemtoReg = 0.</li>
+          <li><strong>beq:</strong> is rs == rt? BTA = (SignImm &lt;&lt; 2) + (PC + 4). PCEn = PCWrite + (Branch · Zero); PCSrc = 1 selects ALUOut.</li>
+        </ul>
+        <h3>6.4 j (extended)</h3>
+        <p>The PCSrc mux grows to three inputs (00 = ALUResult, 01 = ALUOut, 10 = PCJump) with PCJump = {PC[31:28], Instr[25:0] &lt;&lt; 2}.</p>
+      </section>
+
+      <section class="topic" id="mc-control">
+        <h2>7. Multicycle Control: Main Controller FSM</h2>
+        <p>The control unit has two parts as in the single-cycle design: the <strong>ALU decoder is unchanged</strong> (ALUOp/funct → ALUControl), and the <strong>main controller is an FSM</strong> that applies the proper control signals on the proper cycle. The sequence depends on the instruction. The FSM enters S0 on reset and every instruction ends by returning to S0.</p>
+        <h3>7.1 Control signals</h3>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>Signal</th><th>Type</th><th>Value = 0</th><th>Value = 1</th></tr>
+          <tr><td>IorD</td><td>mux select</td><td>memory address = PC</td><td>memory address = ALUOut</td></tr>
+          <tr><td>ALUSrcA</td><td>mux select</td><td>SrcA = PC</td><td>SrcA = register A</td></tr>
+          <tr><td>ALUSrcB1:0</td><td>mux select</td><td colspan="2">00: register B · 01: constant 4 · 10: SignImm · 11: SignImm &lt;&lt; 2</td></tr>
+          <tr><td>PCSrc</td><td>mux select</td><td>PC′ = ALUResult</td><td>PC′ = ALUOut</td></tr>
+          <tr><td>RegDst</td><td>mux select</td><td>write register = rt (Instr20:16)</td><td>write register = rd (Instr15:11)</td></tr>
+          <tr><td>MemtoReg</td><td>mux select</td><td>WD3 = ALUOut</td><td>WD3 = Data</td></tr>
+          <tr><td>IRWrite</td><td>enable</td><td>IR holds its value</td><td>IR ← memory output</td></tr>
+          <tr><td>MemWrite</td><td>enable</td><td>memory not written</td><td>memory written</td></tr>
+          <tr><td>RegWrite</td><td>enable</td><td>register file not written</td><td>register file written</td></tr>
+          <tr><td>PCWrite, Branch</td><td>enable</td><td colspan="2">PCEn = PCWrite + (Branch · Zero); PC enabled → PC ← PC′</td></tr>
+        </table></div>
+        <div class="formula"><span class="label">PC ENABLE</span><div class="expr">PCEn = PCWrite + (Branch · Zero)</div></div>
+        <p>Conventions in the FSM figures: only relevant signals are listed per state; select signals are listed only when their value matters (else don't care); enable signals are listed only when asserted (else 0).</p>
+        <h3>7.2 The states</h3>
+        <ul>
+          <li><strong>S0 Fetch:</strong> read memory at PC (IorD = 0); IRWrite asserted. The ALU is idle, so compute PC + 4 (ALUSrcA = 0, ALUSrcB = 01, ALUOp = 00 → add) and update the PC (PCSrc = 0, PCWrite).</li>
+          <li><strong>S1 Decode:</strong> the register file always reads rs and rt (into A and B) and the immediate is sign-extended. Decoding = examining the opcode to choose the next state; the FSM waits one cycle. The ALU is not used, so S1 <strong>computes the branch target early</strong>: ALUSrcA = 0, ALUSrcB = 11 (SignImm &lt;&lt; 2), ALUOp = 00 → target in ALUOut (harmless if the instruction is not beq).</li>
+          <li><strong>S2 MemAdr</strong> (lw, sw): ALUSrcA = 1, ALUSrcB = 10 (SignImm), ALUOp = 00; address saved in ALUOut.</li>
+          <li><strong>S3 MemRead</strong> (lw): IorD = 1; data saved in the Data register.</li>
+          <li><strong>S4 Mem Writeback</strong> (lw): RegDst = 0, MemtoReg = 1, RegWrite → S0 (lw takes 5 cycles).</li>
+          <li><strong>S5 MemWrite</strong> (sw): IorD = 1, MemWrite → S0 (sw takes 4 cycles).</li>
+          <li><strong>S6 Execute</strong> (R-type): ALUSrcA = 1, ALUSrcB = 00, ALUOp = 10 (funct decides); result → ALUOut.</li>
+          <li><strong>S7 ALU Writeback</strong>: RegDst = 1, MemtoReg = 0, RegWrite → S0.</li>
+          <li><strong>S8 Branch</strong> (beq): ALUSrcA = 1, ALUSrcB = 00, ALUOp = 01 (subtract), PCSrc = 1, Branch → if Zero, PC ← ALUOut. This is why the PCSrc mux is needed: PC′ comes from ALUResult in S0 or ALUOut in S8.</li>
+        </ul>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>State</th><th>Name</th><th>Control signals</th><th>Next state</th></tr>
+          <tr><td>S0</td><td>Fetch</td><td>IorD=0, ALUSrcA=0, ALUSrcB=01, ALUOp=00, PCSrc=0, IRWrite, PCWrite</td><td>S1</td></tr>
+          <tr><td>S1</td><td>Decode</td><td>ALUSrcA=0, ALUSrcB=11, ALUOp=00</td><td>S2 / S6 / S8</td></tr>
+          <tr><td>S2</td><td>MemAdr</td><td>ALUSrcA=1, ALUSrcB=10, ALUOp=00</td><td>S3 (lw) / S5 (sw)</td></tr>
+          <tr><td>S3</td><td>MemRead</td><td>IorD=1</td><td>S4</td></tr>
+          <tr><td>S4</td><td>Mem Writeback</td><td>RegDst=0, MemtoReg=1, RegWrite</td><td>S0</td></tr>
+          <tr><td>S5</td><td>MemWrite</td><td>IorD=1, MemWrite</td><td>S0</td></tr>
+          <tr><td>S6</td><td>Execute</td><td>ALUSrcA=1, ALUSrcB=00, ALUOp=10</td><td>S7</td></tr>
+          <tr><td>S7</td><td>ALU Writeback</td><td>RegDst=1, MemtoReg=0, RegWrite</td><td>S0</td></tr>
+          <tr><td>S8</td><td>Branch</td><td>ALUSrcA=1, ALUSrcB=00, ALUOp=01, PCSrc=1, Branch</td><td>S0</td></tr>
+        </table></div>
+        <div class="box"><span class="label">CYCLES PER INSTRUCTION</span>
+          <p><strong>beq 3</strong> (S0, S1, S8) · <strong>sw 4</strong> (S0, S1, S2, S5) · <strong>R-type 4</strong> (S0, S1, S6, S7) · <strong>lw 5</strong> (S0, S1, S2, S3, S4). addi takes 4 cycles; j takes 3.</p>
+        </div>
+        <p>R-type state sequence summary: IF → ID → EX → WB, each one clock cycle. The FSM can be implemented with the techniques of sequential design or coded in an HDL.</p>
+      </section>
+
+      <section class="topic" id="mc-performance">
+        <h2>8. Multicycle Performance</h2>
+        <p>Instructions take different numbers of cycles — 3 cycles: beq, j; 4 cycles: R-type, sw, addi; 5 cycles: lw. CPI is the weighted average. SPECINT2000 mix: 25% loads, 10% stores, 11% branches, 2% jumps, 52% R-type.</p>
+        <div class="formula">
+          <span class="label">AVERAGE CPI AND CLOCK PERIOD</span>
+          <div class="expr small"><div>CPI = (0.11 + 0.02)(3) + (0.52 + 0.10)(4) + (0.25)(5) = 4.12</div><div>T<sub>c</sub> = t<sub>pcq</sub> + t<sub>mux</sub> + max(t<sub>ALU</sub> + t<sub>mux</sub>, t<sub>mem</sub>) + t<sub>setup</sub></div></div>
+        </div>
+        <p>With the same delays as the single-cycle example: T<sub>c</sub> = 30 + 25 + 250 + 20 = <strong>325 ps</strong> (the memory term dominates max(ALU + mux, mem)).</p>
+        <pre><code>Execution time = (# instructions) x CPI x Tc
+               = (100 x 10^9)(4.12)(325 x 10^-12)
+               = 133.9 seconds</code></pre>
+        <div class="box"><span class="label">WHY SLOWER THAN SINGLE-CYCLE (92.5 s)?</span>
+          <p>Not all steps are the same length (the clock must fit the slowest step), and there is a <strong>sequencing overhead</strong> (t<sub>pcq</sub> + t<sub>setup</sub> = 50 ps) paid in every cycle.</p>
         </div>
       </section>
 
+      <section class="topic" id="pipe-intro">
+        <h2>9. Pipelined Processor: Introduction</h2>
+        <p>A pipelined processor improves performance by executing <strong>multiple instructions simultaneously</strong>. Instruction execution is divided into stages; each stage does one part and passes the result on.</p>
+        <ol>
+          <li><strong>Instruction Fetch (IF)</strong> — fetch the instruction from memory.</li>
+          <li><strong>Instruction Decode (ID)</strong> — decode and read the registers.</li>
+          <li><strong>Execute (EX)</strong> — perform the ALU operation (or address calculation).</li>
+          <li><strong>Memory Access (MEM)</strong> — read or write memory operands.</li>
+          <li><strong>Write Back (WB)</strong> — write the result to the register file.</li>
+        </ol>
+        <p>After the pipeline fills, ideally <strong>one instruction completes every clock cycle</strong>, increasing throughput; individual instruction latency is not reduced (it is divided among stages). Each stage is represented by its main component: IM (instruction memory), RF read, ALU, DM (data memory), RF write-back.</p>
+        <h3>9.1 Single-cycle vs pipelined: timing example</h3>
+        <p>Stage delays: IF = 250, ID = 150, EX = 200, MEM = 250, WB = 100 ps.</p>
+        <div class="scroll-x"><table class="tight">
+          <tr><th></th><th>Single-cycle</th><th>Pipelined</th></tr>
+          <tr><td>Clock period</td><td>sum of stages</td><td>slowest stage = 250 ps</td></tr>
+          <tr><td>Instruction latency</td><td>250 + 150 + 200 + 250 + 100 = <strong>950 ps</strong></td><td>5 × 250 = <strong>1250 ps</strong></td></tr>
+          <tr><td>Throughput</td><td>1 instruction per 950 ps (≈ 1.05 billion/s)</td><td>1 instruction per 250 ps (4 billion/s)</td></tr>
+        </table></div>
+        <p>In the single-cycle processor the second instruction starts when the first completes; in the pipeline the next instruction starts every cycle.</p>
+        <h3>9.2 Four instructions through a five-stage pipeline</h3>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>Cycle</th><th class="c">1</th><th class="c">2</th><th class="c">3</th><th class="c">4</th><th class="c">5</th><th class="c">6</th><th class="c">7</th><th class="c">8</th></tr>
+          <tr><td>I1</td><td class="c">IF</td><td class="c">ID</td><td class="c">EX</td><td class="c">MEM</td><td class="c">WB</td><td></td><td></td><td></td></tr>
+          <tr><td>I2</td><td></td><td class="c">IF</td><td class="c">ID</td><td class="c">EX</td><td class="c">MEM</td><td class="c">WB</td><td></td><td></td></tr>
+          <tr><td>I3</td><td></td><td></td><td class="c">IF</td><td class="c">ID</td><td class="c">EX</td><td class="c">MEM</td><td class="c">WB</td><td></td></tr>
+          <tr><td>I4</td><td></td><td></td><td></td><td class="c">IF</td><td class="c">ID</td><td class="c">EX</td><td class="c">MEM</td><td class="c">WB</td></tr>
+        </table></div>
+        <div class="formula">
+          <span class="label">IDEAL PIPELINE TIME</span>
+          <div class="expr">time for n instructions in k stages = (k + n − 1) × T<sub>c</sub></div>
+          <div class="note">Example: 5 stages, T<sub>c</sub> = 2 ns, 10 instructions: (5 + 10 − 1) × 2 = 28 ns, versus 10 × 10 ns = 100 ns non-pipelined → speedup 100/28 ≈ 3.57.</div>
+        </div>
+        <p>Hazards reduce performance from the ideal speedup. Solutions: <strong>forwarding, stalls, flushes</strong>.</p>
+      </section>
 
-      <footer class="footnote">Compiled from the Unit 4 lecture notes (UE25CS251A, Digital Logic and Computer Design) — Team DLCD, Department of CSE and CSE (AI &amp; ML).</footer>
+      <section class="topic" id="pipe-datapath">
+        <h2>10. Pipelined Datapath &amp; Control</h2>
+        <p>The pipelined datapath is formed by <strong>chopping the single-cycle datapath into five stages</strong>, separated by <strong>four pipeline registers</strong>. Pipeline registers hold data and control signals between stages: <strong>IF/ID</strong> holds the fetched instruction, <strong>ID/EX</strong> the decoded operands and control information, <strong>EX/MEM</strong> the ALU results, and <strong>MEM/WB</strong> the memory/ALU data for write-back. They let all stages operate concurrently; signals and registers are suffixed F, D, E, M, W by stage.</p>
+        <div class="diagram"><div class="flow">
+          <div class="step">IF</div><span class="arrow">▏</span><div class="step">ID</div><span class="arrow">▏</span><div class="step">EX</div><span class="arrow">▏</span><div class="step">MEM</div><span class="arrow">▏</span><div class="step">WB</div>
+        </div><figcaption>▏ = pipeline register (IF/ID, ID/EX, EX/MEM, MEM/WB)</figcaption></div>
+        <div class="box"><span class="label">CRITICAL ISSUE: SIGNALS ADVANCE IN UNISON</span>
+          <p>All signals belonging to one instruction must advance through the pipeline together. A flawed design uses <code>WriteRegE</code> (Execute stage) as the register-file write address while the data comes from <code>ResultW</code> (Writeback stage); then in cycle 5 the result of <code>lw</code> would be written to the wrong register (e.g. $s4 instead of $s2). The fix is to pipeline the write-register number to the Writeback stage (<code>WriteRegW</code>).</p>
+        </div>
+        <h3>10.1 Pipelined control</h3>
+        <p>The pipelined processor takes the <strong>same control signals</strong> as the single-cycle processor and therefore uses the <strong>same control unit</strong>. The control unit examines opcode and funct in the Decode stage; the signals are then pipelined along with the instruction.</p>
+      </section>
+
+      <section class="topic" id="pipe-hazards">
+        <h2>11. Hazards: Data, Control &amp; Structural</h2>
+        <p>A <strong>hazard</strong> occurs when the next instruction cannot execute in its intended clock cycle because of a conflict or dependency with another instruction. Types: <strong>structural</strong> (two instructions need the same hardware resource at once), <strong>data</strong>, and <strong>control</strong>.</p>
+        <h3>11.1 Data hazards — RAW (read after write)</h3>
+        <p>One instruction writes a register ($s0) and subsequent instructions read it (e.g. <code>add $s0,$s2,$s3</code> followed by <code>and, or, sub</code> using $s0). The <code>add</code> writes $s0 in the first half of cycle 5; <code>and</code> reads $s0 in cycle 3 and <code>or</code> in cycle 4 — both get the wrong value; <code>sub</code> reads in the second half of cycle 5 and gets the correct value.</p>
+        <h4>Solution 1: forwarding (bypassing)</h4>
+        <ul>
+          <li>Send a recently computed result directly from a later stage (Memory or Writeback) to the Execute-stage ALU input, reducing stalls.</li>
+          <li>Needed when the instruction in Execute has a source register matching the destination register of an instruction in the Memory or Writeback stage.</li>
+          <li>Hardware: a <strong>hazard detection unit</strong> and two <strong>forwarding multiplexers</strong>. The unit receives the source registers of the Execute-stage instruction, the destination registers of the Memory and Writeback instructions, and their RegWrite signals (sw and beq do not write registers, so their results need not be forwarded).</li>
+        </ul>
+        <div class="formula">
+          <span class="label">FORWARDING LOGIC (textbook form)</span>
+          <div class="expr small"><div>if (rsE ≠ 0 AND rsE == WriteRegM AND RegWriteM) ForwardAE = 10</div><div>else if (rsE ≠ 0 AND rsE == WriteRegW AND RegWriteW) ForwardAE = 01</div><div>else ForwardAE = 00  (same for ForwardBE with rtE)</div></div>
+          <div class="note">10 → forward ALUOutM; 01 → forward ResultW; 00 → value from the register file (register $0 is never forwarded).</div>
+        </div>
+        <h4>lw dependency (load-use hazard) — solution 2: stall</h4>
+        <ul>
+          <li><code>lw</code> does not finish reading data until the end of the Memory stage, so its result cannot be forwarded to the Execute stage of the next instruction (data arrives at the end of cycle 4, the next instruction needs it at the start of cycle 4). Forwarding alone cannot solve it.</li>
+          <li><strong>Stall</strong> the dependent instruction in the Decode stage (it stays through cycle 4); the following instruction must stay in Fetch for both cycles because Decode is full. In cycle 5 the result is forwarded from the Writeback stage of lw to the Execute stage of the dependent instruction.</li>
+          <li>The unused Execute stage in cycle 4 (Memory in cycle 5, Writeback in cycle 6) propagating through the pipeline is a <strong>bubble</strong>; it behaves like a <code>nop</code>, introduced by <strong>zeroing the Execute-stage control signals</strong> during a Decode stall so it changes no architectural state.</li>
+        </ul>
+        <div class="formula">
+          <span class="label">STALL LOGIC (textbook form)</span>
+          <div class="expr small"><div>lwstall = ((rsD == rtE) OR (rtD == rtE)) AND MemtoRegE</div><div>StallF = StallD = FlushE = lwstall</div></div>
+        </div>
+        <h3>11.2 Control hazards (branches)</h3>
+        <p>For <code>beq</code> the processor does not know which instruction to fetch next because the branch decision has not been made by the time the next instruction is fetched (in the basic pipeline the decision is made in the Memory stage).</p>
+        <ul>
+          <li><strong>Method 1 — stall</strong> until the branch decision is made (PCSrc computed): three stall cycles at every branch, which severely degrades performance.</li>
+          <li><strong>Method 2 — predict</strong> (e.g. predict branches not taken and continue in order). If the branch should have been taken, the three following instructions must be <strong>flushed</strong> (discarded by clearing their pipeline registers). The wasted cycles are the <strong>branch misprediction penalty</strong>.</li>
+          <li><strong>Reducing the penalty:</strong> decide earlier. Compare the two registers with a dedicated <strong>equality comparator</strong> (much faster than subtraction and zero detection) moved into the <strong>Decode stage</strong>, so the next PC is known by the end of Decode.</li>
+        </ul>
+        <div class="box"><span class="label">FLUSHING</span>
+          <p>Flushing removes instructions that entered the pipeline but should not execute, e.g. after a taken branch when sequential-path instructions were fetched before the outcome was known; they are replaced by bubbles or valid target-path instructions.</p>
+        </div>
+        <h3>11.3 Hazard summary</h3>
+        <p>Forwarding reduces data stalls, hazard detection identifies dependencies needing a stall, and branch prediction reduces control-hazard penalties — together keeping CPI close to one. The complete pipelined processor combines the control unit, forwarding muxes, stall/flush logic and the Decode-stage comparator under one hazard unit.</p>
+      </section>
+
+      <section class="topic" id="pipe-performance">
+        <h2>12. Pipelined Performance Analysis</h2>
+        <p>The clock period is set by the <strong>slowest of the five stages</strong>:</p>
+        <div class="formula">
+          <span class="label">PIPELINED CYCLE TIME</span>
+          <div class="expr small">
+            <div>T<sub>c</sub> = max of:</div>
+            <div>Fetch: t<sub>pcq</sub> + t<sub>mem</sub> + t<sub>setup</sub></div>
+            <div>Decode: 2(t<sub>RFread</sub> + t<sub>mux</sub> + t<sub>eq</sub> + t<sub>AND</sub> + t<sub>mux</sub> + t<sub>setup</sub>)</div>
+            <div>Execute: t<sub>pcq</sub> + t<sub>mux</sub> + t<sub>mux</sub> + t<sub>ALU</sub> + t<sub>setup</sub></div>
+            <div>Memory: t<sub>pcq</sub> + t<sub>memwrite</sub> + t<sub>setup</sub></div>
+            <div>Writeback: 2(t<sub>pcq</sub> + t<sub>mux</sub> + t<sub>RFwrite</sub>)</div>
+          </div>
+          <div class="note">The factor 2 in Decode and Writeback arises because the register file is written in the first half and read in the second half of a cycle, so each of those stages gets half a cycle.</div>
+        </div>
+        <p>Because every instruction advances one stage per cycle, an ideal pipeline has CPI ≈ 1; stalls and flushes raise it slightly (e.g. about 1.15 for typical instruction mixes). Execution time = (# instructions) × CPI × T<sub>c</sub>, which is why a pipeline (shorter T<sub>c</sub> with CPI near 1) beats both single-cycle (long T<sub>c</sub>, CPI 1) and multicycle (short T<sub>c</sub>, CPI ≈ 4.12).</p>
+        <h3>12.1 Comparing the three microarchitectures</h3>
+        <div class="scroll-x"><table class="tight">
+          <tr><th>Point</th><th>Single-cycle</th><th>Multicycle</th><th>Pipelined</th></tr>
+          <tr><td>Execution</td><td>Whole instruction in one cycle</td><td>Several shorter cycles per instruction</td><td>Stages overlap; several instructions at once</td></tr>
+          <tr><td>Clock period</td><td>Limited by slowest instruction (lw)</td><td>Short (slowest step)</td><td>Slowest stage</td></tr>
+          <tr><td>CPI</td><td>1</td><td>≈ 4.12 (3–5 per instruction)</td><td>≈ 1 (plus stalls)</td></tr>
+          <tr><td>Control</td><td>Simple (combinational)</td><td>FSM</td><td>Same control unit plus hazard logic</td></tr>
+          <tr><td>Hardware</td><td>Separate memories/adders</td><td>Reuses ALU and memory; extra registers (IR, MDR, A, B, ALUOut)</td><td>Pipeline registers, forwarding muxes, hazard unit</td></tr>
+          <tr><td>Nonarchitectural state</td><td>None</td><td>Needed</td><td>Pipeline registers</td></tr>
+          <tr><td>Example time (100 B instr.)</td><td>92.5 s</td><td>133.9 s</td><td>fastest of the three</td></tr>
+        </table></div>
+        <p>The three approaches are different trade-offs among performance, cost and complexity.</p>
+      </section>
+
+      <footer class="site-footer"><span>Compiled from UE25CS251A Digital Logic &amp; Computer Design slides, QB &amp; assignments · Unit 4</span><a href="index.html">Home</a></footer>
     </div>
   </main>
 </div>
@@ -975,17 +881,15 @@ function setTheme(dark){
     ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>'
     : '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
 }
-let isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-try {
-  const saved = localStorage.getItem('dlcd-theme');
-  if (saved === 'dark') isDark = true;
-  if (saved === 'light') isDark = false;
-} catch(e){}
+let isDark = (() => {
+  const saved = localStorage.getItem('theme');
+  return saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+})();
 setTheme(isDark);
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
   setTheme(isDark);
-  try { localStorage.setItem('dlcd-theme', isDark ? 'dark' : 'light'); } catch(e){}
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
 const sidebar = document.getElementById('sidebar');
@@ -1029,7 +933,7 @@ function highlightInContent(term){
   if (!term) return 0;
   const lower = term.toLowerCase();
   const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT, {
-    acceptNode(node){
+    acceptNode: function(node){
       if (!node.nodeValue.toLowerCase().includes(lower)) return NodeFilter.FILTER_SKIP;
       if (node.parentElement.closest('script, style')) return NodeFilter.FILTER_REJECT;
       return NodeFilter.FILTER_ACCEPT;
@@ -1093,17 +997,6 @@ searchInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && marks.length){
     marks[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  if (e.key === 'Escape'){
-    searchInput.value = '';
-    searchInput.dispatchEvent(new Event('input'));
-    searchInput.blur();
-  }
-});
-document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
-    e.preventDefault();
-    searchInput.focus();
-  }
 });
 
 const progress = document.getElementById('progress');
@@ -1115,6 +1008,42 @@ window.addEventListener('scroll', () => {
   backTop.classList.toggle('show', h.scrollTop > 600);
 }, { passive: true });
 backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+<script>document.body.appendChild(document.getElementById('themeToggle'));</script>
+<style>
+.code-block-wrapper{position:relative;margin:0 0 20px;}
+.code-block-wrapper pre{margin:0;border-radius:var(--radius) var(--radius) 0 0;}
+.code-block-toolbar{display:flex;gap:6px;padding:6px 10px;background:var(--bg-elev);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;}
+.code-block-toolbar button{border:1px solid var(--border);border-radius:var(--radius);padding:3px 10px;background:var(--bg);color:var(--ink-soft);font:500 11px 'IBM Plex Mono',monospace;cursor:pointer;transition:all .15s ease;}
+.code-block-toolbar button:hover{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent);}
+.code-block-toolbar button.copied{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+
+</style>
+<script>
+(function(){
+  document.querySelectorAll('pre > code').forEach(function(code){
+    var pre = code.parentElement;
+    if(pre.parentElement && pre.parentElement.classList.contains('code-block-wrapper')) return;
+    var wrapper = document.createElement('div');
+    wrapper.className = 'code-block-wrapper';
+    var toolbar = document.createElement('div');
+    toolbar.className = 'code-block-toolbar';
+    var copyBtn = document.createElement('button');
+    copyBtn.textContent = 'Copy';
+    copyBtn.onclick = function(){
+      navigator.clipboard.writeText(code.textContent).then(function(){
+        copyBtn.textContent = 'Copied!';
+        copyBtn.classList.add('copied');
+        setTimeout(function(){ copyBtn.textContent = 'Copy'; copyBtn.classList.remove('copied'); }, 2000);
+      });
+    };
+    toolbar.appendChild(copyBtn);
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(toolbar);
+    wrapper.appendChild(pre);
+  });
+
+})();
 </script>
 </body>
 </html>
